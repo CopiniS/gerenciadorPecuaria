@@ -1,6 +1,8 @@
-Readme
+# Readme
 
-####CRIAÇÃO DAS PASTAS
+## Instalação
+
+### Criação das pastas
 
 1-Criar uma pasta chamada "gestao_pecuaria";
 
@@ -36,11 +38,12 @@ Para habilitar a execução de scripts toda vez antes de habilitar a venv, digit
  
 Depois execute o passo 5 novamente;
 
-7- Instalar o Django com a venv ativada, usando o comando: 
+### Django
+1- Instalar o Django com a venv ativada, usando o comando: 
 
 	pip install Django
  
-8- Verificar se tudo ocorreu corretamente, entrando no python, com o comando: 
+2- Verificar se tudo ocorreu corretamente, entrando no python, com o comando: 
 	
  	python
   
@@ -49,43 +52,47 @@ Agora os comandos:
   	import django
    	print(django.get_version())
   
-9- Na supbasta projetos, cria um projeto django, com o comando: 
+3- Na supbasta projetos, cria um projeto django, com o comando: 
 
 	django-admin startproject gestaoPecuaria
  
-10- Dentro da primeira pasta gestaoPecuaria, criar uma subpasta "apps";
+4- Dentro da primeira pasta gestaoPecuaria, criar uma subpasta "apps";
 
-11- Dentro da pasta "apps" criar uma nova aplicação "core", sendo ela a aplicação principal do projeto, usando o comando:  
+5- Dentro da pasta "apps" criar uma nova aplicação "core", sendo ela a aplicação principal do projeto, usando o comando:  
 
 	python ../manage.py startapp core
 
-####BANCO DE DADOS
+### Banco de dados
 
-12- Baixar o PostgreSQL e criar uma database chamada de "gestaoPecuaria" com o ususario "postgres" e a senha "admin" (para alterar a senha do usuario no PgAdmin, abre-se a database, clica em "Login/Group Roles","postgres", "definition" e escreva "admin" na "password");
+1- Baixar o PostgreSQL e criar uma database chamada de "gestaoPecuaria" com o ususario "postgres" e a senha "admin" (para alterar a senha do usuario no PgAdmin, abre-se a database, clica em "Login/Group Roles","postgres", "definition" e escreva "admin" na "password");
 
-####iNSTALAÇÕES DE LIBS UTILIZADAS
+### Instalação das libs utilizadas no back
 
-13- Instalar o driver para Python com o comando: 
+1- Instalar o driver para Python com o comando: 
 
 	pip install psycopg2-binary
  
-17- Instalar a biblioteca python-decouple com o comando: 
+2- Instalar a biblioteca python-decouple com o comando: 
 
 	pip install python-decouple
  
-22- Instalar o django-rest-framework com o comando: 
+3- Instalar o django-rest-framework com o comando: 
 
 	pip install djangorestframework
  
-23- Instalar o django-cors-headers com o comando: 
+4- Instalar o django-cors-headers com o comando: 
 
 	pip install django-cors-headers
 
+5 - Instalar o rest_framework_simplejwt
 
-###VUE.JS
+	pip install djangorestframework-simplejwt
+
+### Vue.js
 
 
 Em outra aba do terminal:
+
 1- Instalar o vue.js com o comando: 
 
 	npm install -g @vue/cli
@@ -96,43 +103,45 @@ Em outra aba do terminal:
  
 3- Selecionar a opção: vue 3
 
+### Instalações das libs utilizadas no front
+
 Dentro da pasta /gestao-pecuaria-frontend:
 
-11- Instalar o Axios com o comando:
+1- Instalar o Axios com o comando:
 
 	npm install axios
 
-12- Instalar o bootstrap
+2- Instalar o bootstrap
 
 	npm install bootstrap
 
-13- Instalar o router
+3- Instalar o router
 
 	npm install vue-router
 
-####PULL DOS ARQUIVOS DO GITHUB
+### Pull dos arquivos do repositório remoto no gitHub
 
-24- Excluir os arquivos do back que serão importados do github:
+1- Excluir os arquivos do back que serão importados do github:
 
 	-gestaoPecuaria/gestaoPecuaria/settings.py;
 	-gestaoPecuaria/gestaoPecuaria/urls.py;
 	-gestaoPecuaria/apps/core/models.py;
 	-gestaoPecuaria/apps/core/views.py;
 
-25- Excluir os arquivos do front que serão importados do git:
+2- Excluir os arquivos do front que serão importados do git:
 
 	Excluir a pasta src da pasta gestao-pecuaria-frontend
  	Excluir o .gitignore da pasta gestao-pecuaria-frontend
  
-26- Dentro da pasta inicial "gestao_pecuaria" inicie o git com o comando: 
+3- Dentro da pasta inicial "gestao_pecuaria" inicie o git com o comando: 
 
 	git init
  
-26- Adicione o URL do repositório remoto do Git como um repositório remoto em seu repositório local usando o comando: 
+4- Adicione o URL do repositório remoto do Git como um repositório remoto em seu repositório local usando o comando: 
 
 	git remote add origin https://github.com/CopiniS/gerenciadorPecuaria.git
  
-27- Puxar as alterações do repositório remoto para o seu repositório local usando o comando: 
+5- Puxar as alterações do repositório remoto para o seu repositório local usando o comando: 
 
 comando para criar uma branch local pecuariaMain:
 
@@ -142,7 +151,21 @@ comando para puxar os arquivos do repositório remoto:
 
 	git pull origin pecuariaMain
 
-28- Para mandar alterações locais ao repositório remoto: 
+### Fazer as migrações para o banco de dados
+
+1- Dentro da primeira pasta gestaoPecuaria, 
+
+Para preparar as migrações, usar o comando:
+
+	python manage.py makemigrations
+
+Para migrar os dados para o banco, usar o comando:
+
+	python manage.py migrate
+ 	
+### Fazer pushs para o repositório remoto
+
+1- Para mandar alterações locais ao repositório remoto: 
 
 comando para adicionar todos os arquivos alterados ao stage:
 

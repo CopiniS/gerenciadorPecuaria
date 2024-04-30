@@ -25,7 +25,7 @@
             <td>{{ animal.sexo }}</td>
             <td>{{ animal.raca }}</td>
             <td>{{ animal.observacoes }}</td>
-            <td>{{ nomeDoLote(animal.lote) }}</td>
+            <td>{{ animal.lote }}</td>
             <td>
               <button @click="editarAnimal(animal)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
@@ -74,27 +74,20 @@
                 <label for="sexo" class="col-form-label">Sexo:</label>
                 <select v-model="formData.sexo" class="form-select" id="sexo">
                   <option selected>Selecione o sexo</option>
-                  <option value="masculino">Masculino</option>
-                  <option value="feminino">Feminino</option>
+                  <option value="macho">Macho</option>
+                  <option value="femea">Fêmea</option>
                 </select>
               </div>
               <div class="mb-3">
                 <label for="racaPredominante" class="col-form-label">Raça Predominante:</label>
                 <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante">
                   <option disabled value="">Selecione a raça predominante</option>
-                  <option v-for="raca in racas" :key="raca.nome" :value="raca.nome">{{ raca.nome }}</option>
+                  <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
                 </select>
               </div>
               <div class="mb-3">
-                <label for="observacoesRaca" class="col-form-label">Observações da Raça:</label>
-                <textarea v-model="formData.observacoesRaca" class="form-control" id="observacoesRaca"></textarea>
-              </div>
-              <div class="mb-3">
-                <label for="lote" class="col-form-label">Lote:</label>
-                <select v-model="formData.lote" class="form-select" id="lote">
-                  <option disabled value="">Selecione o lote</option>
-                  <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
-                </select>
+                <label for="racaObservacao" class="col-form-label">Observações da Raça:</label>
+                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"></textarea>
               </div>
         </form>
       </div>
@@ -141,8 +134,8 @@
                 </select>
               </div>
               <div class="mb-3">
-                <label for="observacoesRaca" class="col-form-label">Observações da Raça:</label>
-                <textarea v-model="formData.observacoesRaca" class="form-control" id="observacoesRacaEditar"></textarea>
+                <label for="racaObservacao" class="col-form-label">Observações da Raça:</label>
+                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacaoEditar"></textarea>
                 <div class="mb-3">
                   <label for="lote" class="col-form-label">Lote:</label>
                   <select v-model="formData.lote" class="form-select" id="lote">
@@ -221,7 +214,7 @@ export default {
         dataNascimento: '',
         sexo: '',
         racaPredominante: '',
-        observacoesRaca: '',
+        racaObservacao: '',
         lote: ''
       },
       modalTitle: 'Cadastro de Animal',
@@ -231,13 +224,9 @@ export default {
     this.buscarAnimaisDaApi();
     this.buscarRacasDaApi();
     this.buscarPropriedadesDaApi();
-    this.buscarLotesDaApi();
   },
 
   methods: {
-    async buscarLotesDaApi(){
-      
-    },
 
     async buscarPropriedadesDaApi() {
       try {
@@ -251,7 +240,7 @@ export default {
     async carregarLotes(propriedade) {
     if (this.formData.propriedade) {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/propriedades/${propriedade}/lotes/`);
+        const response = await axios.get(`http://127.0.0.1:8000/lotes/${propriedade}/lotes_por_propriedade/`);
         this.lotes = response.data;
       } catch (error) {
         console.error('Erro ao buscar lotes da propriedade:', error);
@@ -282,21 +271,23 @@ export default {
         dataNascimento: animal.data,
         sexo: animal.sexo,
         racaPredominante: animal.raca,
-        observacoesRaca: animal.observacoes,
+        racaObservacao: animal.observacoes,
         lote: animal.lote,
         propriedade: animal.propriedade
       };
     },
+
     resetForm() {
+      console.log('tal')
       this.formData = {
         id: null,
         brinco: '',
         dataNascimento: '',
         sexo: '',
         racaPredominante: '',
-        observacoesRaca: '',
-        lote: '',
-        propriedade: ''
+        racaObservacao: '',
+        propriedade: this.formData.propriedade,
+        lote: this.formData.lote
       };
       this.modalTitle = 'Cadastro de Animal';
     },
@@ -318,7 +309,15 @@ export default {
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Animal') {
         try {
-          const response = await axios.post(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData);
+          const dadosAnimais = {
+          brinco: this.formData.brinco,
+          dataNascimento: this.formData.dataNascimento,
+          sexo: this.formData.sexo,
+          racaPredominante: this.formData.racaPredominante,
+          racaObservacao: this.formData.racaObservacao,
+          lote: this.formData.lote
+        }
+          const response = await axios.post(`http://127.0.0.1:8000/animais/`, dadosAnimais);
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 
 current_produtor_id = []
 
@@ -74,11 +74,19 @@ class AnimalViewSet(viewsets.ModelViewSet):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
 
+    def get_queryset(self):
+        return Animal.objects.filter(lote__propriedade__produtor__in=current_produtor_id)
+
 class LoteViewSet(viewsets.ModelViewSet):
     queryset = Lote.objects.all()
     serializer_class = LoteSerializer
 
     def get_queryset(self):
         return Lote.objects.filter(propriedade__produtor__in=current_produtor_id)
-    #Atualiza o idProdutor para o current_produtor
     
+    @action(detail=True, methods=['get'])
+    def lotes_por_propriedade(self, request, pk=None):
+        propriedade_id = self.kwargs['pk']
+        lotes = Lote.objects.filter(propriedade__id=propriedade_id)
+        serializer = self.get_serializer(lotes, many=True)
+        return Response(serializer.data)

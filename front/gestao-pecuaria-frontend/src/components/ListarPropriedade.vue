@@ -199,26 +199,16 @@ export default {
       } catch (error) {
         console.error('Erro ao buscar cidades da API:', error);
       }
-      this.encontrarNomeDoEstadoPeloId(estadoId)
     },
 
-    async encontrarNomeDoEstadoPeloId(estadoId) {
-      let estadoSelecionado;
-      console.log('tamanho da lista de estados: ', this.estados.length);
-      console.log('id do estado: ', estadoId);
+    encontrarNomeDoEstadoPeloId(estadoId) {
+      let estadoSelecionado = null;
       for (let i = 0; i < this.estados.length; i++) {
-        console.log('lista de ids dos estados' , this.estados[i].id , '  nome: ' , this.estados[i].nome);
         if (this.estados[i].id == estadoId) {
-          estadoSelecionado = this.estados[i];
-          break;
+          estadoSelecionado = this.estados[i].nome;
         }
       }
-      if (estadoSelecionado) {
-        this.formData.estado = estadoSelecionado.nome;
-      } else {
-        console.error('Estado não encontrado.');
-        // Defina um valor padrão ou trate o erro conforme necessário
-      }
+      return estadoSelecionado;
     },
 
     async buscarEstadosDaApi() {
@@ -297,7 +287,7 @@ export default {
         const dadosPropriedade = {
           nome: this.formData.nome,
           endereco: this.formData.endereco,
-          estado: this.formData.estado,
+          estado: this.encontrarNomeDoEstadoPeloId(this.formData.estado),
           cidade: this.formData.cidade,
           latitude: parseFloat(this.formData.latitude),
           longitude: parseFloat(this.formData.longitude),

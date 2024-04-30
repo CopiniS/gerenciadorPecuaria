@@ -72,55 +72,37 @@ export default {
   },
 
   mounted() {
-    this.getEstados();
-    this.getProdutores();
     this.setupFormSubmitListener();
   },
 
   methods: {
-    async getEstados() {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/estado/');
-        this.estados = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar estados:', error);
-        alert('Erro ao buscar estados. Verifique o console para mais detalhes.');
-      }
-    },
-    async getProdutores() {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/produtores/');
-        this.produtores = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar produtores:', error);
-        alert('Erro ao buscar produtores. Verifique o console para mais detalhes.');
-      }
-    },
+    
     async setupFormSubmitListener() {
       document.getElementById('formPropriedade').addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const dadosPropriedade = {
-          nome: document.getElementById('nomePropriedade').value,
-          endereco: document.getElementById('enderecoPropriedade').value,
-          produtor: document.getElementById('produtor').value,
-          estado: document.getElementById('estadoCidade').value,
-          cidade: document.getElementById('cidade').value,
-          latitude: document.getElementById('latitude').value,
-          longitude: document.getElementById('longitude').value,
-        };
-
         try {
-          const response = await axios.post('http://127.0.0.1:8000/propriedades/', dadosPropriedade);
+          const access_token = localStorage.getItem('access_token'); // Obtém o token de acesso do localStorage
+          
+          // Solicita os detalhes do produtor logado
+          const produtorResponse = await axios.get('http://127.0.0.1:8000/produtor/produtor-logado/', {
+            headers: {
+              'Authorization': `Bearer ${access_token}` // Inclui o token de acesso no cabeçalho de autorização
+            }
+          });
+          
+          const produtor = produtorResponse.data; // Obtém os detalhes do produtor logado
+          console.log('produtor: ', produtor);
+          console.log('id do produtor: ', produtor.id);
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
+          if (produtorResponse.status === 201) {
+            console.log("Achou produtor logado")
           } else {
-            alert('Erro ao cadastrar propriedade. Tente novamente mais tarde.');
+            console.log('Erro ao achar produtor logado.');
+
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
       });
     },

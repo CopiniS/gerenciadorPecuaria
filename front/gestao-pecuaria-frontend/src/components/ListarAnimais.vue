@@ -38,16 +38,31 @@
     </div>
 
     <!-- Modal de Cadastro-->
-    <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de animal</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="mb-3">
+<div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de animal</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="propriedade" class="col-form-label">Propriedade:</label>
+          <select v-model="formData.propriedade" @change="carregarLotes($event.target.value)" class="form-select" id="propriedade">
+            <option disabled value="">Selecione a propriedade</option>
+            <option v-for="propriedade in propriedades" :key="propriedade.id" :value="propriedade.id">{{ propriedade.nome }}</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="lote" class="col-form-label">Lote:</label>
+          <select v-model="formData.lote" class="form-select" id="lote">
+            <option disabled value="">Selecione o lote</option>
+            <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
+          </select>
+        </div>
+        <hr>
+        <form @submit.prevent="submitForm">
+          <div class="mb-3">
                 <label for="brinco" class="col-form-label">Brinco:</label>
                 <input v-model="formData.brinco" type="text" class="form-control" id="brinco">
               </div>
@@ -81,15 +96,16 @@
                   <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
                 </select>
               </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
-          </div>
-        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
       </div>
     </div>
+  </div>
+</div>
+
 
     <!-- Modal de Edição -->
     <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
@@ -198,6 +214,7 @@ export default {
       animais: [],
       racas: [],
       lotes: [],
+      propriedades: [],
       formData: {
         id: null,
         brinco: '',
@@ -210,15 +227,37 @@ export default {
       modalTitle: 'Cadastro de Animal',
     }
   },
-  mounted() {
+  async mounted() {
     this.buscarAnimaisDaApi();
     this.buscarRacasDaApi();
+    this.buscarPropriedadesDaApi();
+    this.buscarLotesDaApi();
   },
+
   methods: {
-    nomeDoLote(idLote) {
-      const lote = this.lotes.find(lote => lote.id === idLote);
-      return lote ? lote.nome : '';
+    async buscarLotesDaApi(){
+      
     },
+
+    async buscarPropriedadesDaApi() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/propriedades/');
+        this.propriedades = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar propriedades da API:', error);
+      }
+    },
+
+    async carregarLotes(propriedade) {
+    if (this.formData.propriedade) {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/propriedades/${propriedade}/lotes/`);
+        this.lotes = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar lotes da propriedade:', error);
+      }
+    }
+  },
     async buscarRacasDaApi() {
       try {
         const response = await axios.get('http://127.0.0.1:8000/racas/');
@@ -244,7 +283,8 @@ export default {
         sexo: animal.sexo,
         racaPredominante: animal.raca,
         observacoesRaca: animal.observacoes,
-        lote: animal.lote
+        lote: animal.lote,
+        propriedade: animal.propriedade
       };
     },
     resetForm() {
@@ -255,7 +295,8 @@ export default {
         sexo: '',
         racaPredominante: '',
         observacoesRaca: '',
-        lote: ''
+        lote: '',
+        propriedade: ''
       };
       this.modalTitle = 'Cadastro de Animal';
     },
@@ -312,6 +353,7 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 .table-container {
   margin-left: 20px;
   margin-right: 20px;

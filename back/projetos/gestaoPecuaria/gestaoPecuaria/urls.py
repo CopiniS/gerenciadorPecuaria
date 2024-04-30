@@ -25,11 +25,10 @@ from rest_framework import routers
 app_name = 'core'
 router = routers.DefaultRouter()
 router.register('produtores', views.ProdutorViewSet)
-router.register('cidades', views.CidadeViewSet)
 router.register('propriedades', views.PropriedadeViewSet)
 router.register('racas', views.RacaViewSet)
 router.register('animais', views.AnimalViewSet)
-router.register('estado', views.EstadoViewSet)
+router.register('lotes' , views.LoteViewSet)
 urlpatterns = [
     path('',include(router.urls)),
     path('produtor/login/', views.ProdutorLoginAPIView.as_view(), name='produtor-login'),

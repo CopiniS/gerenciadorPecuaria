@@ -43,11 +43,15 @@
             <form @submit.prevent="submitForm">
               <div class="mb-3">
                 <label for="nome" class="col-form-label">Nome:</label>
-                <input v-model="formData.nome" type="text" class="form-control" id="nome">
+                <select v-model="formData.cidade" class="form-select" id="cidade" required>
+                  <option value="" disabled selected>Selecione a cidade</option>
+                  <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{ cidade.nome }}</option>
+                </select>
               </div>
               <div class="mb-3">
                 <label for="estado" class="col-form-label">Estado:</label>
-                <select class="form-select" id="estado" required>
+                <label for="estado" class="col-form-label">{{ formData.estado }}</label>
+                <select class="form-select" id="estado" required @change="buscarCidadesPorEstado($event.target.value)">
                   <option value="" disabled selected>Selecione o estado</option>
                   <option v-for="estado in estados" :key="estado.id" :value="estado.id">{{ estado.nome }}</option>
                 </select>
@@ -74,12 +78,17 @@
             <form @submit.prevent="submitFormEdicao">
               <div class="mb-3">
                 <label for="nomeEditar" class="col-form-label">Nome:</label>
-                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar">
+                <select v-model="formData.cidade" class="form-select" id="cidade" required>
+                  <option value="" disabled selected>Selecione a cidade</option>
+                  <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{ cidade.nome }}</option>
+                </select>
               </div>
               <div class="mb-3">
                 <label for="estadoEditar" class="col-form-label">Estado:</label>
-                <select v-model="formData.estado" class="form-select" id="estadoEditar" required>
-                  <option selected>{{ formData.estado }}</option>
+                <select class="form-select" id="estado" required v-model="formData.estado"
+                  @change="buscarCidadesPorEstado(formData.estado)">
+
+                  <option value="" disabled selected>Selecione o estado</option>
                   <option v-for="estado in estados" :key="estado.id" :value="estado.id">{{ estado.nome }}</option>
                 </select>
               </div>
@@ -124,35 +133,7 @@ export default {
   data() {
     return {
       cidades: [],
-      estados: [
-        { "id": 1, "nome": "Acre" },
-        { "id": 2, "nome": "Alagoas" },
-        { "id": 3, "nome": "Amapá" },
-        { "id": 4, "nome": "Amazonas" },
-        { "id": 5, "nome": "Bahia" },
-        { "id": 6, "nome": "Ceará" },
-        { "id": 7, "nome": "Distrito Federal" },
-        { "id": 8, "nome": "Espírito Santo" },
-        { "id": 9, "nome": "Goiás" },
-        { "id": 10, "nome": "Maranhão" },
-        { "id": 11, "nome": "Mato Grosso" },
-        { "id": 12, "nome": "Mato Grosso do Sul" },
-        { "id": 13, "nome": "Minas Gerais" },
-        { "id": 14, "nome": "Pará" },
-        { "id": 15, "nome": "Paraíba" },
-        { "id": 16, "nome": "Paraná" },
-        { "id": 17, "nome": "Pernambuco" },
-        { "id": 18, "nome": "Piauí" },
-        { "id": 19, "nome": "Rio de Janeiro" },
-        { "id": 20, "nome": "Rio Grande do Norte" },
-        { "id": 21, "nome": "Rio Grande do Sul" },
-        { "id": 22, "nome": "Rondônia" },
-        { "id": 23, "nome": "Roraima" },
-        { "id": 24, "nome": "Santa Catarina" },
-        { "id": 25, "nome": "São Paulo" },
-        { "id": 26, "nome": "Sergipe" },
-        { "id": 27, "nome": "Tocantins" }
-      ],
+      estados: [],
       formData: {
         id: null,
         nome: '',
@@ -162,12 +143,30 @@ export default {
   },
   mounted() {
     this.buscarCidadesDaApi();
+    this.buscarEstadosDaApi();
   },
   methods: {
     async buscarCidadesDaApi() {
       try {
         const response = await axios.get('http://127.0.0.1:8000/cidades/');
         this.cidades = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar cidades da API:', error);
+      }
+    },
+    async buscarCidadesPorEstado(estadoId) {
+      try {
+        const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`);
+        this.cidades = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar cidades da API:', error);
+      }
+    },
+
+    async buscarEstadosDaApi() {
+      try {
+        const response = await axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+        this.estados = response.data;
       } catch (error) {
         console.error('Erro ao buscar cidades da API:', error);
       }
@@ -238,6 +237,8 @@ export default {
 </script>
 
 <style>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
 .table-container {
   margin-left: 20px;
   margin-right: 20px;

@@ -7,21 +7,43 @@
       <h2 class="text-center mb-5 title-cadastro">Faça o cadastro</h2>
       <form @submit.prevent="submitForm">
         <div class="mb-3">
-          <label for="nome" class="form-label">Nome</label>
-          <input v-model="nome" type="text" class="form-control" id="nome" placeholder="Seu nome" required>
-        </div>
-        <div class="mb-3">
-          <label for="cpf" class="form-label">CPF</label>
-          <input v-model="cpf" type="text" class="form-control" id="cpf" placeholder="Seu CPF" required>
-        </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input v-model="email" type="email" class="form-control" id="email" placeholder="Seu email" required>
-        </div>
-        <div class="mb-3">
-          <label for="senha" class="form-label">Senha</label>
-          <input v-model="senha" type="password" class="form-control" id="senha" placeholder="Sua senha" required>
-        </div>
+  <div class="input-group">
+    <span class="input-group-text"><i class="fas fa-user"></i></span>
+    <input v-model="nome" type="text" class="form-control" id="nome" placeholder="Nome*" required>
+  </div>
+</div>
+<div class="mb-3">
+  <div class="input-group">
+    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+    <input v-model="cpf" type="text" class="form-control" id="cpf" placeholder="CPF*" required>
+  </div>
+</div>
+<div class="mb-3">
+  <div class="input-group">
+    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+    <input v-model="telefone1" type="tel" class="form-control" id="telefone1" placeholder="Telefone 1*" required>
+  </div>
+</div>
+<div class="mb-3">
+  <div class="input-group">
+    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+    <input v-model="telefone2" type="tel" class="form-control" id="telefone2" placeholder="Telefone 2">
+  </div>
+</div>
+<div class="mb-3">
+  <div class="input-group">
+    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+    <input v-model="email" type="email" class="form-control" id="email" placeholder="Email*" required>
+  </div>
+</div>
+<div class="mb-3">
+  <div class="input-group">
+    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+    <input v-model="senha" type="password" class="form-control" id="senha" placeholder="Senha*" required>
+  </div>
+</div>
+
+
         <b-button type="button" class="btn btn-primary" block @click="cadastrar">
           <i class="fas fa-sign-in-alt"></i> Cadastrar
         </b-button>
@@ -41,6 +63,8 @@ export default {
     return {
       nome: '',
       cpf: '',
+      telefone1: '',
+      telefone2: '',
       email: '',
       senha: ''
     };
@@ -50,6 +74,8 @@ export default {
       const dadosProdutor = {
         nome: this.nome,
         cpf: this.cpf,
+        telefone1: this.telefone1,
+        telefone2: this.telefone2,
         email: this.email,
         senha: this.senha
       };
@@ -75,7 +101,9 @@ export default {
     resetForm() {
       this.nome = '';
       this.cpf = '';
-      this.email = '';
+      this.telefone1 = '',
+        this.telefone2 = '',
+        this.email = '';
       this.senha = '';
     },
     voltar() {
@@ -86,6 +114,8 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
 .cadastro-container {
   display: flex;
   justify-content: center;

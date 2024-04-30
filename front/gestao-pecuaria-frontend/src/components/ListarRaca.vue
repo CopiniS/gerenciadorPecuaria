@@ -168,7 +168,11 @@ export default {
     },
     async submitForm() {
       try {
-        const response = await axios.post(`http://127.0.0.1:8000/racas/`, this.formData);
+        const dadosRaca = {
+          nome: this.formData.nome,
+          idProdutor: 0
+        }
+        const response = await axios.post(`http://127.0.0.1:8000/racas/`, dadosRaca);
 
         if (response.status === 201) {
           alert('Cadastro realizado com sucesso!');
@@ -187,6 +191,7 @@ export default {
 </script>
 
 <style>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 .table-container {
   margin-left: 20px;
   margin-right: 20px;

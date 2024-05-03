@@ -1,10 +1,7 @@
 from rest_framework import serializers
-from core.models import Produtor, Propriedade, Raca, Animal, Lote
+from core.models import Propriedade, Raca, Animal, Lote
+from django.contrib.auth import get_user_model
 
-class ProdutorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Produtor
-        fields = "__all__"
 
 class PropriedadeSerializer(serializers.ModelSerializer):
     class Meta:

@@ -52,11 +52,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    "corsheaders",
     #apps do projeto
     'core.apps.CoreConfig',
-    "corsheaders",
-    
-
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -162,3 +161,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+AUTH_USER_MODEL = 'users.Produtor'

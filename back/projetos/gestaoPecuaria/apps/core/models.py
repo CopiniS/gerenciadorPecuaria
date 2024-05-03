@@ -1,12 +1,5 @@
 from django.db import models
-
-class Produtor(models.Model):
-    nome = models.CharField('Nome', max_length=50)
-    cpf = models.CharField('CPF', max_length=15)
-    email = models.CharField('Email', max_length=50)
-    senha = models.CharField('Senha', max_length=20)
-    telefone1 = models.CharField('Telefone', max_length=15, default='')
-    telefone2 = models.CharField('Telefone 2', max_length=15, null=True)
+from users.models import Produtor
 
 class Propriedade(models.Model):
     nome = models.CharField('Nome', max_length=50)

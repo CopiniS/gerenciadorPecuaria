@@ -37,66 +37,71 @@
       </table>
     </div>
 
-    <!-- Modal de Cadastro-->
-<div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de animal</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-        </div>
-        <div class="mb-3">
-          <label for="lote" class="col-form-label">Lote:</label>
-          <select v-model="formData.lote" class="form-select" id="lote">
-            <option disabled value="">Selecione o lote</option>
-            <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
-          </select>
-        </div>
-        <hr>
-        <form @submit.prevent="submitForm">
-          <div class="mb-3">
-                <label for="brinco" class="col-form-label">Brinco:</label>
-                <input v-model="formData.brinco" type="text" class="form-control" id="brinco">
+    <!-- Modal de Cadastro -->
+    <div class="modal fade" id="cadastroModal" tabindex="-1"
+      aria-labelledby="cadastroModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de animal</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tag"></i></span>
+              <select v-model="formData.lote" class="form-select" id="lote" aria-label="Lote"
+                placeholder="Selecione o lote" required>
+                <option disabled selected>Selecione o lote</option>
+                <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
+              </select>
+            </div>
+            <hr>
+            <form @submit.prevent="submitForm">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.brinco" type="text" class="form-control" id="brinco"
+                  placeholder="Número do Brinco" required>
               </div>
-              <div class="mb-3">
-                <label for="dataNascimento" class="col-form-label">Data de Nascimento:</label>
-                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimento">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimento"
+                  placeholder="Data de Nascimento" required>
               </div>
-              <div class="mb-3">
-                <label for="sexo" class="col-form-label">Sexo:</label>
-                <select v-model="formData.sexo" class="form-select" id="sexo">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                <select v-model="formData.sexo" class="form-select" id="sexo" aria-label="Sexo" required
+                  placeholder="Selecione o sexo">
                   <option disabled selected>Selecione o sexo</option>
                   <option value="macho">Macho</option>
                   <option value="femea">Fêmea</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="racaPredominante" class="col-form-label">Raça Predominante:</label>
-                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante">
-                  <option disabled selected ="">Selecione a raça predominante</option>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-horse"></i></span>
+                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
+                  aria-label="Raça Predominante" required>
+                  <option disabled selected>Selecione a raça predominante</option>
                   <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="racaObservacao" class="col-form-label">Observações da Raça:</label>
-                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"></textarea>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
+                  placeholder="Observações sobre a Raça"></textarea>
               </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
 
     <!-- Modal de Edição -->
-    <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
+    <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -105,38 +110,42 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
-              <div class="mb-3">
-                <label for="brinco" class="col-form-label">Brinco:</label>
-                <input v-model="formData.brinco" type="text" class="form-control" id="brincoEditar">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.brinco" type="text" class="form-control" id="brincoEditar"
+                  placeholder="Número do Brinco" required>
               </div>
-              <div class="mb-3">
-                <label for="dataNascimento" class="col-form-label">Data de Nascimento:</label>
-                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimentoEditar">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimentoEditar"
+                  placeholder="Data de Nascimento" required>
               </div>
-              <div class="mb-3">
-                <label for="sexo" class="col-form-label">Sexo:</label>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
                 <select v-model="formData.sexo" class="form-select" id="sexoEditar">
                   <option disabled value="">Selecione o sexo</option>
                   <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao" v-bind:selected="formData.sexo === opcao">{{ opcao }}</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="racaPredominante" class="col-form-label">Raça Predominante:</label>
-                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante">
-                  <option disabled selected>{{ formData.racaPredominante }}</option>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-horse"></i></span>
+                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
+                  aria-label="Raça Predominante" required>
+                  <option selected>{{ formData.racaPredominante }}</option>
                   <option v-for="raca in racas" :key="raca.nome" :value="raca.nome">{{ raca.nome }}</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="racaObservacao" class="col-form-label">Observações da Raça:</label>
-                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacaoEditar"></textarea>
-                <div class="mb-3">
-                  <label for="lote" class="col-form-label">Lote:</label>
-                  <select v-model="formData.lote" class="form-select" id="lote">
-                    <option disabled value="">Selecione o lote</option>
-                    <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
-                  </select>
-                </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacaoEditar"
+                  placeholder="Observações sobre a Raça"></textarea>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                <select v-model="formData.lote" class="form-select" id="lote" aria-label="Lote" required>
+                  <option disabled selected>Selecione o lote</option>
+                  <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
+                </select>
               </div>
             </form>
           </div>
@@ -146,7 +155,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>    
 
     <!-- Modal de Confirmação de Exclusão -->
     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
@@ -167,27 +176,6 @@
         </div>
       </div>
     </div>
-   
-     <!-- Modal de Confirmação de Exclusão -->
-     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            Tem certeza de que deseja excluir este animal?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarAnimal(animal)">Excluir</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </template>
 
@@ -235,7 +223,7 @@ export default {
         console.error('Erro ao buscar lotes da API:', error);
       }
     },
-
+    
     async buscarRacasDaApi() {
       try {
         const response = await axios.get('http://127.0.0.1:8000/racas/' , {
@@ -289,6 +277,15 @@ export default {
       this.modalTitle = 'Cadastro de Animal';
     },
 
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
+
     async apagarAnimal() {
       try {
         const response = await axios.delete(`http://127.0.0.1:8000/animais/${this.formData.id}/`, {
@@ -307,6 +304,7 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.fecharModal("confirmacaoExclusaoModal");
     },
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Animal') {
@@ -328,6 +326,7 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
+
       } else {
         try {
           const response = await axios.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData , {
@@ -347,6 +346,7 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
+        this.fecharModal("edicaoModal");
       }
     }
   }

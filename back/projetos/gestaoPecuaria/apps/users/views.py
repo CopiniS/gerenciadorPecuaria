@@ -4,6 +4,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from .serializers import ProdutorSerializer
 from .models import Produtor
 from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class RegisterView(APIView):
@@ -34,4 +35,16 @@ class LoginView(APIView):
             'message': 'Login bem-sucedido.'
         })
 
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response({"message": "Logout bem-sucedido."})
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
+        

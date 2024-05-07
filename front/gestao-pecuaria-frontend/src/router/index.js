@@ -4,6 +4,7 @@ import TelaPropriedade from '@/views/TelaPropriedade.vue';
 import TelaRaca from '@/views/TelaRaca.vue';
 import Login from '@/views/LoginView.vue'
 import Cadastro from '@/views/CadastroView.vue'
+import PopUpPropriedade from '@/views/PopUpPropriedade.vue'
 import TelaLotes from '@/views/TelaLotes.vue';
 
 const routes = [
@@ -24,9 +25,15 @@ const routes = [
   },  
   {
     path: '/propriedades',
+    name: 'PopUpPropriedade',
+    component: PopUpPropriedade, 
+  },
+  {
+    path: '/propriedade',
     name: 'TelaPropriedade',
     component: TelaPropriedade, 
   },
+
   {
     path: '/animais',
     name: 'TelaAnimais',

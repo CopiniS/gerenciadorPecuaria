@@ -28,8 +28,7 @@
         </tbody>
       </table>
     </div>
-
-    <!-- Modal de Cadastro de Lote -->
+        <!-- Modal de Cadastro de Lote -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -39,16 +38,14 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
-              <div class="mb-3">
-                <label for="nome" class="col-form-label">Nome:</label>
-                <input v-model="formData.nome" type="text" class="form-control" id="nome">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
               </div>
-              <div class="mb-3">
-              </div>
-              <div class="mb-3">
-                <label for="tipoCultivo" class="col-form-label">Tipo de Cultivo:</label>
-                <select v-model="formData.tipoCultivo" class="form-select" id="tipoCultivo">
-                  <option disabled value="">Selecione o tipo de cultivo</option>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                <select v-model="formData.tipoCultivo" class="form-select" id="tipoCultivo" aria-label="Tipo de Cultivo" required>
+                  <option disabled selected>Selecione o tipo de cultivo</option>
                   <option v-for="tipo in tiposCultivo" :key="tipo" :value="tipo">{{ tipo }}</option>
                 </select>
               </div>
@@ -72,16 +69,14 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
-              <div class="mb-3">
-                <label for="nome" class="col-form-label">Nome:</label>
-                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome" required>
               </div>
-              <div class="mb-3">
-              </div>
-              <div class="mb-3">
-                <label for="tipoCultivo" class="col-form-label">Tipo de Cultivo:</label>
-                <select v-model="formData.tipoCultivo" class="form-select" id="tipoCultivoEditar">
-                  <option disabled value="">Selecione o tipo de cultivo</option>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                <select v-model="formData.tipoCultivo" class="form-select" id="tipoCultivoEditar" aria-label="Tipo de Cultivo" required>
+                  <option disabled selected>Selecione o tipo de cultivo</option>
                   <option v-for="tipo in tiposCultivo" :key="tipo" :value="tipo">{{ tipo }}</option>
                 </select>
               </div>
@@ -94,7 +89,6 @@
         </div>
       </div>
     </div>
-
 
     <!-- Modal de Confirmação de Exclusão -->
     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
@@ -174,6 +168,16 @@ export default {
       };
       this.modalTitle = 'Cadastro de Lote';
     },
+
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
+
     async apagarLote() {
       try {
         console.log('delte: ' , this.formData.id);
@@ -193,7 +197,9 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.fecharModal("confirmacaoExclusaoModal");
     },
+    
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Lote') {
         try {
@@ -214,6 +220,8 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
+        this.fecharModal("cadastroModal");
+
       } else {
         try {
           const response = await axios.patch(`http://127.0.0.1:8000/lotes/${this.formData.id}/`, this.formData , {
@@ -233,6 +241,7 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
+         this.fecharModal("edicaoModal");
       }
     }
   }

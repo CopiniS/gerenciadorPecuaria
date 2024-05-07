@@ -16,7 +16,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <router-link to="/propriedades" class="dropdown-item">Propriedade</router-link>
+              <router-link to="/propriedade" class="dropdown-item">Propriedade</router-link>
             </li>
             <li class="nav-item">
               <router-link to="/animais" class="dropdown-item">Animal</router-link>

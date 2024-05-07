@@ -1,6 +1,6 @@
 <template>
   <!-- Modal de Propriedades -->
-  <div class="modal" tabindex="-1" role="dialog" style="display: block;" v-if="exibirModalPropriedades">
+  <div class="modal" id="listModal" tabindex="-1" role="dialog" style="display: block;">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -19,16 +19,15 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
 import axios from 'axios';
 
 export default {
-  
   data() {
   return {
+
     propriedades: [],
       formData: {
         id: null,
@@ -38,14 +37,15 @@ export default {
         cidade: '',
         latitude: '',
         longitude: '',
-        produtor: []
+        produtor: [],
+        componeteVisivel: false
       },
-    exibirModalPropriedades: true, // Estado para controlar a exibição do modal de propriedades
   };
 },
 mounted() {
     this.buscarPropriedadesDaApi();
   },
+
   methods: {
     async buscarPropriedadesDaApi() {
       try {
@@ -59,12 +59,31 @@ mounted() {
         console.error('Erro ao buscar propriedades da API:', error);
       }
     },
+
+    mostrarComponente(){
+      this.componeteVisivel = true;
+    },
+
+    ocultarComponente(){
+      this.componeteVisivel = false;
+    },
+
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+      this.mostrarComponente();
+    },
+
     selecionarPropriedade(propriedade) {
-    // Salvar o ID da propriedade selecionada no localStorage
-    localStorage.setItem('propriedadeSelecionada', propriedade.id);
-    // Fechar o modal de propriedades
-    this.exibirModalPropriedades = false;
-    this.$router.push('/inicio');
+      // Salvar o ID da propriedade selecionada no localStorage
+      localStorage.setItem('propriedadeSelecionada', propriedade.id);
+      // Fechar o modal de propriedades
+      this.fecharModal("listModal")
+      this.$router.push('/propriedade');
   },
   }
 };

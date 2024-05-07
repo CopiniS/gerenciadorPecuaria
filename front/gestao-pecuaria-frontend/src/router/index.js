@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import TelaAnimais from '@/views/TelaAnimais.vue';
 import TelaPropriedade from '@/views/TelaPropriedade.vue';
 import TelaRaca from '@/views/TelaRaca.vue';
-import TelaCidade from '@/views/TelaCidade.vue';
 import Login from '@/views/LoginView.vue'
 import Cadastro from '@/views/CadastroView.vue'
 import TelaLotes from '@/views/TelaLotes.vue';
@@ -37,11 +36,6 @@ const routes = [
     path: '/raca',
     name: 'TelaRaca',
     component: TelaRaca, 
-  },
-  {
-    path: '/cidade',
-    name: 'TelaCidade',
-    component: TelaCidade, 
   },
   {
     path: '/lotes',

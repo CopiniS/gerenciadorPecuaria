@@ -25,9 +25,6 @@
               <router-link to="/raca" class="dropdown-item">Raça</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/cidade" class="dropdown-item">Cidade</router-link>
-            </li>
-            <li class="nav-item">
               <router-link to="/lotes" class="dropdown-item">Lotes</router-link>
             </li>
           </ul>

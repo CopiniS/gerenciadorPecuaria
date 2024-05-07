@@ -44,18 +44,18 @@ export default {
     login() {
       console.log(this.email);
       console.log(this.password);
-      axios.post('http://127.0.0.1:8000/produtor/login/', {
+      axios.post('http://127.0.0.1:8000/login', {
         email: this.email,
-        senha: this.password
+        password: this.password
       })
         .then(response => {
           alert('Login bem-sucedido!');
           setTimeout(() => {
-            const access_token = response.data.access; 
+            const access_token = response.data.access_token; 
             localStorage.setItem('access_token', access_token);
-            console.log(access_token); 
-            this.$router.push('/propriedades');
+            console.log(access_token);
           }, 1000);
+          this.$router.push('/propriedades');
           console.log('Login bem-sucedido!', response.data);
         })
         .catch(error => {
@@ -63,6 +63,7 @@ export default {
           console.error('Erro durante o login:', error.response.data);
         });
     },
+
     registrar() {
       this.$router.push('/cadastro');
     }

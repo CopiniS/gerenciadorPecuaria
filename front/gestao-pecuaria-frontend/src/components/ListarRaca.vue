@@ -117,7 +117,11 @@ export default {
   methods: {
     async buscarRacasDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/racas/');
+        const response = await axios.get('http://127.0.0.1:8000/racas/' ,{
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      } );
         this.racas = response.data;
       } catch (error) {
         console.error('Erro ao buscar raças da API:', error);
@@ -132,12 +136,17 @@ export default {
     resetForm() {
       this.formData = {
         id: null,
-        nome: ''
+        nome: '',
+        produtor: ''
       };
     },
-    async apagarRaca(raca) {
+    async apagarRaca() {
       try {
-        const response = await axios.delete(`http://127.0.0.1:8000/racas/${raca.id}/`);
+        const response = await axios.delete(`http://127.0.0.1:8000/racas/${this.formData.id}/`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      });
         if (response.status === 204) {
           alert('Raça apagada com sucesso!');
           this.buscarRacasDaApi();
@@ -153,7 +162,12 @@ export default {
 
     async submitFormEdicao() {
       try {
-        const response = await axios.put(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData);
+        console.log('id do editado: ' , this.formData.id);
+        const response = await axios.patch(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      });
 
         if (response.status === 200) {
           alert('Alterações salvas com sucesso!');
@@ -170,9 +184,13 @@ export default {
       try {
         const dadosRaca = {
           nome: this.formData.nome,
-          idProdutor: 0
+          produtor: 0
         }
-        const response = await axios.post(`http://127.0.0.1:8000/racas/`, dadosRaca);
+        const response = await axios.post(`http://127.0.0.1:8000/racas/`, dadosRaca , {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      });
 
         if (response.status === 201) {
           alert('Cadastro realizado com sucesso!');

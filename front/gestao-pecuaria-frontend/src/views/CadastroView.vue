@@ -77,19 +77,17 @@ export default {
         telefone1: this.telefone1,
         telefone2: this.telefone2,
         email: this.email,
-        senha: this.senha
+        password: this.senha
       };
 
       try {
-        const response = await axios.post('http://127.0.0.1:8000/produtores/', dadosProdutor);
+        const response = await axios.post('http://127.0.0.1:8000/singup', dadosProdutor);
         console.log(response.status)
-        if (response.status === 201) {
-          console.log("entrou no 201");
+        if (response.status === 200) {
           alert('Cadastro realizado com sucesso!');
           this.resetForm();
         } else {
           alert('Erro ao cadastrar produtor. Tente novamente mais tarde.');
-          console.log("nao entrou no 201");
         }
       } catch (error) {
         console.log("entrou no catch");

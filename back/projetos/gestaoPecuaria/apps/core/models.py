@@ -17,7 +17,7 @@ class Lote(models.Model):
 
 class Raca(models.Model):
     nome = models.CharField('Nome', max_length=20)
-    idProdutor = models.ForeignKey(Produtor,on_delete=models.CASCADE )
+    produtor = models.ForeignKey(Produtor,on_delete=models.CASCADE )
 
 class Animal(models.Model):
     brinco = models.CharField('Brinco', max_length=6)

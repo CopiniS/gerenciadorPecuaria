@@ -10,7 +10,6 @@
         <thead>
           <tr>
             <th scope="col">Nome</th>
-            <th scope="col">Propriedade</th>
             <th scope="col">Tipo de Cultivo</th>
             <th scope="col">Ações</th>
           </tr>
@@ -18,12 +17,11 @@
         <tbody>
           <tr v-for="(lote, index) in lotes" :key="index">
             <td>{{ lote.nome }}</td>
-            <td>{{ lote.propriedade }}</td>
             <td>{{ lote.tipoCultivo }}</td>
             <td>
               <button @click="editarLote(lote)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+              <button @click="editarLote(lote)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
                   class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
@@ -46,12 +44,6 @@
                 <input v-model="formData.nome" type="text" class="form-control" id="nome">
               </div>
               <div class="mb-3">
-                <label for="propriedade" class="col-form-label">Propriedade:</label>
-                <select v-model="formData.propriedade" class="form-select" id="propriedade">
-                  <option disabled value="">Selecione a propriedade</option>
-                  <option v-for="propriedade in propriedades" :key="propriedade.id" :value="propriedade.id">{{
-        propriedade.nome }}</option>
-                </select>
               </div>
               <div class="mb-3">
                 <label for="tipoCultivo" class="col-form-label">Tipo de Cultivo:</label>
@@ -85,12 +77,6 @@
                 <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar">
               </div>
               <div class="mb-3">
-                <label for="propriedade" class="col-form-label">Propriedade:</label>
-                <select v-model="formData.propriedade" class="form-select" id="propriedadeEditar">
-                  <option disabled value="">Selecione a propriedade</option>
-                  <option v-for="propriedade in propriedades" :key="propriedade.id" :value="propriedade.id">{{
-        propriedade.nome }}</option>
-                </select>
               </div>
               <div class="mb-3">
                 <label for="tipoCultivo" class="col-form-label">Tipo de Cultivo:</label>
@@ -124,7 +110,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarLote(lote)">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarLote()">Excluir</button>
           </div>
         </div>
       </div>
@@ -141,33 +127,30 @@ export default {
   data() {
     return {
       lotes: [],
-      propriedades: [],
       tiposCultivo: ['Pastagem Natural', 'Lavoura', 'Confinamento'],
       formData: {
         id: null,
         nome: '',
-        propriedade: '',
-        tipoCultivo: ''
+        tipoCultivo: '',
+        propriedade: localStorage.getItem('propriedadeSelecionada')
       },
       modalTitle: 'Cadastro de Lote',
     }
   },
   mounted() {
     this.buscarLotesDaApi();
-    this.buscarPropriedadesDaApi();
   },
   methods: {
-    async buscarPropriedadesDaApi() {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/propriedades/');
-        this.propriedades = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar propriedades da API:', error);
-      }
-    },
     async buscarLotesDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/lotes/');
+        const response = await axios.get('http://127.0.0.1:8000/lotes/' , {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
         this.lotes = response.data;
       } catch (error) {
         console.error('Erro ao buscar lotes da API:', error);
@@ -178,22 +161,27 @@ export default {
       this.formData = {
         id: lote.id,
         nome: lote.nome,
-        propriedade: lote.propriedade.id,
-        tipoCultivo: lote.tipoCultivo
+        tipoCultivo: lote.tipoCultivo,
+        propriedade: localStorage.getItem('propriedadeSelecionada')
       };
     },
     resetForm() {
       this.formData = {
         id: null,
         nome: '',
-        propriedade: '',
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
         tipoCultivo: ''
       };
       this.modalTitle = 'Cadastro de Lote';
     },
-    async apagarLote(lote) {
+    async apagarLote() {
       try {
-        const response = await axios.delete(`http://127.0.0.1:8000/lotes/${lote.id}/`);
+        console.log('delte: ' , this.formData.id);
+        const response = await axios.delete(`http://127.0.0.1:8000/lotes/${this.formData.id}/` , {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
 
         if (response.status === 204) {
           alert('Lote apagado com sucesso!');
@@ -209,7 +197,11 @@ export default {
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Lote') {
         try {
-          const response = await axios.post('http://127.0.0.1:8000/lotes/', this.formData);
+          const response = await axios.post('http://127.0.0.1:8000/lotes/', this.formData , {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
@@ -224,7 +216,11 @@ export default {
         }
       } else {
         try {
-          const response = await axios.put(`http://127.0.0.1:8000/lotes/${this.formData.id}/`, this.formData);
+          const response = await axios.patch(`http://127.0.0.1:8000/lotes/${this.formData.id}/`, this.formData , {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');

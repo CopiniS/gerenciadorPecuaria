@@ -21,15 +21,15 @@
         <tbody>
           <tr v-for="(animal, index) in animais" :key="index">
             <td>{{ animal.brinco }}</td>
-            <td>{{ animal.data }}</td>
+            <td>{{ animal.dataNascimento }}</td>
             <td>{{ animal.sexo }}</td>
-            <td>{{ animal.raca }}</td>
-            <td>{{ animal.observacoes }}</td>
+            <td>{{ animal.racaPredominante }}</td>
+            <td>{{ animal.racaObservacao }}</td>
             <td>{{ animal.lote }}</td>
             <td>
               <button @click="editarAnimal(animal)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+                <button @click="editarAnimal(animal)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
                   class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
@@ -47,11 +47,6 @@
       </div>
       <div class="modal-body">
         <div class="mb-3">
-          <label for="propriedade" class="col-form-label">Propriedade:</label>
-          <select v-model="formData.propriedade" @change="carregarLotes($event.target.value)" class="form-select" id="propriedade">
-            <option disabled value="">Selecione a propriedade</option>
-            <option v-for="propriedade in propriedades" :key="propriedade.id" :value="propriedade.id">{{ propriedade.nome }}</option>
-          </select>
         </div>
         <div class="mb-3">
           <label for="lote" class="col-form-label">Lote:</label>
@@ -73,7 +68,7 @@
               <div class="mb-3">
                 <label for="sexo" class="col-form-label">Sexo:</label>
                 <select v-model="formData.sexo" class="form-select" id="sexo">
-                  <option selected>Selecione o sexo</option>
+                  <option disabled selected>Selecione o sexo</option>
                   <option value="macho">Macho</option>
                   <option value="femea">Fêmea</option>
                 </select>
@@ -81,7 +76,7 @@
               <div class="mb-3">
                 <label for="racaPredominante" class="col-form-label">Raça Predominante:</label>
                 <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante">
-                  <option disabled value="">Selecione a raça predominante</option>
+                  <option disabled selected ="">Selecione a raça predominante</option>
                   <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
                 </select>
               </div>
@@ -121,15 +116,14 @@
               <div class="mb-3">
                 <label for="sexo" class="col-form-label">Sexo:</label>
                 <select v-model="formData.sexo" class="form-select" id="sexoEditar">
-                  <option selected>Selecione o sexo</option>
-                  <option value="masculino">Masculino</option>
-                  <option value="feminino">Feminino</option>
+                  <option disabled value="">Selecione o sexo</option>
+                  <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao" v-bind:selected="formData.sexo === opcao">{{ opcao }}</option>
                 </select>
               </div>
               <div class="mb-3">
                 <label for="racaPredominante" class="col-form-label">Raça Predominante:</label>
                 <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante">
-                  <option selected>{{ formData.racaPredominante }}</option>
+                  <option disabled selected>{{ formData.racaPredominante }}</option>
                   <option v-for="raca in racas" :key="raca.nome" :value="raca.nome">{{ raca.nome }}</option>
                 </select>
               </div>
@@ -207,7 +201,6 @@ export default {
       animais: [],
       racas: [],
       lotes: [],
-      propriedades: [],
       formData: {
         id: null,
         brinco: '',
@@ -223,33 +216,33 @@ export default {
   async mounted() {
     this.buscarAnimaisDaApi();
     this.buscarRacasDaApi();
-    this.buscarPropriedadesDaApi();
+    this.buscarLotesDaApi();
   },
 
   methods: {
-
-    async buscarPropriedadesDaApi() {
+    async buscarLotesDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/propriedades/');
-        this.propriedades = response.data;
+        const response = await axios.get('http://127.0.0.1:8000/lotes/' , {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
+        this.lotes = response.data;
       } catch (error) {
-        console.error('Erro ao buscar propriedades da API:', error);
+        console.error('Erro ao buscar lotes da API:', error);
       }
     },
 
-    async carregarLotes(propriedade) {
-    if (this.formData.propriedade) {
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/lotes/${propriedade}/lotes_por_propriedade/`);
-        this.lotes = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar lotes da propriedade:', error);
-      }
-    }
-  },
     async buscarRacasDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/racas/');
+        const response = await axios.get('http://127.0.0.1:8000/racas/' , {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
         this.racas = response.data;
       } catch (error) {
         console.error('Erro ao buscar raças da API:', error);
@@ -257,7 +250,14 @@ export default {
     },
     async buscarAnimaisDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/animais/');
+        const response = await axios.get('http://127.0.0.1:8000/animais/' , {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
         this.animais = response.data;
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
@@ -268,17 +268,15 @@ export default {
       this.formData = {
         id: animal.id,
         brinco: animal.brinco,
-        dataNascimento: animal.data,
+        dataNascimento: animal.dataNascimento,
         sexo: animal.sexo,
-        racaPredominante: animal.raca,
-        racaObservacao: animal.observacoes,
-        lote: animal.lote,
-        propriedade: animal.propriedade
+        racaPredominante: animal.racaPredominante,
+        racaObservacao: animal.racaObservacao,
+        lote: animal.lote
       };
     },
 
     resetForm() {
-      console.log('tal')
       this.formData = {
         id: null,
         brinco: '',
@@ -286,14 +284,18 @@ export default {
         sexo: '',
         racaPredominante: '',
         racaObservacao: '',
-        propriedade: this.formData.propriedade,
         lote: this.formData.lote
       };
       this.modalTitle = 'Cadastro de Animal';
     },
-    async apagarAnimal(animal) {
+
+    async apagarAnimal() {
       try {
-        const response = await axios.delete(`http://127.0.0.1:8000/animais/${animal.id}/`);
+        const response = await axios.delete(`http://127.0.0.1:8000/animais/${this.formData.id}/`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+        });
 
         if (response.status === 204) {
           alert('Animal apagado com sucesso!');
@@ -309,15 +311,11 @@ export default {
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Animal') {
         try {
-          const dadosAnimais = {
-          brinco: this.formData.brinco,
-          dataNascimento: this.formData.dataNascimento,
-          sexo: this.formData.sexo,
-          racaPredominante: this.formData.racaPredominante,
-          racaObservacao: this.formData.racaObservacao,
-          lote: this.formData.lote
-        }
-          const response = await axios.post(`http://127.0.0.1:8000/animais/`, dadosAnimais);
+          const response = await axios.post(`http://127.0.0.1:8000/animais/`, this.formData , {
+            headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+          });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
@@ -332,9 +330,13 @@ export default {
         }
       } else {
         try {
-          const response = await axios.put(`http://127.0.0.1:8000/animais/${this.formData}/`, this.formData);
+          const response = await axios.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData , {
+            headers: {
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          }
+          });
 
-          if (response.status === 201) {
+          if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
             this.buscarAnimaisDaApi();

@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '/src/interceptadorAxios'
 
 export default {
   name: 'TelaLotes',
@@ -137,13 +137,10 @@ export default {
   methods: {
     async buscarLotesDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/lotes/' , {
+        const response = await api.get('http://127.0.0.1:8000/lotes/' , {
           params: {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
         });
         this.lotes = response.data;
       } catch (error) {
@@ -180,11 +177,7 @@ export default {
 
     async apagarLote() {
       try {
-        console.log('delte: ' , this.formData.id);
-        const response = await axios.delete(`http://127.0.0.1:8000/lotes/${this.formData.id}/` , {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+        const response = await api.delete(`http://127.0.0.1:8000/lotes/${this.formData.id}/` , {
         });
 
         if (response.status === 204) {
@@ -203,10 +196,7 @@ export default {
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Lote') {
         try {
-          const response = await axios.post('http://127.0.0.1:8000/lotes/', this.formData , {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+          const response = await api.post('http://127.0.0.1:8000/lotes/', this.formData , {
         });
 
           if (response.status === 201) {
@@ -224,10 +214,7 @@ export default {
 
       } else {
         try {
-          const response = await axios.patch(`http://127.0.0.1:8000/lotes/${this.formData.id}/`, this.formData , {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+          const response = await api.patch(`http://127.0.0.1:8000/lotes/${this.formData.id}/`, this.formData , {
         });
 
           if (response.status === 200) {

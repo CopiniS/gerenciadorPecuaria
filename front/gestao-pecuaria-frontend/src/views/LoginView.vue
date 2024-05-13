@@ -31,44 +31,35 @@
 </template>
 
 <script>
-import axios from 'axios'; // Certifique-se de importar o axios se ainda não estiver importado
-
+import axios from 'axios'; 
 export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
     };
   },
   methods: {
-    login() {
-      console.log(this.email);
-      console.log(this.password);
-      axios.post('http://127.0.0.1:8000/login', {
-        email: this.email,
-        password: this.password
-      })
-        .then(response => {
-          alert('Login bem-sucedido!');
-          setTimeout(() => {
-            const access_token = response.data.access_token; 
-            localStorage.setItem('access_token', access_token);
-            console.log(access_token);
-          }, 1000);
-          this.$router.push('/propriedades');
-          console.log('Login bem-sucedido!', response.data);
-        })
-        .catch(error => {
-          alert('Login ou senha invalidos');
-          console.error('Erro durante o login:', error.response.data);
-        });
+    async login() {
+      const response = await axios.post('http://127.0.0.1:8000/token/', { 
+        email: this.email, 
+        password: this.password 
+      });
+
+      localStorage.setItem('access_token', response.data.access);
+      localStorage.setItem('refresh_token', response.data.refresh);
+      localStorage.setItem('access_exp', response.data.access_exp);
+      localStorage.setItem('refresh_exp', response.data.refresh_exp);
+      
+      alert('Login feito com sucesso');
+      this.$router.push('/propriedades');
+    },
     },
 
     registrar() {
       this.$router.push('/cadastro');
     }
-  }
-};
+  };
 </script>
 
 

@@ -28,6 +28,17 @@
               <router-link to="/lotes" class="dropdown-item">Lotes</router-link>
             </li>
           </ul>
+          <div class="perfil">
+            <img src="../assets/perfil.png" alt="Menu" width="40" height="40">
+            <div class="perfil-content">
+              <ul>
+                <li href="#">Meu perfil</li>
+                <li class="nav-item">
+                  <router-link to="#" class="dropdown-item" @click.prevent="confirmAction">Sair</router-link>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
@@ -39,8 +50,19 @@
 
 export default {
   name: 'NavbarComponent',
+  
+  methods:{
+    confirmAction() {
+      if (confirm("Você tem certeza que deseja sair?")){
+        this.fazLogout();
+      }
+    },
 
-
+    async fazLogout(){
+      localStorage.clear;
+      this.$router.push('/login');  
+    }
+  }
 }
 </script>
 
@@ -61,5 +83,14 @@ li {
 
 a {
   color: #42b983;
+}
+
+.perfil{
+  position: relative;
+}
+
+.perfil-content a{
+  display: block;
+   
 }
 </style>

@@ -22,7 +22,7 @@ const routes = [
   {
     path: '/',
     redirect: '/login' 
-  },  
+  }, 
   {
     path: '/propriedades',
     name: 'PopUpPropriedade',

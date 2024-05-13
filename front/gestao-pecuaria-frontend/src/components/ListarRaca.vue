@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '/src/interceptadorAxios';
 
 export default {
   name: 'ListarRaca',
@@ -119,10 +119,7 @@ export default {
   methods: {
     async buscarRacasDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/racas/' ,{
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
+        const response = await api.get('http://127.0.0.1:8000/racas/' ,{
       } );
         this.racas = response.data;
       } catch (error) {
@@ -130,7 +127,6 @@ export default {
       }
     },
     editarRaca(raca) {
-      console.log('raca.is : ' , raca.id);
       this.formData = {
         id: raca.id,
         nome: raca.nome
@@ -155,10 +151,7 @@ export default {
 
     async apagarRaca() {
       try {
-        const response = await axios.delete(`http://127.0.0.1:8000/racas/${this.formData.id}/`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
+        const response = await api.delete(`http://127.0.0.1:8000/racas/${this.formData.id}/`, {
       });
         if (response.status === 204) {
           alert('Raça apagada com sucesso!');
@@ -176,10 +169,7 @@ export default {
 
     async submitFormEdicao() {
       try {
-        const response = await axios.patch(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
+        const response = await api.patch(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData, {
       });
 
         if (response.status === 200) {
@@ -196,10 +186,7 @@ export default {
     },
     async submitForm() {
       try {
-        const response = await axios.post(`http://127.0.0.1:8000/racas/`, this.formData , {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
+        const response = await api.post(`http://127.0.0.1:8000/racas/`, this.formData , {
       });
 
         if (response.status === 201) {

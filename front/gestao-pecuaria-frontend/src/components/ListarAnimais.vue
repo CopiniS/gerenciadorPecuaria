@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '/src/interceptadorAxios';
 
 export default {
   name: 'TelaAnimais',
@@ -210,13 +210,10 @@ export default {
   methods: {
     async buscarLotesDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/lotes/' , {
+        const response = await api.get('http://127.0.0.1:8000/lotes/' , {
           params: {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
         });
         this.lotes = response.data;
       } catch (error) {
@@ -226,10 +223,7 @@ export default {
     
     async buscarRacasDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/racas/' , {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+        const response = await api.get('http://127.0.0.1:8000/racas/' , {
         });
         this.racas = response.data;
       } catch (error) {
@@ -238,13 +232,10 @@ export default {
     },
     async buscarAnimaisDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/animais/' , {
+        const response = await api.get('http://127.0.0.1:8000/animais/' , {
           params: {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
         });
         this.animais = response.data;
       } catch (error) {
@@ -288,10 +279,7 @@ export default {
 
     async apagarAnimal() {
       try {
-        const response = await axios.delete(`http://127.0.0.1:8000/animais/${this.formData.id}/`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+        const response = await api.delete(`http://127.0.0.1:8000/animais/${this.formData.id}/`, {
         });
 
         if (response.status === 204) {
@@ -309,10 +297,7 @@ export default {
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Animal') {
         try {
-          const response = await axios.post(`http://127.0.0.1:8000/animais/`, this.formData , {
-            headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+          const response = await api.post(`http://127.0.0.1:8000/animais/`, this.formData , {
           });
 
           if (response.status === 201) {
@@ -329,10 +314,7 @@ export default {
 
       } else {
         try {
-          const response = await axios.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData , {
-            headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+          const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData , {
           });
 
           if (response.status === 200) {

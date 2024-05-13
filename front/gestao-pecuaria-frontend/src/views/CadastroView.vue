@@ -82,7 +82,6 @@ export default {
 
       try {
         const response = await axios.post('http://127.0.0.1:8000/singup', dadosProdutor);
-        console.log(response.status)
         if (response.status === 200) {
           alert('Cadastro realizado com sucesso!');
           this.resetForm();
@@ -90,7 +89,6 @@ export default {
           alert('Erro ao cadastrar produtor. Tente novamente mais tarde.');
         }
       } catch (error) {
-        console.log("entrou no catch");
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }

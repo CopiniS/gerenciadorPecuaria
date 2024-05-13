@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '/src/interceptadorAxios'
 
 export default {
   data() {
@@ -49,10 +49,8 @@ mounted() {
   methods: {
     async buscarPropriedadesDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/propriedades/' , {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
+
+        const response = await api.get('http://127.0.0.1:8000/propriedades/' , {
         });
         this.propriedades = response.data;
       } catch (error) {
@@ -60,15 +58,15 @@ mounted() {
       }
     },
 
-    mostrarComponente(){
+    async mostrarComponente(){
       this.componeteVisivel = true;
     },
 
-    ocultarComponente(){
+    async ocultarComponente(){
       this.componeteVisivel = false;
     },
 
-    fecharModal(modalId) {
+    async fecharModal(modalId) {
       var closeButton = document.getElementById(modalId).querySelector('.btn-close');
       if (closeButton) {
         closeButton.click();
@@ -78,9 +76,10 @@ mounted() {
       this.mostrarComponente();
     },
 
-    selecionarPropriedade(propriedade) {
+    async selecionarPropriedade(propriedade) {
       // Salvar o ID da propriedade selecionada no localStorage
       localStorage.setItem('propriedadeSelecionada', propriedade.id);
+      this.propriedades = [];
       // Fechar o modal de propriedades
       this.fecharModal("listModal")
       this.$router.push('/propriedade');

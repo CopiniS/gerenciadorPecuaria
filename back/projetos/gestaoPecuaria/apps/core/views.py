@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from core.models import Propriedade, Raca, Animal, Lote
-from core.serializers import PropriedadeSerializer, RacaSerializer, AnimalSerializer, LoteSerializer
+from core.models import Propriedade, Raca, Animal, Lote, Veterinario, ProdutoSanitario, ProdutoAlimenticio, Pesagem
+from core.serializers import PropriedadeSerializer, RacaSerializer, AnimalSerializer, LoteSerializer, VeterinarioSerializer, ProdutoSanitarioSerializer, ProdutoAlimenticioSerializer, PesagemSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -65,4 +65,22 @@ class LoteViewSet(viewsets.ModelViewSet):
         serializer = LoteSerializer(queryset, many=True)
         return Response(serializer.data)
     
-    
+class VeterinarioViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Veterinario.objects.all()
+    serializer_class = VeterinarioSerializer
+
+class ProdutoSanitarioViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = ProdutoSanitario.objects.all()
+    serializer_class = ProdutoSanitarioSerializer
+
+class ProdutoAlimenticioViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = ProdutoAlimenticio.objects.all()
+    serializer_class = ProdutoAlimenticioSerializer
+
+class PesagemViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Pesagem.objects.all()
+    serializer_class = PesagemSerializer 

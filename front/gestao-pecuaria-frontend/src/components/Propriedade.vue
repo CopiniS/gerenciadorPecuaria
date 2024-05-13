@@ -45,12 +45,14 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '/src/interceptadorAxios';
 
 export default {
   name: 'EditarPropriedade',
   data() {
     return {
+      cidades: [],
+      estados: [],
       propriedade: null,
       formData: {
         id: null,
@@ -72,7 +74,7 @@ export default {
   methods: {
     async buscarPropriedadeDaApi(propriedadeId) {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/propriedades/${propriedadeId}/`);
+        const response = await api.get(`http://127.0.0.1:8000/propriedades/${propriedadeId}/`);
         this.propriedade = response.data;
         this.formData = {
           id: this.propriedade.id,
@@ -91,7 +93,7 @@ export default {
     async apagarPropriedade() {
       if (!this.propriedade) return;
       try {
-        const response = await axios.delete(`http://127.0.0.1:8000/propriedades/${this.propriedade.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/propriedades/${this.propriedade.id}/`);
         if (response.status === 204) {
           alert('Propriedade apagada com sucesso!');
           localStorage.removeItem('propriedadeSelecionada');

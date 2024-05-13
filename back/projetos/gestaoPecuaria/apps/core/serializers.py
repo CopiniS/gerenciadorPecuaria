@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Propriedade, Raca, Animal, Lote
+from core.models import Propriedade, Raca, Animal, Lote, Veterinario, ProdutoSanitario, ProdutoAlimenticio, Pesagem
 from django.contrib.auth import get_user_model
 
 
@@ -21,4 +21,24 @@ class AnimalSerializer(serializers.ModelSerializer):
 class LoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lote
+        fields = "__all__"
+
+class VeterinarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Veterinario
+        fields = "__all__"
+
+class ProdutoSanitarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProdutoSanitario
+        fields = "__all__"
+
+class ProdutoAlimenticioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProdutoAlimenticio
+        fields = "__all__"
+
+class PesagemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pesagem
         fields = "__all__"

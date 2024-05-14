@@ -27,18 +27,31 @@
             <li class="nav-item">
               <router-link to="/lotes" class="dropdown-item">Lotes</router-link>
             </li>
+            <li class="nav-item">
+              <router-link to="/Veterinarios" class="dropdown-item">Veterinario</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/ProdutosSanitarios" class="dropdown-item">Produtos Sanitarios</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/ProdutosAlimenticios" class="dropdown-item">Produtos Alimenticios</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/Pesagens" class="dropdown-item">Pesagens</router-link>
+            </li>
           </ul>
-          <div class="perfil">
-            <img src="../assets/perfil.png" alt="Menu" width="40" height="40">
-            <div class="perfil-content">
-              <ul>
-                <li href="#">Meu perfil</li>
-                <li class="nav-item">
-                  <router-link to="#" class="dropdown-item" @click.prevent="confirmAction">Sair</router-link>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user"></i> Perfil
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/meuperfil">Meu perfil</a></li>
+              <li class="nav-item">
+                <router-link to="#" class="dropdown-item" @click.prevent="confirmAction">Sair</router-link>
+              </li>
+            </ul>
+          </li>
+          
         </div>
       </div>
     </nav>

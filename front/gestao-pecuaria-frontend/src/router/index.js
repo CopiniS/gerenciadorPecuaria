@@ -6,6 +6,11 @@ import Login from '@/views/LoginView.vue'
 import Cadastro from '@/views/CadastroView.vue'
 import PopUpPropriedade from '@/views/PopUpPropriedade.vue'
 import TelaLotes from '@/views/TelaLotes.vue';
+import TelaVeterinarios from '@/views/TelaVeterinarios.vue';
+import TelaProdutosSanitarios from '@/views/TelaProdutosSanitarios.vue';
+import TelaProdutosAlimenticios from '@/views/TelaProdutosAlimenticios.vue';
+import TelaPesagens from '@/views/TelaPesagens.vue';
+import PerfilProdutor from '@/components/PerfilProdutor.vue';
 
 const routes = [
   
@@ -49,6 +54,33 @@ const routes = [
     name: 'TelaLotes',
     component: TelaLotes, 
   },
+  {
+    path: '/meuperfil',
+    name: 'PerfilProdutor',
+    component: PerfilProdutor, 
+  },
+  {
+    path: '/Veterinarios',
+    name: 'TelaVeterinarios',
+    component: TelaVeterinarios, 
+  },
+  {
+    path: '/ProdutosSanitarios',
+    name: 'TelaProdutosSanitarios',
+    component: TelaProdutosSanitarios, 
+  },
+  {
+    path: '/ProdutosAlimenticios',
+    name: 'TelaProdutosAlimenticios',
+    component: TelaProdutosAlimenticios, 
+  },
+  {
+    path: '/Pesagens',
+    name: 'TelaPesagens',
+    component: TelaPesagens 
+  },
+  
+  
 
 ];
 

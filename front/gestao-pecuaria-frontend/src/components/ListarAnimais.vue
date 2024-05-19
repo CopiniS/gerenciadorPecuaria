@@ -13,6 +13,8 @@
             <th scope="col">Data Nascimento</th>
             <th scope="col">Sexo</th>
             <th scope="col">Raça</th>
+            <th scope="col">Brinco Pai</th>
+            <th scope="col">Brinco Mãe</th>
             <th scope="col">Observações</th>
             <th scope="col">Lote</th>
             <th scope="col">Ações</th>
@@ -21,84 +23,94 @@
         <tbody>
           <tr v-for="(animal, index) in animais" :key="index">
             <td>{{ animal.brinco }}</td>
-            <td>{{ animal.data }}</td>
+            <td>{{ animal.dataNascimento }}</td>
             <td>{{ animal.sexo }}</td>
-            <td>{{ animal.raca }}</td>
-            <td>{{ animal.observacoes }}</td>
+            <td>{{ animal.racaPredominante }}</td>
+            <td>{{ animal.brincoPai }}</td>
+            <td>{{ animal.brincoMae }}</td>
+            <td>{{ animal.racaObservacao }}</td>
             <td>{{ animal.lote }}</td>
             <td>
               <button @click="editarAnimal(animal)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                  class="fas fa-trash-alt"></i></button>
+              <button @click="confirmarExclusao(animal)" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Modal de Cadastro-->
-<div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de animal</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="propriedade" class="col-form-label">Propriedade:</label>
-          <select v-model="formData.propriedade" @change="carregarLotes($event.target.value)" class="form-select" id="propriedade">
-            <option disabled value="">Selecione a propriedade</option>
-            <option v-for="propriedade in propriedades" :key="propriedade.id" :value="propriedade.id">{{ propriedade.nome }}</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="lote" class="col-form-label">Lote:</label>
-          <select v-model="formData.lote" class="form-select" id="lote">
-            <option disabled value="">Selecione o lote</option>
-            <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
-          </select>
-        </div>
-        <hr>
-        <form @submit.prevent="submitForm">
-          <div class="mb-3">
-                <label for="brinco" class="col-form-label">Brinco:</label>
-                <input v-model="formData.brinco" type="text" class="form-control" id="brinco">
+    <!-- Modal de Cadastro -->
+    <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de animal</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tag"></i></span>
+              <select v-model="formData.lote" class="form-select" id="lote" aria-label="Lote"
+                placeholder="Selecione o lote" required>
+                <option disabled selected>Selecione o lote</option>
+                <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
+              </select>
+            </div>
+            <hr>
+            <form @submit.prevent="submitForm">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.brinco" type="text" class="form-control" id="brinco"
+                  placeholder="Número do Brinco" required>
               </div>
-              <div class="mb-3">
-                <label for="dataNascimento" class="col-form-label">Data de Nascimento:</label>
-                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimento">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimento"
+                  placeholder="Data de Nascimento" required>
               </div>
-              <div class="mb-3">
-                <label for="sexo" class="col-form-label">Sexo:</label>
-                <select v-model="formData.sexo" class="form-select" id="sexo">
-                  <option selected>Selecione o sexo</option>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                <select v-model="formData.sexo" class="form-select" id="sexo" aria-label="Sexo" required
+                  placeholder="Selecione o sexo">
+                  <option disabled selected>Selecione o sexo</option>
                   <option value="macho">Macho</option>
                   <option value="femea">Fêmea</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="racaPredominante" class="col-form-label">Raça Predominante:</label>
-                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante">
-                  <option disabled value="">Selecione a raça predominante</option>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-horse"></i></span>
+                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
+                  aria-label="Raça Predominante" required>
+                  <option disabled selected>Selecione a raça predominante</option>
                   <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="racaObservacao" class="col-form-label">Observações da Raça:</label>
-                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"></textarea>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
+                  placeholder="Observações sobre a Raça"></textarea>
               </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                <input v-model="formData.brincoPai" type="text" class="form-control" id="brincoPai"
+                  placeholder="Número do Brinco do Pai">
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                <input v-model="formData.brincoMae" type="text" class="form-control" id="brincoMae"
+                  placeholder="Número do Brinco da Mãe">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
 
     <!-- Modal de Edição -->
     <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
@@ -110,39 +122,53 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
-              <div class="mb-3">
-                <label for="brinco" class="col-form-label">Brinco:</label>
-                <input v-model="formData.brinco" type="text" class="form-control" id="brincoEditar">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.brinco" type="text" class="form-control" id="brincoEditar"
+                  placeholder="Número do Brinco" required>
               </div>
-              <div class="mb-3">
-                <label for="dataNascimento" class="col-form-label">Data de Nascimento:</label>
-                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimentoEditar">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimentoEditar"
+                  placeholder="Data de Nascimento" required>
               </div>
-              <div class="mb-3">
-                <label for="sexo" class="col-form-label">Sexo:</label>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
                 <select v-model="formData.sexo" class="form-select" id="sexoEditar">
-                  <option selected>Selecione o sexo</option>
-                  <option value="masculino">Masculino</option>
-                  <option value="feminino">Feminino</option>
+                  <option disabled value="">Selecione o sexo</option>
+                  <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao"
+                    v-bind:selected="formData.sexo === opcao">{{ opcao }}</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="racaPredominante" class="col-form-label">Raça Predominante:</label>
-                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-horse"></i></span>
+                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
+                  aria-label="Raça Predominante" required>
                   <option selected>{{ formData.racaPredominante }}</option>
                   <option v-for="raca in racas" :key="raca.nome" :value="raca.nome">{{ raca.nome }}</option>
                 </select>
               </div>
-              <div class="mb-3">
-                <label for="racaObservacao" class="col-form-label">Observações da Raça:</label>
-                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacaoEditar"></textarea>
-                <div class="mb-3">
-                  <label for="lote" class="col-form-label">Lote:</label>
-                  <select v-model="formData.lote" class="form-select" id="lote">
-                    <option disabled value="">Selecione o lote</option>
-                    <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
-                  </select>
-                </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacaoEditar"
+                  placeholder="Observações sobre a Raça"></textarea>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                <select v-model="formData.lote" class="form-select" id="lote" aria-label="Lote" required>
+                  <option disabled selected>Selecione o lote</option>
+                  <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
+                </select>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                <input v-model="formData.brincoPai" type="text" class="form-control" id="brincoPaiEditar"
+                  placeholder="Número do Brinco do Pai">
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                <input v-model="formData.brincoMae" type="text" class="form-control" id="brincoMaeEditar"
+                  placeholder="Número do Brinco da Mãe">
               </div>
             </form>
           </div>
@@ -168,37 +194,16 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarAnimal(animal)">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarAnimal">Excluir</button>
           </div>
         </div>
       </div>
     </div>
-   
-     <!-- Modal de Confirmação de Exclusão -->
-     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            Tem certeza de que deseja excluir este animal?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarAnimal(animal)">Excluir</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import api from '/src/interceptadorAxios';
 
 export default {
   name: 'TelaAnimais',
@@ -207,7 +212,6 @@ export default {
       animais: [],
       racas: [],
       lotes: [],
-      propriedades: [],
       formData: {
         id: null,
         brinco: '',
@@ -215,7 +219,9 @@ export default {
         sexo: '',
         racaPredominante: '',
         racaObservacao: '',
-        lote: ''
+        lote: '',
+        brincoPai: '',
+        brincoMae: ''
       },
       modalTitle: 'Cadastro de Animal',
     }
@@ -223,33 +229,27 @@ export default {
   async mounted() {
     this.buscarAnimaisDaApi();
     this.buscarRacasDaApi();
-    this.buscarPropriedadesDaApi();
+    this.buscarLotesDaApi();
   },
 
   methods: {
-
-    async buscarPropriedadesDaApi() {
+    async buscarLotesDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/propriedades/');
-        this.propriedades = response.data;
+        const response = await api.get('http://127.0.0.1:8000/lotes/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.lotes = response.data;
       } catch (error) {
-        console.error('Erro ao buscar propriedades da API:', error);
+        console.error('Erro ao buscar lotes da API:', error);
       }
     },
 
-    async carregarLotes(propriedade) {
-    if (this.formData.propriedade) {
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/lotes/${propriedade}/lotes_por_propriedade/`);
-        this.lotes = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar lotes da propriedade:', error);
-      }
-    }
-  },
     async buscarRacasDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/racas/');
+        const response = await api.get('http://127.0.0.1:8000/racas/', {
+        });
         this.racas = response.data;
       } catch (error) {
         console.error('Erro ao buscar raças da API:', error);
@@ -257,7 +257,11 @@ export default {
     },
     async buscarAnimaisDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/animais/');
+        const response = await api.get('http://127.0.0.1:8000/animais/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
         this.animais = response.data;
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
@@ -268,17 +272,15 @@ export default {
       this.formData = {
         id: animal.id,
         brinco: animal.brinco,
-        dataNascimento: animal.data,
+        dataNascimento: animal.dataNascimento,
         sexo: animal.sexo,
-        racaPredominante: animal.raca,
-        racaObservacao: animal.observacoes,
-        lote: animal.lote,
-        propriedade: animal.propriedade
+        racaPredominante: animal.racaPredominante,
+        racaObservacao: animal.racaObservacao,
+        lote: animal.lote
       };
     },
 
     resetForm() {
-      console.log('tal')
       this.formData = {
         id: null,
         brinco: '',
@@ -286,14 +288,24 @@ export default {
         sexo: '',
         racaPredominante: '',
         racaObservacao: '',
-        propriedade: this.formData.propriedade,
         lote: this.formData.lote
       };
       this.modalTitle = 'Cadastro de Animal';
     },
-    async apagarAnimal(animal) {
+
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
+
+    async apagarAnimal() {
       try {
-        const response = await axios.delete(`http://127.0.0.1:8000/animais/${animal.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/animais/${this.formData.id}/`, {
+        });
 
         if (response.status === 204) {
           alert('Animal apagado com sucesso!');
@@ -305,19 +317,30 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.fecharModal("confirmacaoExclusaoModal");
     },
     async submitForm() {
+      // Verifica se os animais pai e mãe existem no banco de dados
+      const paiExists = await this.checkAnimalExists(this.formData.brincoPai);
+      const maeExists = await this.checkAnimalExists(this.formData.brincoMae);
+
+      // Verifica se o animal pai é do sexo masculino e a mãe é do sexo feminino
+      const paiIsMale = await this.checkAnimalSex(this.formData.brincoPai, 'macho');
+      const maeIsFemale = await this.checkAnimalSex(this.formData.brincoMae, 'femea');
+
+      if (!paiExists || !maeExists) {
+        const confirmCadastro = confirm('Atenção: Um ou ambos dos pais não estão cadastrados. Deseja continuar?');
+        if (!confirmCadastro) return; // Cancela o cadastro
+      }
+
+      if (!paiIsMale || !maeIsFemale) {
+        alert('O animal pai deve ser do sexo masculino e a mãe do sexo feminino.');
+        return; // Cancela o cadastro
+      }
       if (this.modalTitle === 'Cadastro de Animal') {
         try {
-          const dadosAnimais = {
-          brinco: this.formData.brinco,
-          dataNascimento: this.formData.dataNascimento,
-          sexo: this.formData.sexo,
-          racaPredominante: this.formData.racaPredominante,
-          racaObservacao: this.formData.racaObservacao,
-          lote: this.formData.lote
-        }
-          const response = await axios.post(`http://127.0.0.1:8000/animais/`, dadosAnimais);
+          const response = await api.post(`http://127.0.0.1:8000/animais/`, this.formData, {
+          });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
@@ -330,11 +353,13 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
+
       } else {
         try {
-          const response = await axios.put(`http://127.0.0.1:8000/animais/${this.formData}/`, this.formData);
+          const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
+          });
 
-          if (response.status === 201) {
+          if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
             this.buscarAnimaisDaApi();
@@ -345,6 +370,22 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
+        this.fecharModal("edicaoModal");
+      }
+    },
+    async checkAnimalExists(brinco) {
+      // Verificar se o brinco já existe na lista de animais
+      return this.animais.some(animal => animal.brinco === brinco);
+    },
+
+    async checkAnimalSex(brinco, expectedSex) {
+      // Encontrar o animal na lista de animais pelo brinco e verificar o sexo
+      const animal = this.animais.find(animal => animal.brinco === brinco);
+      if (animal) {
+        return animal.sexo === expectedSex;
+      } else {
+        // Se o animal não for encontrado, retornar false
+        return false;
       }
     }
   }
@@ -353,6 +394,7 @@ export default {
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
 .table-container {
   margin-left: 20px;
   margin-right: 20px;

@@ -15,19 +15,19 @@
 <div class="mb-3">
   <div class="input-group">
     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-    <input v-model="cpf" type="text" class="form-control" id="cpf" placeholder="CPF*" required>
+    <input v-model="cpf" type="text" class="form-control" id="cpf" placeholder="CPF*" required pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Insira um CPF válido">
   </div>
 </div>
 <div class="mb-3">
   <div class="input-group">
     <span class="input-group-text"><i class="fas fa-phone"></i></span>
-    <input v-model="telefone1" type="tel" class="form-control" id="telefone1" placeholder="Telefone 1*" required>
+    <input v-model="telefone1" type="tel" class="form-control" id="telefone1" placeholder="Telefone 1*" required pattern="\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})">
   </div>
 </div>
 <div class="mb-3">
   <div class="input-group">
     <span class="input-group-text"><i class="fas fa-phone"></i></span>
-    <input v-model="telefone2" type="tel" class="form-control" id="telefone2" placeholder="Telefone 2">
+    <input v-model="telefone2" type="tel" class="form-control" id="telefone2" placeholder="Telefone 2" pattern="\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})">
   </div>
 </div>
 <div class="mb-3">
@@ -77,22 +77,18 @@ export default {
         telefone1: this.telefone1,
         telefone2: this.telefone2,
         email: this.email,
-        senha: this.senha
+        password: this.senha
       };
 
       try {
-        const response = await axios.post('http://127.0.0.1:8000/produtores/', dadosProdutor);
-        console.log(response.status)
-        if (response.status === 201) {
-          console.log("entrou no 201");
+        const response = await axios.post('http://127.0.0.1:8000/singup', dadosProdutor);
+        if (response.status === 200) {
           alert('Cadastro realizado com sucesso!');
           this.resetForm();
         } else {
           alert('Erro ao cadastrar produtor. Tente novamente mais tarde.');
-          console.log("nao entrou no 201");
         }
       } catch (error) {
-        console.log("entrou no catch");
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }

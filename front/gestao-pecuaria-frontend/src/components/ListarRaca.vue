@@ -19,7 +19,7 @@
             <td>
               <button @click="editarRaca(raca)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+              <button @click="editarRaca(raca)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
                   class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
@@ -37,9 +37,9 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
-              <div class="mb-3">
-                <label for="nome" class="col-form-label">Nome:</label>
-                <input v-model="formData.nome" type="text" class="form-control" id="nome">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
               </div>
             </form>
           </div>
@@ -61,9 +61,10 @@
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitFormEdicao">
-              <div class="mb-3">
-                <label for="nomeEditar" class="col-form-label">Nome:</label>
-                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome"
+                  required>
               </div>
             </form>
           </div>
@@ -74,6 +75,7 @@
         </div>
       </div>
     </div>
+
 
     <!-- Modal de Confirmação de Exclusão -->
     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
@@ -89,7 +91,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarRaca(raca)">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarRaca()">Excluir</button>
           </div>
         </div>
       </div>
@@ -98,7 +100,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '/src/interceptadorAxios';
 
 export default {
   name: 'ListarRaca',
@@ -117,7 +119,8 @@ export default {
   methods: {
     async buscarRacasDaApi() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/racas/');
+        const response = await api.get('http://127.0.0.1:8000/racas/' ,{
+      } );
         this.racas = response.data;
       } catch (error) {
         console.error('Erro ao buscar raças da API:', error);
@@ -132,12 +135,24 @@ export default {
     resetForm() {
       this.formData = {
         id: null,
-        nome: ''
+        nome: '',
+        produtor: ''
       };
     },
-    async apagarRaca(raca) {
+
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
+
+    async apagarRaca() {
       try {
-        const response = await axios.delete(`http://127.0.0.1:8000/racas/${raca.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/racas/${this.formData.id}/`, {
+      });
         if (response.status === 204) {
           alert('Raça apagada com sucesso!');
           this.buscarRacasDaApi();
@@ -149,11 +164,13 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.fecharModal("confirmacaoExclusaoModal");
     },
 
     async submitFormEdicao() {
       try {
-        const response = await axios.put(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData);
+        const response = await api.patch(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData, {
+      });
 
         if (response.status === 200) {
           alert('Alterações salvas com sucesso!');
@@ -165,14 +182,12 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.fecharModal("edicaoModal");
     },
     async submitForm() {
       try {
-        const dadosRaca = {
-          nome: this.formData.nome,
-          idProdutor: 0
-        }
-        const response = await axios.post(`http://127.0.0.1:8000/racas/`, dadosRaca);
+        const response = await api.post(`http://127.0.0.1:8000/racas/`, this.formData , {
+      });
 
         if (response.status === 201) {
           alert('Cadastro realizado com sucesso!');
@@ -185,6 +200,7 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.fecharModal("cadastroModal");
     }
   }
 };

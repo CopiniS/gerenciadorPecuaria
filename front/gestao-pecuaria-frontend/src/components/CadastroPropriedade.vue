@@ -1,130 +1,174 @@
 <template>
-  <div class="form-container">
-    <form id="formPropriedade">
-      <div class="row">
-        <div class="col-md-4">
-          <div class="mb-3 d-flex align-items-center">
-            <label for="nomePropriedade" class="form-label me-2">Nome:</label>
-            <input type="text" class="form-control" id="nomePropriedade" placeholder="Nome" required>
-          </div>
+    <!-- Formulário de criação de propriedade -->
+    <div>
+        <div class="modal" id="listModal" tabindex="-1" role="dialog" style="display: block;">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cadastrar Propriedade</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="submitForm">
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                <input v-model="formData.nome" type="text" class="form-control" placeholder="Nome" id="nome">
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                <input v-model="formData.endereco" type="text" class="form-control" placeholder="Endereço" id="endereco">
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-flag"></i></span>
+                                <select v-model="formData.estado" class="form-select" required
+                                    @change="buscarCidadesPorEstado($event.target.value)">
+                                    <option value="" disabled>Selecione o estado</option>
+                                    <option v-for="estado in estados" :key="estado.id" :value="estado.id">{{ estado.nome }}</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-city"></i></span>
+                                <select v-model="formData.cidade" class="form-select" required>
+                                    <option value="" disabled>Selecione a cidade</option>
+                                    <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{ cidade.nome }}</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                <input v-model="formData.latitude" type="text" class="form-control" placeholder="Latitude" id="latitude">
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                <input v-model="formData.longitude" type="text" class="form-control" placeholder="Longitude" id="longitude">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="voltar()">Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">
-          <div class="mb-3 d-flex align-items-center">
-            <label for="produtor" class="form-label me-2">Produtor:</label>
-            <select class="form-select" id="produtor" required>
-              <option value="" disabled selected>Selecione um produtor</option>
-            <option v-for="produtor in produtores" :key="produtor.id" :value="produtor.id">{{ produtor.nome }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="mb-3 d-flex align-items-center">
-            <label for="endereco" class="form-label me-2">Endereço:</label>
-            <input type="text" class="form-control" id="endereco" placeholder="Endereço" required>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="mb-3 d-flex align-items-center">
-            <label for="cidade" class="form-label me-2">Cidade:</label>
-            <input type="text" class="form-control" id="cidade" placeholder="Cidade" required>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="mb-3 d-flex align-items-center">
-            <label for="estado" class="form-label me-2">Estado:</label>
-            <select class="form-select" id="estado" required>
-              <option value="" disabled selected>Selecione o estado</option>
-            <option v-for="estado in estados" :key="estado.id" :value="estado.id">{{ estado.nome }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="mb-3 d-flex align-items-center">
-            <label for="latitude" class="form-label me-2">Latitude:</label>
-            <input type="text" class="form-control" id="latitude" placeholder="Latitude" required>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="mb-3 d-flex align-items-center">
-            <label for="longitude" class="form-label me-2">Longitude:</label>
-            <input type="text" class="form-control" id="longitude" placeholder="Longitude" required>
-          </div>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary">Cadastrar</button>
-    </form>
-  </div>
+    </div>
 </template>
 
 <script>
 import axios from 'axios';
+import api from '/src/interceptadorAxios'
 
 export default {
-  name: 'CadastroPropriedade',
-
-  data() {
-    return {
-      estados: [],
-      produtores: [],
-    };
-  },
-
-  mounted() {
-    this.setupFormSubmitListener();
-  },
-
-  methods: {
-    
-    async setupFormSubmitListener() {
-      document.getElementById('formPropriedade').addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        try {
-          const access_token = localStorage.getItem('access_token'); // Obtém o token de acesso do localStorage
-          
-          // Solicita os detalhes do produtor logado
-          const produtorResponse = await axios.get('http://127.0.0.1:8000/produtor/produtor-logado/', {
-            headers: {
-              'Authorization': `Bearer ${access_token}` // Inclui o token de acesso no cabeçalho de autorização
-            }
-          });
-          
-          const produtor = produtorResponse.data; // Obtém os detalhes do produtor logado
-          console.log('produtor: ', produtor);
-          console.log('id do produtor: ', produtor.id);
-
-          if (produtorResponse.status === 201) {
-            console.log("Achou produtor logado")
-          } else {
-            console.log('Erro ao achar produtor logado.');
-
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-        }
-      });
+    data() {
+        return {
+            propriedades: [],
+            estados: [],
+            cidades: [],
+            formData: {
+                id: null,
+                nome: '',
+                endereco: '',
+                estado: '',
+                cidade: '',
+                latitude: '',
+                longitude: '',
+                produtor: [],
+            },
+        };
     },
-  },
-};
+    mounted() {
+        this.buscarEstadosDaApi();
+    },
+
+    methods: {
+        async buscarCidadesPorEstado(estadoId) {
+            try {
+                const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`);
+                this.cidades = response.data;
+            } catch (error) {
+                console.error('Erro ao buscar cidades da API:', error);
+            }
+        },
+
+        async buscarEstadosDaApi() {
+            try {
+                const response = await axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+                this.estados = response.data;
+            } catch (error) {
+                console.error('Erro ao buscar cidades da API:', error);
+            }
+        },
+
+     async submitForm() {
+      try {
+        const response = await api.post('http://127.0.0.1:8000/propriedades/' , {
+        });
+        this.propriedades = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar propriedades da API:', error);
+      }
+    },
+
+    voltar(){
+        this.$router.push('/propriedades');
+    },
+
+    },
+}
 </script>
 
-
-<style scoped>
-.form-container {
-  display: flex;
-  justify-content: center; 
-  height: 35vh; 
-  margin-top: 0px;
-  margin-bottom: 10px;
+<style>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-#formPropriedade {
-  width: 100%; 
-  max-width: 1500px; 
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-  background-color: white; 
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 10px auto;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.3rem;
+    outline: 0;
+}
+
+.modal-header {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    border-top-left-radius: 0.3rem;
+    border-top-right-radius: 0.3rem;
+}
+
+.modal-title {
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 15px;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 15px;
+    border-top: 1px solid #e9ecef;
+    border-bottom-right-radius: 0.3rem;
+    border-bottom-left-radius: 0.3rem;
 }
 </style>

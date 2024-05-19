@@ -17,7 +17,7 @@ class Lote(models.Model):
 
 class Raca(models.Model):
     nome = models.CharField('Nome', max_length=20)
-    idProdutor = models.ForeignKey(Produtor,on_delete=models.CASCADE )
+    produtor = models.ForeignKey(Produtor,on_delete=models.CASCADE )
 
 class Animal(models.Model):
     brinco = models.CharField('Brinco', max_length=6)
@@ -26,3 +26,31 @@ class Animal(models.Model):
     racaPredominante = models.ForeignKey(Raca, on_delete=models.CASCADE)
     racaObservacao = models.CharField('Raça de observação', max_length=50)
     lote = models.ForeignKey(Lote, on_delete=models.CASCADE, default=0) 
+
+class Veterinario(models.Model):
+    nome = models.CharField('Nome', max_length=50)
+    telefone = models.CharField('Telefone', max_length=15)
+    email = models.CharField('Email', max_length=255)
+    crvm = models.CharField('CRVM', max_length=15)
+    produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)
+
+class ProdutoSanitario(models.Model):
+    nome = models.CharField('Nome', max_length=50)
+    tipo = models.CharField('Tipo', max_length=50)
+    vencimento = models.DateField('Vencimento')
+    lote = models.CharField('Lote', max_length=50)
+    produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)
+
+class ProdutoAlimenticio(models.Model):
+    nome = models.CharField('Nome', max_length=50)
+    tipo = models.CharField('Tipo', max_length=50)
+    vencimento = models.DateField('Vencimento')
+    lote = models.CharField('Lote', max_length=50)
+    produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)    
+
+class Pesagem(models.Model):
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    dataPesagem = models.DateField('Data de pesagem')
+    peso = models.DecimalField('Peso', max_digits=10, decimal_places=2)
+    Observacao = models.CharField('Observacao', max_length=255)
+

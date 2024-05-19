@@ -62,6 +62,10 @@ Agora os comandos:
 
 	python ../manage.py startapp core
 
+6- Dentro da pasta "apps" criar uma nova aplicação "users", sendo ela a aplicação para o controle de usuários (produtores) do projeto, usando o comando:
+
+	python manage.py startapp users
+
 ### Banco de dados
 
 1- Baixar o PostgreSQL e criar uma database chamada de "gestaoPecuaria" com o ususario "postgres" e a senha "admin" (para alterar a senha do usuario no PgAdmin, abre-se a database, clica em "Login/Group Roles","postgres", "definition" e escreva "admin" na "password");
@@ -127,6 +131,9 @@ Dentro da pasta /gestao-pecuaria-frontend:
 	-gestaoPecuaria/gestaoPecuaria/urls.py;
 	-gestaoPecuaria/apps/core/models.py;
 	-gestaoPecuaria/apps/core/views.py;
+ 	-gestaoPecuaria/apps/users/models.py;
+	-gestaoPecuaria/apps/users/views.py;
+
 
 2- Excluir os arquivos do front que serão importados do git:
 
@@ -145,11 +152,11 @@ Dentro da pasta /gestao-pecuaria-frontend:
 
 comando para criar uma branch local pecuariaMain:
 
-	git checkout -b pecuariaMain
+	git checkout -b main
 
 comando para puxar os arquivos do repositório remoto:
 
-	git pull origin pecuariaMain
+	git pull origin main
 
 ### Fazer as migrações para o banco de dados
 
@@ -177,6 +184,6 @@ comando para commitar:
 
 comando para dar o push para o repositório remoto:
 
-	git push origin pecuariaMain
+	git push origin main
 
  

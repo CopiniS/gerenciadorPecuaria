@@ -93,14 +93,26 @@
                   placeholder="Observações sobre a Raça"></textarea>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                <input v-model="formData.brincoPai" type="text" class="form-control" id="brincoPai"
-                  placeholder="Número do Brinco do Pai">
+                <span class="input-group-text"><i class="fas fa-mars"></i></span>
+                <input v-model="formData.brincoPai" @input="filterPais('macho', 'pai')" type="text" class="form-control"
+                  placeholder="Digite o brinco do Pai...">
+              </div>
+              <div class="list-group" v-if="formData.brincoPai && filteredPais.length && currentFilter === 'pai'">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredPais"
+                  :key="animal.id" @click="selectPai(animal)">
+                  {{ animal.brinco }}
+                </button>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                <input v-model="formData.brincoMae" type="text" class="form-control" id="brincoMae"
-                  placeholder="Número do Brinco da Mãe">
+                <span class="input-group-text"><i class="fas fa-venus"></i></span>
+                <input v-model="formData.brincoMae" @input="filterPais('femea', 'mae')" type="text" class="form-control"
+                  placeholder="Digite o brinco da Mãe...">
+              </div>
+              <div class="list-group" v-if="formData.brincoMae && filteredPais.length && currentFilter === 'mae'">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredPais"
+                  :key="animal.id" @click="selectMae(animal)">
+                  {{ animal.brinco }}
+                </button>
               </div>
             </form>
           </div>
@@ -161,14 +173,26 @@
                 </select>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                <input v-model="formData.brincoPai" type="text" class="form-control" id="brincoPaiEditar"
-                  placeholder="Número do Brinco do Pai">
+                <span class="input-group-text"><i class="fas fa-mars"></i></span>
+                <input v-model="formData.brincoPai" @input="filterPais('macho', 'pai')" type="text" class="form-control"
+                  placeholder="Digite o brinco do Pai...">
+              </div>
+              <div class="list-group" v-if="formData.brincoPai && filteredPais.length && currentFilter === 'pai'">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredPais"
+                  :key="animal.id" @click="selectPai(animal)">
+                  {{ animal.brinco }}
+                </button>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                <input v-model="formData.brincoMae" type="text" class="form-control" id="brincoMaeEditar"
-                  placeholder="Número do Brinco da Mãe">
+                <span class="input-group-text"><i class="fas fa-venus"></i></span>
+                <input v-model="formData.brincoMae" @input="filterPais('femea', 'mae')" type="text" class="form-control"
+                  placeholder="Digite o brinco da Mãe...">
+              </div>
+              <div class="list-group" v-if="formData.brincoMae && filteredPais.length && currentFilter === 'mae'">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredPais"
+                  :key="animal.id" @click="selectMae(animal)">
+                  {{ animal.brinco }}
+                </button>
               </div>
             </form>
           </div>
@@ -212,6 +236,7 @@ export default {
       animais: [],
       racas: [],
       lotes: [],
+      filteredPais: [],
       formData: {
         id: null,
         brinco: '',
@@ -320,23 +345,7 @@ export default {
       this.fecharModal("confirmacaoExclusaoModal");
     },
     async submitForm() {
-      // Verifica se os animais pai e mãe existem no banco de dados
-      const paiExists = await this.checkAnimalExists(this.formData.brincoPai);
-      const maeExists = await this.checkAnimalExists(this.formData.brincoMae);
 
-      // Verifica se o animal pai é do sexo masculino e a mãe é do sexo feminino
-      const paiIsMale = await this.checkAnimalSex(this.formData.brincoPai, 'macho');
-      const maeIsFemale = await this.checkAnimalSex(this.formData.brincoMae, 'femea');
-
-      if (!paiExists || !maeExists) {
-        const confirmCadastro = confirm('Atenção: Um ou ambos dos pais não estão cadastrados. Deseja continuar?');
-        if (!confirmCadastro) return; // Cancela o cadastro
-      }
-
-      if (!paiIsMale || !maeIsFemale) {
-        alert('O animal pai deve ser do sexo masculino e a mãe do sexo feminino.');
-        return; // Cancela o cadastro
-      }
       if (this.modalTitle === 'Cadastro de Animal') {
         try {
           const response = await api.post(`http://127.0.0.1:8000/animais/`, this.formData, {
@@ -373,23 +382,42 @@ export default {
         this.fecharModal("edicaoModal");
       }
     },
-    async checkAnimalExists(brinco) {
-      // Verificar se o brinco já existe na lista de animais
-      return this.animais.some(animal => animal.brinco === brinco);
+    async filterPais(sexo, tipo) {
+      this.currentFilter = tipo;
+      const query = tipo === 'pai' ? this.formData.brincoPai : this.formData.brincoMae;
+      const lowerQuery = query ? query.toLowerCase() : '';
+
+      const url = sexo === 'macho' ? 'animais/machos' : 'animais/femeas';
+
+      if (!lowerQuery) {
+        this.filteredPais = [];
+        return;
+      }
+
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/${url}`, {
+          params: {
+            search: lowerQuery,
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          }
+        });
+        this.filteredPais = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar pais:', error);
+      }
     },
 
-    async checkAnimalSex(brinco, expectedSex) {
-      // Encontrar o animal na lista de animais pelo brinco e verificar o sexo
-      const animal = this.animais.find(animal => animal.brinco === brinco);
-      if (animal) {
-        return animal.sexo === expectedSex;
-      } else {
-        // Se o animal não for encontrado, retornar false
-        return false;
-      }
+    selectPai(animal) {
+      this.formData.brincoPai = animal.brinco;
+      this.filteredPais = [];
+    },
+
+    selectMae(animal) {
+      this.formData.brincoMae = animal.brinco;
+      this.filteredPais = [];
     }
   }
-};
+}
 </script>
 
 <style scoped>

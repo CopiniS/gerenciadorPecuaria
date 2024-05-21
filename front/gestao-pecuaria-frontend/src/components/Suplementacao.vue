@@ -2,49 +2,56 @@
   <div>
     <div class="d-flex justify-content-end mb-3">
       <button @click="resetForm()" type="button" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto Sanitário</button>
+        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Adicionar Suplemento</button>
     </div>
-    <h2>Lista de Produtos Sanitários</h2>
+    <h2>Suplementos</h2>
     <div class="table-container">
       <table class="table table-striped">
         <thead>
           <tr>
-            <th scope="col">Nome</th>
-            <th scope="col">Tipo</th>
+            <th scope="col">Quantidade</th>
+            <th scope="col">Data Inicial</th>
+            <th scope="col">Data Final</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(produto, index) in produtos" :key="index">
-            <td>{{ produto.nome }}</td>
-            <td>{{ produto.tipo }}</td>
+          <tr v-for="(suplemento, index) in suplementos" :key="index">
+            <td>{{ suplemento.quantidade }}</td>
+            <td>{{ suplemento.dataInicial }}</td>
+            <td>{{ suplemento.dataFinal }}</td>
             <td>
-              <button @click="editarProduto(produto)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+              <button @click="editarSuplemento(suplemento)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="confirmarExclusao(produto)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                  class="fas fa-trash-alt"></i></button>
+              <button @click="confirmarExclusao(suplemento)" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Modal de Cadastro de Produto Sanitário -->
+    <!-- Modal de Cadastro de Suplemento -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Produto Sanitário</h1>
+            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Suplemento</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidade"
+                  placeholder="Quantidade" required>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <input v-model="formData.tipo" type="text" class="form-control" id="tipo" placeholder="Tipo" required>
+                <label for="dataInicial" class="input-group-text"><i class="fas fa-calendar-alt"></i>  Data Inicial</label>
+                <input v-model="formData.dataInicial" type="date" class="form-control" id="dataInicial" required>
+              </div>
+              <div class="mb-3 input-group">
+                <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i>  Data Final</label>
+                <input v-model="formData.dataFinal" type="date" class="form-control" id="dataFinal" required>
               </div>
             </form>
           </div>
@@ -56,23 +63,28 @@
       </div>
     </div>
 
-    <!-- Modal de Edição de Produto Sanitário -->
+    <!-- Modal de Edição de Suplemento -->
     <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Produto Sanitário</h1>
+            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Suplemento</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome" required>
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidadeEditar"
+                  placeholder="Quantidade" required>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <input v-model="formData.tipo" type="text" class="form-control" id="tipoEditar" placeholder="Tipo" required>
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input v-model="formData.dataInicial" type="date" class="form-control" id="dataInicialEditar" required>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input v-model="formData.dataFinal" type="date" class="form-control" id="dataFinalEditar" required>
               </div>
             </form>
           </div>
@@ -94,11 +106,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir este produto sanitário?
+            Tem certeza de que deseja excluir este suplemento?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarProduto()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarSuplemento()">Excluir</button>
           </div>
         </div>
       </div>
@@ -111,94 +123,84 @@
 import api from '/src/interceptadorAxios'
 
 export default {
-  name: 'TelaProdutosSanitarios',
+  name: 'TelaSuplementos',
   data() {
     return {
-      produtos: [],
+      suplementos: [],
       formData: {
         id: null,
-        nome: '',
-        tipo: '',
+        quantidade: '',
+        dataInicial: '',
+        dataFinal: '',
       },
-      modalTitle: 'Cadastro de Produto Sanitário',
+      modalTitle: 'Cadastro de Suplemento',
     }
   },
   mounted() {
-    this.buscarProdutosSanitariosDaApi();
+    this.buscarSuplementosDaApi();
   },
   methods: {
-    async buscarProdutosSanitariosDaApi() {
+    async buscarSuplementosDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/produtos-sanitarios/' , {
-          // Parâmetros da requisição (se houver)
-        });
-        this.produtos = response.data;
+        const response = await api.get('http://127.0.0.1:8000/suplementos/');
+        this.suplementos = response.data;
       } catch (error) {
-        console.error('Erro ao buscar produtos sanitários da API:', error);
+        console.error('Erro ao buscar suplementos da API:', error);
       }
     },
-    editarProduto(produto) {
-      this.modalTitle = 'Editar Produto Sanitário';
+    editarSuplemento(suplemento) {
+      this.modalTitle = 'Editar Suplemento';
       this.formData = {
-        id: produto.id,
-        nome: produto.nome,
-        tipo: produto.tipo
+        id: suplemento.id,
+        quantidade: suplemento.quantidade,
+        dataInicial: suplemento.dataInicial,
+        dataFinal: suplemento.dataFinal,
       };
     },
     resetForm() {
       this.formData = {
         id: null,
-        nome: '',
-        tipo: '',
+        quantidade: '',
+        dataInicial: '',
+        dataFinal: '',
       };
-      this.modalTitle = 'Cadastro de Produto Sanitário';
+      this.modalTitle = 'Cadastro de Suplemento';
     },
-    fecharModal(modalId) {
-      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
-      if (closeButton) {
-        closeButton.click();
-      } else {
-        console.error('Botão de fechar não encontrado no modal:', modalId);
-      }
-    },
-    confirmarExclusao(produto) {
+    confirmarExclusao(suplemento) {
       this.formData = {
-        id: produto.id,
-        nome: produto.nome,
-        tipo: produto.tipo,
+        id: suplemento.id,
+        quantidade: suplemento.quantidade,
+        dataInicial: suplemento.dataInicial,
+        dataFinal: suplemento.dataFinal,
       };
     },
-    async apagarProduto() {
+    async apagarSuplemento() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/produtos-sanitarios/${this.formData.id}/`, {
-        });
+        const response = await api.delete(`http://127.0.0.1:8000/suplementos/${this.formData.id}/`);
 
         if (response.status === 204) {
-          alert('Produto sanitário apagado com sucesso!');
-          this.buscarProdutosSanitariosDaApi();
+          alert('Suplemento apagado com sucesso!');
+          this.buscarSuplementosDaApi();
         } else {
-          alert('Erro ao apagar produto sanitário. Tente novamente mais tarde.');
+          alert('Erro ao apagar suplemento. Tente novamente mais tarde.');
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.fecharModal("cadastroModal");
+      this.fecharModal("edicaoModal");
     },
-    
-
     async submitForm() {
-      if (this.modalTitle === 'Cadastro de Produto Sanitário') {
+      if (this.modalTitle === 'Cadastro de Suplemento') {
         try {
-          const response = await api.post('http://127.0.0.1:8000/produtos-sanitarios/', this.formData, {
-          });
+          const response = await api.post('http://127.0.0.1:8000/suplementos/', this.formData);
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
-            this.buscarProdutosSanitariosDaApi();
+            this.buscarSuplementosDaApi();
           } else {
-            alert('Erro ao cadastrar produto sanitário. Tente novamente mais tarde.');
+            alert('Erro ao cadastrar suplemento. Tente novamente mais tarde.');
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
@@ -207,13 +209,12 @@ export default {
         this.fecharModal("cadastroModal");
       } else {
         try {
-          const response = await api.patch(`http://127.0.0.1:8000/produtos-sanitarios/${this.formData.id}/`, this.formData, {
-          });
+          const response = await api.patch(`http://127.0.0.1:8000/suplementos/${this.formData.id}/`, this.formData);
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
-            this.buscarProdutosSanitariosDaApi();
+            this.buscarSuplementosDaApi();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -223,7 +224,15 @@ export default {
         }
         this.fecharModal("edicaoModal");
       }
-    }
+    },
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
   }
 };
 </script>

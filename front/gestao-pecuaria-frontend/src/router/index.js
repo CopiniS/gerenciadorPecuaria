@@ -13,6 +13,9 @@ import TelaVeterinarios from '@/views/TelaVeterinarios.vue';
 import TelaProdutosSanitarios from '@/views/TelaProdutosSanitarios.vue';
 import TelaProdutosAlimenticios from '@/views/TelaProdutosAlimenticios.vue';
 import TelaPesagens from '@/views/TelaPesagens.vue';
+import TelaCompraProdutosAlimenticios from '@/views/TelaCompraProdutosAlimenticios.vue';
+import TelaCompraProdutosSanitarios from '@/views/TelaCompraProdutosSanitarios.vue';
+import TelaSuplementacao from '@/views/TelaSuplementacao.vue';
 
 const routes = [
   
@@ -89,6 +92,21 @@ const routes = [
     path: '/Pesagens',
     name: 'TelaPesagens',
     component: TelaPesagens 
+  },
+  {
+    path: '/CompraProdutoAlimenticios',
+    name: 'TelaCompraProdutosAlimenticios',
+    component: TelaCompraProdutosAlimenticios 
+  },
+  {
+    path: '/CompraProdutoSanitarios',
+    name: 'TelaCompraProdutosSanitarios',
+    component: TelaCompraProdutosSanitarios
+  },
+  {
+    path: '/Suplementacao',
+    name: 'TelaSuplementacao',
+    component: TelaSuplementacao
   },
 
 ];

@@ -180,6 +180,14 @@ export default {
       };
       this.modalTitle = 'Cadastro de Veterinário';
     },
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
     confirmarExclusao(veterinario) {
       this.formData = {
         id: veterinario.id,
@@ -187,7 +195,6 @@ export default {
         telefone: veterinario.telefone,
         email: veterinario.email,
         crmv: veterinario.crmv,
-        produtor: null
       };
     },
     async apagarVeterinario() {
@@ -205,15 +212,9 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.fecharModal("cadastroModal");
     },
-    fecharModal(modalId) {
-      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
-      if (closeButton) {
-        closeButton.click();
-      } else {
-        console.error('Botão de fechar não encontrado no modal:', modalId);
-      }
-    },
+    
     
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Veterinário') {

@@ -22,9 +22,30 @@
               <li class="nav-item"><a href="/propriedade">Editar Propriedade</a></li>
               <li class="nav-item"><a href="/propriedades">Trocar de Propriedade</a></li>
               <li class="nav-item"><a href="/cadastropropriedade">Cadastrar Propriedade</a></li>
-              <li class="nav-item"><a href="/propriedade" @click.prevent="confirmarApagarPropriedade">Excluir Propriedade</a></li>
+              <li class="nav-item"><a href="/propriedade" @click.prevent="confirmarApagarPropriedade">Excluir
+                  Propriedade</a></li>
             </ul>
           </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Compra
+              </a>
+              <ul class="dropdown-menu">
+                <li class="nav-item"><a href="/CompraProdutoAlimenticios">Compra Produto Alimenticio</a></li>
+                <li class="nav-item"><a href="/CompraProdutoSanitarios">Compra Produto Sanitario</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Produtos
+              </a>
+              <ul class="dropdown-menu">
+                <li class="nav-item"><a href="/ProdutosSanitarios">Produtos Sanitarios</a></li>
+                <li class="nav-item"><a href="/ProdutosAlimenticios">Produtos Alimenticios</a></li>
+              </ul>
+            </li>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <router-link to="/animais" class="dropdown-item">Animal</router-link>
@@ -39,13 +60,10 @@
               <router-link to="/Veterinarios" class="dropdown-item">Veterinario</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/ProdutosSanitarios" class="dropdown-item">Produtos Sanitarios</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/ProdutosAlimenticios" class="dropdown-item">Produtos Alimenticios</router-link>
-            </li>
-            <li class="nav-item">
               <router-link to="/Pesagens" class="dropdown-item">Pesagens</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/Suplementacao" class="dropdown-item"> Suplementação</router-link>
             </li>
           </ul>
           <li class="nav-item dropdown">
@@ -143,6 +161,7 @@ li {
 
 a {
   color: #42b983;
+  white-space: nowrap; /* Impede a quebra de linha */
 }
 
 .perfil{

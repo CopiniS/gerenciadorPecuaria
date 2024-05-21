@@ -16,7 +16,7 @@
           <tr v-for="(pesagem, index) in pesagens" :key="index">
             <td>{{ formatarData(pesagem.dataPesagem) }}</td>
             <td>
-              <button @click="verPesagem(pesagem)" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
+              <button @click="buscarPesagensPorData(pesagem)" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
               <button @click="confirmarExclusao(pesagem)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
@@ -151,6 +151,7 @@ export default {
         dataPesagem: '',
         peso: '',
         observacao: '',
+        animal: null
       },
       animais: [],
       filteredAnimais: [],
@@ -159,19 +160,31 @@ export default {
       brinco: '',
       detalhesPesagem: [],
       animalParaExcluir: null,
+      datasPesagens: [], 
+      dataSelecionada: null, 
     }
   },
   mounted() {
-    this.buscarPesagensDaApi();
+    this.buscarDatasPesagens();
     this.buscarAnimais();
   },
   methods: {
-    async buscarPesagensDaApi() {
+    async buscarDatasPesagens() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/pesagens/');
-        this.pesagens = response.data;
+        const response = await api.get('http://127.0.0.1:8000/pesagens/datas');
+        this.datasPesagens = response.data;
       } catch (error) {
-        console.error('Erro ao buscar pesagens da API:', error);
+        console.error('Erro ao buscar datas das pesagens:', error);
+      }
+    },
+    async buscarPesagensPorData(data) {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/pesagens/?data=${data}`);
+        this.pesagens = response.data; 
+        this.formData.dataPesagem = this.pesagens.dataPesagem;
+        this.detalhesPesagem = this.pesagens.animais;
+      } catch (error) {
+        console.error('Erro ao buscar pesagens por data:', error);
       }
     },
     async buscarAnimais() {
@@ -193,16 +206,13 @@ export default {
       this.camposHabilitados = true;
       this.filteredAnimais = [];
     },
-    verPesagem(pesagem) {
-      this.formData.dataPesagem = pesagem.dataPesagem;
-      this.detalhesPesagem = pesagem.animais;
-    },
     resetForm() {
       this.formData = {
         id: null,
         dataPesagem: new Date().toISOString().substr(0, 10),
         peso: '',
         observacao: '',
+        animal: null
       };
       this.brinco = '';
       this.modalTitle = 'Cadastro de Pesagem';
@@ -215,6 +225,7 @@ export default {
         dataPesagem: pesagem.dataPesagem,
         peso: pesagem.peso,
         observacao: pesagem.observacao,
+        animal: pesagem.animal
       };
     },
     confirmarExclusaoAnimal(animal) {
@@ -253,7 +264,10 @@ export default {
     },
     async submitForm() {
       try {
-        const response = await api.post('http://127.0.0.1:8000/pesagens/', this.formData);
+        const response = await api.post('http://127.0.0.1:8000/pesagens/', {
+          ...this.formData,
+          animal_id: this.formData.animal.id
+        });
 
         if (response.status === 201) {
           alert('Pesagem cadastrada com sucesso!');

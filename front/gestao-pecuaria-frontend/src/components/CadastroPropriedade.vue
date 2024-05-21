@@ -11,34 +11,40 @@
                         <form @submit.prevent="submitForm">
                             <div class="mb-3 input-group">
                                 <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                                <input v-model="formData.nome" type="text" class="form-control" placeholder="Nome" id="nome">
+                                <input v-model="formData.nome" type="text" class="form-control" placeholder="Nome"
+                                    id="nome">
                             </div>
                             <div class="mb-3 input-group">
                                 <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                                <input v-model="formData.endereco" type="text" class="form-control" placeholder="Endereço" id="endereco">
+                                <input v-model="formData.endereco" type="text" class="form-control"
+                                    placeholder="Endereço" id="endereco">
                             </div>
                             <div class="mb-3 input-group">
                                 <span class="input-group-text"><i class="fas fa-flag"></i></span>
                                 <select v-model="formData.estado" class="form-select" required
                                     @change="buscarCidadesPorEstado($event.target.value)">
                                     <option value="" disabled>Selecione o estado</option>
-                                    <option v-for="estado in estados" :key="estado.id" :value="estado.id">{{ estado.nome }}</option>
+                                    <option v-for="estado in estados" :key="estado.id" :value="estado.id">{{ estado.nome
+                                        }}</option>
                                 </select>
                             </div>
                             <div class="mb-3 input-group">
                                 <span class="input-group-text"><i class="fas fa-city"></i></span>
                                 <select v-model="formData.cidade" class="form-select" required>
                                     <option value="" disabled>Selecione a cidade</option>
-                                    <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{ cidade.nome }}</option>
+                                    <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{
+                            cidade.nome }}</option>
                                 </select>
                             </div>
                             <div class="mb-3 input-group">
                                 <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                <input v-model="formData.latitude" type="text" class="form-control" placeholder="Latitude" id="latitude">
+                                <input v-model="formData.latitude" type="text" class="form-control"
+                                    placeholder="Latitude" id="latitude">
                             </div>
                             <div class="mb-3 input-group">
                                 <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                <input v-model="formData.longitude" type="text" class="form-control" placeholder="Longitude" id="longitude">
+                                <input v-model="formData.longitude" type="text" class="form-control"
+                                    placeholder="Longitude" id="longitude">
                             </div>
                         </form>
                     </div>
@@ -78,7 +84,10 @@ export default {
         this.buscarEstadosDaApi();
     },
 
+
+
     methods: {
+
         async buscarCidadesPorEstado(estadoId) {
             try {
                 const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`);
@@ -87,6 +96,7 @@ export default {
                 console.error('Erro ao buscar cidades da API:', error);
             }
         },
+
 
         async buscarEstadosDaApi() {
             try {
@@ -97,19 +107,28 @@ export default {
             }
         },
 
-     async submitForm() {
-      try {
-        const response = await api.post('http://127.0.0.1:8000/propriedades/' ,  this.formData, {
-        });
-        this.propriedades = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar propriedades da API:', error);
-      }
-    },
 
-    voltar(){
-        this.$router.push('/propriedades');
-    },
+        async submitForm() {
+            try {
+                const response = await api.post('http://127.0.0.1:8000/propriedades/', this.formData);
+
+                if (response.status === 201) {
+                    alert('Cadastro realizado com sucesso!');
+                    this.resetForm();
+                    this.buscarPropriedadesDaApi();
+                } else {
+                    alert('Erro ao cadastrar propriedade. Tente novamente mais tarde.');
+                }
+            } catch (error) {
+                console.error('Erro ao enviar requisição:', error);
+                alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+            }
+            this.fecharModal("cadastroModal");
+        },
+
+        voltar() {
+            this.$router.push('/inicio');
+        },
 
     },
 }
@@ -117,6 +136,7 @@ export default {
 
 <style>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
 .modal {
     display: none;
     position: fixed;

@@ -187,6 +187,7 @@ export default {
         telefone: veterinario.telefone,
         email: veterinario.email,
         crmv: veterinario.crmv,
+        produtor: null
       };
     },
     async apagarVeterinario() {

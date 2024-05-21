@@ -99,7 +99,7 @@ export default {
 
      async submitForm() {
       try {
-        const response = await api.post('http://127.0.0.1:8000/propriedades/' , {
+        const response = await api.post('http://127.0.0.1:8000/propriedades/' ,  this.formData, {
         });
         this.propriedades = response.data;
       } catch (error) {

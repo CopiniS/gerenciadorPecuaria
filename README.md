@@ -92,6 +92,10 @@ Agora os comandos:
 
 	pip install djangorestframework-simplejwt
 
+6- Instalar o Pillow com o comando:
+
+	python -m pip install Pillow
+ 
 ### Vue.js
 
 

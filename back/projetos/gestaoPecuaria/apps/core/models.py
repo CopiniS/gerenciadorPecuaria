@@ -103,3 +103,9 @@ class AplicacaoProduto(models.Model):
     observacao = models.CharField('Observação', max_length=255, null=True)
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+
+class Foto(models.Model):
+    foto = models.ImageField('Foto', upload_to='fotos-animais/')
+    dataFoto = models.DateField('Data da foto')
+    observacao = models.CharField('Observação', max_length=255)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)

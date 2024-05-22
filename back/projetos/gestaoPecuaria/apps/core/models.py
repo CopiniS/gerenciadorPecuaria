@@ -8,12 +8,14 @@ class Propriedade(models.Model):
     cidade = models.CharField('Cidade', max_length=50)
     latitude = models.DecimalField('Latitude', max_digits=10, decimal_places=2)
     longitude = models.DecimalField('Longitude', max_digits=10, decimal_places=2)
+    area = models.DecimalField('Área', max_digits=10, decimal_places=2)
     produtor = models.ManyToManyField(Produtor)
 
-class Lote(models.Model):
+class Piquete(models.Model):
     nome = models.CharField('Nome', max_length=50)
     propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
     tipoCultivo = models.CharField('Tipo do cultivo', max_length=50)
+    area = models.DecimalField('Área', max_digits=10, decimal_places=2)
 
 class Raca(models.Model):
     nome = models.CharField('Nome', max_length=20)
@@ -25,9 +27,13 @@ class Animal(models.Model):
     sexo = models.CharField('Sexo', max_length=5)
     racaPredominante = models.ForeignKey(Raca, on_delete=models.CASCADE)
     racaObservacao = models.CharField('Raça de observação', max_length=50)
-    lote = models.ForeignKey(Lote, on_delete=models.CASCADE, default=0) 
+    piquete = models.ForeignKey(Piquete, on_delete=models.CASCADE, default=0) 
     brincoPai = models.CharField('Brinco do pai', max_length=6, null=True)
     brincoMae = models.CharField('Brinco da mae', max_length=6, null=True)
+    rfid = models.CharField('RFID', max_length=50, null=True)
+    observacoes = models.CharField('Observações', max_length=255, null=True)
+    dataBaixa = models.DateField('Data da baixa', null=True)
+    status = models.CharField('Status', max_length=50)
 
 class Veterinario(models.Model):
     nome = models.CharField('Nome', max_length=50)
@@ -36,32 +42,21 @@ class Veterinario(models.Model):
     crmv = models.CharField('CRMV', max_length=15)
     produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)
 
-class ProdutoSanitario(models.Model):
+class Produto(models.Model):
     nome = models.CharField('Nome', max_length=50)
     tipo = models.CharField('Tipo', max_length=50)
+    categoria = models.CharField('Categoria', max_length=50)
+    descricao = models.CharField('Descricao', max_length=255)
     produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)
-
-class ProdutoAlimenticio(models.Model):
-    nome = models.CharField('Nome', max_length=50)
-    tipo = models.CharField('Tipo', max_length=50)
-    produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)    
-
+    
 class Pesagem(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
     dataPesagem = models.DateField('Data de pesagem')
     peso = models.DecimalField('Peso', max_digits=10, decimal_places=2)
-    Observacao = models.CharField('Observacao', max_length=255)
+    observacao = models.CharField('Observacao', max_length=255, null=True)
 
-class CompraProdutoAlimenticio(models.Model):
-    produtoAlimenticio = models.ForeignKey(ProdutoAlimenticio, on_delete=models.CASCADE)
-    valorUnitario = models.DecimalField('Valor unitário', max_digits=10,  decimal_places=2)
-    quantidadeComprada = models.DecimalField('Quantidade comprada', max_digits=10,  decimal_places=3)
-    dataCompra = models.DateField('Data de compra')
-    validade = models.DateField('Data de vencimento')
-    lote = models.CharField('Lote', max_length=50)
-
-class CompraProdutoSanitario(models.Model):
-    produtoSanitario = models.ForeignKey(ProdutoSanitario, on_delete=models.CASCADE)
+class CompraProduto(models.Model):
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     valorUnitario = models.DecimalField('Valor unitário', max_digits=10,  decimal_places=2)
     quantidadeComprada = models.DecimalField('Quantidade comprada', max_digits=10,  decimal_places=3)
     dataCompra = models.DateField('Data de compra')
@@ -69,11 +64,42 @@ class CompraProdutoSanitario(models.Model):
     lote = models.CharField('Lote', max_length=50)
 
 class Suplementacao(models.Model):
-    produtoAlimenticio = models.ForeignKey(ProdutoAlimenticio, on_delete=models.CASCADE)
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.DecimalField(max_digits=10, decimal_places=3)
     dataInicial = models.DateField('Data inicial')
     dataFinal = models.DateField('Data final')
-    lote = models.ForeignKey(Lote, on_delete=models.CASCADE)
+    piquete = models.ForeignKey(Piquete, on_delete=models.CASCADE)
 
+class Ocorrencia(models.Model):
+    dataOcorrencia = models.DateField('Data da ocorrência')
+    tipo = models.CharField('Tipo', max_length=50)
+    descricao = models.CharField('Descrição', max_length=255)
+    propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
 
+class Inseminacao(models.Model):
+    dataInseminacao = models.DateField('Data')
+    identificadorTouro = models.CharField('Identificador do touro')
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    veterinario = models.ForeignKey(Veterinario, on_delete=models.CASCADE)
 
+class OutraDespesa(models.Model):
+    propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
+    dataDespesa = models.DateField('Data da despesa')
+    valor = models.DecimalField('Valor', max_digits=10, decimal_places=2)
+    descricao = models.CharField('Descrição', max_length=255, null=True)
+
+class VendaAnimal(models.Model):
+    dataVenda = models.DateField('Data da venda')
+    peso = models.DecimalField('Peso', max_digits=10, decimal_places=3)
+    precoKg = models.DecimalField('Preço po Kg', max_digits=10, decimal_places=2)
+    valorTotal = models.DecimalField('Valor total', max_digits=10, decimal_places=2)
+    finalidade = models.CharField('Finalidade', max_length=50)
+    observacao = models.CharField('Observação', max_length=255, null=True)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    
+class AplicacaoProduto(models.Model):
+    dataAplicacao = models.DateField('Data da aplicação')
+    dosagem = models.DecimalField('Dosagem', max_digits=10, decimal_places=2)
+    observacao = models.CharField('Observação', max_length=255, null=True)
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)

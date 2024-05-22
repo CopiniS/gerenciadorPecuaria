@@ -4,6 +4,7 @@ from core import serializers
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class PropriedadeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -207,3 +208,19 @@ class AplicacaoProdutoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
         serializer = serializers.AplicacaoProdutoSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+
+class FotoViewSet(viewsets.ModelViewSet):
+    queryset = models.Foto.objects.all()
+    serializer_class = serializers.FotoSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
+    def list(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
+        queryset = models.Foto.objects.all()
+        if propriedade_selecionada is not None:
+            queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
+        serializer = serializers.FotoSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+

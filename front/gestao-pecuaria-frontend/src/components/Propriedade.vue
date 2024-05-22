@@ -42,6 +42,11 @@
                 <input v-model="formData.longitude" type="text" class="form-control" placeholder="Longitude"
                   id="longitudeEditar">
               </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                <input v-model="formData.area" type="text" class="form-control" placeholder="Área"
+                  id="areaEditar">
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -73,6 +78,7 @@ export default {
         cidade: '',
         latitude: '',
         longitude: '',
+        area: '',
       }
     }
   },
@@ -121,6 +127,7 @@ export default {
           cidade: this.propriedade.cidade,
           latitude: this.propriedade.latitude,
           longitude: this.propriedade.longitude,
+          area: this.propriedade.area,
         };
       } catch (error) {
         console.error('Erro ao buscar propriedade da API:', error);
@@ -135,8 +142,6 @@ export default {
 
         if (response.status === 200) {
           alert('Alterações salvas com sucesso!');
-          this.resetForm();
-          this.buscarPropriedadesDaApi();
         } else {
           alert('Erro ao salvar alterações. Tente novamente mais tarde.');
         }
@@ -144,6 +149,7 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.$router.push('/inicio');
       this.voltar();
     }
   }

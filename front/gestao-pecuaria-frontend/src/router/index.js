@@ -5,7 +5,7 @@ import TelaRaca from '@/views/TelaRaca.vue';
 import Login from '@/views/LoginView.vue'
 import Cadastro from '@/views/CadastroView.vue'
 import PopUpPropriedade from '@/views/PopUpPropriedade.vue'
-import TelaLotes from '@/views/TelaLotes.vue';
+import TelaPiquetes from '@/views/TelaPiquetes.vue';
 import CadastroPropriedade from '@/components/CadastroPropriedade.vue';
 import InicialView from '@/views/InicialView.vue';
 import PerfilProdutor from '@/components/PerfilProdutor.vue';
@@ -16,6 +16,7 @@ import TelaPesagens from '@/views/TelaPesagens.vue';
 import TelaCompraProdutosAlimenticios from '@/views/TelaCompraProdutosAlimenticios.vue';
 import TelaCompraProdutosSanitarios from '@/views/TelaCompraProdutosSanitarios.vue';
 import TelaSuplementacao from '@/views/TelaSuplementacao.vue';
+import TelaFotosAnimais from '@/views/TelaFotosAnimais.vue';
 
 const routes = [
   
@@ -64,9 +65,9 @@ const routes = [
     component: TelaRaca, 
   },
   {
-    path: '/lotes',
-    name: 'TelaLotes',
-    component: TelaLotes, 
+    path: '/piquetes',
+    name: 'TelaPiquetes',
+    component: TelaPiquetes, 
   },
   {
     path: '/meuperfil',
@@ -107,6 +108,11 @@ const routes = [
     path: '/Suplementacao',
     name: 'TelaSuplementacao',
     component: TelaSuplementacao
+  },
+  {
+    path: '/ListarFotosAnimais',
+    name: 'TelaFotosAnimais',
+    component: TelaFotosAnimais
   },
 
 ];

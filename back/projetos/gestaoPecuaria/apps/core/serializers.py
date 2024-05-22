@@ -80,3 +80,7 @@ class AplicacaoProdutoSerializer(serializers.ModelSerializer):
         model = models.AplicacaoProduto
         fields = "__all__"
 
+class FotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Foto
+        fields = "__all__"

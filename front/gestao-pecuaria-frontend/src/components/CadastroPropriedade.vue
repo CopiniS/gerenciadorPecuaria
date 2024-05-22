@@ -46,6 +46,11 @@
                                 <input v-model="formData.longitude" type="text" class="form-control"
                                     placeholder="Longitude" id="longitude">
                             </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                <input v-model="formData.area" type="text" class="form-control"
+                                    placeholder="Área" id="area">
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -76,6 +81,7 @@ export default {
                 cidade: '',
                 latitude: '',
                 longitude: '',
+                area: '',
                 produtor: [],
             },
         };
@@ -114,16 +120,14 @@ export default {
 
                 if (response.status === 201) {
                     alert('Cadastro realizado com sucesso!');
-                    this.resetForm();
-                    this.buscarPropriedadesDaApi();
                 } else {
-                    alert('Erro ao cadastrar propriedade. Tente novamente mais tarde.');
+                    alert('Erro ao cadastrar propriedade. Tente novamente mais tarde');
                 }
             } catch (error) {
                 console.error('Erro ao enviar requisição:', error);
-                alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+                alert('Erro ao enviar requisição. Verifique o console para mais detalhes');
             }
-            this.fecharModal("cadastroModal");
+            this.$router.push('/propriedades');
         },
 
         voltar() {

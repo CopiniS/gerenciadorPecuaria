@@ -16,7 +16,7 @@
             <th scope="col">Brinco Pai</th>
             <th scope="col">Brinco Mãe</th>
             <th scope="col">Observações</th>
-            <th scope="col">Lote</th>
+            <th scope="col">Piquete</th>
             <th scope="col">Ações</th>
           </tr>
         </thead>
@@ -29,7 +29,7 @@
             <td>{{ animal.brincoPai }}</td>
             <td>{{ animal.brincoMae }}</td>
             <td>{{ animal.racaObservacao }}</td>
-            <td>{{ animal.lote }}</td>
+            <td>{{ animal.piquete }}</td>
             <td>
               <button @click="editarAnimal(animal)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
@@ -52,10 +52,10 @@
           <div class="modal-body">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tag"></i></span>
-              <select v-model="formData.lote" class="form-select" id="lote" aria-label="Lote"
-                placeholder="Selecione o lote" required>
-                <option disabled selected>Selecione o lote</option>
-                <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
+              <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete"
+                placeholder="Selecione o piquete" required>
+                <option disabled selected>Selecione o piquete</option>
+                <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
               </select>
             </div>
             <hr>
@@ -167,9 +167,9 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                <select v-model="formData.lote" class="form-select" id="lote" aria-label="Lote" required>
-                  <option disabled selected>Selecione o lote</option>
-                  <option v-for="lote in lotes" :key="lote.id" :value="lote.id">{{ lote.nome }}</option>
+                <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete" required>
+                  <option disabled selected>Selecione o piquete</option>
+                  <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
                 </select>
               </div>
               <div class="mb-3 input-group">
@@ -235,7 +235,7 @@ export default {
     return {
       animais: [],
       racas: [],
-      lotes: [],
+      piquetes: [],
       filteredPais: [],
       formData: {
         id: null,
@@ -244,7 +244,7 @@ export default {
         sexo: '',
         racaPredominante: '',
         racaObservacao: '',
-        lote: '',
+        piquete: '',
         brincoPai: '',
         brincoMae: ''
       },
@@ -254,20 +254,20 @@ export default {
   async mounted() {
     this.buscarAnimaisDaApi();
     this.buscarRacasDaApi();
-    this.buscarLotesDaApi();
+    this.buscarPiquetesDaApi();
   },
 
   methods: {
-    async buscarLotesDaApi() {
+    async buscarPiquetesDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/lotes/', {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
           params: {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
         });
-        this.lotes = response.data;
+        this.piquetes = response.data;
       } catch (error) {
-        console.error('Erro ao buscar lotes da API:', error);
+        console.error('Erro ao buscar piquetes da API:', error);
       }
     },
 
@@ -301,7 +301,7 @@ export default {
         sexo: animal.sexo,
         racaPredominante: animal.racaPredominante,
         racaObservacao: animal.racaObservacao,
-        lote: animal.lote
+        piquete: animal.piquete
       };
     },
 
@@ -313,7 +313,7 @@ export default {
         sexo: '',
         racaPredominante: '',
         racaObservacao: '',
-        lote: this.formData.lote
+        piquete: this.formData.piquete
       };
       this.modalTitle = 'Cadastro de Animal';
     },

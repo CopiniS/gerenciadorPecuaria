@@ -54,7 +54,7 @@
               <router-link to="/raca" class="dropdown-item">Raça</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/lotes" class="dropdown-item">Lotes</router-link>
+              <router-link to="/piquetes" class="dropdown-item">Piquetes</router-link>
             </li>
             <li class="nav-item">
               <router-link to="/Veterinarios" class="dropdown-item">Veterinario</router-link>

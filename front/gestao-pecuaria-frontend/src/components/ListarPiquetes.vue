@@ -2,9 +2,9 @@
   <div>
     <div class="d-flex justify-content-end mb-3">
       <button @click="resetForm()" type="button" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Lote</button>
+        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Piquete</button>
     </div>
-    <h2>Lista de Lotes</h2>
+    <h2>Lista de Piquetes</h2>
     <div class="table-container">
       <table class="table table-striped">
         <thead>
@@ -15,25 +15,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(lote, index) in lotes" :key="index">
-            <td>{{ lote.nome }}</td>
-            <td>{{ lote.tipoCultivo }}</td>
+          <tr v-for="(piquete, index) in piquetes" :key="index">
+            <td>{{ piquete.nome }}</td>
+            <td>{{ piquete.tipoCultivo }}</td>
+            <td>{{ piquete.area }}</td>
             <td>
-              <button @click="editarLote(lote)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+              <button @click="editarPiquete(piquete)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="editarLote(lote)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+              <button @click="editarPiquete(piquete)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
                   class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-        <!-- Modal de Cadastro de Lote -->
+        <!-- Modal de Cadastro de Piquete -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Lote</h1>
+            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Piquete</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -49,6 +50,10 @@
                   <option v-for="tipo in tiposCultivo" :key="tipo" :value="tipo">{{ tipo }}</option>
                 </select>
               </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <input v-model="formData.area" type="text" class="form-control" id="area" placeholder="Área" required>
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -59,12 +64,12 @@
       </div>
     </div>
 
-    <!-- Modal de Edição de Lote -->
+    <!-- Modal de Edição de Piquete -->
     <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Lote</h1>
+            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Piquete</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -79,6 +84,10 @@
                   <option disabled selected>Selecione o tipo de cultivo</option>
                   <option v-for="tipo in tiposCultivo" :key="tipo" :value="tipo">{{ tipo }}</option>
                 </select>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <input v-model="formData.area" type="text" class="form-control" id="area" placeholder="Área" required>
               </div>
             </form>
           </div>
@@ -100,11 +109,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir este lote?
+            Tem certeza de que deseja excluir este piquete?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarLote()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarPiquete()">Excluir</button>
           </div>
         </div>
       </div>
@@ -117,42 +126,44 @@
 import api from '/src/interceptadorAxios'
 
 export default {
-  name: 'TelaLotes',
+  name: 'TelaPiquetes',
   data() {
     return {
-      lotes: [],
+      piquetes: [],
       tiposCultivo: ['Pastagem Natural', 'Lavoura', 'Confinamento'],
       formData: {
         id: null,
         nome: '',
         tipoCultivo: '',
+        area: '',
         propriedade: localStorage.getItem('propriedadeSelecionada')
       },
-      modalTitle: 'Cadastro de Lote',
+      modalTitle: 'Cadastro de Piquete',
     }
   },
   mounted() {
-    this.buscarLotesDaApi();
+    this.buscarPiquetesDaApi();
   },
   methods: {
-    async buscarLotesDaApi() {
+    async buscarPiquetesDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/lotes/' , {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/' , {
           params: {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
         });
-        this.lotes = response.data;
+        this.piquetes = response.data;
       } catch (error) {
-        console.error('Erro ao buscar lotes da API:', error);
+        console.error('Erro ao buscar piquetes da API:', error);
       }
     },
-    editarLote(lote) {
-      this.modalTitle = 'Editar Lote';
+    editarPiquete(piquete) {
+      this.modalTitle = 'Editar Piquete';
       this.formData = {
-        id: lote.id,
-        nome: lote.nome,
-        tipoCultivo: lote.tipoCultivo,
+        id: piquete.id,
+        nome: piquete.nome,
+        tipoCultivo: piquete.tipoCultivo,
+        area: piquete.area,
         propriedade: localStorage.getItem('propriedadeSelecionada')
       };
     },
@@ -161,9 +172,10 @@ export default {
         id: null,
         nome: '',
         propriedade: localStorage.getItem('propriedadeSelecionada'),
-        tipoCultivo: ''
+        tipoCultivo: '',
+        area: ''
       };
-      this.modalTitle = 'Cadastro de Lote';
+      this.modalTitle = 'Cadastro de Piquete';
     },
 
     fecharModal(modalId) {
@@ -175,16 +187,16 @@ export default {
       }
     },
 
-    async apagarLote() {
+    async apagarPiquete() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/lotes/${this.formData.id}/` , {
+        const response = await api.delete(`http://127.0.0.1:8000/piquetes/${this.formData.id}/` , {
         });
 
         if (response.status === 204) {
-          alert('Lote apagado com sucesso!');
-          this.buscarLotesDaApi();
+          alert('Piquete apagado com sucesso!');
+          this.buscarPiquetesDaApi();
         } else {
-          alert('Erro ao apagar lote. Tente novamente mais tarde.');
+          alert('Erro ao apagar piquete. Tente novamente mais tarde.');
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);
@@ -194,17 +206,17 @@ export default {
     },
     
     async submitForm() {
-      if (this.modalTitle === 'Cadastro de Lote') {
+      if (this.modalTitle === 'Cadastro de Piquete') {
         try {
-          const response = await api.post('http://127.0.0.1:8000/lotes/', this.formData , {
+          const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData , {
         });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
-            this.buscarLotesDaApi();
+            this.buscarPiquetesDaApi();
           } else {
-            alert('Erro ao cadastrar lote. Tente novamente mais tarde.');
+            alert('Erro ao cadastrar piquete. Tente novamente mais tarde.');
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
@@ -214,13 +226,13 @@ export default {
 
       } else {
         try {
-          const response = await api.patch(`http://127.0.0.1:8000/lotes/${this.formData.id}/`, this.formData , {
+          const response = await api.patch(`http://127.0.0.1:8000/piquetes/${this.formData.id}/`, this.formData , {
         });
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
-            this.buscarLotesDaApi();
+            this.buscarPiquetesDaApi();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }

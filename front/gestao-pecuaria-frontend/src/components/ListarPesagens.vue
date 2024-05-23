@@ -197,8 +197,7 @@ export default {
       }
     },
     filterAnimais() {
-      const query = this.brinco.toLowerCase();
-      this.filteredAnimais = this.animais.filter(animal => animal.brinco.toLowerCase().includes(query));
+      this.filteredAnimais = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
     },
     selectAnimal(animal) {
       this.brinco = animal.brinco;

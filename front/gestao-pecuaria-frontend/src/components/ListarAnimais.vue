@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex justify-content-end mb-3">
-      <button @click="resetForm()" type="button" class="btn btn-primary" data-bs-toggle="modal"
+      <button @click="resetForm(); preencheListas()" type="button" class="btn btn-primary" data-bs-toggle="modal"
         data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar</button>
     </div>
     <h2>Lista de Animais</h2>
@@ -17,7 +17,7 @@
             <th scope="col">Brinco Mãe</th>
             <th scope="col">Observações</th>
             <th scope="col">Piquete</th>
-            <th scope="col">Ações</th>
+            <th scope="col">status</th>
           </tr>
         </thead>
         <tbody>
@@ -30,10 +30,11 @@
             <td>{{ animal.brincoMae }}</td>
             <td>{{ animal.racaObservacao }}</td>
             <td>{{ animal.piquete }}</td>
+            <td>{{ animal.status }}</td>
             <td>
-              <button @click="editarAnimal(animal)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+              <button @click="editarAnimal(animal); preencheListas()" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="confirmarExclusao(animal)" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+              <button @click="editarAnimal(animal)" class="btn btn-danger btn-sm" data-bs-toggle="modal"
                 data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
@@ -94,25 +95,35 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-mars"></i></span>
-                <input v-model="formData.brincoPai" @input="filterPais('macho', 'pai')" type="text" class="form-control"
+                <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
                   placeholder="Digite o brinco do Pai...">
               </div>
-              <div class="list-group" v-if="formData.brincoPai && filteredPais.length && currentFilter === 'pai'">
-                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredPais"
+              <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in machosFiltrados"
                   :key="animal.id" @click="selectPai(animal)">
                   {{ animal.brinco }}
                 </button>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-venus"></i></span>
-                <input v-model="formData.brincoMae" @input="filterPais('femea', 'mae')" type="text" class="form-control"
+                <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
                   placeholder="Digite o brinco da Mãe...">
               </div>
-              <div class="list-group" v-if="formData.brincoMae && filteredPais.length && currentFilter === 'mae'">
-                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredPais"
+              <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
                   :key="animal.id" @click="selectMae(animal)">
                   {{ animal.brinco }}
                 </button>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.rfid" type="text" class="form-control" id="rfid"
+                  placeholder="RFID" required>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
+                  placeholder="Observações" required>
               </div>
             </form>
           </div>
@@ -174,25 +185,35 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-mars"></i></span>
-                <input v-model="formData.brincoPai" @input="filterPais('macho', 'pai')" type="text" class="form-control"
+                <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
                   placeholder="Digite o brinco do Pai...">
               </div>
-              <div class="list-group" v-if="formData.brincoPai && filteredPais.length && currentFilter === 'pai'">
-                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredPais"
+              <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length ">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in machosFiltrados"
                   :key="animal.id" @click="selectPai(animal)">
                   {{ animal.brinco }}
                 </button>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-venus"></i></span>
-                <input v-model="formData.brincoMae" @input="filterPais('femea', 'mae')" type="text" class="form-control"
+                <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
                   placeholder="Digite o brinco da Mãe...">
               </div>
-              <div class="list-group" v-if="formData.brincoMae && filteredPais.length && currentFilter === 'mae'">
-                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredPais"
+              <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
                   :key="animal.id" @click="selectMae(animal)">
                   {{ animal.brinco }}
                 </button>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.rfid" type="text" class="form-control" id="rfid"
+                  placeholder="RFID" required>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
+                  placeholder="Observações" required>
               </div>
             </form>
           </div>
@@ -236,7 +257,10 @@ export default {
       animais: [],
       racas: [],
       piquetes: [],
-      filteredPais: [],
+      listaMachos:[],
+      listaFemeas:[],
+      femeasFiltradas: [],
+      machosFiltrados: [],
       formData: {
         id: null,
         brinco: '',
@@ -246,7 +270,11 @@ export default {
         racaObservacao: '',
         piquete: '',
         brincoPai: '',
-        brincoMae: ''
+        brincoMae: '',
+        status: 'vivo',
+        rfid: '',
+        observacoes: '',
+        dataBaixa: null
       },
       modalTitle: 'Cadastro de Animal',
     }
@@ -301,7 +329,13 @@ export default {
         sexo: animal.sexo,
         racaPredominante: animal.racaPredominante,
         racaObservacao: animal.racaObservacao,
-        piquete: animal.piquete
+        piquete: animal.piquete,
+        brincoPai: animal.brincoPai,
+        brincoMae: animal.brincoMae,
+        status: 'vivo',
+        rfid: animal.rfid && animal.rfid.trim() !== '' ? animal.rfid : null,
+        observacoes: animal.observacoes && animal.observacoes.trim() !== '' ? animal.observacoes : null,
+        dataBaixa: null
       };
     },
 
@@ -313,7 +347,11 @@ export default {
         sexo: '',
         racaPredominante: '',
         racaObservacao: '',
-        piquete: this.formData.piquete
+        piquete: this.formData.piquete,
+        status: 'vivo',
+        rfid: null,
+        observacoes: null,
+        dataBaixa: null,
       };
       this.modalTitle = 'Cadastro de Animal';
     },
@@ -345,7 +383,6 @@ export default {
       this.fecharModal("confirmacaoExclusaoModal");
     },
     async submitForm() {
-
       if (this.modalTitle === 'Cadastro de Animal') {
         try {
           const response = await api.post(`http://127.0.0.1:8000/animais/`, this.formData, {
@@ -382,39 +419,38 @@ export default {
         this.fecharModal("edicaoModal");
       }
     },
-    async filterPais(sexo, tipo) {
-      this.currentFilter = tipo;
-      const query = tipo === 'pai' ? this.formData.brincoPai : this.formData.brincoMae;
-      const lowerQuery = query ? query.toLowerCase() : '';
 
-      const url = sexo === 'macho' ? 'animais/machos' : 'animais/femeas';
+    async preencheListas(){
+      this.preencherListaFemeas();
+      this.preencherListaMachos();
+    },
 
-      if (!lowerQuery) {
-        this.filteredPais = [];
-        return;
-      }
+    async preencherListaFemeas(){
+      const response = await api.get(`http://127.0.0.1:8000/animais/femeas`, {});
+      this.listaFemeas = response.data;
+    },
 
-      try {
-        const response = await api.get(`http://127.0.0.1:8000/${url}`, {
-          params: {
-            search: lowerQuery,
-            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-          }
-        });
-        this.filteredPais = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar pais:', error);
-      }
+    async preencherListaMachos(){
+      const response = await api.get(`http://127.0.0.1:8000/animais/machos`, {});
+      this.listaMachos = response.data;
+    },
+
+    filterFemeas(){
+      this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoMae));
+    },
+
+    filterMachos(){
+      this.machosFiltrados = this.listaMachos.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoPai));
     },
 
     selectPai(animal) {
       this.formData.brincoPai = animal.brinco;
-      this.filteredPais = [];
+      this.machosFiltrados = [];
     },
 
     selectMae(animal) {
       this.formData.brincoMae = animal.brinco;
-      this.filteredPais = [];
+      this.femeasFiltradas = [];
     }
   }
 }

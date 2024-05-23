@@ -56,8 +56,8 @@ class AnimalViewSet(viewsets.ModelViewSet):
         femeas = models.Animal.objects.filter(sexo='femea')
         serializer = self.get_serializer(femeas, many=True)
         return Response(serializer.data)
-
-
+    
+    
 class PiqueteViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = models.Piquete.objects.all()

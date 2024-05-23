@@ -18,7 +18,7 @@
 
         <hr>
 
-        <button type="button" class="btn btn-outline-secondary" @click="registrar">
+        <button type="button" class="btn btn-outline-secondary" @click="this.registrar()">
           <i class="fas fa-user-plus"></i> Não tenho conta
         </button>
       </form>
@@ -54,11 +54,10 @@ export default {
       alert('Login feito com sucesso');
       this.$router.push('/propriedades');
     },
-    },
-
     registrar() {
       this.$router.push('/cadastro');
     }
+  }
   };
 </script>
 

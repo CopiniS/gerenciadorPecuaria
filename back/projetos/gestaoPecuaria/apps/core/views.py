@@ -115,7 +115,7 @@ class PesagemViewSet(viewsets.ModelViewSet):
     def list_datas(self, request, *args, **kwargs):
         datas = models.Pesagem.objects.values_list('dataPesagem', flat=True).distinct()
         return Response(datas)
-
+    
 
 class CompraProdutoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

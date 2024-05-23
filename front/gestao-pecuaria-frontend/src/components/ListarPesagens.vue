@@ -165,18 +165,11 @@ export default {
     }
   },
   mounted() {
-    this.buscarDatasPesagens();
     this.buscarAnimais();
+    this.buscarPesagensPorData();
   },
   methods: {
-    async buscarDatasPesagens() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/pesagens/datas');
-        this.datasPesagens = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar datas das pesagens:', error);
-      }
-    },
+
     async buscarPesagensPorData(data) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/pesagens/?data=${data}`);
@@ -201,7 +194,7 @@ export default {
     },
     selectAnimal(animal) {
       this.brinco = animal.brinco;
-      this.formData.animal = animal;
+      this.formData.animal = animal.id;
       this.camposHabilitados = true;
       this.filteredAnimais = [];
     },
@@ -210,7 +203,7 @@ export default {
         id: null,
         dataPesagem: new Date().toISOString().substr(0, 10),
         peso: '',
-        observacao: '',
+        observacao: null,
         animal: null
       };
       this.brinco = '';
@@ -236,7 +229,7 @@ export default {
 
         if (response.status === 204) {
           alert('Pesagem excluída com sucesso!');
-          this.buscarPesagensDaApi();
+          this.buscarPesagensPorData();
         } else {
           alert('Erro ao excluir pesagem. Tente novamente mais tarde.');
         }
@@ -264,14 +257,13 @@ export default {
     async submitForm() {
       try {
         const response = await api.post('http://127.0.0.1:8000/pesagens/', {
-          ...this.formData,
-          animal_id: this.formData.animal.id
+          ...this.formData
         });
 
         if (response.status === 201) {
-          alert('Pesagem cadastrada com sucesso!');
           this.resetForm();
-          this.buscarPesagensDaApi();
+          this.buscarPesagensPorData();
+          alert('Pesagem cadastrada com sucesso!');
         } else {
           alert('Erro ao cadastrar pesagem. Tente novamente mais tarde.');
         }
@@ -281,6 +273,7 @@ export default {
       }
     },
     formatarData(data) {
+      console.log('data: ' , data);
       const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
       return new Date(data).toLocaleDateString('pt-BR', options);
     }

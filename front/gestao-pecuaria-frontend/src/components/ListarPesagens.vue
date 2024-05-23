@@ -13,11 +13,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(pesagem, index) in pesagens" :key="index">
-            <td>{{ formatarData(pesagem.dataPesagem) }}</td>
+          <tr v-for="(data, index) in datasPesagens" :key="index">
+            <td>{{ formatarData(data) }}</td>
             <td>
-              <button @click="buscarPesagensPorData(pesagem)" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
-              <button @click="confirmarExclusao(pesagem)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+              <button @click="preencherDetalhesPesagemPorData(data)" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
+              <button @click="confirmarExclusao(data)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
@@ -74,7 +74,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p><strong>Data da Pesagem:</strong> {{ formatarData(formData.dataPesagem) }}</p>
+            <p><strong>Data da Pesagem:</strong> {{ formatarData(this.dataSelecionada) }}</p>
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -84,11 +84,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="animal in detalhesPesagem" :key="animal.id">
-                  <td>{{ animal.brinco }}</td>
-                  <td>{{ animal.peso }}</td>
+                <tr v-for="pesagem in this.detalhesPesagem" :key="pesagem.id">
+                  <td>{{ pesagem.animal.brinco}}</td>
+                  <td>{{ pesagem.peso}}</td>
                   <td>
-                    <button @click="confirmarExclusaoAnimal(animal)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoAnimalModal"><i class="fas fa-trash-alt"></i></button>
+                    <button @click="confirmarExclusaoPesagem(pesagem)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoAnimalModal"><i class="fas fa-trash-alt"></i></button>
                   </td>
                 </tr>
               </tbody>
@@ -98,7 +98,7 @@
       </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão de Pesagem -->
+    <!-- Modal de Confirmação de Exclusão de Pesagem por Data -->
     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -111,13 +111,13 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarPesagem">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarPesagemPorData">Excluir</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão de Animal -->
+    <!-- Modal de Confirmação de Exclusão de Pesagem -->
     <div class="modal fade" id="confirmacaoExclusaoAnimalModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoAnimalModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -130,7 +130,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarAnimal">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarPesagem">Excluir</button>
           </div>
         </div>
       </div>
@@ -159,27 +159,49 @@ export default {
       camposHabilitados: false,
       brinco: '',
       detalhesPesagem: [],
-      animalParaExcluir: null,
+      pesagemParaExcluir: null,
+      dataParaExclusao: null,
       datasPesagens: [], 
       dataSelecionada: null, 
     }
   },
   mounted() {
     this.buscarAnimais();
-    this.buscarPesagensPorData();
+    this.buscarPesagens();
   },
   methods: {
 
-    async buscarPesagensPorData(data) {
+    async buscarPesagens(data) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/pesagens/?data=${data}`);
         this.pesagens = response.data; 
-        this.formData.dataPesagem = this.pesagens.dataPesagem;
-        this.detalhesPesagem = this.pesagens.animais;
+
+        this.preencherDatasPesagens();
+
       } catch (error) {
         console.error('Erro ao buscar pesagens por data:', error);
       }
     },
+
+    async preencherDatasPesagens(){
+      const datasSet = new Set();
+      this.pesagens.forEach(pesagem => {
+        datasSet.add(pesagem.dataPesagem);
+      });
+      this.datasPesagens = Array.from(datasSet).sort((b, a) => new Date(a) - new Date(b));
+    },
+
+    async preencherDetalhesPesagemPorData(data){
+      this.detalhesPesagem = []
+      this.pesagens.forEach(pesagem => {
+        if(data === pesagem.dataPesagem){
+          this.detalhesPesagem.push(pesagem);
+        }
+      });
+      this.dataSelecionada = data;
+
+    },
+
     async buscarAnimais() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/');
@@ -211,25 +233,20 @@ export default {
       this.camposHabilitados = false;
       this.filteredAnimais = this.animais;
     },
-    confirmarExclusao(pesagem) {
-      this.formData = {
-        id: pesagem.id,
-        dataPesagem: pesagem.dataPesagem,
-        peso: pesagem.peso,
-        observacao: pesagem.observacao,
-        animal: pesagem.animal
-      };
+    confirmarExclusao(data) {
+      this.dataParaExclusao = data;
     },
-    confirmarExclusaoAnimal(animal) {
-      this.animalParaExcluir = animal;
+    confirmarExclusaoPesagem(pesagem) {
+      this.pesagemParaExcluir = pesagem;
     },
-    async apagarPesagem() {
+
+    async apagarPesagemPorData() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/pesagens/${this.formData.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/pesagens/datas/${this.dataParaExclusao}/`, {
+        });
 
         if (response.status === 204) {
           alert('Pesagem excluída com sucesso!');
-          this.buscarPesagensPorData();
         } else {
           alert('Erro ao excluir pesagem. Tente novamente mais tarde.');
         }
@@ -237,15 +254,17 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.buscarPesagens();
+      this.fecharModal('confirmacaoExclusaoModal');
     },
-    async apagarAnimal() {
+    async apagarPesagem() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/animais/${this.animalParaExcluir.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/pesagens/${this.pesagemParaExcluir.id}/`);
 
         if (response.status === 204) {
           alert('Animal excluído com sucesso!');
-          this.detalhesPesagem = this.detalhesPesagem.filter(animal => animal.id !== this.animalParaExcluir.id);
-          this.animalParaExcluir = null;
+          this.detalhesPesagem = this.detalhesPesagem.filter(animal => animal.id !== this.pesagemParaExcluir.id);
+          this.pesagemParaExcluir = null;
         } else {
           alert('Erro ao excluir animal. Tente novamente mais tarde.');
         }
@@ -253,7 +272,19 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+      this.buscarPesagens();
+      this.fecharModal('confirmacaoExclusaoAnimalModal');
     },
+
+    async fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
+
     async submitForm() {
       try {
         const response = await api.post('http://127.0.0.1:8000/pesagens/', {
@@ -262,7 +293,7 @@ export default {
 
         if (response.status === 201) {
           this.resetForm();
-          this.buscarPesagensPorData();
+          this.buscarPesagens();
           alert('Pesagem cadastrada com sucesso!');
         } else {
           alert('Erro ao cadastrar pesagem. Tente novamente mais tarde.');
@@ -273,10 +304,11 @@ export default {
       }
     },
     formatarData(data) {
-      console.log('data: ' , data);
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-      return new Date(data).toLocaleDateString('pt-BR', options);
-    }
+    const date = new Date(data);
+    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+    return utcDate.toLocaleDateString('pt-BR', options);
+  }
   }
 };
 </script>

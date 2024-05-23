@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from core import models
 from core import serializers
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
@@ -111,11 +112,16 @@ class PesagemViewSet(viewsets.ModelViewSet):
         serializer = serializers.PesagemComAnimaisSerializer(queryset, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'], url_path='datas')
-    def list_datas(self, request, *args, **kwargs):
-        datas = models.Pesagem.objects.values_list('dataPesagem', flat=True).distinct()
-        return Response(datas)
-    
+    @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
+    def delete_por_data(self, request, *args, **kwargs):
+        data = kwargs.get('data')
+        try:
+            objetos = self.get_queryset().filter(dataPesagem=data)
+            objetos.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class CompraProdutoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

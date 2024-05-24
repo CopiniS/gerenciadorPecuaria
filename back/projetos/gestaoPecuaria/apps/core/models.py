@@ -47,6 +47,7 @@ class Produto(models.Model):
     tipo = models.CharField('Tipo', max_length=50)
     categoria = models.CharField('Categoria', max_length=50)
     descricao = models.CharField('Descricao', max_length=255)
+    estoque = models.DecimalField('Estoque', max_digits=10, decimal_places=3)
     produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)
     
 class Pesagem(models.Model):

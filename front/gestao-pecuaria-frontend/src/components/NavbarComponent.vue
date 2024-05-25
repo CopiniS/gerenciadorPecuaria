@@ -1,86 +1,97 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-      <div class="container-fluid">
-        <nav class="navbar bg-body-tertiary">
-          <div class="container">
-            <a class="navbar-brand" href="#">
-              <img src="../assets/logo.png" alt="ifsc" width="30" height="40">
-            </a>
-          </div>
-        </nav>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-dark bg-dark fixed-top custom-navbar">
+      <div class="container-fluid ">
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Propriedade
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-item"><a href="/propriedade">Editar Propriedade</a></li>
-              <li class="nav-item"><a href="/propriedades">Trocar de Propriedade</a></li>
-              <li class="nav-item"><a href="/cadastropropriedade">Cadastrar Propriedade</a></li>
-              <li class="nav-item"><a href="/propriedade" @click.prevent="confirmarApagarPropriedade">Excluir
-                  Propriedade</a></li>
-            </ul>
-          </li>
-          <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Compra
-              </a>
-              <ul class="dropdown-menu">
-                <li class="nav-item"><a href="/CompraProdutoAlimenticios">Compra Produto Alimenticio</a></li>
-                <li class="nav-item"><a href="/CompraProdutoSanitarios">Compra Produto Sanitario</a></li>
-              </ul>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Produtos
-              </a>
-              <ul class="dropdown-menu">
-                <li class="nav-item"><a href="/ProdutosSanitarios">Produtos Sanitarios</a></li>
-                <li class="nav-item"><a href="/ProdutosAlimenticios">Produtos Alimenticios</a></li>
-              </ul>
-            </li>
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <router-link to="/animais" class="dropdown-item">Animal</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/raca" class="dropdown-item">Raça</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/piquetes" class="dropdown-item">Piquetes</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/Veterinarios" class="dropdown-item">Veterinario</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/Pesagens" class="dropdown-item">Pesagens</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/Suplementacao" class="dropdown-item"> Suplementação</router-link>
-            </li>
-          </ul>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fas fa-user"></i> Perfil
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="/meuperfil">Meu perfil</a></li>
-              <li class="nav-item">
-                <router-link to="#" class="dropdown-item" @click.prevent="confirmAction">Sair</router-link>
+        <a class="navbar-brand" href="#">Nome da Aplicação</a>
+        <div class="offcanvas offcanvas-start text-bg-dark custom-offcanvas justify-content-center" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+          <div class="offcanvas-header">
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-home"></i> Propriedade
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/propriedade"><i class="fas fa-edit"></i> Editar Propriedade</a></li>
+                  <hr>
+                  <li><a class="dropdown-item" href="/propriedades"><i class="fas fa-exchange-alt"></i> Trocar de Propriedade</a></li>
+                  <hr>
+                  <li><a class="dropdown-item" href="/cadastropropriedade"><i class="fas fa-plus"></i> Cadastrar Propriedade</a></li>
+                  <hr>
+                  <li><a class="dropdown-item" href="/propriedade" @click.prevent="confirmarApagarPropriedade"><i class="fas fa-trash-alt"></i> Excluir Propriedade</a></li>
+                </ul>
               </li>
+              <hr>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-shopping-cart"></i> Compra
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/CompraProdutoAlimenticios"><i class="fas fa-apple-alt"></i> Compra Produto Alimenticio</a></li>
+                  <hr>
+                  <li><a class="dropdown-item" href="/CompraProdutoSanitarios"><i class="fas fa-pump-soap"></i> Compra Produto Sanitario</a></li>
+                </ul>
+              </li>
+              <hr>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-box"></i> Produtos
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/ProdutosSanitarios"><i class="fas fa-pump-soap"></i> Produtos Sanitarios</a></li>
+                  <hr>
+                  <li><a class="dropdown-item" href="/ProdutosAlimenticios"><i class="fas fa-apple-alt"></i> Produtos Alimenticios</a></li>
+                </ul>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <router-link to="/animais" class="nav-link"><i class="fas fa-paw"></i> Animal</router-link>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <router-link to="/raca" class="nav-link"><i class="fas fa-dna"></i> Raça</router-link>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <router-link to="/lotes" class="nav-link"><i class="fas fa-layer-group"></i> Lotes</router-link>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <router-link to="/Veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinario</router-link>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <router-link to="/Pesagens" class="nav-link"><i class="fas fa-weight"></i> Pesagens</router-link>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <router-link to="/Suplementacao" class="nav-link"><i class="fas fa-capsules"></i> Suplementação</router-link>
+              </li>
+              <hr>
             </ul>
-          </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user"></i> Perfil
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/meuperfil"><i class="fas fa-user-circle"></i> Meu perfil</a></li>
+                <li>
+                  <router-link to="#" class="dropdown-item" @click.prevent="confirmAction"><i class="fas fa-sign-out-alt"></i> Sair</router-link>
+                </li>
+              </ul>
+            </li>
+          </div>
         </div>
       </div>
     </nav>
-    <router-view></router-view>
+    <div class="content">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -100,7 +111,7 @@ export default {
       this.buscarPropriedadeDaApi(propriedadeSelecionada);
     }
   },
-  methods:{
+  methods: {
     async buscarPropriedadeDaApi(propriedadeId) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/propriedades/${propriedadeId}/`);
@@ -131,13 +142,13 @@ export default {
       }
     },
     confirmAction() {
-      if (confirm("Você tem certeza que deseja sair?")){
+      if (confirm("Você tem certeza que deseja sair?")) {
         this.fazLogout();
       }
     },
-    async fazLogout(){
+    async fazLogout() {
       localStorage.clear();
-      this.$router.push('/login');  
+      this.$router.push('/login');
     }
   }
 }
@@ -145,9 +156,6 @@ export default {
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-h3 {
-  margin: 40px 0 0;
-}
 
 ul {
   list-style-type: none;
@@ -156,20 +164,71 @@ ul {
 
 li {
   display: inline-block;
-  margin: 0 10px;
+  margin: 0px;
 }
 
 a {
-  color: #42b983;
+  color: #e5ffd8 !important; /* Tom mais claro para as letras */
   white-space: nowrap; /* Impede a quebra de linha */
+  font-size: 1.1em; /* Aumenta o tamanho da letra */
 }
 
-.perfil{
-  position: relative;
+.nav-item .dropdown-item {
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  justify-content: center;
 }
 
-.perfil-content a{
-  display: block;
-   
+.nav-item .dropdown-item i {
+  margin-right: 8px; /* Espaço entre o ícone e o texto */
 }
+
+.dropdown-menu {
+  background-color: transparent !important; /* Remove o fundo do dropdown */
+  border: none; /* Remove a borda do dropdown */
+}
+
+.dropdown-item:hover {
+  background-color: #157f0d !important; /* Fundo mais claro no hover */
+  color: #e5ffd8 !important; /* Cor das letras no hover */
+}
+
+.custom-navbar {
+  background-color: #0a4906 !important;
+}
+
+.custom-offcanvas {
+  background-color: #052d03 !important;
+  width: 350px !important; /* Diminui a largura do menu lateral */
+}
+
+/* Personaliza a barra de rolagem */
+::-webkit-scrollbar {
+  width: 8px; /* Largura da barra de rolagem */
+  height: 8px; /* Altura da barra de rolagem horizontal */
+}
+
+/* Fundo da barra de rolagem */
+::-webkit-scrollbar-track {
+  background: #052d03; /* Cor do fundo da barra de rolagem */
+}
+
+/* Cor da barra de rolagem */
+::-webkit-scrollbar-thumb {
+  background-color: #157f0d; /* Cor da barra de rolagem */
+  border-radius: 10px; /* Bordas arredondadas */
+  border: 2px solid #052d03; /* Adiciona uma borda */
+}
+
+/* Barra de rolagem ao passar o mouse */
+::-webkit-scrollbar-thumb:hover {
+  background: #0a4906; /* Cor da barra de rolagem ao passar o mouse */
+}
+
+/* Adiciona margem superior ao conteúdo para evitar sobreposição com o navbar */
+.content {
+  margin-top: 60px;
+}
+
 </style>

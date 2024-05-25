@@ -54,11 +54,15 @@
               </li>
               <hr>
               <li class="nav-item">
+                <router-link to="/ListarFotosAnimais" class="nav-link"><i class="fas fa-paw"></i> Fotos Animais</router-link>
+              </li>
+              <hr>
+              <li class="nav-item">
                 <router-link to="/raca" class="nav-link"><i class="fas fa-dna"></i> Raça</router-link>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/lotes" class="nav-link"><i class="fas fa-layer-group"></i> Lotes</router-link>
+                <router-link to="/piquetes" class="nav-link"><i class="fas fa-layer-group"></i> Piquetes</router-link>
               </li>
               <hr>
               <li class="nav-item">

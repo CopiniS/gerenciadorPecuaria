@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="d-flex justify-content-end mb-3">
-      <button @click="resetForm()" type="button" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto Sanitário</button>
-    </div>
     <h2>Lista de Produtos Sanitários</h2>
     <div class="table-container">
-      <table class="table table-striped">
+    <div class="button-container">
+      <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
+        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto Sanitário</button>
+    </div>
+      <table class="table table-bordered">
         <thead>
           <tr>
             <th scope="col">Nome</th>
@@ -18,9 +18,9 @@
             <td>{{ produto.nome }}</td>
             <td>{{ produto.tipo }}</td>
             <td>
-              <button @click="editarProduto(produto)" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+              <button @click="editarProduto(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="confirmarExclusao(produto)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+              <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
                   class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
@@ -234,5 +234,33 @@ export default {
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
+
+.button-container {
+  text-align: left; 
+  margin-bottom: 20px; 
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #4CAF50; /* Adiciona uma borda verde na parte inferior */
+}
+
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.btn-acoes i {
+  color: #4CAF50;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px; 
+}
+
 </style>

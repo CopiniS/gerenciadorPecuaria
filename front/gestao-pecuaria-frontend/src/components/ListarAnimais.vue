@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="d-flex justify-content-end mb-3">
-      <button @click="resetForm(); preencheListas()" type="button" class="btn btn-primary" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar</button>
-    </div>
     <h2>Lista de Animais</h2>
     <div class="table-container">
-      <table class="table table-striped">
-        <thead>
+      <div class="button-container">
+    <button @click="resetForm(); preencheListas()" type="button" class="btn btn-success" data-bs-toggle="modal"
+      data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Adicionar</button>
+  </div>
+      <table class="table table-bordered">
+        <thead >
           <tr>
             <th scope="col">Brinco</th>
             <th scope="col">Data Nascimento</th>
@@ -18,6 +18,7 @@
             <th scope="col">Observações</th>
             <th scope="col">Piquete</th>
             <th scope="col">status</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -32,15 +33,18 @@
             <td>{{ animal.piquete }}</td>
             <td>{{ animal.status }}</td>
             <td>
-              <button @click="editarAnimal(animal); preencheListas()" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="editarAnimal(animal)" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
-            </td>
+  <div class="button-group">
+    <button @click="editarAnimal(animal); preencheListas()" class="btn-acoes" data-bs-toggle="modal"
+      data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+    <button @click="editarAnimal(animal)" class="btn-acoes" data-bs-toggle="modal"
+      data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+  </div>
+</td>
+
           </tr>
         </tbody>
       </table>
-    </div>
+  </div>
 
     <!-- Modal de Cadastro -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
@@ -462,5 +466,33 @@ export default {
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
+
+.button-container {
+  text-align: left; 
+  margin-bottom: 20px; 
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #4CAF50; /* Adiciona uma borda verde na parte inferior */
+}
+
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.btn-acoes i {
+  color: #4CAF50;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px; 
+}
+
 </style>

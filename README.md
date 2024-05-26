@@ -36,7 +36,7 @@ Para habilitar a execução de scripts toda vez antes de habilitar a venv, digit
 
 	Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
  
-Depois execute o passo 5 novamente;
+Depois execute o passo 5 novamente ;
 
 ### Django
 1- Instalar o Django com a venv ativada, usando o comando: 

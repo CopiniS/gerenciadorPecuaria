@@ -64,7 +64,7 @@ Agora os comandos:
 
 6- Dentro da pasta "apps" criar uma nova aplicação "users", sendo ela a aplicação para o controle de usuários (produtores) do projeto, usando o comando:
 
-	python manage.py startapp users
+	python ../manage.py startapp users
 
 ### Banco de dados
 

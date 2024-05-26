@@ -173,7 +173,10 @@ Para preparar as migrações, usar o comando:
 Para migrar os dados para o banco, usar o comando:
 
 	python manage.py migrate
- 	
+
+Para criar as triggers e funções do estoque:
+- abra o arquivo sql na pagina inicial do git, e execute os comandos em uma aba no Postgre.
+
 ### Fazer pushs para o repositório remoto
 
 1- Para mandar alterações locais ao repositório remoto: 

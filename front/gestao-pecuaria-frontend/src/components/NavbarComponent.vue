@@ -32,15 +32,8 @@
                 </ul>
               </li>
               <hr>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fas fa-shopping-cart"></i> Compra
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/CompraProdutoAlimenticios"><i class="fas fa-apple-alt"></i> Compra Produto Alimenticio</a></li>
-                  <hr>
-                  <li><a class="dropdown-item" href="/CompraProdutoSanitarios"><i class="fas fa-pump-soap"></i> Compra Produto Sanitario</a></li>
-                </ul>
+              <li class="nav-item">
+                <a href="/compraprodutos" class="nav-link"><i class="fas fa-box" ></i> Compra de produtos</a>
               </li>
               <hr>
               <li class="nav-item">

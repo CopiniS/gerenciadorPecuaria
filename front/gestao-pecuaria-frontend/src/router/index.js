@@ -12,8 +12,7 @@ import PerfilProdutor from '@/components/PerfilProdutor.vue';
 import TelaVeterinarios from '@/views/TelaVeterinarios.vue';
 import TelaProdutos from '@/views/TelaProdutos.vue';
 import TelaPesagens from '@/views/TelaPesagens.vue';
-import TelaCompraProdutosAlimenticios from '@/views/TelaCompraProdutosAlimenticios.vue';
-import TelaCompraProdutosSanitarios from '@/views/TelaCompraProdutosSanitarios.vue';
+import TelaCompraProdutos from '@/views/TelaCompraProdutos.vue';
 import TelaSuplementacao from '@/views/TelaSuplementacao.vue';
 import TelaFotosAnimais from '@/views/TelaFotosAnimais.vue';
 
@@ -79,7 +78,7 @@ const routes = [
     component: TelaVeterinarios, 
   },
   {
-    path: '/Produtos',
+    path: '/produtos',
     name: 'TelaProdutos',
     component: TelaProdutos, 
   },
@@ -89,14 +88,9 @@ const routes = [
     component: TelaPesagens 
   },
   {
-    path: '/CompraProdutoAlimenticios',
-    name: 'TelaCompraProdutosAlimenticios',
-    component: TelaCompraProdutosAlimenticios 
-  },
-  {
-    path: '/CompraProdutoSanitarios',
-    name: 'TelaCompraProdutosSanitarios',
-    component: TelaCompraProdutosSanitarios
+    path: '/compraprodutos',
+    name: 'TelaCompraProdutos',
+    component: TelaCompraProdutos
   },
   {
     path: '/Suplementacao',

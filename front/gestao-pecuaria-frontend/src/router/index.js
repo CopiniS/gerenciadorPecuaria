@@ -10,8 +10,7 @@ import CadastroPropriedade from '@/components/CadastroPropriedade.vue';
 import InicialView from '@/views/InicialView.vue';
 import PerfilProdutor from '@/components/PerfilProdutor.vue';
 import TelaVeterinarios from '@/views/TelaVeterinarios.vue';
-import TelaProdutosSanitarios from '@/views/TelaProdutosSanitarios.vue';
-import TelaProdutosAlimenticios from '@/views/TelaProdutosAlimenticios.vue';
+import TelaProdutos from '@/views/TelaProdutos.vue';
 import TelaPesagens from '@/views/TelaPesagens.vue';
 import TelaCompraProdutosAlimenticios from '@/views/TelaCompraProdutosAlimenticios.vue';
 import TelaCompraProdutosSanitarios from '@/views/TelaCompraProdutosSanitarios.vue';
@@ -80,14 +79,9 @@ const routes = [
     component: TelaVeterinarios, 
   },
   {
-    path: '/ProdutosSanitarios',
-    name: 'TelaProdutosSanitarios',
-    component: TelaProdutosSanitarios, 
-  },
-  {
-    path: '/ProdutosAlimenticios',
-    name: 'TelaProdutosAlimenticios',
-    component: TelaProdutosAlimenticios, 
+    path: '/Produtos',
+    name: 'TelaProdutos',
+    component: TelaProdutos, 
   },
   {
     path: '/Pesagens',

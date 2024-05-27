@@ -38,19 +38,12 @@
                 </ul>
               </li>
               <hr>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fas fa-box"></i> Produtos
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/ProdutosSanitarios"><i class="fas fa-pump-soap"></i> Produtos Sanitarios</a></li>
-                  <hr>
-                  <li><a class="dropdown-item" href="/ProdutosAlimenticios"><i class="fas fa-apple-alt"></i> Produtos Alimenticios</a></li>
-                </ul>
+              <li class="nav-item">
+                <router-link to="/produtos" class="nav-link"><i class="fas fa-paw"></i> Produtos</router-link>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/animais" class="nav-link"><i class="fas fa-paw"></i> Animal</router-link>
+                <router-link to="/animais" class="nav-link"><i class="fas fa-paw"></i> Animais</router-link>
               </li>
               <hr>
               <li class="nav-item">
@@ -58,7 +51,7 @@
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/raca" class="nav-link"><i class="fas fa-dna"></i> Raça</router-link>
+                <router-link to="/raca" class="nav-link"><i class="fas fa-dna"></i> Raças</router-link>
               </li>
               <hr>
               <li class="nav-item">
@@ -66,7 +59,7 @@
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/Veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinario</router-link>
+                <router-link to="/Veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</router-link>
               </li>
               <hr>
               <li class="nav-item">
@@ -74,7 +67,7 @@
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/Suplementacao" class="nav-link"><i class="fas fa-capsules"></i> Suplementação</router-link>
+                <router-link to="/Suplementacoes" class="nav-link"><i class="fas fa-capsules"></i> Suplementações</router-link>
               </li>
               <hr>
             </ul>

@@ -79,7 +79,7 @@
                 <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
                 <select v-model="formData.sexo" class="form-select" id="sexo" aria-label="Sexo" required
                   placeholder="Selecione o sexo">
-                  <option disabled selected>Selecione o sexo</option>
+                  <option disabled value="">Selecione o sexo</option>
                   <option value="macho">Macho</option>
                   <option value="femea">Fêmea</option>
                 </select>

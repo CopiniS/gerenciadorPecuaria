@@ -1,39 +1,43 @@
 <template>
   <div>
-    <h2>Lista de Produtos Alimentícios</h2>
+    <h2>Lista de Produtos</h2>
     <div class="table-container">
     <div class="button-container">
       <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto Alimentício</button>
+        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto</button>
     </div>
       <table class="table table-bordered">
         <thead>
           <tr>
             <th scope="col">Nome</th>
             <th scope="col">Tipo</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Estoque</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(produto, index) in produtos" :key="index">
             <td>{{ produto.nome }}</td>
             <td>{{ produto.tipo }}</td>
+            <td>{{ produto.categoria }}</td>
+            <td>{{ produto.estoque }}</td>
             <td>
               <button @click="editarProduto(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+              <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+                  class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Modal de Cadastro de Produto Alimentício -->
+    <!-- Modal de Cadastro de Produto -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Produto Alimentício</h1>
+            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Produto</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -43,8 +47,26 @@
                 <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
               </div>
               <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
+                  placeholder="Selecione o tipo" required>
+                  <option disabled value="">Tipo</option>
+                  <option value="sanitario">Sanitário</option>
+                  <option value="alimenticio">Alimentício</option>
+              </select>
+              </div>
+              <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <input v-model="formData.tipo" type="text" class="form-control" id="tipo" placeholder="Tipo" required>
+                <input v-model="formData.categoria" type="text" class="form-control" id="categoria" placeholder="Categoria" required>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                <textarea v-model="formData.descricao" class="form-control" id="descricao"
+                  placeholder="Descrição"></textarea>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                <input v-model="formData.estoque" type="text" class="form-control" id="estoque" placeholder="Estoque" required>
               </div>
             </form>
           </div>
@@ -56,31 +78,45 @@
       </div>
     </div>
 
-    <!-- Modal de Edição de Produto Alimentício -->
+    <!-- Modal de Edição de Produto -->
     <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Produto Alimentício</h1>
+            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Produto</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome"
-                  required>
+                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome" required>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <select v-model="formData.tipo" class="form-select" id="tipoEditar" aria-label="Tipo"
+                  placeholder="Selecione o tipo" required>
+                  <option value="sanitario">Sanitário</option>
+                  <option value="alimenticio">Alimentício</option>
+              </select>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <input v-model="formData.tipo" type="text" class="form-control" id="tipoEditar" placeholder="Tipo"
-                  required>
+                <input v-model="formData.categoria" type="text" class="form-control" id="categoriaEditar" placeholder="Categoria" required>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                <textarea v-model="formData.descricao" class="form-control" id="descricaoEditar"
+                  placeholder="Descrição"></textarea>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                <input v-model="formData.estoque" type="text" class="form-control" id="estoqueEditar" placeholder="Estoque" required>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              Cancelar</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
           </div>
         </div>
@@ -97,7 +133,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir este produto Alimentício?
+            Tem certeza de que deseja excluir este produto?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -114,7 +150,7 @@
 import api from '/src/interceptadorAxios'
 
 export default {
-  name: 'TelaProdutosAlimenticios',
+  name: 'TelaProdutos',
   data() {
     return {
       produtos: [],
@@ -122,28 +158,36 @@ export default {
         id: null,
         nome: '',
         tipo: '',
+        categoria: '',
+        descricao: '',
+        estoque: '',
       },
-      modalTitle: 'Cadastro de Produto Alimenticio',
+      modalTitle: 'Cadastro de Produto',
     }
   },
   mounted() {
-    this.buscarProdutosAlimenticiosDaApi();
+    this.buscarProdutosDaApi();
   },
   methods: {
-    async buscarProdutosAlimenticiosDaApi() {
+    async buscarProdutosDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/produtos-alimenticios/');
+        const response = await api.get('http://127.0.0.1:8000/produtos/' , {
+          // Parâmetros da requisição (se houver)
+        });
         this.produtos = response.data;
       } catch (error) {
-        console.error('Erro ao buscar produtos Alimentícios da API:', error);
+        console.error('Erro ao buscar produtos da API:', error);
       }
     },
     editarProduto(produto) {
-      this.modalTitle = 'Editar Produto Alimenticio';
+      this.modalTitle = 'Editar Produto';
       this.formData = {
         id: produto.id,
         nome: produto.nome,
         tipo: produto.tipo,
+        categoria: produto.categoria,
+        descricao:produto.descricao,
+        estoque: produto.estoque,
       };
     },
     resetForm() {
@@ -151,8 +195,11 @@ export default {
         id: null,
         nome: '',
         tipo: '',
+        categoria: '',
+        descricao: '',
+        estoque: '',
       };
-      this.modalTitle = 'Cadastro de Produto Alimenticio';
+      this.modalTitle = 'Cadastro de Produto';
     },
     fecharModal(modalId) {
       var closeButton = document.getElementById(modalId).querySelector('.btn-close');
@@ -162,43 +209,53 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    
     confirmarExclusao(produto) {
       this.formData = {
         id: produto.id,
         nome: produto.nome,
         tipo: produto.tipo,
+        categoria: produto.categoria,
+        descricao:produto.descricao,
+        estoque: produto.estoque,
       };
     },
     async apagarProduto() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/produtos-alimenticios/${this.formData.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, {
+        });
 
         if (response.status === 204) {
-          alert('Produto Alimenticio apagado com sucesso!');
-          this.buscarProdutosAlimenticiosDaApi();
+          alert('Produto apagado com sucesso!');
+          this.buscarProdutosDaApi();
         } else {
-          alert('Erro ao apagar produto Alimenticio. Tente novamente mais tarde.');
+          alert('Erro ao apagar produto. Tente novamente mais tarde.');
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.fecharModal("cadastroModal");
+      this.fecharModal("confirmacaoExclusaoModal");
+    },
+
+    async verificaEstoqueVazio(){
+      if(this.formData.estoque === ''){
+        this.formData.estoque = 0;
+      }
     },
     
-
     async submitForm() {
-      if (this.modalTitle === 'Cadastro de Produto Alimenticio') {
+      this.verificaEstoqueVazio();
+      if (this.modalTitle === 'Cadastro de Produto') {
         try {
-          const response = await api.post('http://127.0.0.1:8000/produtos-alimenticios/', this.formData);
+          const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {
+          });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
-            this.buscarProdutosAlimenticiosDaApi();
+            this.buscarProdutosDaApi();
           } else {
-            alert('Erro ao cadastrar produto sanitário. Tente novamente mais tarde.');
+            alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
@@ -207,12 +264,13 @@ export default {
         this.fecharModal("cadastroModal");
       } else {
         try {
-          const response = await api.patch(`http://127.0.0.1:8000/produtos-alimenticios/${this.formData.id}/`, this.formData);
+          const response = await api.patch(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, this.formData, {
+          });
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
-            this.buscarProdutosAlimenticiosDaApi();
+            this.buscarProdutosDaApi();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }

@@ -3,30 +3,30 @@
 -- Função para atualizar o estoque após o insert da compra
 CREATE OR REPLACE FUNCTION trigger_inserir_compraproduto() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
-    SET estoque = estoque + NEW.quantidadeComprada
+    UPDATE core_produto
+    SET estoque = estoque + NEW."quantidadeComprada"
     WHERE id = NEW.produto_id;
-    RETURN NEW;
+	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 -- Função para atualizar o estoque após o delete da compra
 CREATE OR REPLACE FUNCTION trigger_excluir_compraproduto() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
-    SET estoque = estoque - OLD.quantidadeComprada
+    UPDATE core_produto
+    SET estoque = estoque - OLD."quantidadeComprada"
     WHERE id = OLD.produto_id;
-    RETURN OLD;
+	RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
 --Função para atualizar o estoque após o update da compra
 CREATE OR REPLACE FUNCTION trigger_atualizar_compraproduto() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
-    SET estoque = estoque - OLD.quantidadeComprada + NEW.quantidadeComprada
+    UPDATE core_produto
+    SET estoque = estoque - OLD."quantidadeComprada" + NEW."quantidadeComprada"
     WHERE id = NEW.produto_id;
-    RETURN NEW;
+	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -55,30 +55,30 @@ EXECUTE FUNCTION trigger_atualizar_compraproduto();
 -- Função para atualizar o estoque após o insert da suplementacao
 CREATE OR REPLACE FUNCTION trigger_inserir_suplementacao() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
+    UPDATE core_produto
     SET estoque = estoque - NEW.quantidade
     WHERE id = NEW.produto_id;
-    RETURN NEW;
+	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 -- Função para atualizar o estoque após o delete da suplementação
 CREATE OR REPLACE FUNCTION trigger_excluir_suplementacao() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
+    UPDATE core_produto
     SET estoque = estoque + OLD.quantidade
     WHERE id = OLD.produto_id;
-    RETURN OLD;
+	RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
 --Função para atualizar o estoque após o update da compra
 CREATE OR REPLACE FUNCTION trigger_atualizar_suplementacao() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
+    UPDATE core_produto
     SET estoque = estoque + OLD.quantidade - NEW.quantidade
     WHERE id = NEW.produto_id;
-    RETURN NEW;
+	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -106,30 +106,30 @@ EXECUTE FUNCTION trigger_atualizar_suplementacao();
 -- Função para atualizar o estoque após o insert da aplicacaoProdutos
 CREATE OR REPLACE FUNCTION trigger_inserir_aplicacaoproduto() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
+    UPDATE core_produto
     SET estoque = estoque - NEW.dosagem
     WHERE id = NEW.produto_id;
-    RETURN NEW;
+	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 -- Função para atualizar o estoque após o delete da aplicacaoProdutos
 CREATE OR REPLACE FUNCTION trigger_excluir_aplicacaoproduto() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
+    UPDATE core_produto
     SET estoque = estoque + OLD.dosagem
     WHERE id = OLD.produto_id;
-    RETURN OLD;
+	RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
 -- Função para atualizar o estoque após o update da aplicacaoProdutos
 CREATE OR REPLACE FUNCTION trigger_atualizar_aplicacaoproduto() RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE produto
+    UPDATE core_produto
     SET estoque = estoque + OLD.dosagem - NEW.dosagem
     WHERE id = NEW.produto_id;
-    RETURN NEW;
+	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 

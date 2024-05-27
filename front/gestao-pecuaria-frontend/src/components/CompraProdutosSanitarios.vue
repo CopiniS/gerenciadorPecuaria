@@ -1,14 +1,16 @@
 <template>
   <div>
-    <h2>Compra de Produtos Sanitários</h2>
+    <h2>Histórico de Compras de Produtos</h2>
     <div class="table-container">
     <div class="button-container">
       <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Compra Produto Sanitário</button>
+        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Compra Produto</button>
     </div>
       <table class="table table-bordered">
         <thead>
           <tr>
+            <th scope="col">Data da compra</th>
+            <th scope="col">Produto</th>
             <th scope="col">Valor Unitário</th>
             <th scope="col">Quantidade Comprada</th>
             <th scope="col">Validade</th>
@@ -17,6 +19,8 @@
         </thead>
         <tbody>
           <tr v-for="(compra, index) in compras" :key="index">
+            <td>{{ compra.dataCompra }}</td>
+            <td>{{ compra.produto.nome }}</td>
             <td>{{ compra.valorUnitario }}</td>
             <td>{{ compra.quantidadeComprada }}</td>
             <td>{{ compra.validade }}</td>
@@ -32,16 +36,28 @@
       </table>
     </div>
 
-    <!-- Modal de Cadastro de Compra de Produto Sanitário -->
+    <!-- Modal de Cadastro de Compra de Produto -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Compra de Produto Sanitário</h1>
+            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Compras de Produtos</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input v-model="formData.dataCompra" type="date" class="form-control" id="dataCompra" required>
+              </div>
+              <div class="mb-3 input-group">
+                <input v-model="nomeDigitado" @input="filterProdutos" type="text" class="form-control" placeholder="Digite o produto...">
+              </div>
+              <div class="list-group" v-if="nomeDigitado && produtosFiltrados.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="produto in produtosFiltrados" :key="produto.id" @click="selectProduto(produto)">
+                  {{ produto.nome }}
+                </button>
+              </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                 <input v-model="formData.valorUnitario" type="number" class="form-control" id="valorUnitario" placeholder="Valor Unitário" required>
@@ -68,31 +84,43 @@
       </div>
     </div>
 
-    <!-- Modal de Edição de Compra de Produto Sanitário -->
+    <!-- Modal de Edição de Compra de Produto -->
     <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Compra de Produto Sanitário</h1>
+            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Compra de Produto </h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input v-model="formData.dataCompra" type="date" class="form-control" id="dataCompra" required>
+              </div>
+              <div class="mb-3 input-group">
+                <input v-model="nomeDigitado" @input="filterProdutos" type="text" class="form-control" placeholder="Digite o produto...">
+              </div>
+              <div class="list-group" v-if="nomeDigitado && produtosFiltrados.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="produto in produtosFiltrados" :key="produto.id" @click="selectProduto(produto)">
+                  {{ produto.nome }}
+                </button>
+              </div>
+              <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                <input v-model="formData.valorUnitario" type="number" class="form-control" id="valorUnitarioEditar" placeholder="Valor Unitário" required>
+                <input v-model="formData.valorUnitario" type="number" class="form-control" id="valorUnitario" placeholder="Valor Unitário" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                <input v-model="formData.quantidadeComprada" type="number" class="form-control" id="quantidadeCompradaEditar" placeholder="Quantidade Comprada" required>
+                <input v-model="formData.quantidadeComprada" type="number" class="form-control" id="quantidadeComprada" placeholder="Quantidade Comprada" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input v-model="formData.validade" type="date" class="form-control" id="validadeEditar" required>
+                <input v-model="formData.validade" type="date" class="form-control" id="validade" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
-                <input v-model="formData.lote" type="text" class="form-control" id="loteEditar" placeholder="Lote" required>
+                <input v-model="formData.lote" type="text" class="form-control" id="lote" placeholder="Lote" required>
               </div>
             </form>
           </div>
@@ -114,7 +142,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir esta compra de produto sanitário?
+            Tem certeza de que deseja excluir esta compra de produto?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -131,55 +159,87 @@
 import api from '/src/interceptadorAxios'
 
 export default {
-  name: 'TelaComprasSanitarios',
+  name: 'TelaComprasProdutos',
   data() {
     return {
       compras: [],
+      produtos: [],
+      produtosFiltrados: [],
+      nomeDigitado: '',
       formData: {
         id: null,
+        dataCompra: '',
+        produto: '',
         valorUnitario: '',
         quantidadeComprada: '',
         validade: '',
         lote: '',
       },
-      modalTitle: 'Cadastro de Compra de Produto Sanitário',
+      modalTitle: 'Cadastro de Compra de Produto',
     }
   },
   mounted() {
-    this.buscarComprasSanitariosDaApi();
+    this.buscarComprasDaApi();
+    this.buscarProdutos();
   },
   methods: {
-    async buscarComprasSanitariosDaApi() {
+    async buscarComprasDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/compras-sanitarios/');
+        const response = await api.get('http://127.0.0.1:8000/compras-produtos/');
         this.compras = response.data;
       } catch (error) {
-        console.error('Erro ao buscar compras de produtos sanitários da API:', error);
+        console.error('Erro ao buscar compras de produtos da API:', error);
       }
     },
+
+    async buscarProdutos(){
+      try {
+        const response = await api.get('http://127.0.0.1:8000/produtos/');
+        this.produtos = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar produtos da API:', error);
+      }
+    },
+
+    filterProdutos() {
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));
+    },
+    selectProduto(produto) {
+      this.nomeDigitado = produto.nome;
+      this.formData.produto = produto.id;
+      this.produtosFiltrados = [];
+    },
+
     editarCompra(compra) {
-      this.modalTitle = 'Editar Compra de Produto Sanitário';
+      this.modalTitle = 'Editar Compra de Produto';
       this.formData = {
         id: compra.id,
+        dataCompra: compra.dataCompra,
+        produto: compra.produto,
         valorUnitario: compra.valorUnitario,
         quantidadeComprada: compra.quantidadeComprada,
         validade: compra.validade,
         lote: compra.lote,
       };
+      this.nomeDigitado = compra.produto.nome;
     },
     resetForm() {
       this.formData = {
         id: null,
+        dataCompra: '',
+        produto: '',
         valorUnitario: '',
         quantidadeComprada: '',
         validade: '',
         lote: '',
       };
-      this.modalTitle = 'Cadastro de Compra de Produto Sanitário';
+      this.modalTitle = 'Cadastro de Compra de Produto';
     },
     confirmarExclusao(compra) {
       this.formData = {
         id: compra.id,
+        dataCompra: compra.dataCompra,
+        produto: compra.produto,
         valorUnitario: compra.valorUnitario,
         quantidadeComprada: compra.quantidadeComprada,
         validade: compra.validade,
@@ -188,19 +248,19 @@ export default {
     },
     async apagarCompra() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/compras-sanitarios/${this.formData.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/`);
 
         if (response.status === 204) {
-          alert('Compra de produto sanitário apagada com sucesso!');
-          this.buscarComprasSanitariosDaApi();
+          alert('Compra de produto apagada com sucesso!');
+          this.buscarComprasDaApi();
         } else {
-          alert('Erro ao apagar compra de produto sanitário. Tente novamente mais tarde.');
+          alert('Erro ao apagar compra de produto. Tente novamente mais tarde.');
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.fecharModal("edicaoModal");
+      this.fecharModal("confirmacaoExclusaoModal");
     },
 
     fecharModal(modalId) {
@@ -213,16 +273,16 @@ export default {
     },
     
     async submitForm() {
-      if (this.modalTitle === 'Cadastro de Compra de Produto Sanitário') {
+      if (this.modalTitle === 'Cadastro de Compra de Produto') {
         try {
-          const response = await api.post('http://127.0.0.1:8000/compras-sanitarios/', this.formData);
+          const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData);
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
-            this.buscarComprasSanitariosDaApi();
+            this.buscarComprasDaApi();
           } else {
-            alert('Erro ao cadastrar compra de produto sanitário. Tente novamente mais tarde.');
+            alert('Erro ao cadastrar compra de produto. Tente novamente mais tarde.');
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
@@ -230,12 +290,12 @@ export default {
         }
       } else {
         try {
-          const response = await api.patch(`http://127.0.0.1:8000/compras-sanitarios/${this.formData.id}/`, this.formData);
+          const response = await api.patch(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/`, this.formData);
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
-            this.buscarComprasSanitariosDaApi();
+            this.buscarComprasDaApi();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }

@@ -46,7 +46,7 @@
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-seedling"></i></span>
                 <select v-model="formData.tipoCultivo" class="form-select" id="tipoCultivo" aria-label="Tipo de Cultivo" required>
-                  <option disabled selected>Selecione o tipo de cultivo</option>
+                  <option disabled value="">Selecione o tipo de cultivo</option>
                   <option v-for="tipo in tiposCultivo" :key="tipo" :value="tipo">{{ tipo }}</option>
                 </select>
               </div>

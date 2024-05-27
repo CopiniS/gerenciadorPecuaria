@@ -50,6 +50,13 @@ class CompraProdutoSerializer(serializers.ModelSerializer):
         model = models.CompraProduto
         fields = "__all__"
 
+class CompraProdutosComProdutosSerializer(serializers.ModelSerializer):
+    produto = ProdutoSerializer(read_only=True)
+    
+    class Meta:
+        model = models.CompraProduto
+        fields = "__all__"
+
 class SuplementacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Suplementacao

@@ -302,7 +302,10 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+
+      this.fecharModal("cadastroModal");
     },
+
     formatarData(data) {
     const date = new Date(data);
     const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());

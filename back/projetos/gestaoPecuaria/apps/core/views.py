@@ -128,8 +128,10 @@ class CompraProdutoViewSet(viewsets.ModelViewSet):
     queryset = models.CompraProduto.objects.all()
     serializer_class = serializers.CompraProdutoSerializer
 
-    def get_queryset(self):
-        return models.CompraProduto.objects.filter(produto__produtor=self.request.user)
+    def list(self, request, *args, **kwargs):
+        queryset = models.CompraProduto.objects.filter(produto__produtor=self.request.user)
+        serializer = serializers.CompraProdutosComProdutosSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class SuplementacaoViewSet(viewsets.ModelViewSet):

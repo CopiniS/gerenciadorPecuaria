@@ -159,7 +159,7 @@ export default {
         nome: '',
         tipo: '',
         categoria: '',
-        descricao: '',
+        descricao: null,
         estoque: '',
       },
       modalTitle: 'Cadastro de Produto',
@@ -196,7 +196,7 @@ export default {
         nome: '',
         tipo: '',
         categoria: '',
-        descricao: '',
+        descricao: null,
         estoque: '',
       };
       this.modalTitle = 'Cadastro de Produto';

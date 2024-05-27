@@ -76,12 +76,12 @@
             <th scope="col">Brinco Mãe</th>
             <th scope="col">Observações</th>
             <th scope="col">Piquete</th>
-            <th scope="col">status</th>
-            <th scope="col"></th>
+            <th scope="col">Status</th>
+            <th scope="col">Ações</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(animal, index) in animais" :key="index">
+          <tr v-for="(animal, index) in animais" :key="index" :class="{'status-vivo': animal.status === 'vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente'}">
             <td>{{ animal.brinco }}</td>
             <td>{{ animal.dataNascimento }}</td>
             <td>{{ animal.sexo }}</td>
@@ -93,6 +93,7 @@
             <td>{{ animal.status }}</td>
             <td>
   <div class="button-group">
+    <button @click="abrirModalOcorrencia(animal)" class="btn-acoes" data-bs-toggle="modal" data-bs-target="#ocorrenciaModal"><i class="fas fa-plus"></i></button>
     <button @click="editarAnimal(animal); preencheListas()" class="btn-acoes" data-bs-toggle="modal"
       data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
     <button @click="editarAnimal(animal)" class="btn-acoes" data-bs-toggle="modal"
@@ -104,6 +105,39 @@
         </tbody>
       </table>
   </div>
+
+  <!-- Modal de Ocorrência -->
+<div class="modal fade" id="ocorrenciaModal" tabindex="-1" aria-labelledby="ocorrenciaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ocorrenciaModalLabel">Registrar Ocorrência</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form @submit.prevent="registrarOcorrencia">
+          <div class="mb-3">
+            <label for="dataOcorrencia" class="form-label">Data da Ocorrência</label>
+            <input type="date" class="form-control" id="dataOcorrencia" v-model="novaOcorrencia.dataOcorrencia" required>
+          </div>
+          <div class="mb-3">
+            <label for="tipoOcorrencia" class="form-label">Tipo da Ocorrência</label>
+            <select class="form-select" id="tipoOcorrencia" v-model="novaOcorrencia.tipoOcorrencia" required>
+              <option value="morte">Morte</option>
+              <option value="doença">Doença</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="descricaoOcorrencia" class="form-label">Descrição</label>
+            <textarea class="form-control" id="descricaoOcorrencia" v-model="novaOcorrencia.descricao" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Registrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- Modal de Cadastro -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
@@ -351,6 +385,11 @@ export default {
         piquete: '', 
         status: '', 
       },
+      novaOcorrencia: {
+      dataOcorrencia: '',
+      tipoOcorrencia: '',
+      descricao: ''
+    },
       modalTitle: 'Cadastro de Animal',
     }
   },
@@ -544,6 +583,58 @@ export default {
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
+    abrirModalOcorrencia(animal) {
+    // Limpar dados da ocorrência anterior
+    this.novaOcorrencia = {
+      dataOcorrencia: '',
+      tipoOcorrencia: '',
+      descricao: ''
+    };
+    // Definir animal relacionado à ocorrência
+    this.animalOcorrencia = animal;
+  },
+  async registrarOcorrencia() {
+    try {
+      // Enviar dados da ocorrência para a API
+      const response = await api.post(`http://127.0.0.1:8000/ocorrencias/`, {
+        animalId: this.animalOcorrencia.id,
+        dataOcorrencia: this.novaOcorrencia.dataOcorrencia,
+        tipoOcorrencia: this.novaOcorrencia.tipoOcorrencia,
+        descricao: this.novaOcorrencia.descricao
+      });
+      if (response.status === 201) {
+        alert('Ocorrência registrada com sucesso!');
+        // Se a ocorrência for de morte, atualizar data de baixa e status do animal
+        if (this.novaOcorrencia.tipoOcorrencia === 'morte') {
+          await this.atualizarStatusAnimal(this.animalOcorrencia.id);
+        }
+        // Atualizar lista de animais
+        this.buscarAnimaisDaApi();
+      } else {
+        alert('Erro ao registrar ocorrência. Tente novamente mais tarde.');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar requisição:', error);
+      alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+    }
+    this.fecharModal("ocorrenciaModal");
+  },
+  async atualizarStatusAnimal(animalId) {
+    try {
+      // Requisição PATCH para atualizar status e data de baixa do animal
+      const response = await api.patch(`http://127.0.0.1:8000/animais/${animalId}/`, {
+        status: 'morto',
+        dataBaixa: this.novaOcorrencia.dataOcorrencia // Atualiza a data de baixa com a data da ocorrência
+      });
+      if (response.status === 200) {
+        console.log('Status e data de baixa do animal atualizados com sucesso!');
+      } else {
+        console.error('Erro ao atualizar status e data de baixa do animal.');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar requisição:', error);
+    }
+  },
   }
 }
 </script>
@@ -583,5 +674,15 @@ export default {
   display: flex;
   gap: 10px; 
 }
+.status-vivo {
+  background-color: #d4edda; /* Verde claro para 'vivo' */
+}
 
+.status-morto {
+  background-color: #f8d7da; /* Vermelho claro para 'morto' */
+}
+
+.status-doente {
+  background-color: #fff3cd; /* Amarelo claro para 'doente' */
+}
 </style>

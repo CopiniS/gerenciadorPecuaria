@@ -2,7 +2,7 @@ from core import views
 from rest_framework import routers
 from django.urls import path, include
 
-
+#teste
 app_name = 'core'
 router = routers.DefaultRouter()
 router.register('propriedades', views.PropriedadeViewSet)

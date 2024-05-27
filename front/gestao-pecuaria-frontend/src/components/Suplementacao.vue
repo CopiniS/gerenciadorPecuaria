@@ -1,6 +1,48 @@
 <template>
-  <div>
     <h2>Suplementos</h2>
+    <div class="d-flex align-items-start table-container flex-column">
+      <div class="d-flex align-items-start">
+        <h2 class="me-3">Filtros</h2>
+        <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+      </div>
+      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+        <!-- Outros filtros existentes -->
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Produto</label>
+          <input type="text" class="form-control" id="produto" v-model="filtro.produto">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="lote" class="form-label me-2">Lote</label>
+          <input type="text" class="form-control" id="lote" v-model="filtro.lote">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="quantidade" class="form-label me-2">Quantidade</label>
+          <input type="number" class="form-control" id="quantidade" v-model="filtro.quantidade">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataInicial" class="form-label me-2">Data Inicial</label>
+          <input type="date" class="form-control" id="dataInicial" v-model="filtro.dataInicial">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataFinal" class="form-label me-2">Data Final</label>
+          <input type="date" class="form-control" id="dataFinal" v-model="filtro.dataFinal">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="status" class="form-label me-2">Status</label>
+          <select class="form-select" id="status" v-model="filtro.status">
+            <option value="">Todos</option>
+            <option value="Em andamento">Em andamento</option>
+            <option value="Finalizado">Finalizado</option>
+          </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+            <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+        </div>
+      </form>
+    </div>
+
+  <div>
     <div class="table-container">
       <div class="button-container">
         <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
@@ -211,6 +253,15 @@ export default {
         quantidade: '',
         dataInicial: '',
       },
+      mostrarFormulario: false,
+      filtro: {
+        produto: '',
+        lote: '',
+        quantidade: '',
+        dataInicial: '',
+        dataFinal: '',
+        status: ''
+      },
       modalTitle: 'Cadastro de Suplemento',
     }
   },
@@ -363,6 +414,22 @@ export default {
       };
       this.fecharModal
     },
+    aplicarFiltro() {
+      // Implementar a lógica para aplicar o filtro
+    },
+    limparFiltro() {
+      this.filtro = {
+        produto: '',
+        lote: '',
+        quantidade: '',
+        dataInicial: '',
+        dataFinal: '',
+        status: ''
+      };
+    },
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
   }
 };
 </script>
@@ -372,6 +439,7 @@ export default {
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;

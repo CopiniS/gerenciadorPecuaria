@@ -1,6 +1,33 @@
 <template>
+  <h2>Piquetes</h2>
+    <div class="d-flex align-items-start table-container flex-column">
+      <div class="d-flex align-items-start">
+        <h2 class="me-3">Filtros</h2>
+        <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+      </div>
+      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+        <div class="col-auto d-flex align-items-center">
+          <label for="nome" class="form-label me-2">Nome</label>
+          <input type="text" class="form-control" id="nome" v-model="filtro.nome">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="tipoCultivo" class="form-label me-2">Tipo de Cultivo</label>
+          <select class="form-select" id="tipoCultivo" v-model="filtro.tipoCultivo">
+            <option value="">Selecione o tipo</option>
+          </select>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="area" class="form-label me-2">Área</label>
+          <input type="number" class="form-control" id="area" v-model="filtro.area">
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+        </div>
+      </form>
+    </div>
+
   <div>
-    <h2>Lista de Piquetes</h2>
     <div class="table-container">
     <div class="button-container">
       <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
@@ -11,6 +38,7 @@
           <tr>
             <th scope="col">Nome</th>
             <th scope="col">Tipo de Cultivo</th>
+            <th scope="col">Área</th>
             <th scope="col">Ações</th>
           </tr>
         </thead>
@@ -138,6 +166,12 @@ export default {
         area: '',
         propriedade: localStorage.getItem('propriedadeSelecionada')
       },
+      mostrarFormulario: false,
+      filtro: {
+        nome: '',
+        tipoCultivo: '',
+        area: ''
+      },
       modalTitle: 'Cadastro de Piquete',
     }
   },
@@ -242,7 +276,20 @@ export default {
         }
          this.fecharModal("edicaoModal");
       }
-    }
+    },
+    aplicarFiltro() {
+      // Implementar a lógica para aplicar o filtro
+    },
+    limparFiltro() {
+      this.filtro = {
+        nome: '',
+        tipoCultivo: '',
+        area: ''
+      };
+    },
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
   }
 };
 </script>
@@ -253,6 +300,7 @@ export default {
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
+  margin-bottom: 20px; 
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;

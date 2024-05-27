@@ -1,5 +1,43 @@
 <template>
-  <div>
+    <div>
+    <h2>Compras</h2>
+    <div class="d-flex align-items-start table-container flex-column">
+      <div class="d-flex align-items-start">
+        <h2 class="me-3">Filtros</h2>
+        <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+      </div>
+      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataCompra" class="form-label me-2">Data da Compra</label>
+          <input type="date" class="form-control" id="dataCompra" v-model="filtro.dataCompra">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Produto</label>
+          <input type="text" class="form-control" id="produto" v-model="filtro.produto">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="valorUnitario" class="form-label me-2">Valor Unitário</label>
+          <input type="number" class="form-control" id="valorUnitario" v-model="filtro.valorUnitario">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="quantidadeComprada" class="form-label me-2">Quantidade Comprada</label>
+          <input type="number" class="form-control" id="quantidadeComprada" v-model="filtro.quantidadeComprada">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="validade" class="form-label me-2">Validade</label>
+          <input type="date" class="form-control" id="validade" v-model="filtro.validade">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="lote" class="form-label me-2">Lote</label>
+          <input type="text" class="form-control" id="lote" v-model="filtro.lote">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+            <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+        </div>
+      </form>
+    </div>
+
     <h2>Histórico de Compras de Produtos</h2>
     <div class="table-container">
     <div class="button-container">
@@ -175,6 +213,15 @@ export default {
         validade: '',
         lote: '',
       },
+      mostrarFormulario: false,
+      filtro: {
+        dataCompra: '',
+        produto: '',
+        valorUnitario: '',
+        quantidadeComprada: '',
+        validade: '',
+        lote: ''
+      },
       modalTitle: 'Cadastro de Compra de Produto',
     }
   },
@@ -305,7 +352,21 @@ export default {
         }
         this.fecharModal("edicaoModal");
       }
-    }
+    },
+    aplicarFiltro() {
+      // Implementar a lógica para aplicar o filtro
+    },
+    limparFiltro() {
+      this.filtro.dataCompra ='';
+      this.filtro.produto ='';
+      this.filtro.valorUnitario ='';
+      this.filtro.quantidadeComprada ='';
+      this.filtro.validade ='';
+      this.filtro.lote ='';
+    },
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
   }
 };
 </script>

@@ -1,6 +1,65 @@
 <template>
+  <h2>Animais</h2>
+  <div class="d-flex align-items-start table-container flex-column">
+      <div class="d-flex align-items-start">
+        <h2 class="me-3">Filtros</h2>
+        <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+      </div>
+      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+        <div class="col-auto d-flex align-items-center">
+          <label for="brinco" class="form-label me-2">Brinco</label>
+          <input type="text" class="form-control" id="brinco" v-model="filtro.brinco">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
+          <input type="date" class="form-control" id="dataNascimento" v-model="filtro.dataNascimento">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="sexo" class="form-label me-2">Sexo</label>
+          <select class="form-select" id="sexo" v-model="filtro.sexo">
+            <option value="">Selecione o sexo</option>
+            <option value="macho">Macho</option>
+            <option value="femea">Fêmea</option>
+          </select>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="raca" class="form-label me-2">Raça</label>
+          <input type="text" class="form-control" id="raca" v-model="filtro.raca">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="brincoPai" class="form-label me-2">Brinco Pai</label>
+          <input type="text" class="form-control" id="brincoPai" v-model="filtro.brincoPai">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="brincoMae" class="form-label me-2">Brinco Mãe</label>
+          <input type="text" class="form-control" id="brincoMae" v-model="filtro.brincoMae">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="observacoes" class="form-label me-2">Observações</label>
+          <input type="text" class="form-control" id="observacoes" v-model="filtro.observacoes">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="piquete" class="form-label me-2">Piquete</label>
+          <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="status" class="form-label me-2">Status</label>
+          <select class="form-select" id="status" v-model="filtro.status">
+            <option value="">Selecione o status</option>
+            <option value="morto">Morto</option>
+            <option value="vivo">Vivo</option>
+            <option value="desaparecido">Desaparecido</option>
+            <option value="vendido">vendido</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+        </div>
+      </form>
+    </div>
+
   <div>
-    <h2>Lista de Animais</h2>
     <div class="table-container">
       <div class="button-container">
     <button @click="resetForm(); preencheListas()" type="button" class="btn btn-success" data-bs-toggle="modal"
@@ -280,6 +339,18 @@ export default {
         observacoes: '',
         dataBaixa: null
       },
+      mostrarFormulario: false,
+      filtro: {
+        brinco: '',
+        dataNascimento: '',
+        sexo: '',
+        raca: '',
+        brincoPai: '', 
+        brincoMae: '', 
+        observacoes: '', 
+        piquete: '', 
+        status: '', 
+      },
       modalTitle: 'Cadastro de Animal',
     }
   },
@@ -455,7 +526,24 @@ export default {
     selectMae(animal) {
       this.formData.brincoMae = animal.brinco;
       this.femeasFiltradas = [];
-    }
+    },
+    aplicarFiltro() {
+      // Implementar a lógica para aplicar o filtro
+    },
+    limparFiltro() {
+      this.filtro.brinco ='';
+      this.filtro.dataNascimento ='';
+      this.filtro.sexo ='';
+      this.filtro.raca ='';
+      this.filtro.brincoPai ='';
+      this.filtro.brincoMae =''; 
+      this.filtro.observacoes =''; 
+      this.filtro.piquete =''; 
+      this.filtro.status =''; 
+    },
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
   }
 }
 </script>
@@ -466,6 +554,7 @@ export default {
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;

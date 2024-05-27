@@ -6,17 +6,22 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <a class="navbar-brand" href="#">Nome da Aplicação</a>
+        <a class="navbar-brand" href="#">Propriedade atual</a>
         <div class="offcanvas offcanvas-start text-bg-dark custom-offcanvas justify-content-center" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
           <div class="offcanvas-header">
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
+              <li class="nav-item">
+                <a href="/inicio" class="nav-link"><i class="fas fa-home" ></i> Home</a>
+              </li>
+              <hr>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fas fa-home"></i> Propriedade
+                  <i class="fas fa-landmark"></i> Propriedade
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu justify-content-center">
                   <li><a class="dropdown-item" href="/propriedade"><i class="fas fa-edit"></i> Editar Propriedade</a></li>
                   <hr>
                   <li><a class="dropdown-item" href="/propriedades"><i class="fas fa-exchange-alt"></i> Trocar de Propriedade</a></li>
@@ -39,35 +44,35 @@
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/produtos" class="nav-link"><i class="fas fa-paw"></i> Produtos</router-link>
+                <a href="/produtos" class="nav-link"><i class="fas fa-box" ></i> Produtos</a>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/animais" class="nav-link"><i class="fas fa-paw"></i> Animais</router-link>
+                <a href="/animais" class="nav-link"><i class="fas fa-paw"></i> Animais</a>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/ListarFotosAnimais" class="nav-link"><i class="fas fa-paw"></i> Fotos Animais</router-link>
+                <a href="/ListarFotosAnimais" class="nav-link"><i class="fas fa-image"></i> Fotos Animais</a>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/raca" class="nav-link"><i class="fas fa-dna"></i> Raças</router-link>
+                <a href="/raca" class="nav-link"><i class="fas fa-dna"></i> Raças</a>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/piquetes" class="nav-link"><i class="fas fa-layer-group"></i> Piquetes</router-link>
+                <a href="/piquetes" class="nav-link"><i class="fas fa-layer-group"></i> Piquetes</a>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/Veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</router-link>
+                <a href="/Veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</a>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/Pesagens" class="nav-link"><i class="fas fa-weight"></i> Pesagens</router-link>
+                <a href="/Pesagens" class="nav-link"><i class="fas fa-weight"></i> Pesagens</a>
               </li>
               <hr>
               <li class="nav-item">
-                <router-link to="/Suplementacoes" class="nav-link"><i class="fas fa-capsules"></i> Suplementações</router-link>
+                <a href="/Suplementacao" class="nav-link"><i class="fas fa-capsules"></i> Suplementações</a>
               </li>
               <hr>
             </ul>
@@ -78,7 +83,7 @@
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="/meuperfil"><i class="fas fa-user-circle"></i> Meu perfil</a></li>
                 <li>
-                  <router-link to="#" class="dropdown-item" @click.prevent="confirmAction"><i class="fas fa-sign-out-alt"></i> Sair</router-link>
+                  <a href="#" class="dropdown-item" @click.prevent="confirmAction"><i class="fas fa-sign-out-alt"></i> Sair</a>
                 </li>
               </ul>
             </li>
@@ -187,6 +192,11 @@ a {
 }
 
 .dropdown-item:hover {
+  background-color: #2b8824 !important; /* Fundo mais claro no hover */
+  color: #e5ffd8 !important; /* Cor das letras no hover */
+}
+
+.nav-item:hover {
   background-color: #157f0d !important; /* Fundo mais claro no hover */
   color: #e5ffd8 !important; /* Cor das letras no hover */
 }

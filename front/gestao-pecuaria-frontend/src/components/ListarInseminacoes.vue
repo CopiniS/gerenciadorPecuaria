@@ -329,7 +329,7 @@ export default {
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
-            this.buscarAnimaisDaApi();
+            this.buscarInseminacoesDaApi();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }

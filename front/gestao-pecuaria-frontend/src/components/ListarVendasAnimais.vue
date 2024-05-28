@@ -294,6 +294,7 @@ export default {
         finalidade: '',
         observacao: null,
       };
+      this.brinco = '',
       this.modalTitle = 'Cadastro de Venda';
     },
     fecharModal(modalId) {

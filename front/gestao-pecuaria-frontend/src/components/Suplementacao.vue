@@ -96,11 +96,6 @@
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidade"
-                  placeholder="Quantidade" required>
-              </div>
-              <div class="mb-3 input-group">
                 <input v-model="nomeProduto" @input="filtrarProdutos" type="text" class="form-control"
                   placeholder="Digite o nome do produto...">
               </div>
@@ -110,10 +105,14 @@
                   {{ produto.nome }}
                 </button>
               </div>
-
               <div class="mb-3 input-group">
                 <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
-                  placeholder="Digite o número do piquete...">
+                  placeholder="Digite o nome do piquete...">
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidade"
+                  placeholder="Quantidade" required>
               </div>
               <div class="list-group" v-if="piquete && filteredPiquetes.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
@@ -147,11 +146,6 @@
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidadeEditar"
-                  placeholder="Quantidade" required>
-              </div>
-              <div class="mb-3 input-group">
                 <input v-model="nomeProduto" @input="filtrarProdutos" type="text" class="form-control"
                   placeholder="Digite o nome do produto...">
               </div>
@@ -164,7 +158,12 @@
 
               <div class="mb-3 input-group">
                 <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
-                  placeholder="Digite o número do piquete...">
+                  placeholder="Digite o nome do piquete...">
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidadeEditar"
+                  placeholder="Quantidade" required>
               </div>
               <div class="list-group" v-if="piquete && filteredPiquetes.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"

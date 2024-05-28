@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Produtos</h2>
+    <h2>Vendas de animais</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -34,27 +34,33 @@
       <div class="table-container">
       <div class="button-container">
         <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-          data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto</button>
+          data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Venda</button>
       </div>
         <table class="table table-bordered">
           <thead>
             <tr>
-              <th scope="col">Nome</th>
-              <th scope="col">Tipo</th>
-              <th scope="col">Categoria</th>
-              <th scope="col">Estoque</th>
+              <th scope="col">Data da venda</th>
+              <th scope="col">Animal</th>
+              <th scope="col">Peso</th>
+              <th scope="col">Preco KG</th>
+              <th scope="col">Valor Total</th>
+              <th scope="col">Finalidade</th>
+              <th scope="col">Observação</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(produto, index) in produtos" :key="index">
-              <td>{{ produto.nome }}</td>
-              <td>{{ produto.tipo }}</td>
-              <td>{{ produto.categoria }}</td>
-              <td>{{ produto.estoque }}</td>
+            <tr v-for="(venda, index) in vendas" :key="index">
+              <td>{{ venda.dataVenda }}</td>
+              <td>{{ venda.animal }}</td>
+              <td>{{ venda.peso }}</td>
+              <td>{{ venda.precoKg }}</td>
+              <td>{{ venda.valorTotal }}</td>
+              <td>{{ venda.finalidade }}</td>
+              <td>{{ venda.observacao }}</td>
               <td>
-                <button @click="editarProduto(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                <button @click="editarVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal"
                   data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-                <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+                <button @click="confirmarExclusao(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
                     class="fas fa-trash-alt"></i></button>
               </td>
             </tr>
@@ -62,41 +68,56 @@
         </table>
       </div>
 
-      <!-- Modal de Cadastro de Produto -->
+      <!-- Modal de Cadastro de Venda -->
       <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Produto</h1>
+              <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Venda</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
+                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    <input v-model="formData.dataVenda" type="date" class="form-control" id="dataVenda"
+                    placeholder="Data da Venda" required>
+                </div>
+                <div class="mb-3 input-group">
+                    <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
+                </div>
+                <div class="list-group" v-if="brinco && animaisFiltrados.length">
+                    <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
+                    {{ animal.brinco }}
+                    </button>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
+                  <input v-model="formData.peso" type="text" class="form-control" id="peso" placeholder="Peso" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal" placeholder="Valor Total" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
                     placeholder="Selecione o tipo" required>
-                    <option disabled value="">Tipo</option>
-                    <option value="sanitario">Sanitário</option>
-                    <option value="alimenticio">Alimentício</option>
+                    <option disabled value="">Finalidade</option>
+                    <option value="Cria">Cria</option>
+                    <option value="Recria">Recria</option>
+                    <option value="Engorda">Engorda</option>
+                    <option value="Abate">Abate</option>
                 </select>
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.categoria" type="text" class="form-control" id="categoria" placeholder="Categoria" required>
-                </div>
-                <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                  <textarea v-model="formData.descricao" class="form-control" id="descricao"
-                    placeholder="Descrição"></textarea>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.estoque" type="text" class="form-control" id="estoque" placeholder="Estoque" required>
+                  <textarea v-model="formData.observacao" class="form-control" id="observacao"
+                    placeholder="Observação"></textarea>
                 </div>
               </form>
             </div>
@@ -113,7 +134,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Produto</h1>
+              <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Venda</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -183,14 +204,20 @@ export default {
   name: 'TelaProdutos',
   data() {
     return {
-      produtos: [],
+      animais: [],
+      animaisFiltrados: [],
+      brinco: '',
+      vendas: [],
+      camposHabilitados: false,
       formData: {
         id: null,
-        nome: '',
-        tipo: '',
-        categoria: '',
-        descricao: null,
-        estoque: '',
+        animal: '',
+        dataVenda: '',
+        peso: '',
+        precoKg: '',
+        valorTotal: '',
+        finalidade: '',
+        observacao: null,
       },
       mostrarFormulario: false,
       filtro: {
@@ -198,44 +225,76 @@ export default {
         tipo: '',
         categoria: ''
       },
-      modalTitle: 'Cadastro de Produto',
+      modalTitle: 'Cadastro de Venda',
     }
   },
   mounted() {
-    this.buscarProdutosDaApi();
+    this.buscarVendasDaApi();
+    this.buscarAnimaisDaApi();
   },
   methods: {
-    async buscarProdutosDaApi() {
+    async buscarVendasDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/produtos/' , {
-          // Parâmetros da requisição (se houver)
+        const response = await api.get('http://127.0.0.1:8000/vendas-animais/' , {
+          params: {
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+            },
         });
-        this.produtos = response.data;
+        this.vendas = response.data;
       } catch (error) {
-        console.error('Erro ao buscar produtos da API:', error);
+        console.error('Erro ao buscar vendas da API:', error);
       }
     },
-    editarProduto(produto) {
-      this.modalTitle = 'Editar Produto';
+
+    async buscarAnimaisDaApi() {
+        try {
+            const response = await api.get('http://127.0.0.1:8000/animais/' , {
+            params: {
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+            },
+            });
+            this.animais = response.data;
+        } catch (error) {
+            console.error('Erro ao buscar animais da API:', error);
+        }
+    },
+
+    filterAnimais() {
+        this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
+    },
+
+    selectAnimal(animal) {
+        this.brinco = animal.brinco;
+        this.formData.animal = animal.id;
+        this.camposHabilitados = true;
+        this.animaisFiltrados = [];
+    },
+
+    editarVenda(venda) {
+      this.modalTitle = 'Editar Venda';
       this.formData = {
-        id: produto.id,
-        nome: produto.nome,
-        tipo: produto.tipo,
-        categoria: produto.categoria,
-        descricao:produto.descricao,
-        estoque: produto.estoque,
+        id: venda.id,
+        animal: venda.animal,
+        dataVenda: venda.dataVenda,
+        peso: venda.peso,
+        precoKg: venda.precoKg,
+        valorTotal: venda.valorTotal,
+        finalidade: venda.finalidade,
+        observacao: venda.observacao,
       };
     },
     resetForm() {
       this.formData = {
         id: null,
-        nome: '',
-        tipo: '',
-        categoria: '',
-        descricao: null,
-        estoque: '',
+        animal: '',
+        dataVenda: '',
+        peso: '',
+        precoKg: '',
+        valorTotal: '',
+        finalidade: '',
+        observacao: null,
       };
-      this.modalTitle = 'Cadastro de Produto';
+      this.modalTitle = 'Cadastro de Venda';
     },
     fecharModal(modalId) {
       var closeButton = document.getElementById(modalId).querySelector('.btn-close');
@@ -245,26 +304,28 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    confirmarExclusao(produto) {
+    confirmarExclusao(venda) {
       this.formData = {
-        id: produto.id,
-        nome: produto.nome,
-        tipo: produto.tipo,
-        categoria: produto.categoria,
-        descricao:produto.descricao,
-        estoque: produto.estoque,
+        id: venda.id,
+        animal: venda.animal,
+        dataVenda: venda.dataVenda,
+        peso: venda.peso,
+        precoKg: venda.precoKg,
+        valorTotal: venda.valorTotal,
+        finalidade: venda.finalidade,
+        observacao: venda.observacao,
       };
     },
     async apagarProduto() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, {
+        const response = await api.delete(`http://127.0.0.1:8000/vendas-animais/${this.formData.id}/`, {
         });
 
         if (response.status === 204) {
-          alert('Produto apagado com sucesso!');
-          this.buscarProdutosDaApi();
+          alert('Venda apagada com sucesso!');
+          this.buscarVendasDaApi();
         } else {
-          alert('Erro ao apagar produto. Tente novamente mais tarde.');
+          alert('Erro ao apagar venda. Tente novamente mais tarde.');
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);
@@ -273,40 +334,33 @@ export default {
       this.fecharModal("confirmacaoExclusaoModal");
     },
 
-    async verificaEstoqueVazio(){
-      if(this.formData.estoque === ''){
-        this.formData.estoque = 0;
-      }
-    },
-    
     async submitForm() {
-      this.verificaEstoqueVazio();
-      if (this.modalTitle === 'Cadastro de Produto') {
+      if (this.modalTitle === 'Cadastro de Venda') {
         try {
-          const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {
+          const response = await api.post('http://127.0.0.1:8000/vendas-animais/', this.formData, {
           });
 
           if (response.status === 201) {
+            this.atualizarStatusAnimal(this.formData.animal)
             alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.buscarProdutosDaApi();
+            this.buscarVendasDaApi();
           } else {
-            alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
+            alert('Erro ao cadastrar Venda. Tente novamente mais tarde.');
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
         this.fecharModal("cadastroModal");
+        this.resetForm();
       } else {
         try {
-          const response = await api.patch(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, this.formData, {
+          const response = await api.patch(`http://127.0.0.1:8000/vendas-animais/${this.formData.id}/`, this.formData, {
           });
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
-            this.resetForm();
-            this.buscarProdutosDaApi();
+            this.buscarVendasDaApi();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -315,9 +369,28 @@ export default {
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
         this.fecharModal("edicaoModal");
+        this.resetForm();
       }
     },
-    aplicarFiltro() {
+
+    async atualizarStatusAnimal(animalId) {
+    try {
+      // Requisição PATCH para atualizar status e data de baixa do animal
+      const response = await api.patch(`http://127.0.0.1:8000/animais/${animalId}/`, {
+        status: 'vendido',
+        dataBaixa: this.formData.dataVenda // Atualiza a data de baixa com a data da ocorrência
+      });
+      if (response.status === 200) {
+        console.log('Status e data de baixa do animal atualizados com sucesso!');
+      } else {
+        console.error('Erro ao atualizar status e data de baixa do animal.');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar requisição:', error);
+    }
+  },
+
+  aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },
     limparFiltro() {

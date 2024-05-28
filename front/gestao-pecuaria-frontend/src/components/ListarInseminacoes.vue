@@ -1,173 +1,186 @@
 <template>
   <div>
-    <h2>Produtos</h2>
-    <div class="d-flex align-items-start table-container flex-column">
-      <div class="d-flex align-items-start">
-          <h2 class="me-3">Filtros</h2>
-          <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+  <div class="table-container">
+    <h2>Inseminações</h2>
+    <form class="row g-3 align-items-center" v-show="mostrarFormulario" @submit.prevent="submitForm">
+      <div class="col-auto d-flex align-items-center">
+        <label for="animal" class="form-label me-2">Animal</label>
+        <input type="text" class="form-control" id="animal" v-model="formData.animal" required>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
-          <div class="col-auto d-flex align-items-center">
-              <label for="nome" class="form-label me-2">Nome</label>
-              <input type="text" class="form-control" id="nome" v-model="filtro.nome">
+      <div class="col-auto d-flex align-items-center">
+        <label for="dataInseminacao" class="form-label me-2">Data de Inseminação</label>
+        <input type="date" class="form-control" id="dataInseminacao" v-model="formData.dataInseminacao" required>
+      </div>
+      <div class="col-auto d-flex align-items-center">
+        <label for="identificadorTouro" class="form-label me-2">Identificador do Touro</label>
+        <input type="text" class="form-control" id="identificadorTouro" v-model="formData.identificadorTouro" required>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-secondary me-2" type="button" @click="limparFormulario">Limpar</button>
+        <button class="btn btn-success" type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+
+
+
+    
+  <div>
+    <div class="table-container">
+      <div class="button-container">
+    <button @click="resetForm(); preencheListas()" type="button" class="btn btn-success" data-bs-toggle="modal"
+      data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Adicionar</button>
+  </div>
+      <table class="table table-bordered">
+        <thead >
+          <tr>
+            <th scope="col">Data Inseminação</th>
+            <th scope="col">Animal</th>
+            <th scope="col">Veterinario</th>
+            <th scope="col">Indentificador Touro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(inseminacao, index) in inseminacoes" :key="index">
+            <td>{{ inseminacao.dataInseminacao }}</td>
+            <td>{{ inseminacao.animal }}</td>
+            <td>{{ inseminacao.veterinario }}</td>
+            <td>{{ inseminacao.identificadorTouro}}</td>
+            <td>
+              <button @click="editarInseminacao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+              <button @click="editarInseminacao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+                  class="fas fa-trash-alt"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+
+
+    <!-- Modal de Cadastro -->
+    <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Inseminacoes</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="col-auto d-flex align-items-center">
-              <label for="tipo" class="form-label me-2">Tipo</label>
-              <select class="form-select" id="tipo" v-model="filtro.tipo">
-                  <option value="">Selecione o tipo</option>
-                  <option value="alimenticio">Alimentício</option>
-                  <option value="sanitario">Sanitário</option>
+          <div class="modal-body">
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-venus"></i></span>
+                <input v-model="formData.animal" @input="filterFemeas()" type="text" class="form-control"
+                  placeholder="Digite o animal">
+              </div>
+              <div class="list-group" v-if="formData.animal && femeasFiltradas.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
+                  :key="animal.id" @click="selectMae(animal)">
+                  {{ animal.brinco }}
+                </button>
+              </div>
+
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tag"></i></span>
+              <select v-model="formData.veterinario" class="form-select" id="veterinario" aria-label="Veterinario"
+                placeholder="Selecione o veterinario" required>
+                <option disabled selected>Selecione o veterinario</option>
+                <option v-for="veterinario in veterinarios" :key="veterinario.id" :value="veterinario.id">{{ veterinario.nome }}</option>
               </select>
+            </div>
+            <hr>
+            <form @submit.prevent="submitForm">
+             
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                <input v-model="formData.dataInseminacao" type="date" class="form-control" id="dataInseminacao"
+                  placeholder="Data de Iseminacao" required>
+              </div>
+              
+
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
+                  placeholder="Indentificador Touro" required>
+              </div>
+            </form>
           </div>
-          <div class="col-auto d-flex align-items-center">
-              <label for="categoria" class="form-label me-2">Categoria</label>
-              <input type="text" class="form-control" id="categoria" v-model="filtro.categoria">
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
           </div>
-          <div class="col-auto">
-              <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-              <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
-          </div>
-      </form>
+        </div>
+      </div>
     </div>
 
-    <div>
-      <div class="table-container">
-      <div class="button-container">
-        <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-          data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto</button>
-      </div>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Nome</th>
-              <th scope="col">Tipo</th>
-              <th scope="col">Categoria</th>
-              <th scope="col">Estoque</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(produto, index) in produtos" :key="index">
-              <td>{{ produto.nome }}</td>
-              <td>{{ produto.tipo }}</td>
-              <td>{{ produto.categoria }}</td>
-              <td>{{ produto.estoque }}</td>
-              <td>
-                <button @click="editarProduto(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                  data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-                <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                    class="fas fa-trash-alt"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- Modal de Edição -->
+    <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Inseminacoes</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+                    <div class="modal-body">
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-venus"></i></span>
+                <input v-model="formData.animal" @input="filterFemeas()" type="text" class="form-control"
+                  placeholder="Digite o animal">
+              </div>
+              <div class="list-group" v-if="formData.animal && femeasFiltradas.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
+                  :key="animal.id" @click="selectMae(animal)">
+                  {{ animal.brinco }}
+                </button>
+              </div>
 
-      <!-- Modal de Cadastro de Produto -->
-      <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Produto</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tag"></i></span>
+              <select v-model="formData.veterinario" class="form-select" id="veterinario" aria-label="Veterinario"
+                placeholder="Selecione o veterinario" required>
+                <option disabled selected>Selecione o veterinario</option>
+                <option v-for="veterinario in veterinarios" :key="veterinario.id" :value="veterinario.id">{{ veterinario.nome }}</option>
+              </select>
             </div>
-            <div class="modal-body">
-              <form @submit.prevent="submitForm">
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                    placeholder="Selecione o tipo" required>
-                    <option disabled value="">Tipo</option>
-                    <option value="sanitario">Sanitário</option>
-                    <option value="alimenticio">Alimentício</option>
-                </select>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.categoria" type="text" class="form-control" id="categoria" placeholder="Categoria" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                  <textarea v-model="formData.descricao" class="form-control" id="descricao"
-                    placeholder="Descrição"></textarea>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.estoque" type="text" class="form-control" id="estoque" placeholder="Estoque" required>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
-            </div>
+            <hr>
+            <form @submit.prevent="submitForm">
+             
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                <input v-model="formData.dataInseminacao" type="date" class="form-control" id="dataInseminacao"
+                  placeholder="Data de Iseminacao" required>
+              </div>
+              
+
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
+                  placeholder="Indentificador Touro" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
           </div>
         </div>
       </div>
-
-      <!-- Modal de Edição de Produto -->
-      <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Produto</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form @submit.prevent="submitForm">
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <select v-model="formData.tipo" class="form-select" id="tipoEditar" aria-label="Tipo"
-                    placeholder="Selecione o tipo" required>
-                    <option value="sanitario">Sanitário</option>
-                    <option value="alimenticio">Alimentício</option>
-                </select>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.categoria" type="text" class="form-control" id="categoriaEditar" placeholder="Categoria" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                  <textarea v-model="formData.descricao" class="form-control" id="descricaoEditar"
-                    placeholder="Descrição"></textarea>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.estoque" type="text" class="form-control" id="estoqueEditar" placeholder="Estoque" required>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
-            </div>
-          </div>
-        </div>
     </div>
 
     <!-- Modal de Confirmação de Exclusão -->
     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
       aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir este produto?
+            Tem certeza de que deseja excluir este animal?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarProduto()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarInseminacao">Excluir</button>
           </div>
         </div>
       </div>
@@ -177,66 +190,99 @@
 </template>
 
 <script>
-import api from '/src/interceptadorAxios'
+import api from '/src/interceptadorAxios';
 
 export default {
-  name: 'TelaProdutos',
+  name: 'TelaInseminacoes',
   data() {
     return {
-      produtos: [],
+      veterinario: [],
+      animais: [],
+      listaFemeas:[],
+      femeasFiltradas: [],
+      inseminacoes: [],
       formData: {
         id: null,
-        nome: '',
-        tipo: '',
-        categoria: '',
-        descricao: null,
-        estoque: '',
+       
+        dataInseminacao: '',
+        veterinario: '',
+        animal: '',
+        identificadorTouro: '',
+       
       },
       mostrarFormulario: false,
       filtro: {
-        nome: '',
-        tipo: '',
-        categoria: ''
+       
+        dataInseminacao: '',
+        animal: '', 
+        identificadorTouro: '', 
       },
-      modalTitle: 'Cadastro de Produto',
+      modalTitle: 'Cadastro de Animal',
     }
   },
-  mounted() {
-    this.buscarProdutosDaApi();
+  async mounted() {
+    this.buscarAnimaisDaApi();
+    this.buscarVeterinariossDaApi();
+    this.buscarInseminacoesDaApi();
   },
+
   methods: {
-    async buscarProdutosDaApi() {
+    async buscarInseminacoesDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/produtos/' , {
-          // Parâmetros da requisição (se houver)
+        const response = await api.get('http://127.0.0.1:8000/inseminacoes/', {
+          params: {
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+            },
         });
-        this.produtos = response.data;
+        this.inseminacoes = response.data;
       } catch (error) {
-        console.error('Erro ao buscar produtos da API:', error);
+        console.error('Erro ao buscar inseminacoes da API:', error);
       }
     },
-    editarProduto(produto) {
-      this.modalTitle = 'Editar Produto';
+
+    async buscarVeterinariossDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/veterinarios/', {
+        });
+        this.veterinarios = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar veterinarios da API:', error);
+      }
+    },
+    async buscarAnimaisDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/animais/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.animais = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar animais da API:', error);
+      }
+    },
+    editarInseminacao(inseminacao) {
+      this.modalTitle = 'Editar Inseminação';
       this.formData = {
-        id: produto.id,
-        nome: produto.nome,
-        tipo: produto.tipo,
-        categoria: produto.categoria,
-        descricao:produto.descricao,
-        estoque: produto.estoque,
+        id: inseminacao.id,
+        dataInseminacao: inseminacao.dataInseminacao,
+        veterinario: inseminacao.veterinario,
+        animal: inseminacao.animal,
+        identificadorTouro: inseminacao.identificadorTouro,
       };
     },
+
     resetForm() {
       this.formData = {
         id: null,
-        nome: '',
-        tipo: '',
-        categoria: '',
-        descricao: null,
-        estoque: '',
+        dataInseminacao: '',
+        veterinario: '',
+        animal: '',
+        identificadorTouro: '',
       };
-      this.modalTitle = 'Cadastro de Produto';
+      this.modalTitle = 'Cadastro de Inseminação';
     },
+
     fecharModal(modalId) {
       var closeButton = document.getElementById(modalId).querySelector('.btn-close');
       if (closeButton) {
@@ -245,26 +291,15 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    confirmarExclusao(produto) {
-      this.formData = {
-        id: produto.id,
-        nome: produto.nome,
-        tipo: produto.tipo,
-        categoria: produto.categoria,
-        descricao:produto.descricao,
-        estoque: produto.estoque,
-      };
-    },
-    async apagarProduto() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, {
-        });
 
+    async apagarInseminacao() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/${this.formData.id}/`, {});
         if (response.status === 204) {
-          alert('Produto apagado com sucesso!');
-          this.buscarProdutosDaApi();
+          alert('Inseminação apagada com sucesso!');
+          this.buscarInseminacoesDaApi();
         } else {
-          alert('Erro ao apagar produto. Tente novamente mais tarde.');
+          alert('Erro ao apagar inseminação. Tente novamente mais tarde.');
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);
@@ -272,41 +307,29 @@ export default {
       }
       this.fecharModal("confirmacaoExclusaoModal");
     },
-
-    async verificaEstoqueVazio(){
-      if(this.formData.estoque === ''){
-        this.formData.estoque = 0;
-      }
-    },
-    
     async submitForm() {
-      this.verificaEstoqueVazio();
-      if (this.modalTitle === 'Cadastro de Produto') {
+      if (this.modalTitle === 'Cadastro de Inseminação') {
         try {
-          const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {
-          });
-
+          const response = await api.post(`http://127.0.0.1:8000/inseminacoes/`, this.formData, {});
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
-            this.buscarProdutosDaApi();
+            this.buscarInseminacoesDaApi()
           } else {
-            alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
+            alert('Erro ao cadastrar inseminação. Tente novamente mais tarde.');
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-        this.fecharModal("cadastroModal");
+
       } else {
         try {
-          const response = await api.patch(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, this.formData, {
-          });
-
+          const response = await api.patch(`http://127.0.0.1:8000/inseminacoes/${this.formData.id}/`, this.formData, {});
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
-            this.buscarProdutosDaApi();
+            this.buscarAnimaisDaApi();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -317,19 +340,41 @@ export default {
         this.fecharModal("edicaoModal");
       }
     },
-    aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+
+    async preencheListas(){
+      this.preencherListaFemeas();
+    
     },
-    limparFiltro() {
-      this.filtro.nome = '';
-      this.filtro.tipo = '';
-      this.filtro.categoria = '';
+
+    async preencherListaFemeas(){
+      const response = await api.get(`http://127.0.0.1:8000/animais/femeas`, {});
+      this.listaFemeas = response.data;
     },
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
-    },
-  }
-};
+
+    filterFemeas() {
+            this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.animal));
+        },
+
+        selectMae(animal) {
+            this.formData.animal = animal.brinco;
+            this.femeasFiltradas = [];
+        },
+        aplicarFiltro() {
+            // Implementar a lógica para aplicar o filtro
+        },
+        limparFiltro() {
+            this.filtro.brinco = '';
+            this.filtro.dataInseminacao = '';
+            this.filtro.identificadorTouro = '';
+        },
+        toggleFormulario() {
+            this.mostrarFormulario = !this.mostrarFormulario;
+        },
+       
+
+
+    }
+}
 </script>
 
 <style scoped>
@@ -338,7 +383,7 @@ export default {
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -367,5 +412,15 @@ export default {
   display: flex;
   gap: 10px; 
 }
+.status-vivo {
+  background-color: #d4edda; /* Verde claro para 'vivo' */
+}
 
+.status-morto {
+  background-color: #f8d7da; /* Vermelho claro para 'morto' */
+}
+
+.status-doente {
+  background-color: #fff3cd; /* Amarelo claro para 'doente' */
+}
 </style>

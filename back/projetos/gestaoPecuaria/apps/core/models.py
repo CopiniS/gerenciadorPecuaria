@@ -72,10 +72,10 @@ class Suplementacao(models.Model):
     piquete = models.ForeignKey(Piquete, on_delete=models.CASCADE)
 
 class Ocorrencia(models.Model):
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
     dataOcorrencia = models.DateField('Data da ocorrência')
     tipo = models.CharField('Tipo', max_length=50)
     descricao = models.CharField('Descrição', max_length=255)
-    propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
 
 class Inseminacao(models.Model):
     dataInseminacao = models.DateField('Data')

@@ -390,7 +390,7 @@ export default {
       novaOcorrencia: {
       dataOcorrencia: '',
       tipoOcorrencia: '',
-      descricao: ''
+      descricao: '',
     },
       modalTitle: 'Cadastro de Animal',
     }
@@ -590,7 +590,7 @@ export default {
     this.novaOcorrencia = {
       dataOcorrencia: '',
       tipoOcorrencia: '',
-      descricao: ''
+      descricao: '',
     };
     // Definir animal relacionado à ocorrência
     this.animalOcorrencia = animal;
@@ -599,10 +599,10 @@ export default {
     try {
       // Enviar dados da ocorrência para a API
       const response = await api.post(`http://127.0.0.1:8000/ocorrencias/`, {
-        animalId: this.animalOcorrencia.id,
+        animal: this.animalOcorrencia.id,
         dataOcorrencia: this.novaOcorrencia.dataOcorrencia,
-        tipoOcorrencia: this.novaOcorrencia.tipoOcorrencia,
-        descricao: this.novaOcorrencia.descricao
+        tipo: this.novaOcorrencia.tipoOcorrencia,
+        descricao: this.novaOcorrencia.descricao,
       });
       if (response.status === 201) {
         alert('Ocorrência registrada com sucesso!');

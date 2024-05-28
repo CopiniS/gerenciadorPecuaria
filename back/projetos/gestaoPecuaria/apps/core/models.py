@@ -68,7 +68,7 @@ class Suplementacao(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     quantidade = models.DecimalField(max_digits=10, decimal_places=3)
     dataInicial = models.DateField('Data inicial')
-    dataFinal = models.DateField('Data final')
+    dataFinal = models.DateField('Data final', null=True)
     piquete = models.ForeignKey(Piquete, on_delete=models.CASCADE)
 
 class Ocorrencia(models.Model):

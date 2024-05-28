@@ -1,5 +1,6 @@
 <template>
-    <h2>Suplementos</h2>
+<div>
+    <h2>Suplementações</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
         <h2 class="me-3">Filtros</h2>
@@ -12,8 +13,8 @@
           <input type="text" class="form-control" id="produto" v-model="filtro.produto">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="lote" class="form-label me-2">Lote</label>
-          <input type="text" class="form-control" id="lote" v-model="filtro.lote">
+          <label for="piquete" class="form-label me-2">Piquete</label>
+          <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="quantidade" class="form-label me-2">Quantidade</label>
@@ -52,7 +53,7 @@
         <thead>
           <tr>
             <th scope="col">Produto</th>
-            <th scope="col">Lote</th>
+            <th scope="col">Piquete</th>
             <th scope="col">Quantidade</th>
             <th scope="col">Data Inicial</th>
             <th scope="col">Data Final</th>
@@ -63,7 +64,7 @@
         <tbody>
           <tr v-for="(suplemento, index) in suplementos" :key="index">
             <td>{{ suplemento.produto }}</td>
-            <td>{{ suplemento.lote }}</td>
+            <td>{{ suplemento.piquete }}</td>
             <td>{{ suplemento.quantidade }}</td>
             <td>{{ suplemento.dataInicial }}</td>
             <td>{{ suplemento.dataFinal || '-' }}</td>
@@ -111,13 +112,13 @@
               </div>
 
               <div class="mb-3 input-group">
-                <input v-model="lote" @input="filtrarLotes" type="text" class="form-control"
-                  placeholder="Digite o número do lote...">
+                <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
+                  placeholder="Digite o número do piquete...">
               </div>
-              <div class="list-group" v-if="lote && filteredLotes.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="lote in filteredLotes"
-                  :key="lote.id" @click="selecionarLote(lote)">
-                  {{ lote.numero }}
+              <div class="list-group" v-if="piquete && filteredPiquetes.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
+                  :key="piquete.id" @click="selecionarPiquete(piquete)">
+                  {{ piquete.numero }}
                 </button>
               </div>
               <div class="mb-3 input-group">
@@ -129,7 +130,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button @click="submitForm" class="btn btn-primary">Enviar</button>
           </div>
         </div>
       </div>
@@ -162,13 +163,13 @@
               </div>
 
               <div class="mb-3 input-group">
-                <input v-model="lote" @input="filtrarLotes" type="text" class="form-control"
-                  placeholder="Digite o número do lote...">
+                <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
+                  placeholder="Digite o número do piquete...">
               </div>
-              <div class="list-group" v-if="lote && filteredLotes.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="lote in filteredLotes"
-                  :key="lote.id" @click="selecionarLote(lote)">
-                  {{ lote.numero }}
+              <div class="list-group" v-if="piquete && filteredPiquetes.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
+                  :key="piquete.id" @click="selecionarPiquete(piquete)">
+                  {{ piquete.numero }}
                 </button>
               </div>
               <div class="mb-3 input-group">
@@ -228,8 +229,8 @@
         </div>
       </div>
     </div>
-
   </div>
+</div>
 </template>
 
 <script>
@@ -241,25 +242,25 @@ export default {
     return {
       suplementos: [],
       produtos: [],
-      lotes: [],
+      piquetes: [],
       filteredProdutos: [],
-      filteredLotes: [],
+      filteredPiquetes: [],
       nomeProduto: '',
-      lote: '',
+      piquete: '',
       formData: {
         id: null,
         produto: '',
-        lote: '',
+        piquete: '',
         quantidade: '',
         dataInicial: '',
       },
       mostrarFormulario: false,
       filtro: {
         produto: '',
-        lote: '',
+        piquete: '',
         quantidade: '',
         dataInicial: '',
-        dataFinal: '',
+        dataFinal: null,
         status: ''
       },
       modalTitle: 'Cadastro de Suplemento',
@@ -268,12 +269,12 @@ export default {
   mounted() {
     this.buscarSuplementosDaApi();
     this.buscarProdutosDaApi();
-    this.buscarLotesDaApi();
+    this.buscarPiquetesDaApi();
   },
   methods: {
     async buscarSuplementosDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/suplementos/');
+        const response = await api.get('http://127.0.0.1:8000/suplementacoes/');
         this.suplementos = response.data;
       } catch (error) {
         console.error('Erro ao buscar suplementos da API:', error);
@@ -287,12 +288,12 @@ export default {
         console.error('Erro ao buscar produtos da API:', error);
       }
     },
-    async buscarLotesDaApi() {
+    async buscarPiquetesDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/lotes/');
-        this.lotes = response.data;
+        const response = await api.get('http://127.0.0.1:8000/piquetes/');
+        this.piquetes = response.data;
       } catch (error) {
-        console.error('Erro ao buscar lotes da API:', error);
+        console.error('Erro ao buscar piquetes da API:', error);
       }
     },
     filtrarProdutos(entrada) {
@@ -302,12 +303,12 @@ export default {
       }
       this.filteredProdutos = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeProduto));
     },
-    filtrarLotes(entrada) {
+    filtrarPiquetes(entrada) {
       if (!entrada) {
-        this.filteredLotes = this.lotes;
+        this.filteredPiquetes = this.piquetes;
         return;
       }
-      this.filteredLotes = this.lotes.filter(lote => lote.numero.toLowerCase().includes(this.lote));
+      this.filteredPiquetes = this.piquetes.filter(piquete => piquete.numero.toLowerCase().includes(this.piquete));
     },
     selecionarProduto(produto) {
       this.formData.produto = produto.id;
@@ -315,10 +316,10 @@ export default {
       this.filteredProdutos = [];
     },
 
-    selecionarLote(lote) {
-      this.formData.lote = lote.id;
-      this.lote = lote.numero;
-      this.filteredLotes = [];
+    selecionarPiquete(piquete) {
+      this.formData.piquete = piquete.id;
+      this.piquete = piquete.numero;
+      this.filteredPiquetes = [];
     },
 
     editarSuplemento(suplemento) {
@@ -335,7 +336,7 @@ export default {
         id: null,
         quantidade: '',
         dataInicial: '',
-        dataFinal: '',
+        dataFinal: null,
       };
       this.modalTitle = 'Cadastro de Suplemento';
     },
@@ -349,7 +350,7 @@ export default {
     },
     async apagarSuplemento() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/suplementos/${this.formData.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/`);
 
         if (response.status === 204) {
           alert('Suplemento apagado com sucesso!');
@@ -366,7 +367,7 @@ export default {
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Suplemento') {
         try {
-          const response = await api.post('http://127.0.0.1:8000/suplementos/', this.formData);
+          const response = await api.post('http://127.0.0.1:8000/suplementacoes/', this.formData);
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
@@ -382,7 +383,7 @@ export default {
         this.fecharModal("cadastroModal");
       } else {
         try {
-          const response = await api.patch(`http://127.0.0.1:8000/suplementos/${this.formData.id}/`, this.formData);
+          const response = await api.patch(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/`, this.formData);
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
@@ -420,10 +421,10 @@ export default {
     limparFiltro() {
       this.filtro = {
         produto: '',
-        lote: '',
+        piquete: '',
         quantidade: '',
         dataInicial: '',
-        dataFinal: '',
+        dataFinal: null,
         status: ''
       };
     },

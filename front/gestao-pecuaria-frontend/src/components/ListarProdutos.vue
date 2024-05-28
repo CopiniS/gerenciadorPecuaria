@@ -1,155 +1,156 @@
 <template>
-  <h2>Produtos</h2>
-  <div class="d-flex align-items-start table-container flex-column">
-    <div class="d-flex align-items-start">
-        <h2 class="me-3">Filtros</h2>
-        <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
-    </div>
-    <form class="row g-3 align-items-center" v-show="mostrarFormulario">
-        <div class="col-auto d-flex align-items-center">
-            <label for="nome" class="form-label me-2">Nome</label>
-            <input type="text" class="form-control" id="nome" v-model="filtro.nome">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-            <label for="tipo" class="form-label me-2">Tipo</label>
-            <select class="form-select" id="tipo" v-model="filtro.tipo">
-                <option value="">Selecione o tipo</option>
-                <option value="alimenticio">Alimentício</option>
-                <option value="sanitario">Sanitário</option>
-            </select>
-        </div>
-        <div class="col-auto d-flex align-items-center">
-            <label for="categoria" class="form-label me-2">Categoria</label>
-            <input type="text" class="form-control" id="categoria" v-model="filtro.categoria">
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-            <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
-        </div>
-    </form>
-  </div>
-
   <div>
-    <div class="table-container">
-    <div class="button-container">
-      <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto</button>
-    </div>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col">Nome</th>
-            <th scope="col">Tipo</th>
-            <th scope="col">Categoria</th>
-            <th scope="col">Estoque</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(produto, index) in produtos" :key="index">
-            <td>{{ produto.nome }}</td>
-            <td>{{ produto.tipo }}</td>
-            <td>{{ produto.categoria }}</td>
-            <td>{{ produto.estoque }}</td>
-            <td>
-              <button @click="editarProduto(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                  class="fas fa-trash-alt"></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <h2>Produtos</h2>
+    <div class="d-flex align-items-start table-container flex-column">
+      <div class="d-flex align-items-start">
+          <h2 class="me-3">Filtros</h2>
+          <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+      </div>
+      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+          <div class="col-auto d-flex align-items-center">
+              <label for="nome" class="form-label me-2">Nome</label>
+              <input type="text" class="form-control" id="nome" v-model="filtro.nome">
+          </div>
+          <div class="col-auto d-flex align-items-center">
+              <label for="tipo" class="form-label me-2">Tipo</label>
+              <select class="form-select" id="tipo" v-model="filtro.tipo">
+                  <option value="">Selecione o tipo</option>
+                  <option value="alimenticio">Alimentício</option>
+                  <option value="sanitario">Sanitário</option>
+              </select>
+          </div>
+          <div class="col-auto d-flex align-items-center">
+              <label for="categoria" class="form-label me-2">Categoria</label>
+              <input type="text" class="form-control" id="categoria" v-model="filtro.categoria">
+          </div>
+          <div class="col-auto">
+              <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+              <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+          </div>
+      </form>
     </div>
 
-    <!-- Modal de Cadastro de Produto -->
-    <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Produto</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                  placeholder="Selecione o tipo" required>
-                  <option disabled value="">Tipo</option>
-                  <option value="sanitario">Sanitário</option>
-                  <option value="alimenticio">Alimentício</option>
-              </select>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <input v-model="formData.categoria" type="text" class="form-control" id="categoria" placeholder="Categoria" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                <textarea v-model="formData.descricao" class="form-control" id="descricao"
-                  placeholder="Descrição"></textarea>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <input v-model="formData.estoque" type="text" class="form-control" id="estoque" placeholder="Estoque" required>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+    <div>
+      <div class="table-container">
+      <div class="button-container">
+        <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
+          data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Produto</button>
+      </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Nome</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Categoria</th>
+              <th scope="col">Estoque</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(produto, index) in produtos" :key="index">
+              <td>{{ produto.nome }}</td>
+              <td>{{ produto.tipo }}</td>
+              <td>{{ produto.categoria }}</td>
+              <td>{{ produto.estoque }}</td>
+              <td>
+                <button @click="editarProduto(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                  data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+                <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+                    class="fas fa-trash-alt"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal de Cadastro de Produto -->
+      <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Produto</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="submitForm">
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
+                    placeholder="Selecione o tipo" required>
+                    <option disabled value="">Tipo</option>
+                    <option value="sanitario">Sanitário</option>
+                    <option value="alimenticio">Alimentício</option>
+                </select>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                  <input v-model="formData.categoria" type="text" class="form-control" id="categoria" placeholder="Categoria" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                  <textarea v-model="formData.descricao" class="form-control" id="descricao"
+                    placeholder="Descrição"></textarea>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                  <input v-model="formData.estoque" type="text" class="form-control" id="estoque" placeholder="Estoque" required>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Modal de Edição de Produto -->
-    <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Produto</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <select v-model="formData.tipo" class="form-select" id="tipoEditar" aria-label="Tipo"
-                  placeholder="Selecione o tipo" required>
-                  <option value="sanitario">Sanitário</option>
-                  <option value="alimenticio">Alimentício</option>
-              </select>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <input v-model="formData.categoria" type="text" class="form-control" id="categoriaEditar" placeholder="Categoria" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                <textarea v-model="formData.descricao" class="form-control" id="descricaoEditar"
-                  placeholder="Descrição"></textarea>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <input v-model="formData.estoque" type="text" class="form-control" id="estoqueEditar" placeholder="Estoque" required>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
+      <!-- Modal de Edição de Produto -->
+      <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Produto</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="submitForm">
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <select v-model="formData.tipo" class="form-select" id="tipoEditar" aria-label="Tipo"
+                    placeholder="Selecione o tipo" required>
+                    <option value="sanitario">Sanitário</option>
+                    <option value="alimenticio">Alimentício</option>
+                </select>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                  <input v-model="formData.categoria" type="text" class="form-control" id="categoriaEditar" placeholder="Categoria" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                  <textarea v-model="formData.descricao" class="form-control" id="descricaoEditar"
+                    placeholder="Descrição"></textarea>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                  <input v-model="formData.estoque" type="text" class="form-control" id="estoqueEditar" placeholder="Estoque" required>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
+            </div>
           </div>
         </div>
-      </div>
     </div>
 
     <!-- Modal de Confirmação de Exclusão -->
@@ -171,7 +172,7 @@
         </div>
       </div>
     </div>
-
+  </div>
   </div>
 </template>
 

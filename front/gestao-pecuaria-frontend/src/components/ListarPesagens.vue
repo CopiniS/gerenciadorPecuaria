@@ -1,4 +1,5 @@
 <template>
+<div>
   <h2>Pesagens</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
@@ -153,6 +154,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>

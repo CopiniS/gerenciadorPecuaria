@@ -118,7 +118,7 @@
               <div class="list-group" v-if="piquete && filteredPiquetes.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
                   :key="piquete.id" @click="selecionarPiquete(piquete)">
-                  {{ piquete.numero }}
+                  {{ piquete.nome }}
                 </button>
               </div>
               <div class="mb-3 input-group">
@@ -169,7 +169,7 @@
               <div class="list-group" v-if="piquete && filteredPiquetes.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
                   :key="piquete.id" @click="selecionarPiquete(piquete)">
-                  {{ piquete.numero }}
+                  {{ piquete.nome }}
                 </button>
               </div>
               <div class="mb-3 input-group">
@@ -224,7 +224,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Finalizar</button>
+            <button type="submit" class="btn btn-primary" @click="finalizarSuplementoSubmit()">Finalizar</button>
           </div>
         </div>
       </div>
@@ -253,6 +253,7 @@ export default {
         piquete: '',
         quantidade: '',
         dataInicial: '',
+        dataFinal: null,
       },
       mostrarFormulario: false,
       filtro: {
@@ -308,7 +309,7 @@ export default {
         this.filteredPiquetes = this.piquetes;
         return;
       }
-      this.filteredPiquetes = this.piquetes.filter(piquete => piquete.numero.toLowerCase().includes(this.piquete));
+      this.filteredPiquetes = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piquete));
     },
     selecionarProduto(produto) {
       this.formData.produto = produto.id;
@@ -318,7 +319,7 @@ export default {
 
     selecionarPiquete(piquete) {
       this.formData.piquete = piquete.id;
-      this.piquete = piquete.numero;
+      this.piquete = piquete.nome;
       this.filteredPiquetes = [];
     },
 
@@ -407,14 +408,36 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
     finalizarSuplemento(suplemento) {
       this.formData = {
         id: suplemento.id,
         quantidade: suplemento.quantidade,
+        produto: suplemento.produto,
+        piquete: suplemento.piquete,
         dataInicial: suplemento.dataInicial,
+        dataFinal: suplemento.dataFinal,
       };
-      this.fecharModal
     },
+
+    async finalizarSuplementoSubmit(){
+        try {
+          const response = await api.patch(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/`, this.formData);
+
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.resetForm();
+            this.buscarSuplementosDaApi();
+          } else {
+            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+        this.fecharModal("edicaoModal");      
+    },
+
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },

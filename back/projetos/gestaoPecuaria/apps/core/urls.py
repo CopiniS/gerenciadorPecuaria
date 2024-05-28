@@ -24,3 +24,5 @@ router.register('fotos-animais', views.FotoViewSet)
 urlpatterns = [
     path('',include(router.urls)),
 ]
+
+

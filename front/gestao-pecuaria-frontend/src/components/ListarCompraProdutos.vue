@@ -262,7 +262,7 @@ export default {
       this.formData = {
         id: compra.id,
         dataCompra: compra.dataCompra,
-        produto: compra.produto,
+        produto: compra.produto.id,
         valorUnitario: compra.valorUnitario,
         quantidadeComprada: compra.quantidadeComprada,
         validade: compra.validade,
@@ -286,7 +286,7 @@ export default {
       this.formData = {
         id: compra.id,
         dataCompra: compra.dataCompra,
-        produto: compra.produto,
+        produto: compra.produto.id,
         valorUnitario: compra.valorUnitario,
         quantidadeComprada: compra.quantidadeComprada,
         validade: compra.validade,
@@ -337,6 +337,7 @@ export default {
         }
       } else {
         try {
+          console.log('formdata: ', this.formData)
           const response = await api.patch(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/`, this.formData);
 
           if (response.status === 200) {

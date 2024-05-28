@@ -16,6 +16,9 @@ import TelaCompraProdutos from '@/views/TelaCompraProdutos.vue';
 import TelaSuplementacao from '@/views/TelaSuplementacao.vue';
 import TelaFotosAnimais from '@/views/TelaFotosAnimais.vue';
 import TelaAplicacoesProdutos from '@/views/TelaAplicacoesProdutos.vue'
+import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue'
+import TelaInseminacoes from '@/views/TelaInseminacoes.vue'
+import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
 
 const routes = [
   
@@ -108,7 +111,21 @@ const routes = [
     name: 'TelaAplicacoesProdutos',
     component: TelaAplicacoesProdutos
   },
-
+  {
+    path: '/vendas-animais',
+    name: 'TelaVendasAnimais',
+    component: TelaVendasAnimais
+  },
+  {
+    path: '/inseminacoes',
+    name: 'TelaInseminacoes',
+    component: TelaInseminacoes
+  },
+  {
+    path: '/outras-despesas',
+    name: 'TelaOutrasDespesas',
+    component: TelaOutrasDespesas
+  },
 
 ];
 

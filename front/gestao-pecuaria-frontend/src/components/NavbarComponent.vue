@@ -72,6 +72,18 @@
                 <a href="/aplicacoes-produtos" class="nav-link"><i class="fas fa-capsules"></i> Aplicações de Produtos</a>
               </li>
               <hr>
+              <li class="nav-item">
+                <a href="/vendas-animais" class="nav-link"><i class="fas fa-capsules"></i> Vendas de animais</a>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <a href="/inseminacoes" class="nav-link"><i class="fas fa-capsules"></i> Inseminações</a>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <a href="/outras-despesas" class="nav-link"><i class="fas fa-capsules"></i> Outras Despesas</a>
+              </li>
+              <hr>
             </ul>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

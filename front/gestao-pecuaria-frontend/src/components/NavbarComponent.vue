@@ -45,7 +45,7 @@
               </li>
               <hr>
               <li class="nav-item">
-                <a href="/ListarFotosAnimais" class="nav-link"><i class="fas fa-image"></i> Fotos Animais</a>
+                <a href="/fotos-animais" class="nav-link"><i class="fas fa-image"></i> Fotos Animais</a>
               </li>
               <hr>
               <li class="nav-item">
@@ -66,6 +66,10 @@
               <hr>
               <li class="nav-item">
                 <a href="/Suplementacao" class="nav-link"><i class="fas fa-capsules"></i> Suplementações</a>
+              </li>
+              <hr>
+              <li class="nav-item">
+                <a href="/aplicacoes-produtos" class="nav-link"><i class="fas fa-capsules"></i> Aplicações de Produtos</a>
               </li>
               <hr>
             </ul>

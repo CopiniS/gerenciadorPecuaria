@@ -161,7 +161,7 @@ export default {
         id: null,
         dataDespesa: '',
         valor: '',
-        descricao: '',
+        descricao: null,
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
       mostrarFormulario: false,
@@ -204,7 +204,7 @@ export default {
         id: '',
         dataDespesa: '',
         valor: '',
-        descricao: '',
+        descricao: null,
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       };
       this.modalTitle = 'Cadastro de Despesa'; 

@@ -342,7 +342,6 @@ export default {
           });
 
           if (response.status === 201) {
-            this.atualizarStatusAnimal(this.formData.animal)
             alert('Cadastro realizado com sucesso!');
             this.buscarVendasDaApi();
           } else {
@@ -373,23 +372,6 @@ export default {
         this.resetForm();
       }
     },
-
-    async atualizarStatusAnimal(animalId) {
-    try {
-      // Requisição PATCH para atualizar status e data de baixa do animal
-      const response = await api.patch(`http://127.0.0.1:8000/animais/${animalId}/`, {
-        status: 'vendido',
-        dataBaixa: this.formData.dataVenda // Atualiza a data de baixa com a data da ocorrência
-      });
-      if (response.status === 200) {
-        console.log('Status e data de baixa do animal atualizados com sucesso!');
-      } else {
-        console.error('Erro ao atualizar status e data de baixa do animal.');
-      }
-    } catch (error) {
-      console.error('Erro ao enviar requisição:', error);
-    }
-  },
 
   aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro

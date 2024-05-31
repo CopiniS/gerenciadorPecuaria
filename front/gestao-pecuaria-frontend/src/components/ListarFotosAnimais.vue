@@ -191,10 +191,6 @@
         },
         async uploadImage() {
         if (this.formData.foto) {
-            console.log('foto ', this.formData.foto);
-            console.log('dataFOto: ', this.formData.dataFoto);
-            console.log('animal: ', this.formData.animal);
-            console.log('observacao; ', this.formData.observacao)
             try {
                 const response = await api.post('http://127.0.0.1:8000/fotos-animais/', this.formData, {
                     headers: {

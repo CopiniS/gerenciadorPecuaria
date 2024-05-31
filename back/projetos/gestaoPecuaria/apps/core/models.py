@@ -26,7 +26,7 @@ class Animal(models.Model):
     dataNascimento = models.DateField('Data de nascimento')
     sexo = models.CharField('Sexo', max_length=5)
     racaPredominante = models.ForeignKey(Raca, on_delete=models.CASCADE)
-    racaObservacao = models.CharField('Raça de observação', max_length=50)
+    racaObservacao = models.CharField('Raça de observação', max_length=50, null=True)
     piquete = models.ForeignKey(Piquete, on_delete=models.CASCADE, default=0) 
     brincoPai = models.CharField('Brinco do pai', max_length=6, null=True)
     brincoMae = models.CharField('Brinco da mae', max_length=6, null=True)
@@ -46,7 +46,7 @@ class Produto(models.Model):
     nome = models.CharField('Nome', max_length=50)
     tipo = models.CharField('Tipo', max_length=50)
     categoria = models.CharField('Categoria', max_length=50)
-    descricao = models.CharField('Descricao', max_length=255)
+    descricao = models.CharField('Descricao', max_length=255, null=True)
     estoque = models.DecimalField('Estoque', max_digits=10, decimal_places=3)
     produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)
     
@@ -75,7 +75,7 @@ class Ocorrencia(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
     dataOcorrencia = models.DateField('Data da ocorrência')
     tipo = models.CharField('Tipo', max_length=50)
-    descricao = models.CharField('Descrição', max_length=255)
+    descricao = models.CharField('Descrição', max_length=255, null=True)
 
 class Inseminacao(models.Model):
     dataInseminacao = models.DateField('Data')
@@ -108,5 +108,5 @@ class AplicacaoProduto(models.Model):
 class Foto(models.Model):
     foto = models.ImageField('Foto', upload_to='fotos-animais/')
     dataFoto = models.DateField('Data da foto')
-    observacao = models.CharField('Observação', max_length=255)
+    observacao = models.CharField('Observação', max_length=255, null =True)
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)

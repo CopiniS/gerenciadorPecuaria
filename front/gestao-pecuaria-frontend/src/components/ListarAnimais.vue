@@ -48,7 +48,7 @@
           <select class="form-select" id="status" v-model="filtro.status">
             <option value="">Selecione o status</option>
             <option value="morto">Morto</option>
-            <option value="vivo">Vivo</option>
+            <option value="Vivo">Vivo</option>
             <option value="desaparecido">Desaparecido</option>
             <option value="vendido">vendido</option>
           </select>
@@ -82,7 +82,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(animal, index) in animais" :key="index" :class="{'status-vivo': animal.status === 'vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente'}">
+          <tr v-for="(animal, index) in animais" :key="index" :class="{'status-Vivo': animal.status === 'Vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente'}">
             <td>{{ animal.brinco }}</td>
             <td>{{ animal.dataNascimento }}</td>
             <td>{{ animal.sexo }}</td>
@@ -124,14 +124,14 @@
           <div class="mb-3">
             <label for="tipoOcorrencia" class="form-label">Tipo da Ocorrência</label>
             <select class="form-select" id="tipoOcorrencia" v-model="novaOcorrencia.tipoOcorrencia" required>
-              <option value="morte">Morte</option>
-              <option value="doença">Doença</option>
-              <option value="outro">Outro</option>
+              <option value="Morte">Morte</option>
+              <option value="Doença">Doença</option>
+              <option value="Outro">Outro</option>
             </select>
           </div>
           <div class="mb-3">
             <label for="descricaoOcorrencia" class="form-label">Descrição</label>
-            <textarea class="form-control" id="descricaoOcorrencia" v-model="novaOcorrencia.descricao" required></textarea>
+            <textarea class="form-control" id="descricaoOcorrencia" v-model="novaOcorrencia.descricao"></textarea>
           </div>
           <button type="submit" class="btn btn-primary">Registrar</button>
         </form>
@@ -366,11 +366,11 @@ export default {
         dataNascimento: '',
         sexo: '',
         racaPredominante: '',
-        racaObservacao: '',
+        racaObservacao: null,
         piquete: '',
         brincoPai: '',
         brincoMae: '',
-        status: 'vivo',
+        status: 'Vivo',
         rfid: '',
         observacoes: '',
         dataBaixa: null
@@ -390,7 +390,7 @@ export default {
       novaOcorrencia: {
       dataOcorrencia: '',
       tipoOcorrencia: '',
-      descricao: '',
+      descricao: null,
     },
       modalTitle: 'Cadastro de Animal',
     }
@@ -448,9 +448,9 @@ export default {
         piquete: animal.piquete,
         brincoPai: animal.brincoPai,
         brincoMae: animal.brincoMae,
-        status: 'vivo',
-        rfid: animal.rfid && animal.rfid.trim() !== '' ? animal.rfid : null,
-        observacoes: animal.observacoes && animal.observacoes.trim() !== '' ? animal.observacoes : null,
+        status: 'Vivo',
+        rfid: null,
+        observacoes: null,
         dataBaixa: null
       };
     },
@@ -462,9 +462,9 @@ export default {
         dataNascimento: '',
         sexo: '',
         racaPredominante: '',
-        racaObservacao: '',
+        racaObservacao: null,
         piquete: this.formData.piquete,
-        status: 'vivo',
+        status: 'Vivo',
         rfid: null,
         observacoes: null,
         dataBaixa: null,
@@ -590,7 +590,7 @@ export default {
     this.novaOcorrencia = {
       dataOcorrencia: '',
       tipoOcorrencia: '',
-      descricao: '',
+      descricao: null,
     };
     // Definir animal relacionado à ocorrência
     this.animalOcorrencia = animal;
@@ -606,10 +606,6 @@ export default {
       });
       if (response.status === 201) {
         alert('Ocorrência registrada com sucesso!');
-        // Se a ocorrência for de morte, atualizar data de baixa e status do animal
-        if (this.novaOcorrencia.tipoOcorrencia === 'morte') {
-          await this.atualizarStatusAnimal(this.animalOcorrencia.id);
-        }
         // Atualizar lista de animais
         this.buscarAnimaisDaApi();
       } else {
@@ -620,22 +616,6 @@ export default {
       alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
     }
     this.fecharModal("ocorrenciaModal");
-  },
-  async atualizarStatusAnimal(animalId) {
-    try {
-      // Requisição PATCH para atualizar status e data de baixa do animal
-      const response = await api.patch(`http://127.0.0.1:8000/animais/${animalId}/`, {
-        status: 'morto',
-        dataBaixa: this.novaOcorrencia.dataOcorrencia // Atualiza a data de baixa com a data da ocorrência
-      });
-      if (response.status === 200) {
-        console.log('Status e data de baixa do animal atualizados com sucesso!');
-      } else {
-        console.error('Erro ao atualizar status e data de baixa do animal.');
-      }
-    } catch (error) {
-      console.error('Erro ao enviar requisição:', error);
-    }
   },
   }
 }
@@ -676,8 +656,8 @@ export default {
   display: flex;
   gap: 10px; 
 }
-.status-vivo {
-  background-color: #d4edda; /* Verde claro para 'vivo' */
+.status-Vivo {
+  background-color: #d4edda; /* Verde claro para 'Vivo' */
 }
 
 .status-morto {

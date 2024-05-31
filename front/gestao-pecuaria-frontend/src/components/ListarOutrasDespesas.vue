@@ -252,6 +252,8 @@ export default {
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.buscarDespesasDaApi();
+            this.fecharModal("cadastroModal");
+            this.resetForm();
           } else {
             alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
           }
@@ -259,8 +261,6 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-        this.fecharModal("cadastroModal");
-        this.resetForm();
       } else {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, this.formData, {
@@ -269,6 +269,8 @@ export default {
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.buscarDespesasDaApi();
+            this.fecharModal("edicaoModal");
+            this.resetForm();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -276,8 +278,6 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-        this.fecharModal("edicaoModal");
-        this.resetForm();
       }
     },
     aplicarFiltro() {

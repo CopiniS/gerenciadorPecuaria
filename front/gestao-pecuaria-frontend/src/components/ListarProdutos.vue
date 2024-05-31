@@ -290,6 +290,7 @@ export default {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
             this.buscarProdutosDaApi();
+            this.fecharModal("cadastroModal");
           } else {
             alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
           }
@@ -297,7 +298,6 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-        this.fecharModal("cadastroModal");
       } else {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, this.formData, {
@@ -307,6 +307,7 @@ export default {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
             this.buscarProdutosDaApi();
+            this.fecharModal("edicaoModal");
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -314,7 +315,6 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-        this.fecharModal("edicaoModal");
       }
     },
     aplicarFiltro() {

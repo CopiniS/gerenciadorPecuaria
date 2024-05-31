@@ -250,6 +250,7 @@ export default {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
             this.buscarPiquetesDaApi();
+            this.fecharModal("cadastroModal");
           } else {
             alert('Erro ao cadastrar piquete. Tente novamente mais tarde.');
           }
@@ -257,7 +258,6 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-        this.fecharModal("cadastroModal");
 
       } else {
         try {
@@ -268,6 +268,7 @@ export default {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
             this.buscarPiquetesDaApi();
+            this.fecharModal("edicaoModal");
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -275,7 +276,6 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-         this.fecharModal("edicaoModal");
       }
     },
     aplicarFiltro() {

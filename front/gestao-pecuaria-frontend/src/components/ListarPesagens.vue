@@ -317,6 +317,7 @@ export default {
         if (response.status === 201) {
           this.resetForm();
           this.buscarPesagens();
+          this.fecharModal("cadastroModal");
           alert('Pesagem cadastrada com sucesso!');
         } else {
           alert('Erro ao cadastrar pesagem. Tente novamente mais tarde.');
@@ -326,7 +327,6 @@ export default {
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
 
-      this.fecharModal("cadastroModal");
     },
 
     formatarData(data) {

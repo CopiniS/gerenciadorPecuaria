@@ -198,6 +198,7 @@ export default {
         if (response.status === 200) {
           alert('Alterações salvas com sucesso!');
           this.buscarRacasDaApi();
+          this.fecharModal("edicaoModal");
         } else {
           alert('Erro ao salvar alterações. Tente novamente mais tarde.');
         }
@@ -205,7 +206,6 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.fecharModal("edicaoModal");
     },
     async submitForm() {
       try {
@@ -216,6 +216,7 @@ export default {
           alert('Cadastro realizado com sucesso!');
           this.resetForm();
           this.buscarRacasDaApi();
+          this.fecharModal("cadastroModal");
         } else {
           alert('Erro ao cadastrar raça. Tente novamente mais tarde.');
         }
@@ -223,7 +224,6 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.fecharModal("cadastroModal");
     },
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro

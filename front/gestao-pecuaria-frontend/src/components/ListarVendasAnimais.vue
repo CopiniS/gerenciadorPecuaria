@@ -248,7 +248,7 @@ export default {
 
     async buscarAnimaisDaApi() {
         try {
-            const response = await api.get('http://127.0.0.1:8000/animais/' , {
+            const response = await api.get('http://127.0.0.1:8000/animais/vivos' , {
             params: {
                 propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
@@ -325,6 +325,7 @@ export default {
         if (response.status === 204) {
           alert('Venda apagada com sucesso!');
           this.buscarVendasDaApi();
+          this.buscarAnimaisDaApi();
         } else {
           alert('Erro ao apagar venda. Tente novamente mais tarde.');
         }
@@ -345,6 +346,7 @@ export default {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
             this.buscarVendasDaApi();
+            this.buscarAnimaisDaApi();
             this.fecharModal("cadastroModal");
           } else {
             alert('Erro ao cadastrar Venda. Tente novamente mais tarde.');
@@ -361,6 +363,7 @@ export default {
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
             this.buscarVendasDaApi();
+            this.buscarAnimaisDaApi();
             this.resetForm();
             this.fecharModal("edicaoModal");
           } else {

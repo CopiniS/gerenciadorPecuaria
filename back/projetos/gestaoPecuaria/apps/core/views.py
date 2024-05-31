@@ -58,6 +58,19 @@ class AnimalViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(femeas, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'], url_path='vivos')
+    def list_vivos(self, request, *args, **kwargs):
+        vivos = models.Animal.objects.filter(status = 'Vivo')
+        serializer = self.get_serializer(vivos, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='femeas/vivas')
+    def list_femeas(self, request, *args, **kwargs):
+        femeas = models.Animal.objects.filter(sexo='femea')
+        femeasVivas = femeas.filter(status='Vivo')
+        serializer = self.get_serializer(femeasVivas, many=True)
+        return Response(serializer.data)
+    
     
 class PiqueteViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

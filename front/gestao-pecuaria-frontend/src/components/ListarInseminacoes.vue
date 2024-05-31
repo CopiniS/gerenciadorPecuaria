@@ -28,7 +28,7 @@
   <div>
     <div class="table-container">
       <div class="button-container">
-    <button @click="resetForm(); preencheListas()" type="button" class="btn btn-success" data-bs-toggle="modal"
+    <button @click="resetForm(); preencherListaFemeas()" type="button" class="btn btn-success" data-bs-toggle="modal"
       data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Adicionar</button>
   </div>
       <table class="table table-bordered">
@@ -197,7 +197,6 @@ export default {
   data() {
     return {
       veterinario: [],
-      animais: [],
       listaFemeas:[],
       femeasFiltradas: [],
       inseminacoes: [],
@@ -221,7 +220,6 @@ export default {
     }
   },
   async mounted() {
-    this.buscarAnimaisDaApi();
     this.buscarVeterinariossDaApi();
     this.buscarInseminacoesDaApi();
   },
@@ -247,18 +245,6 @@ export default {
         this.veterinarios = response.data;
       } catch (error) {
         console.error('Erro ao buscar veterinarios da API:', error);
-      }
-    },
-    async buscarAnimaisDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/animais/', {
-          params: {
-            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-          },
-        });
-        this.animais = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar animais da API:', error);
       }
     },
     editarInseminacao(inseminacao) {
@@ -341,13 +327,8 @@ export default {
       }
     },
 
-    async preencheListas(){
-      this.preencherListaFemeas();
-    
-    },
-
     async preencherListaFemeas(){
-      const response = await api.get(`http://127.0.0.1:8000/animais/femeas`, {});
+      const response = await api.get(`http://127.0.0.1:8000/animais/femeas/vivas`, {});
       this.listaFemeas = response.data;
     },
 

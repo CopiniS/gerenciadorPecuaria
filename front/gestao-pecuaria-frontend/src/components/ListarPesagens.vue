@@ -227,7 +227,7 @@ export default {
 
     async buscarAnimais() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/animais/');
+        const response = await api.get('http://127.0.0.1:8000/animais/vivos');
         this.animais = response.data;
         this.filteredAnimais = this.animais;
       } catch (error) {

@@ -51,7 +51,7 @@
           <tbody>
             <tr v-for="(venda, index) in vendas" :key="index">
               <td>{{ venda.dataVenda }}</td>
-              <td>{{ venda.animal }}</td>
+              <td>{{ venda.animal.brinco }}</td>
               <td>{{ venda.peso }}</td>
               <td>{{ venda.precoKg }}</td>
               <td>{{ venda.valorTotal }}</td>

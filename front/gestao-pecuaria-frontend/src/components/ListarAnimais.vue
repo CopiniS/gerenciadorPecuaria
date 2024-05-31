@@ -86,11 +86,11 @@
             <td>{{ animal.brinco }}</td>
             <td>{{ animal.dataNascimento }}</td>
             <td>{{ animal.sexo }}</td>
-            <td>{{ animal.racaPredominante }}</td>
+            <td>{{ animal.racaPredominante.nome }}</td>
             <td>{{ animal.brincoPai }}</td>
             <td>{{ animal.brincoMae }}</td>
             <td>{{ animal.racaObservacao }}</td>
-            <td>{{ animal.piquete }}</td>
+            <td>{{ animal.piquete.nome }}</td>
             <td>{{ animal.status }}</td>
             <td>
   <div class="button-group">

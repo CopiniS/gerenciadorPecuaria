@@ -63,8 +63,8 @@
         </thead>
         <tbody>
           <tr v-for="(suplemento, index) in suplementos" :key="index">
-            <td>{{ suplemento.produto }}</td>
-            <td>{{ suplemento.piquete }}</td>
+            <td>{{ suplemento.produto.nome }}</td>
+            <td>{{ suplemento.piquete.nome }}</td>
             <td>{{ suplemento.quantidade }}</td>
             <td>{{ suplemento.dataInicial }}</td>
             <td>{{ suplemento.dataFinal || '-' }}</td>

@@ -43,7 +43,7 @@ class AnimalViewSet(viewsets.ModelViewSet):
         queryset = models.Animal.objects.all()
         if propriedade_selecionada is not None:
             queryset = queryset.filter(piquete__propriedade=propriedade_selecionada)
-        serializer = serializers.AnimalSerializer(queryset, many=True)
+        serializer = serializers.AnimalComPiqueteAndRacaSerializer(queryset, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'], url_path='machos')
@@ -144,7 +144,7 @@ class SuplementacaoViewSet(viewsets.ModelViewSet):
         queryset = models.Suplementacao.objects.all()
         if propriedade_selecionada is not None:
             queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
-        serializer = serializers.SuplementacaoSerializer(queryset, many=True)
+        serializer = serializers.SuplementacaoComProdutoAndPiqueteSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -172,7 +172,7 @@ class InseminacaoViewSet(viewsets.ModelViewSet):
         queryset = models.Inseminacao.objects.all()
         if propriedade_selecionada is not None:
             queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
-        serializer = serializers.InseminacaoSerializer(queryset, many=True)
+        serializer = serializers.InseminacaoComAnimalAndVeterinarioSerializer(queryset, many=True)
         return Response(serializer.data)
     
 
@@ -200,7 +200,7 @@ class VendaAnimalViewSet(viewsets.ModelViewSet):
         queryset = models.VendaAnimal.objects.all()
         if propriedade_selecionada is not None:
             queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
-        serializer = serializers.VendaAnimalSerializer(queryset, many=True)
+        serializer = serializers.VendaAnimalComAnimalSerializer(queryset, many=True)
         return Response(serializer.data)
 
    
@@ -214,7 +214,7 @@ class AplicacaoProdutoViewSet(viewsets.ModelViewSet):
         queryset = models.AplicacaoProduto.objects.all()
         if propriedade_selecionada is not None:
             queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
-        serializer = serializers.AplicacaoProdutoSerializer(queryset, many=True)
+        serializer = serializers.AplicacaoProdutoComAnimalAndProdutoSerializer(queryset, many=True)
         return Response(serializer.data)
     
 

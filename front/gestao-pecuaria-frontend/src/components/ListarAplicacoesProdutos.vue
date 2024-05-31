@@ -45,8 +45,8 @@
         <tbody>
           <tr v-for="(aplicacao, index) in aplicacoes" :key="index">
             <td>{{ aplicacao.dataAplicacao }}</td>
-            <td>{{ aplicacao.animal }}</td>
-            <td>{{ aplicacao.produto }}</td>
+            <td>{{ aplicacao.animal.brinco }}</td>
+            <td>{{ aplicacao.produto.nome }}</td>
             <td>{{ aplicacao.dosagem }}</td>
             <td>{{ aplicacao.observacao }}</td>
             <td>

@@ -43,8 +43,8 @@
         <tbody>
           <tr v-for="(inseminacao, index) in inseminacoes" :key="index">
             <td>{{ inseminacao.dataInseminacao }}</td>
-            <td>{{ inseminacao.animal }}</td>
-            <td>{{ inseminacao.veterinario }}</td>
+            <td>{{ inseminacao.animal.brinco }}</td>
+            <td>{{ inseminacao.veterinario.nome }}</td>
             <td>{{ inseminacao.identificadorTouro}}</td>
             <td>
               <button @click="editarInseminacao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal"

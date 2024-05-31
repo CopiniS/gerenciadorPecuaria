@@ -13,16 +13,24 @@ class RacaSerializer(serializers.ModelSerializer):
         model = models.Raca
         fields ="__all__"
 
-class AnimalSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Animal
-        fields ="__all__"
-
 class PiqueteSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Piquete
         fields = "__all__"
 
+class AnimalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Animal
+        fields ="__all__"
+
+class AnimalComPiqueteAndRacaSerializer(serializers.ModelSerializer):
+    racaPredominante = RacaSerializer(read_only=True)
+    piquete = PiqueteSerializer(read_only=True)
+
+    class Meta:
+        model = models.Animal
+        fields = "__all__"
+        
 class VeterinarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Veterinario
@@ -62,12 +70,28 @@ class SuplementacaoSerializer(serializers.ModelSerializer):
         model = models.Suplementacao
         fields = "__all__"
 
+class SuplementacaoComProdutoAndPiqueteSerializer(serializers.ModelSerializer):
+    produto = ProdutoSerializer(read_only=True)
+    piquete = PiqueteSerializer(read_only=True)
+
+    class Meta:
+        model = models.Suplementacao
+        fields = "__all__"
+
 class OcorrenciaSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Ocorrencia
         fields = "__all__"
 
 class InseminacaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Inseminacao
+        fields = "__all__"
+
+class InseminacaoComAnimalAndVeterinarioSerializer(serializers.ModelSerializer):
+    animal = AnimalSerializer(read_only=True)
+    veterinario = VeterinarioSerializer(read_only=True)
+
     class Meta:
         model = models.Inseminacao
         fields = "__all__"
@@ -82,7 +106,22 @@ class VendaAnimalSerializer(serializers.ModelSerializer):
         model = models.VendaAnimal
         fields = "__all__"
 
+class VendaAnimalComAnimalSerializer(serializers.ModelSerializer):
+    animal = AnimalSerializer(read_only=True)
+
+    class Meta:
+        model = models.VendaAnimal
+        fields = "__all__"
+
 class AplicacaoProdutoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.AplicacaoProduto
+        fields = "__all__"
+
+class AplicacaoProdutoComAnimalAndProdutoSerializer(serializers.ModelSerializer):
+    animal = AnimalSerializer(read_only=True)
+    produto = ProdutoSerializer(read_only=True)
+
     class Meta:
         model = models.AplicacaoProduto
         fields = "__all__"

@@ -97,6 +97,18 @@ class ProdutoViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         request.data['produtor'] = self.request.user.id
         return super().create(request, *args, **kwargs)
+    
+    @action(detail=False, methods=['get'], url_path='sanitarios')
+    def list_sanitarios(self, request, *args, **kwargs):
+        sanitarios = models.Produto.objects.filter(tipo='sanitario')
+        serializer = self.get_serializer(sanitarios, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='alimenticios')
+    def list_alimenticios(self, request, *args, **kwargs):
+        alimenticios = models.Produto.objects.filter(tipo='alimenticio')
+        serializer = self.get_serializer(alimenticios, many=True)
+        return Response(serializer.data)
 
 
 class PesagemViewSet(viewsets.ModelViewSet):

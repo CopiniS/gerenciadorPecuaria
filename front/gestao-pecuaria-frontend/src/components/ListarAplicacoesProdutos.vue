@@ -248,7 +248,7 @@ export default {
     
     async buscarProdutosDaApi(){
         try {
-            const response = await api.get('http://127.0.0.1:8000/produtos/' , {});
+            const response = await api.get('http://127.0.0.1:8000/produtos/sanitarios' , {});
             this.produtos = response.data;
         } catch (error) {
         console.error('Erro ao buscar produtos da API:', error);

@@ -1,15 +1,15 @@
 <template>
-    <Suplementacao/>
+    <ListarSuplementacoes/>
 </template>
   
   <script>
-import Suplementacao from '@/components/Suplementacao.vue';
+import ListarSuplementacoes from '@/components/ListarSuplementacoes.vue';
 
 
 export default {
   name: 'TelaSuplementacao',
   components: {
-    Suplementacao
+    ListarSuplementacoes
  
   }
 }

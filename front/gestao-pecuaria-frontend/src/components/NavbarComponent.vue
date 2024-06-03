@@ -177,7 +177,7 @@ li {
 }
 
 a {
-  color: #e5ffd8 !important; /* Tom mais claro para as letras */
+  color: #cfcfcf !important; /* Tom de cinza claro para o texto */
   white-space: nowrap; /* Impede a quebra de linha */
   font-size: 1.1em; /* Aumenta o tamanho da letra */
 }
@@ -194,26 +194,22 @@ a {
 }
 
 .dropdown-menu {
-  background-color: transparent !important; /* Remove o fundo do dropdown */
+  background-color: #252525 !important; /* Fundo cinza escuro para o dropdown */
   border: none; /* Remove a borda do dropdown */
 }
 
 .dropdown-item:hover {
-  background-color: #2b8824 !important; /* Fundo mais claro no hover */
-  color: #e5ffd8 !important; /* Cor das letras no hover */
+  background-color: #3a3a3a !important; /* Fundo cinza mais claro no hover */
+  color: #cfcfcf !important; /* Cor do texto no hover */
 }
 
 .nav-item:hover {
-  background-color: #157f0d !important; /* Fundo mais claro no hover */
-  color: #e5ffd8 !important; /* Cor das letras no hover */
+  background-color: #3a3a3a !important; /* Fundo cinza mais claro no hover */
+  color: #cfcfcf !important; /* Cor do texto no hover */
 }
 
-.custom-navbar {
-  background-color: #0a4906 !important;
-}
 
 .custom-offcanvas {
-  background-color: #052d03 !important;
   width: 350px !important; /* Diminui a largura do menu lateral */
 }
 
@@ -225,19 +221,19 @@ a {
 
 /* Fundo da barra de rolagem */
 ::-webkit-scrollbar-track {
-  background: #052d03; /* Cor do fundo da barra de rolagem */
+  background: #252525; /* Cor do fundo da barra de rolagem */
 }
 
 /* Cor da barra de rolagem */
 ::-webkit-scrollbar-thumb {
-  background-color: #157f0d; /* Cor da barra de rolagem */
+  background-color: #3a3a3a; /* Cor da barra de rolagem */
   border-radius: 10px; /* Bordas arredondadas */
-  border: 2px solid #052d03; /* Adiciona uma borda */
+  border: 2px solid #252525; /* Adiciona uma borda */
 }
 
 /* Barra de rolagem ao passar o mouse */
 ::-webkit-scrollbar-thumb:hover {
-  background: #0a4906; /* Cor da barra de rolagem ao passar o mouse */
+  background: #494949; /* Cor da barra de rolagem ao passar o mouse */
 }
 
 /* Adiciona margem superior ao conteúdo para evitar sobreposição com o navbar */
@@ -246,3 +242,4 @@ a {
 }
 
 </style>
+

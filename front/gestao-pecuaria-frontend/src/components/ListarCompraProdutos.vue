@@ -53,6 +53,7 @@
             <th scope="col">Quantidade Comprada</th>
             <th scope="col">Validade</th>
             <th scope="col">Lote</th>
+            <th scope="col">Ações</th>
           </tr>
         </thead>
         <tbody>

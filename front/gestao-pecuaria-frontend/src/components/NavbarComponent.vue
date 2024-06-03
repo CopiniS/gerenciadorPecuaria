@@ -17,14 +17,10 @@
                 <a href="/inicio" class="nav-link"><i class="fas fa-home" ></i> Home</a>
               </li>
               <hr>
-              <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-user"></i> Perfil
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/meuperfil"><i class="fas fa-user-circle"></i> Meu perfil</a></li>
-              </ul>
-            </li>
+              <li class="nav-item">
+                <a href="/meuperfil" class="nav-link"><i class="fas fa-user" ></i> Perfil</a>
+              </li>
+              
               <hr>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

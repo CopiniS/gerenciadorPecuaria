@@ -18,6 +18,15 @@
               </li>
               <hr>
               <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user"></i> Perfil
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/meuperfil"><i class="fas fa-user-circle"></i> Meu perfil</a></li>
+              </ul>
+            </li>
+              <hr>
+              <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="fas fa-landmark"></i> Propriedade
                 </a>
@@ -82,20 +91,13 @@
               <hr>
               <li class="nav-item">
                 <a href="/outras-despesas" class="nav-link"><i class="fas fa-capsules"></i> Outras Despesas</a>
+                <hr>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link"><i class="fas fa-sign-out-alt"></i> Sair</a>
               </li>
               <hr>
             </ul>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-user"></i> Perfil
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/meuperfil"><i class="fas fa-user-circle"></i> Meu perfil</a></li>
-                <li>
-                  <a href="#" class="dropdown-item" @click.prevent="confirmAction"><i class="fas fa-sign-out-alt"></i> Sair</a>
-                </li>
-              </ul>
-            </li>
           </div>
         </div>
       </div>

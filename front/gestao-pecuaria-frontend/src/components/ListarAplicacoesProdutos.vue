@@ -114,7 +114,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Piquete</h1>
+            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Aplicação de Produto</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -283,14 +283,16 @@ export default {
       this.modalTitle = 'Editar Aplicacao';
       this.formData = {
         id: aplicacao.id,
-        animal: aplicacao.animal,
-        produto: aplicacao.produto,
+        animal: aplicacao.animal.id,
+        produto: aplicacao.produto.id,
         dataAplicacao: aplicacao.dataAplicacao,
         dosagem: aplicacao.dosagem,
         observacao: aplicacao.observacao,
       };
       this.brinco = aplicacao.animal.brinco;
       this.nomeProduto = aplicacao.produto.nome;
+      this.camposHabilitadosAnimal = true;
+      this.camposHabilitadosProduto = true;
     },
     resetForm() {
       this.formData = {
@@ -301,6 +303,8 @@ export default {
         dosagem: '',
         observacao: null,
       };
+      this.brinco = '';
+      this.nomeProduto = '';
       this.modalTitle = 'Cadastro de Aplicacao';
     },
 
@@ -351,6 +355,7 @@ export default {
         }
       } else {
         try {
+          console.log('formDAta: ', this.formData)
           const response = await api.patch(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`, this.formData , {
         });
 

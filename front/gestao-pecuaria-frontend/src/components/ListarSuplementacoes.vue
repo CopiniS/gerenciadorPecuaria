@@ -96,6 +96,7 @@
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                 <input v-model="nomeProduto" @input="filtrarProdutos" type="text" class="form-control"
                   placeholder="Digite o nome do produto...">
               </div>
@@ -106,13 +107,9 @@
                 </button>
               </div>
               <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                 <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
                   placeholder="Digite o nome do piquete...">
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidade"
-                  placeholder="Quantidade" required>
               </div>
               <div class="list-group" v-if="piquete && filteredPiquetes.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
@@ -121,9 +118,13 @@
                 </button>
               </div>
               <div class="mb-3 input-group">
-                <label for="dataInicial" class="input-group-text"><i class="fas fa-calendar-alt"></i> Data
-                  Inicial</label>
-                <input v-model="formData.dataInicial" type="date" class="form-control" id="dataInicial" required>
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidade"
+                  placeholder="Quantidade" required>
+              </div>
+              <div class="mb-3 input-group">
+                <label for="dataInicial" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
+                <input v-model="formData.dataInicial" type="date" class="form-control" id="dataInicial" placeholder="DD" required>
               </div>
             </form>
           </div>
@@ -146,6 +147,7 @@
           <div class="modal-body">
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                 <input v-model="nomeProduto" @input="filtrarProdutos" type="text" class="form-control"
                   placeholder="Digite o nome do produto...">
               </div>
@@ -155,15 +157,10 @@
                   {{ produto.nome }}
                 </button>
               </div>
-
-              <div class="mb-3 input-group">
-                <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
-                  placeholder="Digite o nome do piquete...">
-              </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidadeEditar"
-                  placeholder="Quantidade" required>
+                <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
+                  placeholder="Digite o nome do piquete...">
               </div>
               <div class="list-group" v-if="piquete && filteredPiquetes.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
@@ -172,14 +169,23 @@
                 </button>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                <input v-model="formData.quantidade" type="number" class="form-control" id="quantidadeEditar"
+                  placeholder="Quantidade" required>
+              </div>
+              <div class="mb-3 input-group">
+                <label for="dataInicial" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
                 <input v-model="formData.dataInicial" type="date" class="form-control" id="dataInicialEditar" required>
+              </div>
+              <div class="mb-3 input-group">
+                <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
+                <input v-model="formData.dataFinal" type="date" class="form-control" id="dataFinal" :disabled="!estaFinalizado">
               </div>
             </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Salvar</button>
+            <button type="submit" class="btn btn-primary" @click="submitForm">Salvar</button>
           </div>
         </div>
       </div>
@@ -246,6 +252,7 @@ export default {
       filteredPiquetes: [],
       nomeProduto: '',
       piquete: '',
+      estaFinalizado: false,
       formData: {
         id: null,
         produto: '',
@@ -326,18 +333,37 @@ export default {
       this.modalTitle = 'Editar Suplemento';
       this.formData = {
         id: suplemento.id,
+        produto: suplemento.produto.id,
+        piquete: suplemento.piquete.id,
         quantidade: suplemento.quantidade,
         dataInicial: suplemento.dataInicial,
         dataFinal: suplemento.dataFinal,
       };
+      this.nomeProduto = suplemento.produto.nome;
+      this.piquete = suplemento.piquete.nome;
+      this.verificaFinalizado(suplemento);
     },
+
+    verificaFinalizado(suplemento){
+      if(suplemento.dataFinal != null){
+        this.estaFinalizado = true;
+      }
+      else{
+        this.estaFinalizado = false;
+      }
+    },
+
     resetForm() {
       this.formData = {
         id: null,
+        produto: '',
+        piquete: '',
         quantidade: '',
         dataInicial: '',
         dataFinal: null,
       };
+      this.nomeProduto = '';
+      this.piquete = '';
       this.modalTitle = 'Cadastro de Suplemento';
     },
     confirmarExclusao(suplemento) {
@@ -362,7 +388,7 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.fecharModal("edicaoModal");
+      this.fecharModal("confirmacaoExclusaoModal");
     },
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Suplemento') {
@@ -412,10 +438,6 @@ export default {
     finalizarSuplemento(suplemento) {
       this.formData = {
         id: suplemento.id,
-        quantidade: suplemento.quantidade,
-        produto: suplemento.produto,
-        piquete: suplemento.piquete,
-        dataInicial: suplemento.dataInicial,
         dataFinal: suplemento.dataFinal,
       };
     },
@@ -428,6 +450,7 @@ export default {
             alert('Alterações salvas com sucesso!');
             this.resetForm();
             this.buscarSuplementosDaApi();
+            this.fecharModal("finalizarModal"); 
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -435,7 +458,6 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-        this.fecharModal("edicaoModal");      
     },
 
     aplicarFiltro() {

@@ -34,6 +34,8 @@
           <tr v-for="(data, index) in datasPesagens" :key="index">
             <td>{{ formatarData(data) }}</td>
             <td>
+              <button @click="editarPesagens(pesagens)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
               <button @click="preencherDetalhesPesagemPorData(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
               <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
             </td>
@@ -115,6 +117,51 @@
         </div>
       </div>
     </div>
+
+
+    <!-- Modal de Edição de Pesagem -->
+    <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Pesagens</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="submitForm">
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <input v-model="formData.dataPesagem" type="date" class="form-control" id="dataPesagemEditar" required>
+              </div>
+              <hr>
+              <div class="mb-3 input-group">
+                <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
+              </div>
+              <div class="list-group" v-if="brinco && filteredAnimais.length">
+                <button type="button" class="list-group-item list-group-item-action" v-for="animal in filteredAnimais" :key="animal.id" @click="selectAnimal(animal)">
+                  {{ animal.brinco }}
+                </button>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-weight"></i></span>
+                <input v-model="formData.peso" type="text" class="form-control" id="pesoEditar" :disabled="!camposHabilitados" placeholder="Peso" required>
+              </div>
+              <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                <input v-model="formData.observacao" type="text" class="form-control" id="observacaoEditar" :disabled="!camposHabilitados" placeholder="Observação" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
 
     <!-- Modal de Confirmação de Exclusão de Pesagem por Data -->
     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
@@ -204,6 +251,16 @@ export default {
       } catch (error) {
         console.error('Erro ao buscar pesagens por data:', error);
       }
+    },
+    editarPesagens(pesagens) {
+      this.modalTitle = 'Editar Pesagens';
+      this.formData = {
+        id: pesagens.id,
+        dataPesagem: pesagens.dataPesagem,
+        peso: pesagens.peso,
+        observacao: pesagens.observacao,
+        animal: pesagens.animal
+      };
     },
 
     async preencherDatasPesagens(){

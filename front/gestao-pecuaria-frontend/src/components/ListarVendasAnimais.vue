@@ -40,11 +40,11 @@
           <thead>
             <tr>
               <th scope="col">Data da venda</th>
+              <th scope="col">Preco KG</th>
+              <th scope="col">Finalidade</th>
               <th scope="col">Animal</th>
               <th scope="col">Peso</th>
-              <th scope="col">Preco KG</th>
               <th scope="col">Valor Total</th>
-              <th scope="col">Finalidade</th>
               <th scope="col">Observação</th>
             </tr>
           </thead>
@@ -84,6 +84,21 @@
                     placeholder="Data da Venda" required>
                 </div>
                 <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
+                    placeholder="Selecione o tipo" required>
+                    <option disabled value="">Finalidade</option>
+                    <option value="Cria">Cria</option>
+                    <option value="Recria">Recria</option>
+                    <option value="Engorda">Engorda</option>
+                    <option value="Abate">Abate</option>
+                </select>
+                </div>
+                <div class="mb-3 input-group">
                     <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
                 </div>
                 <div class="list-group" v-if="brinco && animaisFiltrados.length">
@@ -97,22 +112,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
                   <input v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal" placeholder="Valor Total" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
-                    placeholder="Selecione o tipo" required>
-                    <option disabled value="">Finalidade</option>
-                    <option value="Cria">Cria</option>
-                    <option value="Recria">Recria</option>
-                    <option value="Engorda">Engorda</option>
-                    <option value="Abate">Abate</option>
-                </select>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
@@ -284,14 +284,15 @@ export default {
       };
     },
     resetForm() {
+      const { dataVenda, precoKg, finalidade } = this.formData;
       this.formData = {
         id: null,
         animal: '',
-        dataVenda: '',
+        dataVenda: dataVenda,
         peso: '',
-        precoKg: '',
+        precoKg: precoKg,
         valorTotal: '',
-        finalidade: '',
+        finalidade: finalidade,
         observacao: null,
       };
       this.brinco = '',

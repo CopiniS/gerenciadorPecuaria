@@ -1,7 +1,7 @@
 <template>
   <div class="vh-100 vw-100 login-container">
     <div sm="7" class="login-form">
-      <h2 class="text-center mb-5 title-login">Faça o login</h2>
+      <h2 class="text-center mb-5 title-login">Login</h2>
       <form @submit.prevent="submitForm">
         <div class="mb-5 input-group">
           <span class="input-group-text"><i class="fas fa-envelope"></i></span>
@@ -22,9 +22,6 @@
           <i class="fas fa-user-plus"></i> Não tenho conta
         </button>
       </form>
-    </div>
-    <div sm="5" class="vh-100 login-image">
-      <img src="../assets/login.svg" width="600" height="600">
     </div>
 
   </div>
@@ -70,24 +67,51 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-image: url('../assets/fundo.jpg');
+  background-size: cover;
+  background-position: center;
 }
-
-.login-image {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f2f2f2;
-}
-
 
 .login-form {
   flex: 1;
   padding: 20px;
   max-width: 400px;
-  border: 1px solid #ccc;
+  border: 1px solid #358137;
   border-radius: 5px;
   margin-left: 150px;
   margin-right: 150px;
+}
+.title-login {
+  color: #358137;
+}
+
+.input-group-text {
+  background-color: #358137;
+  color: white;
+  border: 1px solid #358137;
+}
+
+.form-control {
+  border: 1px solid #358137;
+}
+
+.btn-primary {
+  background-color: #358137;
+  border-color: #358137;
+}
+
+.btn-outline-secondary {
+  border-color: #358137;
+  color: #358137;
+}
+
+.btn-primary:hover, .btn-outline-secondary:hover {
+  background-color: #3be949;
+  border-color: #3be949;
+  color: white;
+}
+
+.btn-block {
+  width: 100%;
 }
 </style>

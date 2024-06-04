@@ -249,10 +249,10 @@ class FotoViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
 
     def list(self, request, *args, **kwargs):
-        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
+        animalSelecionado = request.query_params.get('animalSelecionado', None)
         queryset = models.Foto.objects.all()
-        if propriedade_selecionada is not None:
-            queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
+        if animalSelecionado is not None:
+            queryset = queryset.filter(animal=animalSelecionado)
         serializer = serializers.FotoSerializer(queryset, many=True)
         return Response(serializer.data)
     

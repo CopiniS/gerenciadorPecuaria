@@ -6,7 +6,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <a class="navbar-brand" href="#">Nome da Aplicação</a>
-        <a class="navbar-brand" href="#">Propriedade atual</a>
+        <a class="navbar-brand" href="#">Propriedade atual: {{ nomeProp }}</a>
         <div class="offcanvas offcanvas-start text-bg-dark custom-offcanvas justify-content-center" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
           <div class="offcanvas-header">
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -90,7 +90,7 @@
                 <hr>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link"><i class="fas fa-sign-out-alt"></i> Sair</a>
+                <a href="/login" class="nav-link"><i class="fas fa-sign-out-alt"></i> Sair</a>
               </li>
               <hr>
             </ul>
@@ -111,7 +111,8 @@ export default {
   name: 'NavbarComponent',
   data() {
     return {
-      propriedade: null
+      propriedade: [],
+      nomeProp: null,
     }
   },
   mounted() {
@@ -125,6 +126,9 @@ export default {
       try {
         const response = await api.get(`http://127.0.0.1:8000/propriedades/${propriedadeId}/`);
         this.propriedade = response.data;
+
+        this.nomeProp = this.propriedade.nome;
+
       } catch (error) {
         console.error('Erro ao buscar propriedade da API:', error);
       }

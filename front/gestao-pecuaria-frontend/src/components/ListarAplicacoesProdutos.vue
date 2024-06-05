@@ -17,7 +17,8 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataCompra" class="form-label me-2">Data</label>
-          <input type="date" class="form-control" id="dataAplicacao" v-model="filtro.dataAplicacao">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da aplicação" 
+          class="form-control" id="dataAplicacao" v-model="filtro.dataAplicacao" required>
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -71,7 +72,8 @@
             <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                    <input v-model="formData.dataAplicacao" type="date" class="form-control" id="dataAplicacao" required>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da aplicação" 
+                    class="form-control" id="dataAplicacaoCadastro" v-model="formData.dataAplicacao" required>
                 </div>
                 <div class="mb-3 input-group">
                     <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
@@ -121,7 +123,8 @@
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                    <input v-model="formData.dataAplicacao" type="date" class="form-control" id="dataAplicacao" required>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da aplicação" 
+                    class="form-control" id="dataAplicacaoEdicao" v-model="formData.dataAplicacao" required>
                 </div>
                 <div class="mb-3 input-group">
                     <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">

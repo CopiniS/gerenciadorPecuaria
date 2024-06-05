@@ -13,7 +13,8 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
-          <input type="date" class="form-control" id="dataNascimento" v-model="filtro.dataNascimento">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de nascimento" 
+          class="form-control" id="dataNascimento" v-model="formData.dataNascimento" required>
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="sexo" class="form-label me-2">Sexo</label>
@@ -119,7 +120,8 @@
         <form @submit.prevent="registrarOcorrencia">
           <div class="mb-3">
             <label for="dataOcorrencia" class="form-label">Data da Ocorrência</label>
-            <input type="date" class="form-control" id="dataOcorrencia" v-model="novaOcorrencia.dataOcorrencia" required>
+            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Ocorência" 
+            class="form-control" id="dataOcorrencia"  v-model="novaOcorrencia.dataOcorrencia" required>
           </div>
           <div class="mb-3">
             <label for="tipoOcorrencia" class="form-label">Tipo da Ocorrência</label>
@@ -166,8 +168,8 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimento"
-                  placeholder="Data de Nascimento" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de nascimento" 
+                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
@@ -250,8 +252,8 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                <input v-model="formData.dataNascimento" type="date" class="form-control" id="dataNascimentoEditar"
-                  placeholder="Data de Nascimento" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de nascimento" 
+                class="form-control" id="dataNascimentoEdicao" v-model="formData.dataNascimento" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
@@ -265,7 +267,7 @@
                 <span class="input-group-text"><i class="fas fa-horse"></i></span>
                 <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
                   aria-label="Raça Predominante" required>
-                  <option selected>{{ formData.racaPredominante }}</option>
+                  <option selected>{{ formData.racaPredominante.nome }}</option>
                   <option v-for="raca in racas" :key="raca.nome" :value="raca.nome">{{ raca.nome }}</option>
                 </select>
               </div>
@@ -508,6 +510,8 @@ export default {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
             this.buscarAnimaisDaApi();
+            this.preencherListaFemeas();
+            this.preencherListaMachos();
           } else {
             alert('Erro ao cadastrar animal. Tente novamente mais tarde.');
           }
@@ -537,17 +541,25 @@ export default {
     },
 
     async preencheListas(){
-      this.preencherListaFemeas();
       this.preencherListaMachos();
+      this.preencherListaFemeas();
     },
 
     async preencherListaFemeas(){
-      const response = await api.get(`http://127.0.0.1:8000/animais/femeas`, {});
+      const response = await api.get(`http://127.0.0.1:8000/animais/femeas`, {
+        params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+      });
       this.listaFemeas = response.data;
     },
 
     async preencherListaMachos(){
-      const response = await api.get(`http://127.0.0.1:8000/animais/machos`, {});
+      const response = await api.get(`http://127.0.0.1:8000/animais/machos`, {
+        params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+      });
       this.listaMachos = response.data;
     },
 

@@ -22,11 +22,13 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataInicial" class="form-label me-2">Data Inicial</label>
-          <input type="date" class="form-control" id="dataInicial" v-model="filtro.dataInicial">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Inicial" 
+          class="form-control" id="dataInicial" v-model="filtro.dataInicial">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataFinal" class="form-label me-2">Data Final</label>
-          <input type="date" class="form-control" id="dataFinal" v-model="filtro.dataFinal">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
+          class="form-control" id="dataFinal" v-model="filtro.dataFinal">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="status" class="form-label me-2">Status</label>
@@ -124,7 +126,8 @@
               </div>
               <div class="mb-3 input-group">
                 <label for="dataInicial" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
-                <input v-model="formData.dataInicial" type="date" class="form-control" id="dataInicial" placeholder="DD" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Inicial" 
+                class="form-control" id="dataInicialCadastro" v-model="formData.dataInicial">
               </div>
             </form>
           </div>
@@ -175,11 +178,13 @@
               </div>
               <div class="mb-3 input-group">
                 <label for="dataInicial" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
-                <input v-model="formData.dataInicial" type="date" class="form-control" id="dataInicialEditar" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
+                class="form-control" id="dataFinalCadastro" v-model="formData.dataFinal">
               </div>
               <div class="mb-3 input-group">
                 <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
-                <input v-model="formData.dataFinal" type="date" class="form-control" id="dataFinal" :disabled="!estaFinalizado">
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
+                class="form-control" id="dataFinalEdicao" v-model="formData.dataFinal">
               </div>
             </form>
           </div>
@@ -222,8 +227,9 @@
           <div class="modal-body">
             <form @submit.prevent="finalizarSuplementoSubmit">
               <div class="mb-3 input-group">
-                <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i> Data Final</label>
-                <input v-model="formData.dataFinal" type="date" class="form-control" id="dataFinal" required>
+                <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
+                class="form-control" id="dataFinalFi" v-model="formData.dataFinal">
               </div>
             </form>
           </div>

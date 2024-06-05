@@ -17,7 +17,8 @@
             <form>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                    <input v-model="formData.dataFoto" type="date" class="form-control" id="dataFoto" required>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da foto" 
+                    class="form-control" id="dataFoto" v-model="formData.dataFoto" required>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>

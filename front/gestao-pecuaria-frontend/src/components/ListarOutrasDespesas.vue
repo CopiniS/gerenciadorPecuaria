@@ -72,8 +72,8 @@
               <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                    <input v-model="formData.dataDespesa" type="date" class="form-control" id="dataDespesa"
-                    placeholder="Data da despesa" required>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da despesa" 
+                    class="form-control" id="dataDespesa" v-model="formData.dataDespesa" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -105,8 +105,8 @@
               <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                    <input v-model="formData.dataDespesa" type="date" class="form-control" id="dataDespesa"
-                    placeholder="Data da despesa" required>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da despesa" 
+                    class="form-control" id="dataDespesa" v-model="formData.dataDespesa" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -181,7 +181,7 @@ export default {
       try {
         const response = await api.get('http://127.0.0.1:8000/outras-despesas/' , {
           params: {
-                propriedadeSelecionada: this.formData.propriedade
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
         });
         this.despesas = response.data;

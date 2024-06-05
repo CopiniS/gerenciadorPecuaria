@@ -9,7 +9,8 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataInseminacao" class="form-label me-2">Data de Inseminação</label>
-          <input type="date" class="form-control" id="dataInseminacao" v-model="formData.dataInseminacao" required>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da inseminação" 
+          class="form-control" id="dataInseminacao" v-model="formData.dataInseminacao" required>
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="identificadorTouro" class="form-label me-2">Identificador do Touro</label>
@@ -94,8 +95,8 @@
 
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                  <input v-model="formData.dataInseminacao" type="date" class="form-control" id="dataInseminacao"
-                    placeholder="Data de Iseminacao" required>
+                  <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da inseminação" 
+                  class="form-control" id="dataInseminacaoCadastro" v-model="formData.dataInseminacao" required>
                 </div>
 
 
@@ -148,8 +149,8 @@
 
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                  <input v-model="formData.dataInseminacao" type="date" class="form-control" id="dataInseminacao"
-                    placeholder="Data de Iseminacao" required>
+                  <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Inseminação" 
+                  class="form-control" id="dataInseminacaoEdicao" v-model="formData.dataInseminacao" required>
                 </div>
 
 
@@ -204,7 +205,6 @@ export default {
       inseminacoes: [],
       formData: {
         id: null,
-
         dataInseminacao: '',
         veterinario: '',
         animal: '',

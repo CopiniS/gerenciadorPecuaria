@@ -80,8 +80,8 @@
               <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                    <input v-model="formData.dataVenda" type="date" class="form-control" id="dataVenda"
-                    placeholder="Data da Venda" required>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da venda" 
+                    class="form-control" id="dataVenda" v-model="formData.dataVenda" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -348,7 +348,6 @@ export default {
             this.resetForm();
             this.buscarVendasDaApi();
             this.buscarAnimaisDaApi();
-            this.fecharModal("cadastroModal");
           } else {
             alert('Erro ao cadastrar Venda. Tente novamente mais tarde.');
           }

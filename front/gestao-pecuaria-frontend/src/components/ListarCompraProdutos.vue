@@ -9,7 +9,8 @@
       <form class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataCompra" class="form-label me-2">Data da Compra</label>
-          <input type="date" class="form-control" id="dataCompra" v-model="filtro.dataCompra">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
+          class="form-control" id="dataCompra" v-model="filtro.dataCompra">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>
@@ -25,7 +26,8 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="validade" class="form-label me-2">Validade</label>
-          <input type="date" class="form-control" id="validade" v-model="filtro.validade">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
+          class="form-control" id="validade" v-model="filtro.validade">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="lote" class="form-label me-2">Lote</label>
@@ -87,7 +89,8 @@
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input v-model="formData.dataCompra" type="date" class="form-control" id="dataCompra" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
+                class="form-control" id="dataCompraCadastro" v-model="formData.dataCompra" required>
               </div>
               <div class="mb-3 input-group">
                 <input v-model="nomeDigitado" @input="filterProdutos" type="text" class="form-control" placeholder="Digite o produto...">
@@ -107,7 +110,8 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input v-model="formData.validade" type="date" class="form-control" id="validade" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Validade" 
+                class="form-control" id="validadeCadastro" v-model="formData.validade" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
@@ -135,7 +139,8 @@
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input v-model="formData.dataCompra" type="date" class="form-control" id="dataCompra" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
+                class="form-control" id="dataCompraEdicao" v-model="formData.dataCompra" required>
               </div>
               <div class="mb-3 input-group">
                 <input v-model="nomeDigitado" @input="filterProdutos" type="text" class="form-control" placeholder="Digite o produto...">
@@ -155,7 +160,8 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input v-model="formData.validade" type="date" class="form-control" id="validade" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Validade" 
+                class="form-control" id="validade" v-model="formData.validade" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-layer-group"></i></span>

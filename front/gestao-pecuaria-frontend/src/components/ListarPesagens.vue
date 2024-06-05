@@ -9,7 +9,8 @@
       <form class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataPesagem" class="form-label me-2">Data da pesagem</label>
-          <input type="date" class="form-control" id="dataPesagem" v-model="filtro.dataPesagem">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de pesagem" 
+          class="form-control" id="dataPesagem" v-model="filtro.dataPesagem">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -34,11 +35,9 @@
           <tr v-for="(data, index) in datasPesagens" :key="index">
             <td>{{ formatarData(data) }}</td>
             <td>
-              <button @click="editarPesagens(pesagens)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
               <button @click="preencherDetalhesPesagemPorData(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
               <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
-            </td>
+             </td>
           </tr>
         </tbody>
       </table>
@@ -56,7 +55,8 @@
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input v-model="formData.dataPesagem" type="date" class="form-control" id="dataPesagem" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de pesagem" 
+                class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem">
               </div>
               <hr>
               <div class="mb-3 input-group">
@@ -108,7 +108,10 @@
                   <td>{{ pesagem.animal.brinco}}</td>
                   <td>{{ pesagem.peso}}</td>
                   <td>
-                    <button @click="confirmarExclusaoPesagem(pesagem)" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoAnimalModal"><i class="fas fa-trash-alt"></i></button>
+                    <button @click="editarPesagens(pesagem)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+                    <button @click="confirmarExclusaoPesagem(pesagem)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#confirmacaoExclusaoAnimalModal"><i class="fas fa-trash-alt"></i></button>
                   </td>
                 </tr>
               </tbody>
@@ -128,10 +131,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form @submit.prevent="submitForm">
+            <form @submit.prevent="submitFormEdicao">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input v-model="formData.dataPesagem" type="date" class="form-control" id="dataPesagemEditar" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de pesagem" 
+                class="form-control" id="dataPesagemEdicao" v-model="formData.dataPesagem">
               </div>
               <hr>
               <div class="mb-3 input-group">
@@ -154,7 +158,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+            <button type="button" class="btn btn-primary" @click="submitFormEdicao">Enviar</button>
           </div>
         </div>
       </div>
@@ -241,9 +245,9 @@ export default {
   },
   methods: {
 
-    async buscarPesagens(data) {
+    async buscarPesagens() {
       try {
-        const response = await api.get(`http://127.0.0.1:8000/pesagens/?data=${data}`);
+        const response = await api.get(`http://127.0.0.1:8000/pesagens/?propriedadeSelecionada=${localStorage.getItem('propriedadeSelecionada')}`);
         this.pesagens = response.data; 
 
         this.preencherDatasPesagens();
@@ -252,15 +256,17 @@ export default {
         console.error('Erro ao buscar pesagens por data:', error);
       }
     },
-    editarPesagens(pesagens) {
+    editarPesagens(pesagem) {
       this.modalTitle = 'Editar Pesagens';
       this.formData = {
-        id: pesagens.id,
-        dataPesagem: pesagens.dataPesagem,
-        peso: pesagens.peso,
-        observacao: pesagens.observacao,
-        animal: pesagens.animal
+        id: pesagem.id,
+        dataPesagem: pesagem.dataPesagem,
+        peso: pesagem.peso,
+        observacao: pesagem.observacao,
+        animal: pesagem.animal.id
       };
+      this.brinco = pesagem.animal.brinco;
+      this.camposHabilitados = true;
     },
 
     async preencherDatasPesagens(){
@@ -284,9 +290,12 @@ export default {
 
     async buscarAnimais() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/animais/vivos');
+        const response = await api.get('http://127.0.0.1:8000/animais/vivos', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
         this.animais = response.data;
-        this.filteredAnimais = this.animais;
       } catch (error) {
         console.error('Erro ao buscar animais:', error);
       }
@@ -383,7 +392,26 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
+    },
 
+    async submitFormEdicao() {
+      try {
+        const response = await api.patch(`http://127.0.0.1:8000/pesagens/${this.formData.id}/`, {
+          ...this.formData
+        });
+
+        if (response.status === 200) {
+          this.resetForm();
+          this.buscarPesagens();
+          this.fecharModal("edicaoModal");
+          alert('Dados alterados com sucesso!');
+        } else {
+          alert('Erro ao cadastrar pesagem. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
     },
 
     formatarData(data) {

@@ -48,27 +48,35 @@ class AnimalViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], url_path='machos')
     def list_machos(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         machos = models.Animal.objects.filter(sexo='macho')
-        serializer = self.get_serializer(machos, many=True)
+        machosProp = machos.filter(piquete__propriedade=propriedade_selecionada)
+        serializer = self.get_serializer(machosProp, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'], url_path='femeas')
     def list_femeas(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         femeas = models.Animal.objects.filter(sexo='femea')
-        serializer = self.get_serializer(femeas, many=True)
+        femeasProp = femeas.filter(piquete__propriedade=propriedade_selecionada)
+        serializer = self.get_serializer(femeasProp, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'], url_path='vivos')
     def list_vivos(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         vivos = models.Animal.objects.filter(status = 'Vivo')
-        serializer = self.get_serializer(vivos, many=True)
+        vivosProp = vivos.filter(piquete__propriedade=propriedade_selecionada)
+        serializer = self.get_serializer(vivosProp, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'], url_path='femeas/vivas')
-    def list_femeas(self, request, *args, **kwargs):
+    def list_femeasVivas(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         femeas = models.Animal.objects.filter(sexo='femea')
         femeasVivas = femeas.filter(status='Vivo')
-        serializer = self.get_serializer(femeasVivas, many=True)
+        femeasVivasProp = femeasVivas.filter(piquete__propriedade=propriedade_selecionada)
+        serializer = self.get_serializer(femeasVivasProp, many=True)
         return Response(serializer.data)
     
     
@@ -130,10 +138,10 @@ class PesagemViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.PesagemSerializer 
 
     def list(self, request, *args, **kwargs):
-        dataSelecionada = request.query_params.get('dataPesagem', None)
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         queryset = models.Pesagem.objects.all()
-        if dataSelecionada is not None:
-            queryset = queryset.filter(dataPesagem=dataSelecionada)
+        if propriedade_selecionada is not None:
+            queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
         serializer = serializers.PesagemComAnimaisSerializer(queryset, many=True)
         return Response(serializer.data)
     

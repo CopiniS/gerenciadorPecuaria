@@ -267,8 +267,7 @@
                 <span class="input-group-text"><i class="fas fa-horse"></i></span>
                 <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
                   aria-label="Raça Predominante" required>
-                  <option selected>{{ formData.racaPredominante.nome }}</option>
-                  <option v-for="raca in racas" :key="raca.nome" :value="raca.nome">{{ raca.nome }}</option>
+                  <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }} </option>
                 </select>
               </div>
               <div class="mb-3 input-group">
@@ -445,15 +444,15 @@ export default {
         brinco: animal.brinco,
         dataNascimento: animal.dataNascimento,
         sexo: animal.sexo,
-        racaPredominante: animal.racaPredominante,
+        racaPredominante: animal.racaPredominante.id,
         racaObservacao: animal.racaObservacao,
-        piquete: animal.piquete,
+        piquete: animal.piquete.id,
         brincoPai: animal.brincoPai,
         brincoMae: animal.brincoMae,
         status: 'Vivo',
-        rfid: null,
-        observacoes: null,
-        dataBaixa: null
+        rfid: animal.rfid,
+        observacoes: animal.observacoes,
+        dataBaixa: animal.dataBaixa
       };
     },
 

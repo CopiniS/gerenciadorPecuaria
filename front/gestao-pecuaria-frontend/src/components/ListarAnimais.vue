@@ -507,9 +507,12 @@ export default {
     }
     this.fecharModal("ocorrenciaModal");
   },
-  vizualizarAnimal() {
-    this.$router.push('/vizualizarAnimal');
-},
+  vizualizarAnimal(animal) {
+    this.$router.push({
+      name: 'VizualizarAnimal',
+      params: { animal }
+    });
+  }
 
   }
 }

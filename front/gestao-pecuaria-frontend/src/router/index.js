@@ -129,7 +129,7 @@ const routes = [
   },
   {
     path: '/vizualizarAnimal',
-    name: 'ViewAnimal',
+    name: 'VizualizarAnimal',
     component: ViewAnimal
   },
 

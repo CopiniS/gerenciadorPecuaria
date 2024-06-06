@@ -279,16 +279,6 @@ export default {
     data() {
         return {
             animal: {
-                brinco: '12345',
-                dataNascimento: '2020-01-01',
-                sexo: 'Fêmea',
-                raca: 'Angus',
-                brincoPai: '54321',
-                brincoMae: '67890',
-                observacoes: 'Nenhuma',
-                piquete: 'Piquete A',
-                status: 'Ativo',
-                photos: []
             },
             slider: null,
             width: 0,
@@ -308,6 +298,9 @@ export default {
             },
         };
     },
+    created() {
+    this.animal = this.$route.params.animal;
+  },
     mounted() {
         this.slider = document.querySelector('.slider');
         this.width = window.getComputedStyle(this.slider).width;

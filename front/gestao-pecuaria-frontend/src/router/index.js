@@ -19,6 +19,7 @@ import TelaAplicacoesProdutos from '@/views/TelaAplicacoesProdutos.vue'
 import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue'
 import TelaInseminacoes from '@/views/TelaInseminacoes.vue'
 import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
+import ViewAnimal from '@/views/ViewAnimal.vue';
 
 const routes = [
   
@@ -125,6 +126,11 @@ const routes = [
     path: '/outras-despesas',
     name: 'TelaOutrasDespesas',
     component: TelaOutrasDespesas
+  },
+  {
+    path: '/vizualizarAnimal',
+    name: 'ViewAnimal',
+    component: ViewAnimal
   },
 
 ];

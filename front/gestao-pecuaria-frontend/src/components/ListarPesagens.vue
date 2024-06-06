@@ -320,7 +320,6 @@ export default {
       this.brinco = '';
       this.modalTitle = 'Cadastro de Pesagem';
       this.camposHabilitados = false;
-      this.filteredAnimais = this.animais;
     },
     confirmarExclusao(data) {
       this.dataParaExclusao = data;

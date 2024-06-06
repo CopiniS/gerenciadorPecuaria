@@ -23,8 +23,7 @@
         </div>
       </form>
     </div>
-
-
+    
     <div>
       <div class="table-container">
         <div class="button-container">
@@ -35,21 +34,16 @@
           <thead>
             <tr>
               <th scope="col">Data Inseminação</th>
-              <th scope="col">Animal</th>
-              <th scope="col">Veterinario</th>
-              <th scope="col">Indentificador Touro</th>
+              <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(inseminacao, index) in inseminacoes" :key="index">
-              <td>{{ inseminacao.dataInseminacao }}</td>
-              <td>{{ inseminacao.animal.brinco }}</td>
-              <td>{{ inseminacao.veterinario.nome }}</td>
-              <td>{{ inseminacao.identificadorTouro }}</td>
+            <tr v-for="(data, index) in datasInseminacoes" :key="index">
+              <td>{{ formatarData(data) }}</td>
               <td>
-                <button @click="editarInseminacao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                  data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-                <button @click="editarInseminacao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                <button @click="preencherDetalhesInseminacaoPorData(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                  data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
+                <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal"
                   data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
               </td>
             </tr>
@@ -67,43 +61,39 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-venus"></i></span>
-                <input v-model="formData.animal" @input="filterFemeas()" type="text" class="form-control"
-                  placeholder="Digite o animal">
-              </div>
-              <div class="list-group" v-if="formData.animal && femeasFiltradas.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
-                  :key="animal.id" @click="selectMae(animal)">
-                  {{ animal.brinco }}
-                </button>
-              </div>
-
-              <div class="mb-3 input-group">
-                <input v-model="nome" @input="filterVeterinario" type="text" class="form-control"
-                  placeholder="Digite o Veterinario">
-              </div>
-              <div class="list-group" v-if="veterinario && filteredVeterinario.length">
-                <button type="button" class="list-group-item list-group-item-action"
-                  v-for="veterinario in filteredVeterinario" :key="veterinario.id"
-                  @click="selectVeterinario(veterinario)">
-                  {{ veterinario.nome }}
-                </button>
-              </div>
-
               <form @submit.prevent="submitForm">
-
+                
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                   <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da inseminação" 
                   class="form-control" id="dataInseminacaoCadastro" v-model="formData.dataInseminacao" required>
                 </div>
-
-
+                <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="nomeVet" @input="filterVeterinario" type="text" class="form-control"
+                  placeholder="Digite o Veterinario">
+                </div>
+                <div class="list-group" v-if="nomeVet && veterinariosFiltrados.length">
+                <button type="button" class="list-group-item list-group-item-action"
+                  v-for="veterinario in veterinariosFiltrados" :key="veterinario.id" @click="selectVeterinario(veterinario)">
+                  {{ veterinario.nome }}
+                </button>
+                </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
                   <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
                     placeholder="Indentificador Touro" required>
+                </div>
+                <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-venus"></i></span>
+                <input v-model="brinco" @input="filterFemeas()" type="text" class="form-control"
+                  placeholder="Digite o animal">
+                </div>
+                <div class="list-group" v-if="brinco && femeasFiltradas.length">
+                  <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
+                    :key="animal.id" @click="selectMae(animal)">
+                    {{ animal.brinco }}
+                  </button>
                 </div>
               </form>
             </div>
@@ -115,6 +105,44 @@
         </div>
       </div>
 
+      
+    <!-- Modal de Visualização de Inseminações -->
+    <div class="modal fade" id="visualizacaoModal" tabindex="-1" aria-labelledby="visualizacaoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="visualizacaoModalLabel">Detalhes da Inseminação</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Data da Inseminação:</strong> {{ formatarData(this.dataSelecionada) }}</p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Animal</th>
+                  <th scope="col">Veterinario</th>
+                  <th scope="col">Touro</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="inseminacao in this.detalhesInseminacao" :key="inseminacao.id">
+                  <td>{{ inseminacao.animal.brinco}}</td>
+                  <td>{{ inseminacao.veterinario.nome}}</td>
+                  <td>{{ inseminacao.identificadorTouro}}</td>
+                  <td>
+                    <button @click="editarInseminacao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+                    <button @click="confirmarExclusaoInsemincao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#confirmacaoExclusaoAnimalModal"><i class="fas fa-trash-alt"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
       <!-- Modal de Edição -->
       <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -124,40 +152,38 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-venus"></i></span>
-                <input v-model="formData.animal" @input="filterFemeas()" type="text" class="form-control"
-                  placeholder="Digite o animal">
-              </div>
-              <div class="list-group" v-if="formData.animal && femeasFiltradas.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
-                  :key="animal.id" @click="selectMae(animal)">
-                  {{ animal.brinco }}
-                </button>
-              </div>
-
-              <div class="mb-3 input-group">
-                <input v-model="nome" @input="filterVeterinario" type="text" class="form-control" placeholder="Digite o Veterinario">
-              </div>
-              <div class="list-group" v-if="veterinario && filteredVeterinario.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="veterinario in filteredVeterinario" :key="veterinario.id" @click="selectVeterinario(veterinario)">
-                  {{ veterinario.nome }}
-                </button>
-              </div>
-              <hr>
               <form @submit.prevent="submitForm">
-
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                  <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Inseminação" 
-                  class="form-control" id="dataInseminacaoEdicao" v-model="formData.dataInseminacao" required>
+                  <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da inseminação" 
+                  class="form-control" id="dataInseminacaoCadastro" v-model="formData.dataInseminacao" required>
                 </div>
-
-
+                <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <input v-model="nomeVet" @input="filterVeterinario" type="text" class="form-control"
+                  placeholder="Digite o Veterinario">
+                </div>
+                <div class="list-group" v-if="nomeVet && veterinariosFiltrados.length">
+                <button type="button" class="list-group-item list-group-item-action"
+                  v-for="veterinario in veterinariosFiltrados" :key="veterinario.id" @click="selectVeterinario(veterinario)">
+                  {{ veterinario.nome }}
+                </button>
+                </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
                   <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
                     placeholder="Indentificador Touro" required>
+                </div>
+                <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-venus"></i></span>
+                <input v-model="brinco" @input="filterFemeas()" type="text" class="form-control"
+                  placeholder="Digite o animal">
+                </div>
+                <div class="list-group" v-if="brinco && femeasFiltradas.length">
+                  <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
+                    :key="animal.id" @click="selectMae(animal)">
+                    {{ animal.brinco }}
+                  </button>
                 </div>
               </form>
             </div>
@@ -169,7 +195,7 @@
         </div>
       </div>
 
-      <!-- Modal de Confirmação de Exclusão -->
+      <!-- Modal de Confirmação de Exclusão da data -->
       <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
         aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -179,15 +205,34 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              Tem certeza de que deseja excluir este animal?
+              Tem certeza de que deseja excluir esta inseminação?
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-danger" @click="apagarInseminacao">Excluir</button>
+              <button type="button" class="btn btn-danger" @click="apagarPesagemPorData">Excluir</button>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Modal de Confirmação de Exclusão do animal da Inseminacao -->
+      <div class="modal fade" id="confirmacaoExclusaoAnimalModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoAnimalModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmacaoExclusaoAnimalModalLabel">Confirmação de Exclusão de Animal</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Tem certeza de que deseja excluir este animal da inseminação?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" @click="apagarInseminacao">Excluir</button>
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -199,20 +244,26 @@ export default {
   name: 'TelaInseminacoes',
   data() {
     return {
-      veterinario: [],
+      veterinarios: [],
       listaFemeas: [],
       femeasFiltradas: [],
       inseminacoes: [],
+      nomeVet: '',
+      brinco: '',
+      veterinariosFiltrados: [],
+      mostrarFormulario: false,
+      detalhesInseminacao: [],
+      inseminacaoParaExcluir: null,
+      dataParaExclusao: null,
+      datasInseminacoes: [], 
+      dataSelecionada: null, 
       formData: {
         id: null,
         dataInseminacao: '',
         veterinario: '',
         animal: '',
         identificadorTouro: '',
-
       },
-      filteredVeterinario: [],
-      mostrarFormulario: false,
       filtro: {
 
         dataInseminacao: '',
@@ -223,6 +274,7 @@ export default {
     }
   },
   async mounted() {
+    this.buscarFemeasVivasDaApi();
     this.buscarVeterinariossDaApi();
     this.buscarInseminacoesDaApi();
   },
@@ -236,6 +288,20 @@ export default {
           },
         });
         this.inseminacoes = response.data;
+        this.preencherDatasInseminacoes();
+      } catch (error) {
+        console.error('Erro ao buscar inseminacoes da API:', error);
+      }
+    },
+
+    async buscarFemeasVivasDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/femeas/vivas', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.animais = response.data;
       } catch (error) {
         console.error('Erro ao buscar inseminacoes da API:', error);
       }
@@ -246,43 +312,43 @@ export default {
         const response = await api.get('http://127.0.0.1:8000/veterinarios/', {
         });
         this.veterinarios = response.data;
-        this.filteredVeterinario = this.veterinarios;
       } catch (error) {
         console.error('Erro ao buscar veterinarios da API:', error);
       }
     },
     filterVeterinario() {
-      this.filteredVeterinario = this.veterinarios.filter(veterinario => veterinario.nome.toLowerCase().includes(this.nome));
+      this.veterinariosFiltrados = this.veterinarios.filter(veterinario => veterinario.nome.toLowerCase().includes(this.nomeVet));
+      console.log(this.veterinariosFiltrados);
     },
     selectVeterinario(veterinario) {
-      this.veterinario = veterinario.nome;
+      this.nomeVet = veterinario.nome;
       this.formData.veterinario = veterinario.id;
-      this.filteredVeterinario = [];
+      this.veterinariosFiltrados = [];
     },
-
-
-
+    
     editarInseminacao(inseminacao) {
       this.modalTitle = 'Editar Inseminação';
       this.formData = {
         id: inseminacao.id,
         dataInseminacao: inseminacao.dataInseminacao,
-        veterinario: inseminacao.veterinario,
-        animal: inseminacao.animal,
+        veterinario: inseminacao.veterinario.id,
+        animal: inseminacao.animal.id,
         identificadorTouro: inseminacao.identificadorTouro,
       };
+      this.nomeVet = inseminacao.veterinario.nome;
+      this.brinco = inseminacao.animal.brinco
     },
 
     resetForm() {
       this.formData = {
         id: null,
-        dataInseminacao: '',
-        veterinario: '',
+        dataInseminacao: this.formData.dataInseminacao,
+        veterinario: this.formData.veterinario,
+        identificadorTouro: this.formData.identificadorTouro,
         animal: '',
-        identificadorTouro: '',
       };
+      this.brinco = '';
       this.modalTitle = 'Cadastro de Inseminação';
-      this.filteredVeterinario = this.veterinarios;
     },
 
     fecharModal(modalId) {
@@ -294,21 +360,6 @@ export default {
       }
     },
 
-    async apagarInseminacao() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/${this.formData.id}/`, {});
-        if (response.status === 204) {
-          alert('Inseminação apagada com sucesso!');
-          this.buscarInseminacoesDaApi();
-        } else {
-          alert('Erro ao apagar inseminação. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
-    },
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Inseminação') {
         try {
@@ -343,19 +394,95 @@ export default {
       }
     },
 
+    confirmarExclusao(data) {
+      this.dataParaExclusao = data;
+    },
+
+    confirmarExclusaoInsemincao(inseminacao) {
+      this.inseminacaoParaExcluir = inseminacao;
+    },
+
+    async apagarPesagemPorData() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/datas/${this.dataParaExclusao}/`, {
+        });
+
+        if (response.status === 204) {
+          alert('Inseminação excluída com sucesso!');
+          this.dataParaExclusao = null;
+        } else {
+          alert('Erro ao excluir inseminação. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.buscarInseminacoesDaApi();
+      this.fecharModal('confirmacaoExclusaoModal');
+    },
+    async apagarInseminacao() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/${this.inseminacaoParaExcluir.id}/`);
+
+        if (response.status === 204) {
+          alert('Inseminção excluído com sucesso!');
+          this.detalhesInseminacao = this.detalhesInseminacao.filter(animal => animal.id !== this.inseminacaoParaExcluir.id);
+          this.inseminacaoParaExcluir = null;
+          this.buscarInseminacoesDaApi();
+        } else {
+          alert('Erro ao excluir a inseminação. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoAnimalModal');
+    },
+
     async preencherListaFemeas() {
-      const response = await api.get(`http://127.0.0.1:8000/animais/femeas/vivas`, {});
+      const response = await api.get(`http://127.0.0.1:8000/animais/femeas/vivas`, {
+        params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+      });
       this.listaFemeas = response.data;
     },
 
     filterFemeas() {
-      this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.animal));
+      this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
     },
 
     selectMae(animal) {
-      this.formData.animal = animal.brinco;
+      this.formData.animal = animal.id;
+      this.brinco = animal.brinco;
       this.femeasFiltradas = [];
     },
+
+    async preencherDatasInseminacoes(){
+      const datasSet = new Set();
+      this.inseminacoes.forEach(inseminacao => {
+        datasSet.add(inseminacao.dataInseminacao);
+      });
+      this.datasInseminacoes = Array.from(datasSet).sort((b, a) => new Date(a) - new Date(b));
+    },
+
+    async preencherDetalhesInseminacaoPorData(data){
+      this.detalhesInseminacao = []
+      this.inseminacoes.forEach(inseminacao => {
+        if(data === inseminacao.dataInseminacao){
+          this.detalhesInseminacao.push(inseminacao);
+        }
+      });
+      this.dataSelecionada = data;
+    },
+
+    formatarData(data) {
+    const date = new Date(data);
+    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+    return utcDate.toLocaleDateString('pt-BR', options);
+    },
+
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },

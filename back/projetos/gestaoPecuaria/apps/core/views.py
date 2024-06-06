@@ -208,6 +208,16 @@ class InseminacaoViewSet(viewsets.ModelViewSet):
         serializer = serializers.InseminacaoComAnimalAndVeterinarioSerializer(queryset, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
+    def delete_por_data(self, request, *args, **kwargs):
+        data = kwargs.get('data')
+        try:
+            objetos = self.get_queryset().filter(dataInseminacao=data)
+            objetos.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class OutraDespesaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

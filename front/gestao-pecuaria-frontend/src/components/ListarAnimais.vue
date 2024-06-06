@@ -200,8 +200,6 @@
       </div>
     </div>
 
-    
-
     <!-- Modal de Confirmação de Exclusão -->
     <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
       aria-hidden="true">
@@ -507,10 +505,8 @@ export default {
     this.fecharModal("ocorrenciaModal");
   },
   vizualizarAnimal(animal) {
-    this.$router.push({
-      name: 'VizualizarAnimal',
-      params: { animal }
-    });
+    localStorage.setItem('animalSelecionado', animal);
+    this.$router.push('/vizualizarAnimal');
   }
 
   }

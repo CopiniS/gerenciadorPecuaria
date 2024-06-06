@@ -278,8 +278,7 @@ import api from '/src/interceptadorAxios';
 export default {
     data() {
         return {
-            animal: {
-            },
+            animal: {},
             slider: null,
             width: 0,
             resizedImage: null,
@@ -298,10 +297,8 @@ export default {
             },
         };
     },
-    created() {
-    this.animal = this.$route.params.animal;
-  },
     mounted() {
+        this.animal = localStorage.getItem('animalSelecionado')
         this.slider = document.querySelector('.slider');
         this.width = window.getComputedStyle(this.slider).width;
         this.buscarFotos();

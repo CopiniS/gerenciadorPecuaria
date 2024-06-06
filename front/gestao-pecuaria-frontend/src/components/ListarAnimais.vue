@@ -62,7 +62,6 @@
     </div>
 
   <div>
-    <button @click="vizualizarAnimal()" class="btn-acoes btn-sm" ><i class="fas fa-eye"></i></button>
     <div class="table-container">
       <div class="button-container">
     <button @click="resetForm(); preencheListas()" type="button" class="btn btn-success" data-bs-toggle="modal"

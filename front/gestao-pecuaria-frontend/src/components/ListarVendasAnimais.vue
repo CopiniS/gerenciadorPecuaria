@@ -39,29 +39,18 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-              <th scope="col">Data da venda</th>
-              <th scope="col">Preco KG</th>
-              <th scope="col">Finalidade</th>
-              <th scope="col">Animal</th>
-              <th scope="col">Peso</th>
-              <th scope="col">Valor Total</th>
-              <th scope="col">Observação</th>
+              <th scope="col">Data Inseminação</th>
+              <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(venda, index) in vendas" :key="index">
-              <td>{{ venda.dataVenda }}</td>
-              <td>{{ venda.animal.brinco }}</td>
-              <td>{{ venda.peso }}</td>
-              <td>{{ venda.precoKg }}</td>
-              <td>{{ venda.valorTotal }}</td>
-              <td>{{ venda.finalidade }}</td>
-              <td>{{ venda.observacao }}</td>
+            <tr v-for="(data, index) in datasVendas" :key="index">
+              <td>{{ formatarData(data) }}</td>
               <td>
-                <button @click="editarVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                  data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-                <button @click="confirmarExclusao(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                    class="fas fa-trash-alt"></i></button>
+                <button @click="preencherdetalhesVendasPorData(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                  data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
+                <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                  data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
               </td>
             </tr>
           </tbody>
@@ -129,6 +118,47 @@
         </div>
       </div>
 
+      <!-- Modal de Visualização de Vendas -->
+    <div class="modal fade" id="visualizacaoModal" tabindex="-1" aria-labelledby="visualizacaoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="visualizacaoModalLabel">Detalhes da Venda</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Data da Venda:</strong> {{ formatarData(this.dataSelecionada) }}</p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Animal</th>
+                  <th scope="col">Peso</th>
+                  <th scope="col">Finalidade</th>
+                  <th scope="col">Preço do Kg</th>
+                  <th scope="col">Valor total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="venda in this.detalhesVendas" :key="venda.id">
+                  <td>{{ venda.animal.brinco}}</td>
+                  <td>{{ venda.peso}}</td>
+                  <td>{{ venda.finalidade}}</td>
+                  <td>{{ venda.precoKg}}</td>
+                  <td>{{ venda.valorTotal}}</td>
+                  <td>
+                    <button @click="editarVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+                    <button @click="confirmarExclusaoVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#confirmacaoExclusaoAnimalModal"><i class="fas fa-trash-alt"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
       <!-- Modal de Edição de Produto -->
       <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -140,29 +170,45 @@
             <div class="modal-body">
               <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome" required>
+                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da venda" 
+                    class="form-control" id="dataVenda" v-model="formData.dataVenda" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <select v-model="formData.tipo" class="form-select" id="tipoEditar" aria-label="Tipo"
+                  <input v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
                     placeholder="Selecione o tipo" required>
-                    <option value="sanitario">Sanitário</option>
-                    <option value="alimenticio">Alimentício</option>
+                    <option disabled value="">Finalidade</option>
+                    <option value="Cria">Cria</option>
+                    <option value="Recria">Recria</option>
+                    <option value="Engorda">Engorda</option>
+                    <option value="Abate">Abate</option>
                 </select>
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.categoria" type="text" class="form-control" id="categoriaEditar" placeholder="Categoria" required>
+                    <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
+                </div>
+                <div class="list-group" v-if="brinco && animaisFiltrados.length">
+                    <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
+                    {{ animal.brinco }}
+                    </button>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.peso" type="text" class="form-control" id="peso" placeholder="Peso" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal" placeholder="Valor Total" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                  <textarea v-model="formData.descricao" class="form-control" id="descricaoEditar"
-                    placeholder="Descrição"></textarea>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.estoque" type="text" class="form-control" id="estoqueEditar" placeholder="Estoque" required>
+                  <textarea v-model="formData.observacao" class="form-control" id="observacao"
+                    placeholder="Observação"></textarea>
                 </div>
               </form>
             </div>
@@ -174,21 +220,40 @@
         </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
-      aria-hidden="true">
+      <!-- Modal de Confirmação de Exclusão da data -->
+      <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
+        aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Tem certeza de que deseja excluir esta inseminação?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger" @click="apagarPesagemPorData">Excluir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de Confirmação de Exclusão do animal da Venda -->
+      <div class="modal fade" id="confirmacaoExclusaoAnimalModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoAnimalModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
+            <h5 class="modal-title" id="confirmacaoExclusaoAnimalModalLabel">Confirmação de Exclusão de Animal</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir este produto?
+            Tem certeza de que deseja excluir este animal da venda?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarProduto()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarVenda">Excluir</button>
           </div>
         </div>
       </div>
@@ -205,9 +270,14 @@ export default {
   data() {
     return {
       animais: [],
+      datasVendas: [],
       animaisFiltrados: [],
       brinco: '',
       vendas: [],
+      detalhesVendas: [],
+      dataSelecionada: '',
+      dataParaExclusao: null,
+      vendaParaExcluir: null,
       camposHabilitados: false,
       formData: {
         id: null,
@@ -241,6 +311,8 @@ export default {
             },
         });
         this.vendas = response.data;
+        this.preencherDatasVendas()
+
       } catch (error) {
         console.error('Erro ao buscar vendas da API:', error);
       }
@@ -274,7 +346,7 @@ export default {
       this.modalTitle = 'Editar Venda';
       this.formData = {
         id: venda.id,
-        animal: venda.animal,
+        animal: venda.animal.id,
         dataVenda: venda.dataVenda,
         peso: venda.peso,
         precoKg: venda.precoKg,
@@ -282,6 +354,7 @@ export default {
         finalidade: venda.finalidade,
         observacao: venda.observacao,
       };
+      this.brinco = venda.animal.brinco;
     },
     resetForm() {
       const { dataVenda, precoKg, finalidade } = this.formData;
@@ -306,37 +379,7 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    confirmarExclusao(venda) {
-      this.formData = {
-        id: venda.id,
-        animal: venda.animal,
-        dataVenda: venda.dataVenda,
-        peso: venda.peso,
-        precoKg: venda.precoKg,
-        valorTotal: venda.valorTotal,
-        finalidade: venda.finalidade,
-        observacao: venda.observacao,
-      };
-    },
-    async apagarProduto() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/vendas-animais/${this.formData.id}/`, {
-        });
-
-        if (response.status === 204) {
-          alert('Venda apagada com sucesso!');
-          this.buscarVendasDaApi();
-          this.buscarAnimaisDaApi();
-        } else {
-          alert('Erro ao apagar venda. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
-    },
-
+    
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Venda') {
         try {
@@ -374,6 +417,77 @@ export default {
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
       }
+    },
+
+    confirmarExclusao(data) {
+      this.dataParaExclusao = data;
+    },
+
+    confirmarExclusaoVenda(venda) {
+      this.vendaParaExcluir = venda;
+    },
+
+    async apagarPesagemPorData() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/vendas-animais/datas/${this.dataParaExclusao}/`, {
+        });
+
+        if (response.status === 204) {
+          alert('Vendas excluídas com sucesso!');
+          this.dataParaExclusao = null;
+        } else {
+          alert('Erro ao excluir vendas. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.buscarVendasDaApi();
+      this.fecharModal('confirmacaoExclusaoModal');
+    },
+
+    async apagarVenda() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/vendas-animais/${this.vendaParaExcluir.id}/`);
+
+        if (response.status === 204) {
+          alert('Venda excluído com sucesso!');
+          this.detalhesVendas = this.detalhesVendas.filter(animal => animal.id !== this.vendaParaExcluir.id);
+          this.vendaParaExcluir = null;
+          this.buscarVendasDaApi();
+        } else {
+          alert('Erro ao excluir a venda. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoAnimalModal');
+    },
+
+    async preencherDatasVendas(){
+      const datasSet = new Set();
+      this.vendas.forEach(venda => {
+        datasSet.add(venda.dataVenda);
+      });
+      this.datasVendas = Array.from(datasSet).sort((b, a) => new Date(a) - new Date(b));
+    },
+
+    async preencherdetalhesVendasPorData(data){
+      this.detalhesVendas = []
+      this.vendas.forEach(venda => {
+        if(data === venda.dataVenda){
+          this.detalhesVendas.push(venda);
+        }
+      });
+      this.dataSelecionada = data;
+    },
+
+    formatarData(data) {
+    const date = new Date(data);
+    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+    return utcDate.toLocaleDateString('pt-BR', options);
     },
 
   aplicarFiltro() {

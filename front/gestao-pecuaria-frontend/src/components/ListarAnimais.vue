@@ -94,13 +94,13 @@
             <td>{{ animal.piquete.nome }}</td>
             <td>{{ animal.status }}</td>
             <td>
-  <div class="button-group">
-    <button @click="vizualizarAnimal(animal)" class="btn-acoes btn-sm" ><i class="fas fa-eye"></i></button>
-    
-    <button @click="editarAnimal(animal)" class="btn-acoes" data-bs-toggle="modal"
-      data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
-  </div>
-</td>
+              <div class="button-group">
+                <button @click="vizualizarAnimal(animal)" class="btn-acoes btn-sm" ><i class="fas fa-eye"></i></button>
+                
+                <button @click="editarAnimal(animal)" class="btn-acoes" data-bs-toggle="modal"
+                  data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </td>
 
           </tr>
         </tbody>
@@ -472,40 +472,9 @@ export default {
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
-    abrirModalOcorrencia(animal) {
-    // Limpar dados da ocorrência anterior
-    this.novaOcorrencia = {
-      dataOcorrencia: '',
-      tipoOcorrencia: '',
-      descricao: null,
-    };
-    // Definir animal relacionado à ocorrência
-    this.animalOcorrencia = animal;
-  },
-  async registrarOcorrencia() {
-    try {
-      // Enviar dados da ocorrência para a API
-      const response = await api.post(`http://127.0.0.1:8000/ocorrencias/`, {
-        animal: this.animalOcorrencia.id,
-        dataOcorrencia: this.novaOcorrencia.dataOcorrencia,
-        tipo: this.novaOcorrencia.tipoOcorrencia,
-        descricao: this.novaOcorrencia.descricao,
-      });
-      if (response.status === 201) {
-        alert('Ocorrência registrada com sucesso!');
-        // Atualizar lista de animais
-        this.buscarAnimaisDaApi();
-      } else {
-        alert('Erro ao registrar ocorrência. Tente novamente mais tarde.');
-      }
-    } catch (error) {
-      console.error('Erro ao enviar requisição:', error);
-      alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-    }
-    this.fecharModal("ocorrenciaModal");
-  },
+    
   vizualizarAnimal(animal) {
-    localStorage.setItem('animalSelecionado', animal);
+    localStorage.setItem('animalSelecionado', animal.id);
     this.$router.push('/vizualizarAnimal');
   }
 

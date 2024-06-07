@@ -86,7 +86,7 @@ export default {
         foto: null,
         dataFoto: '',
         observacao: '',
-        animal: 2,
+        animal: 4,
       }
     };
   },
@@ -178,7 +178,7 @@ export default {
         foto: null,
         dataFoto: '',
         observacao: '',
-        animal: 2,
+        animal: 4,
       }
     },
   },

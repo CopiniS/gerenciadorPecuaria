@@ -79,6 +79,13 @@ class AnimalViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(femeasVivasProp, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'], url_path=r'(?P<id>\d+)')
+    def retornaAnimalSelecionado(self, request, *args, **kwargs):
+        id_animal = kwargs.get('id')
+        animal = self.get_queryset().filter(id=id_animal)
+        serializer = serializers.AnimalComPiqueteAndRacaSerializer(animal, many=True)
+        return Response(serializer.data)
+            
     
 class PiqueteViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

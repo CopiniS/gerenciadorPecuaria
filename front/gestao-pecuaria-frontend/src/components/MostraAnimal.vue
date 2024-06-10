@@ -11,7 +11,7 @@
             <th scope="col">Raça</th>
             <th scope="col">Brinco Pai</th>
             <th scope="col">Brinco Mãe</th>
-            <th scope="col">Observações</th>
+            <th scope="col">Raça de Observação</th>
             <th scope="col">Piquete</th>
             <th scope="col">Status</th>
           </tr>
@@ -35,7 +35,7 @@
                 data-bs-target="#ocorrenciaModal">Incluir Ocorrência</button>
             <button @click="editarAnimal(animal); preencheListas()" class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo">Editar</button>
-            <button @click="deleteAnimal" class="btn btn-success" data-bs-toggle="modal"
+            <button @click="editarAnimal(animal)" class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
             <button @click="addPhoto" class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#cadastroModal">Adicionar Foto</button>
@@ -272,6 +272,10 @@ export default {
             animalId: null,
             animal: null,
             animais: null,
+            listaFemeas: [],
+            listaMachos: [],
+            femeasFiltradas: [],
+            machosFiltrados: [],
             racas: [],
             piquetes: [],
             slider: null,
@@ -299,17 +303,42 @@ export default {
         this.width = window.getComputedStyle(this.slider).width;
         this.buscarFotos();
         this.preencheListas();
+        this.buscarPiquetesDaApi();
+        this.buscarRacasDaApi();
     },
 
     methods: {
 
         async buscarAnimalDaApi() {
       try {
-        const response = await api.get(`http://127.0.0.1:8000/animais/${this.animalId}/`);
+        const response = await api.get(`http://127.0.0.1:8000/animais/animal/${this.animalId}/`);
         this.animais = response.data;
         this.animal = this.animais[0];
       } catch (error) {
         console.error('Erro ao buscar animal da API:', error);
+      }
+    },
+
+    async buscarPiquetesDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.piquetes = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar piquetes da API:', error);
+      }
+    },
+
+    async buscarRacasDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/racas/', {
+        });
+        this.racas = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar raças da API:', error);
       }
     },
 
@@ -331,7 +360,6 @@ export default {
                 status: 'Vivo',
                 rfid: animal.rfid,
                 observacoes: animal.observacoes,
-                dataBaixa: animal.dataBaixa
             };
         },
         fecharModal(modalId) {
@@ -349,7 +377,7 @@ export default {
 
                 if (response.status === 204) {
                     alert('Animal apagado com sucesso!');
-                    this.buscarAnimalDaApi();
+                    this.$router.push('/animais');
                 } else {
                     alert('Erro ao apagar animal. Tente novamente mais tarde.');
                 }
@@ -358,9 +386,11 @@ export default {
                 alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
             }
             this.fecharModal("confirmacaoExclusaoModal");
-        }, async submitForm() {
-
+        }, 
+        
+        async submitForm() {
             try {
+                console.log('formdata: ', this.formData);
                 const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
                 });
 

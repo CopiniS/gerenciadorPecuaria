@@ -37,9 +37,9 @@
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo">Editar</button>
             <button @click="editarAnimal(animal)" class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
-            <button @click="addPhoto" class="btn btn-success" data-bs-toggle="modal"
+            <button class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#cadastroModal">Adicionar Foto</button>
-            <button @click="viewPhotos" class="btn btn-success" data-bs-toggle="modal"
+            <button @click="buscarFotos()" class="btn btn-success" data-bs-toggle="modal"
                 data-bs-target="#visuModal">Visualizar Fotos</button>
 
         </div>
@@ -287,7 +287,7 @@ export default {
                 foto: null,
                 dataFoto: '',
                 observacao: '',
-                animal: 2,
+                animal: null,
             },
             novaOcorrencia: {
                 dataOcorrencia: '',
@@ -301,7 +301,6 @@ export default {
         this.buscarAnimalDaApi();
         this.slider = document.querySelector('.slider');
         this.width = window.getComputedStyle(this.slider).width;
-        this.buscarFotos();
         this.preencheListas();
         this.buscarPiquetesDaApi();
         this.buscarRacasDaApi();
@@ -314,6 +313,7 @@ export default {
         const response = await api.get(`http://127.0.0.1:8000/animais/animal/${this.animalId}/`);
         this.animais = response.data;
         this.animal = this.animais[0];
+        this.formData.animal = this.animal.id;
       } catch (error) {
         console.error('Erro ao buscar animal da API:', error);
       }
@@ -511,12 +511,11 @@ export default {
             try {
                 const response = await api.get('http://127.0.0.1:8000/fotos-animais/', {
                     params: {
-                        animalSelecionado: this.formData.animal
+                        animalSelecionado: this.animal.id
                     },
                 });
                 this.fotos = response.data;
                 this.fotos = this.fotos.sort((a, b) => new Date(b.dataFoto) - new Date(a.dataFoto));
-                console.log(this.fotos)
             } catch (error) {
                 console.error('Erro ao buscar fotos da API:', error);
             }
@@ -538,7 +537,6 @@ export default {
 
                     if (response.status === 201) {
                         alert('Cadastro realizado com sucesso!');
-                        this.buscarFotos();
                         this.resetForm();
                     } else {
                         alert('Erro ao cadastrar a foto do animal. Tente novamente mais tarde.');
@@ -560,7 +558,7 @@ export default {
                 foto: null,
                 dataFoto: '',
                 observacao: '',
-                animal: 2,
+                animal: this.animal.id,
             }
         },
     },
@@ -594,5 +592,96 @@ td {
 
 th {
     background-color: #f2f2f2;
+}
+
+.boxSelect {
+  width: 900px;
+  height: 500px;
+  border: 1px solid black;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.boxSelect img {
+  width: 900px;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.modal-body-cadastro {
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.modal-body-visu {
+  display: flex;
+  justify-content: center;
+}
+
+.slide {
+  position: relative;
+}
+
+.slider {
+  display: flex;
+  overflow-x: hidden;
+  width: 900px;
+  border-radius: 20px;
+}
+
+.slide button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  background-color: cornflowerblue;
+  color: beige;
+  position: absolute;
+  top: 50%;
+}
+
+.slide button:hover {
+  background-color: rgb(51, 93, 170);
+}
+
+.slide button:first-of-type {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+.slide button:last-of-type {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+
+.content img {
+  width: 900px;
+  height: 500px;
+  object-fit: cover;
+  display: flex;
+  border-radius: 20px;
+}
+
+h2{
+  display: block;
+  font-size: 20px;
+}
+
+.mb-3 {
+  width: 900px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+}
+
+.input-imagem {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0;
 }
 </style>

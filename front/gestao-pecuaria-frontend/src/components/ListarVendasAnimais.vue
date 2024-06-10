@@ -74,7 +74,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
+                  <input @input="atualizaValorTotalPeloPrecoKg()" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.peso" type="text" class="form-control" id="peso" placeholder="Peso" required>
+                  <input @input="atualizaValorTotalPeloPeso()" v-model="formData.peso" type="text" class="form-control" id="peso" placeholder="Peso" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -481,6 +481,18 @@ export default {
         }
       });
       this.dataSelecionada = data;
+    },
+
+    atualizaValorTotalPeloPeso(){
+      if(this.formData.precoKg != ''){
+        this.formData.valorTotal = this.formData.precoKg * this.formData.peso
+      }
+    },
+
+    atualizaValorTotalPeloPrecoKg(){
+      if(this.formData.peso != ''){
+        this.formData.valorTotal = this.formData.precoKg * this.formData.peso
+      }
     },
 
     formatarData(data) {

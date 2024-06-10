@@ -178,12 +178,12 @@
               </div>
               <div class="mb-3 input-group">
                 <label for="dataInicial" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
-                class="form-control" id="dataFinalCadastro" v-model="formData.dataFinal">
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Inicial" 
+                class="form-control" id="dataInicialEdicao" v-model="formData.dataInicial">
               </div>
               <div class="mb-3 input-group">
                 <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
+                <input :disabled="!estaFinalizado" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
                 class="form-control" id="dataFinalEdicao" v-model="formData.dataFinal">
               </div>
             </form>

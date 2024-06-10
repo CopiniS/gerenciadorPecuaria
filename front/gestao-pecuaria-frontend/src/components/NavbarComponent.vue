@@ -50,10 +50,6 @@
               </li>
               <hr>
               <li class="nav-item">
-                <a href="/fotos-animais" class="nav-link"><i class="fas fa-image"></i> Fotos Animais</a>
-              </li>
-              <hr>
-              <li class="nav-item">
                 <a href="/raca" class="nav-link"><i class="fas fa-dna"></i> Raças</a>
               </li>
               <hr>

@@ -60,7 +60,7 @@
         </thead>
         <tbody>
           <tr v-for="(compra, index) in compras" :key="index">
-            <td>{{ compra.dataCompra }}</td>
+            <td>{{ formatarData(compra.dataCompra) }}</td>
             <td>{{ compra.produto.nome }}</td>
             <td>{{ compra.valorUnitario }}</td>
             <td>{{ compra.quantidadeComprada }}</td>
@@ -363,6 +363,14 @@ export default {
         }
       }
     },
+
+    formatarData(data) {
+    const date = new Date(data);
+    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+    return utcDate.toLocaleDateString('pt-BR', options);
+    },
+
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },

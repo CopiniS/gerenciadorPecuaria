@@ -85,7 +85,7 @@
         <tbody>
           <tr v-for="(animal, index) in animais" :key="index" :class="{'status-Vivo': animal.status === 'Vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente'}">
             <td>{{ animal.brinco }}</td>
-            <td>{{ animal.dataNascimento }}</td>
+            <td>{{ formatarData(animal.dataNascimento) }}</td>
             <td>{{ animal.sexo }}</td>
             <td>{{ animal.racaPredominante.nome }}</td>
             <td>{{ animal.brincoPai }}</td>
@@ -455,6 +455,14 @@ export default {
       this.formData.brincoMae = animal.brinco;
       this.femeasFiltradas = [];
     },
+
+    formatarData(data) {
+    const date = new Date(data);
+    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+    return utcDate.toLocaleDateString('pt-BR', options);
+    },
+
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },

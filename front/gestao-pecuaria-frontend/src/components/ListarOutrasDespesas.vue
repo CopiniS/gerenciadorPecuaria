@@ -46,7 +46,7 @@
           </thead>
           <tbody>
             <tr v-for="(despesa, index) in despesas" :key="index">
-              <td>{{ despesa.dataDespesa }}</td>
+              <td>{{ formatarData(despesa.dataDespesa) }}</td>
               <td>{{ despesa.valor }}</td>
               <td>{{ despesa.descricao }}</td>
               <td>
@@ -280,6 +280,14 @@ export default {
         }
       }
     },
+
+    formatarData(data) {
+      const date = new Date(data);
+      const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+      return utcDate.toLocaleDateString('pt-BR', options);
+    },
+
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },

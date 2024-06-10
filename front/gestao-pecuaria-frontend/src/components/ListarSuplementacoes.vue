@@ -68,8 +68,8 @@
             <td>{{ suplemento.produto.nome }}</td>
             <td>{{ suplemento.piquete.nome }}</td>
             <td>{{ suplemento.quantidade }}</td>
-            <td>{{ suplemento.dataInicial }}</td>
-            <td>{{ suplemento.dataFinal || '-' }}</td>
+            <td>{{ formatarData(suplemento.dataInicial) }}</td>
+            <td>{{ formatarData(suplemento.dataFinal) || '-' }}</td>
             <td :class="{ 'status-andamento': !suplemento.dataFinal, 'status-finalizada': suplemento.dataFinal }">{{
           suplemento.dataFinal ? 'Finalizada' : 'Em Andamento' }}</td>
             <td>
@@ -464,6 +464,15 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
+    },
+
+    formatarData(data) {
+      if(data){
+        const date = new Date(data);
+        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+        return utcDate.toLocaleDateString('pt-BR', options);
+      }
     },
 
     aplicarFiltro() {

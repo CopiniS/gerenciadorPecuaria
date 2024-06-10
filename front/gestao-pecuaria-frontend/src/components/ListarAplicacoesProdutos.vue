@@ -45,7 +45,7 @@
         </thead>
         <tbody>
           <tr v-for="(aplicacao, index) in aplicacoes" :key="index">
-            <td>{{ aplicacao.dataAplicacao }}</td>
+            <td>{{ formatarData(aplicacao.dataAplicacao) }}</td>
             <td>{{ aplicacao.animal.brinco }}</td>
             <td>{{ aplicacao.produto.nome }}</td>
             <td>{{ aplicacao.dosagem }}</td>
@@ -376,6 +376,14 @@ export default {
         }
       }
     },
+
+    formatarData(data) {
+    const date = new Date(data);
+    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+    return utcDate.toLocaleDateString('pt-BR', options);
+    },
+
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },

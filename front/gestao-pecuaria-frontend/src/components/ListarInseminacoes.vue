@@ -209,7 +209,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-danger" @click="apagarPesagemPorData">Excluir</button>
+              <button type="button" class="btn btn-danger" @click="apagarInseminacaoPorData">Excluir</button>
             </div>
           </div>
         </div>
@@ -402,7 +402,7 @@ export default {
       this.inseminacaoParaExcluir = inseminacao;
     },
 
-    async apagarPesagemPorData() {
+    async apagarInseminacaoPorData() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/datas/${this.dataParaExclusao}/`, {
         });
@@ -420,6 +420,7 @@ export default {
       this.buscarInseminacoesDaApi();
       this.fecharModal('confirmacaoExclusaoModal');
     },
+
     async apagarInseminacao() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/${this.inseminacaoParaExcluir.id}/`);

@@ -34,31 +34,24 @@
         data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Aplicação</button>
     </div>
       <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col">Data da aplicação</th>
-            <th scope="col">Animal</th>
-            <th scope="col">Produto</th>
-            <th scope="col">Dosagem</th>
-            <th scope="col">Observação</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(aplicacao, index) in aplicacoes" :key="index">
-            <td>{{ formatarData(aplicacao.dataAplicacao) }}</td>
-            <td>{{ aplicacao.animal.brinco }}</td>
-            <td>{{ aplicacao.produto.nome }}</td>
-            <td>{{ aplicacao.dosagem }}</td>
-            <td>{{ aplicacao.observacao }}</td>
-            <td>
-              <button @click="editarAplicacao(aplicacao)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="editarAplicacao(aplicacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                  class="fas fa-trash-alt"></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <thead>
+            <tr>
+              <th scope="col">Data da Aplicação</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(data, index) in datasAplicacoes" :key="index">
+              <td>{{ formatarData(data) }}</td>
+              <td>
+                <button @click="preencherDetalhesAplicacaoPorData(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                  data-bs-target="#visualizacaoModal"><i class="fas fa-eye"></i></button>
+                <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                  data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </div>
         <!-- Modal de Cadastro de Aplicação -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
@@ -106,6 +99,43 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Visualização de Inseminações -->
+    <div class="modal fade" id="visualizacaoModal" tabindex="-1" aria-labelledby="visualizacaoModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="visualizacaoModalLabel">Detalhes da IAplicação</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Data da Aplicação:</strong> {{ formatarData(this.dataSelecionada) }}</p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Animal</th>
+                  <th scope="col">Produto</th>
+                  <th scope="col">Dosagem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="aplicacao in this.detalhesAplicacao" :key="aplicacao.id">
+                  <td>{{ aplicacao.animal.brinco}}</td>
+                  <td>{{ aplicacao.produto.nome}}</td>
+                  <td>{{ aplicacao.dosagem}}</td>
+                  <td>
+                    <button @click="editarAplicacao(aplicacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+                    <button @click="confirmarExclusaoAplicacao(aplicacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#confirmacaoExclusaoAnimalModal"><i class="fas fa-trash-alt"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -162,25 +192,45 @@
       </div>
     </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
-      aria-hidden="true">
+    <!-- Modal de Confirmação de Exclusão da data -->
+      <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
+        aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Tem certeza de que deseja excluir esta Aplicação?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger" @click="apagarAplicacaoPorData">Excluir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de Confirmação de Exclusão do animal da Inseminacao -->
+      <div class="modal fade" id="confirmacaoExclusaoAnimalModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoAnimalModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
+            <h5 class="modal-title" id="confirmacaoExclusaoAnimalModalLabel">Confirmação de Exclusão de Animal</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir esta aplicação?
+            Tem certeza de que deseja excluir este animal da inseminação?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarAplicacao()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarAplicacao">Excluir</button>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 </template>
@@ -199,6 +249,11 @@ export default {
         produtos: [],
         produtosFiltrados: [],
         nomeProduto: '',  
+        datasAplicacoes: [],
+        dataSelecionada: null,
+        detalhesAplicacao: [],
+        aplicacaoParaExcluir: null,
+        dataParaExclusao: null,
         camposHabilitadosAnimal: false,
         camposHabilitadosProduto: false,
         formData: {
@@ -225,6 +280,25 @@ export default {
     this.buscarAplicacoesDaApi();
   },
   methods: {
+    
+    async preencherDatasAplicacoes(){
+      const datasSet = new Set();
+      this.aplicacoes.forEach(aplicacao => {
+        datasSet.add(aplicacao.dataAplicacao);
+      });
+      this.datasAplicacoes = Array.from(datasSet).sort((b, a) => new Date(a) - new Date(b));
+    },
+
+    async preencherDetalhesAplicacaoPorData(data){
+      this.detalhesAplicacao = []
+      this.aplicacoes.forEach(aplicacao => {
+        if(data === aplicacao.dataAplicacao){
+          this.detalhesAplicacao.push(aplicacao);
+        }
+      });
+      this.dataSelecionada = data;
+    },
+
     async buscarAnimaisDaApi() {
         try {
             const response = await api.get('http://127.0.0.1:8000/animais/vivos' , {
@@ -277,6 +351,7 @@ export default {
             },
             });
             this.aplicacoes = response.data;
+            this.preencherDatasAplicacoes();
         } catch (error) {
         console.error('Erro ao buscar aplicações de produtos da API:', error);
         }
@@ -320,24 +395,6 @@ export default {
       }
     },
 
-    async apagarAplicacao() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/` , {
-        });
-
-        if (response.status === 204) {
-          alert('Aplicação de produto apagada com sucesso!');
-          this.buscarAplicacoesDaApi();
-        } else {
-          alert('Erro ao apagar aplicação de produto. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
-    },
-    
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Aplicacao') {
         try {
@@ -375,6 +432,52 @@ export default {
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
       }
+    },
+
+    confirmarExclusao(data) {
+      this.dataParaExclusao = data;
+    },
+
+    confirmarExclusaoAplicacao(aplicacao) {
+      this.aplicacaoParaExcluir = aplicacao;
+    },
+
+    async apagarAplicacaoPorData() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/aplicacoes-produtos/datas/${this.dataParaExclusao}/`, {
+        });
+
+        if (response.status === 204) {
+          alert('Aplicação excluída com sucesso!');
+          this.dataParaExclusao = null;
+          this.buscarAplicacoesDaApi();
+        } else {
+          alert('Erro ao excluir aplicação. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoModal');
+    },
+    
+    async apagarAplicacao() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/aplicacoes-produtos/${this.aplicacaoParaExcluir.id}/`);
+
+        if (response.status === 204) {
+          alert('Aplicação excluído com sucesso!');
+          this.detalhesAplicacao = this.detalhesAplicacao.filter(animal => animal.id !== this.aplicacaoParaExcluir.id);
+          this.aplicacaoParaExcluir = null;
+          this.buscarAplicacoesDaApi();
+        } else {
+          alert('Erro ao excluir a aplicação. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoAnimalModal');
     },
 
     formatarData(data) {

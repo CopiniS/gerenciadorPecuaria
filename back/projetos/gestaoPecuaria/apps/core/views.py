@@ -276,6 +276,16 @@ class AplicacaoProdutoViewSet(viewsets.ModelViewSet):
         serializer = serializers.AplicacaoProdutoComAnimalAndProdutoSerializer(queryset, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
+    def delete_por_data(self, request, *args, **kwargs):
+        data = kwargs.get('data')
+        try:
+            objetos = self.get_queryset().filter(dataAplicacao=data)
+            objetos.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class FotoViewSet(viewsets.ModelViewSet):
     queryset = models.Foto.objects.all()

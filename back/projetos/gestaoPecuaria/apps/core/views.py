@@ -168,7 +168,11 @@ class CompraProdutoViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CompraProdutoSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = models.CompraProduto.objects.filter(produto__produtor=self.request.user)
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
+        queryset = models.CompraProduto.objects.all()
+        print('prop: ', propriedade_selecionada)
+        if propriedade_selecionada is not None:
+            queryset = queryset.filter(propriedade=propriedade_selecionada)
         serializer = serializers.CompraProdutosComProdutosSerializer(queryset, many=True)
         return Response(serializer.data)
 

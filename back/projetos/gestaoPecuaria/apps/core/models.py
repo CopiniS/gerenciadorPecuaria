@@ -63,6 +63,7 @@ class CompraProduto(models.Model):
     dataCompra = models.DateField('Data de compra')
     validade = models.DateField('Data de vencimento')
     lote = models.CharField('Lote', max_length=50)
+    propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
 
 class Suplementacao(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)

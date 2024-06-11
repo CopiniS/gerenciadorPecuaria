@@ -219,6 +219,7 @@ export default {
         quantidadeComprada: '',
         validade: '',
         lote: '',
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
       mostrarFormulario: false,
       filtro: {
@@ -239,7 +240,11 @@ export default {
   methods: {
     async buscarComprasDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/compras-produtos/');
+        const response = await api.get('http://127.0.0.1:8000/compras-produtos/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
         this.compras = response.data;
       } catch (error) {
         console.error('Erro ao buscar compras de produtos da API:', error);
@@ -286,6 +291,7 @@ export default {
         quantidadeComprada: '',
         validade: '',
         lote: '',
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
       };
       this.nomeDigitado = '',
       this.modalTitle = 'Cadastro de Compra de Produto';

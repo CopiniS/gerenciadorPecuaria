@@ -184,19 +184,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body-cadastro">
-                    <form>
-                        <div class="mb-3 input-group">
+                    <form class="form-foto">
+                        <div class="mb-3 input-group mb-3-foto">
                             <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                             <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                                 placeholder="Data da foto" class="form-control" id="dataFoto"
                                 v-model="formData.dataFoto" required>
                         </div>
-                        <div class="mb-3 input-group">
+                        <div class="mb-3 input-group mb-3-foto">
                             <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
                             <textarea v-model="formData.observacao" class="form-control" id="observacao"
                                 placeholder="Observação"></textarea>
                         </div>
-                        <div class="mb-3 input-group">
+                        <div class="mb-3 input-group mb-3-foto">
                             <input type="file" @change="apresentarImagem" accept="image/*" />
                         </div>
                     </form>
@@ -675,16 +675,16 @@ h2{
   font-size: 20px;
 }
 
-.mb-3 {
+.mb-3-foto {
   width: 900px;
 }
 
-form {
+.form-foto {
   display: flex;
   flex-direction: column;
   align-items: center; 
   justify-content: center;
-}
+} 
 
 .input-imagem {
   display: flex;

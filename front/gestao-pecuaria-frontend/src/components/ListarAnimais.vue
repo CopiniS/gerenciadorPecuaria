@@ -73,10 +73,6 @@
             <th scope="col">Brinco</th>
             <th scope="col">Data Nascimento</th>
             <th scope="col">Sexo</th>
-            <th scope="col">Raça</th>
-            <th scope="col">Brinco Pai</th>
-            <th scope="col">Brinco Mãe</th>
-            <th scope="col">Observações</th>
             <th scope="col">Piquete</th>
             <th scope="col">Status</th>
             <th scope="col">Ações</th>
@@ -87,10 +83,6 @@
             <td>{{ animal.brinco }}</td>
             <td>{{ formatarData(animal.dataNascimento) }}</td>
             <td>{{ animal.sexo }}</td>
-            <td>{{ animal.racaPredominante.nome }}</td>
-            <td>{{ animal.brincoPai }}</td>
-            <td>{{ animal.brincoMae }}</td>
-            <td>{{ animal.racaObservacao }}</td>
             <td>{{ animal.piquete.nome }}</td>
             <td>{{ animal.status }}</td>
             <td>

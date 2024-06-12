@@ -25,7 +25,7 @@ class Animal(models.Model):
     brinco = models.CharField('Brinco', max_length=6)
     dataNascimento = models.DateField('Data de nascimento')
     sexo = models.CharField('Sexo', max_length=5)
-    racaPredominante = models.ForeignKey(Raca, on_delete=models.CASCADE)
+    racaPredominante = models.ForeignKey(Raca, on_delete=models.CASCADE, null=True)
     racaObservacao = models.CharField('Raça de observação', max_length=50, null=True)
     piquete = models.ForeignKey(Piquete, on_delete=models.CASCADE, default=0) 
     brincoPai = models.CharField('Brinco do pai', max_length=6, null=True)
@@ -34,6 +34,8 @@ class Animal(models.Model):
     observacoes = models.CharField('Observações', max_length=255, null=True)
     dataBaixa = models.DateField('Data da baixa', null=True)
     status = models.CharField('Status', max_length=50)
+    dataCompra = models.DateField('Data de compra', null=True)
+    valorCompra = models.DecimalField('Valor da compra', max_digits=10, decimal_places=2, null=True)
 
 class Veterinario(models.Model):
     nome = models.CharField('Nome', max_length=50)

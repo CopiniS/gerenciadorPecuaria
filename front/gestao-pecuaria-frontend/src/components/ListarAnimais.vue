@@ -109,27 +109,27 @@
           </div>
           <div class="modal-body">
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tag"></i></span>
+              <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
               <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete"
                 placeholder="Selecione o piquete" required>
-                <option disabled selected>Selecione o piquete</option>
+                <option disabled value="">Selecione o piquete</option>
                 <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
               </select>
             </div>
             <hr>
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <span class="input-group-text"><i class="fas fa-user-tag"></i>*</span>
                 <input v-model="formData.brinco" type="text" class="form-control" id="brinco"
                   placeholder="Número do Brinco" required>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
                 <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de nascimento" 
                 class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" required>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                <span class="input-group-text"><i class="fas fa-venus-mars">*</i></span>
                 <select v-model="formData.sexo" class="form-select" id="sexo" aria-label="Sexo" required
                   placeholder="Selecione o sexo">
                   <option disabled value="">Selecione o sexo</option>
@@ -141,7 +141,7 @@
                 <span class="input-group-text"><i class="fas fa-horse"></i></span>
                 <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
                   aria-label="Raça Predominante" required>
-                  <option disabled selected>Selecione a raça predominante</option>
+                  <option disabled value="">Selecione a raça predominante</option>
                   <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
                 </select>
               </div>
@@ -181,6 +181,18 @@
                 <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
                 <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
                   placeholder="Observações" required>
+              </div>
+              <div class="mb-3 input-group">
+                <input v-model="comprado" type="checkbox" id="check-comprado">  Animal Comprado
+              </div>
+              <div v-if="comprado" class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
+                class="form-control" id="dataDaCompra" v-model="formData.dataCompra" required>
+              </div>
+              <div v-if="comprado" class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
+                <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"  placeholder="Valor da compra" required>
               </div>
             </form>
           </div>
@@ -229,12 +241,13 @@ export default {
       listaFemeas:[],
       femeasFiltradas: [],
       machosFiltrados: [],
+      comprado: false,
       formData: {
         id: null,
         brinco: '',
         dataNascimento: '',
         sexo: '',
-        racaPredominante: '',
+        racaPredominante: null,
         racaObservacao: null,
         piquete: '',
         brincoPai: '',
@@ -242,7 +255,9 @@ export default {
         status: 'Vivo',
         rfid: '',
         observacoes: '',
-        dataBaixa: null
+        dataBaixa: null,
+        dataCompra: null,
+        valorCompra: null,
       },
       mostrarFormulario: false,
       filtro: {
@@ -320,7 +335,9 @@ export default {
         status: 'Vivo',
         rfid: animal.rfid,
         observacoes: animal.observacoes,
-        dataBaixa: animal.dataBaixa
+        dataBaixa: animal.dataBaixa,
+        dataCompra: animal.dataCompra,
+        valorCompra: animal.valorCompra,
       };
     },
 
@@ -330,13 +347,15 @@ export default {
         brinco: '',
         dataNascimento: '',
         sexo: '',
-        racaPredominante: '',
+        racaPredominante: null,
         racaObservacao: null,
         piquete: this.formData.piquete,
         status: 'Vivo',
         rfid: null,
         observacoes: null,
         dataBaixa: null,
+        dataCompra: null,
+        valorCompra: null,
       };
       this.modalTitle = 'Cadastro de Animal';
     },

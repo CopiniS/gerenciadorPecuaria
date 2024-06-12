@@ -101,6 +101,30 @@
                             placeholder="Valor da compra" required>
                     </div>
                 </form>
+
+                <h2>Ocorrências</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="ocorrencia in animal.ocorrencias" :key="ocorrencia.id">
+                        <td>{{ formatarData(ocorrencia.data) }}</td>
+                        <td>{{ ocorrencia.tipoOcorrencia }}</td>
+                        <td>{{ ocorrencia.descricao }}</td>
+                        <td>
+                            <button @click="editarOcorrencia(ocorrencia)" class="btn btn-warning btn-sm">Editar</button>
+                            <button @click="excluirOcorrencia(ocorrencia.id)" class="btn btn-danger btn-sm">Excluir</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
             </div>
 
         </div>
@@ -664,6 +688,10 @@ export default {
     border: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #4CAF50; /* Adiciona uma borda verde na parte inferior */
 }
 
 .animal-view {

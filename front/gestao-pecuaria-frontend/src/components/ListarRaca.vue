@@ -232,27 +232,33 @@ export default {
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
 
 .button-container {
-  text-align: left; 
-  margin-bottom: 20px; 
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.table-container table {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .table-container table thead tr th {
-  background-color: #4CAF50; /* Fundo verde */
-  color: white; /* Letra branca */
   border-bottom: 2px solid #4CAF50;
+  /* Adiciona uma borda verde na parte inferior */
 }
 
 .btn-acoes {
   background-color: transparent;
   border: none;
   padding: 0;
+  margin: 5px
 }
 
 .btn-acoes i {

@@ -1,278 +1,366 @@
 <template>
-<div>
-    <div class="animal-view">
-        <h1>Detalhes do Animal</h1>
-        <table class="table table-bordered">
-        <thead >
-          <tr>
-            <th scope="col">Brinco</th>
-            <th scope="col">Data Nascimento</th>
-            <th scope="col">Sexo</th>
-            <th scope="col">Raça</th>
-            <th scope="col">Brinco Pai</th>
-            <th scope="col">Brinco Mãe</th>
-            <th scope="col">Raça de Observação</th>
-            <th scope="col">Piquete</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(animal, index) in animais" :key="index">
-                <td>{{ animal.brinco }}</td>
-                <td>{{ formatarData(animal.dataNascimento) }}</td>
-                <td>{{ animal.sexo }}</td>
-                <td>{{ animal.racaPredominante.nome }}</td>
-                <td>{{ animal.brincoPai }}</td>
-                <td>{{ animal.brincoMae }}</td>
-                <td>{{ animal.racaObservacao }}</td>
-                <td>{{ animal.piquete.nome }}</td>
-                <td>{{ animal.status }}</td>
-            </tr>
-        </tbody>
-        </table>
-        <div class="actions">
-            <button @click="abrirModalOcorrencia(animal)" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#ocorrenciaModal">Incluir Ocorrência</button>
-            <button @click="editarAnimal(animal); preencheListas()" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#edicaoModal" data-bs-whatever="@mdo">Editar</button>
-            <button @click="editarAnimal(animal)" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
-            <button class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#cadastroModal">Adicionar Foto</button>
-            <button @click="buscarFotos()" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#visuModal">Visualizar Fotos</button>
+    <div>
+        <div class="animal-view">
+            <h1>Detalhes do Animal</h1>
+            <div class="actions d-flex flex-wrap">
+                <button @click="abrirModalOcorrencia(animal)" class="btn btn-success mx-1" data-bs-toggle="modal"
+                    data-bs-target="#ocorrenciaModal">Incluir Ocorrência</button>
+                <button @click="editarAnimal(animal); preencheListas()" class="btn btn-success mx-1"
+                    data-bs-toggle="modal" data-bs-target="#edicaoModal" data-bs-whatever="@mdo">Editar</button>
+                <button @click="editarAnimal(animal)" class="btn btn-success mx-1" data-bs-toggle="modal"
+                    data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
+                <button class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#cadastroModal">Adicionar
+                    Foto</button>
+                <button @click="buscarFotos()" class="btn btn-success mx-1" data-bs-toggle="modal"
+                    data-bs-target="#visuModal">Visualizar Fotos</button>
+            </div>
 
-        </div>
-    </div>
-
-    <!-- Modal de Edição -->
-    <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar animal</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="submitForm">
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                            <input v-model="formData.brinco" type="text" class="form-control" id="brincoEditar"
-                                placeholder="Número do Brinco" required>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                                placeholder="Data de nascimento" class="form-control" id="dataNascimentoEdicao"
-                                v-model="formData.dataNascimento" required>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
-                            <select v-model="formData.sexo" class="form-select" id="sexoEditar">
-                                <option disabled value="">Selecione o sexo</option>
-                                <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao"
-                                    v-bind:selected="formData.sexo === opcao">{{ opcao }}</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-horse"></i></span>
-                            <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
-                                aria-label="Raça Predominante" required>
-                                <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }} </option>
-                            </select>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                            <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacaoEditar"
-                                placeholder="Observações sobre a Raça"></textarea>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                            <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete"
-                                required>
-                                <option disabled selected>Selecione o piquete</option>
-                                <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{
+            <div class="d-flex align-items-start table-container flex-column">
+                    <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="brinco" class="form-label me-2">Brinco</label>
+                        <input v-model="formData.brinco" type="text" class="form-control" id="brinco"
+                            placeholder="Número do Brinco" required>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
+                        <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                            placeholder="Data de nascimento" class="form-control" id="dataNascimento"
+                            v-model="formData.dataNascimento" required>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="sexo" class="form-label me-2">Sexo</label>
+                        <select v-model="formData.sexo" class="form-select" id="sexo">
+                            <option disabled value="">Selecione o sexo</option>
+                            <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao"
+                                v-bind:selected="formData.sexo === opcao">{{ opcao }}</option>
+                        </select>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="raca" class="form-label me-2">Raça</label>
+                        <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
+                            aria-label="Raça Predominante" required>
+                            <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }} </option>
+                        </select>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="observacaoRaca" class="form-label me-2">Observações da Raça</label>
+                        <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
+                            placeholder="Observações sobre a Raça"></textarea>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="piquete" class="form-label me-2">Piquete</label>
+                        <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete"
+                            required>
+                            <option disabled selected>Selecione o piquete</option>
+                            <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{
                     piquete.nome }}</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-mars"></i></span>
-                            <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
-                                placeholder="Digite o brinco do Pai...">
-                        </div>
-                        <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
-                            <button type="button" class="list-group-item list-group-item-action"
-                                v-for="animal in machosFiltrados" :key="animal.id" @click="selectPai(animal)">
-                                {{ animal.brinco }}
-                            </button>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-venus"></i></span>
-                            <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
-                                placeholder="Digite o brinco da Mãe...">
-                        </div>
-                        <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
-                            <button type="button" class="list-group-item list-group-item-action"
-                                v-for="animal in femeasFiltradas" :key="animal.id" @click="selectMae(animal)">
-                                {{ animal.brinco }}
-                            </button>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                            <input v-model="formData.rfid" type="text" class="form-control" id="rfid" placeholder="RFID"
-                                required>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                            <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-                                placeholder="Observações" required>
-                        </div>
-                        <div class="mb-3 input-group">
-                            <input v-model="comprado" type="checkbox" id="check-comprado">  Animal Comprado
-                        </div>
-                        <div v-if="comprado" class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
-                            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
-                            class="form-control" id="dataDaCompra" v-model="formData.dataCompra" required>
-                        </div>
-                        <div v-if="comprado" class="mb-3 input-group">
-                            <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
-                            <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"  placeholder="Valor da compra" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                        </select>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="brincoPai" class="form-label me-2">Brinco pai</label>
+                        <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
+                            placeholder="Digite o brinco do Pai...">
+                    </div>
+                    <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
+                        <button type="button" class="list-group-item list-group-item-action"
+                            v-for="animal in machosFiltrados" :key="animal.id" @click="selectPai(animal)">
+                            {{ animal.brinco }}
+                        </button>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="brincoMae" class="form-label me-2">Brinco mãe</label>
+                        <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
+                            placeholder="Digite o brinco da Mãe...">
+                    </div>
+                    <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
+                        <button type="button" class="list-group-item list-group-item-action"
+                            v-for="animal in femeasFiltradas" :key="animal.id" @click="selectMae(animal)">
+                            {{ animal.brinco }}
+                        </button>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="rfid" class="form-label me-2">RfId</label>
+                        <input v-model="formData.rfid" type="text" class="form-control" id="rfid" placeholder="RFID"
+                            required>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="observacoes" class="form-label me-2">Observações</label>
+                        <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
+                            placeholder="Observações" required>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="dataCompra" class="form-label me-2">DataCompra</label>
+                        <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                            placeholder="Data da compra" class="form-control" id="dataDaCompra"
+                            v-model="formData.dataCompra" required>
+                    </div>
+                    <div class="col-auto d-flex align-items-center">
+                        <label for="valor" class="form-label me-2">Valor Compra</label>
+                        <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"
+                            placeholder="Valor da compra" required>
+                    </div>
+                </form>
 
-    <!-- Modal de Ocorrência -->
-    <div class="modal fade" id="ocorrenciaModal" tabindex="-1" aria-labelledby="ocorrenciaModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ocorrenciaModalLabel">Registrar Ocorrência</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="registrarOcorrencia">
-                        <div class="mb-3">
-                            <label for="dataOcorrencia" class="form-label">Data da Ocorrência</label>
-                            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                                placeholder="Data da Ocorência" class="form-control" id="dataOcorrencia"
-                                v-model="novaOcorrencia.dataOcorrencia" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tipoOcorrencia" class="form-label">Tipo da Ocorrência</label>
-                            <select class="form-select" id="tipoOcorrencia" v-model="novaOcorrencia.tipoOcorrencia"
-                                required>
-                                <option value="Morte">Morte</option>
-                                <option value="Doença">Doença</option>
-                                <option value="Outro">Outro</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="descricaoOcorrencia" class="form-label">Descrição</label>
-                            <textarea class="form-control" id="descricaoOcorrencia"
-                                v-model="novaOcorrencia.descricao"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Registrar</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                <h2>Ocorrências</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="ocorrencia in animal.ocorrencias" :key="ocorrencia.id">
+                        <td>{{ formatarData(ocorrencia.data) }}</td>
+                        <td>{{ ocorrencia.tipoOcorrencia }}</td>
+                        <td>{{ ocorrencia.descricao }}</td>
+                        <td>
+                            <button @click="editarOcorrencia(ocorrencia)" class="btn btn-warning btn-sm">Editar</button>
+                            <button @click="excluirOcorrencia(ocorrencia.id)" class="btn btn-danger btn-sm">Excluir</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-    <!-- Modal de Cadastro de foto -->
-    <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Fotos</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body-cadastro">
-                    <form class="form-foto">
-                        <div class="mb-3 input-group mb-3-foto">
-                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                                placeholder="Data da foto" class="form-control" id="dataFoto"
-                                v-model="formData.dataFoto" required>
-                        </div>
-                        <div class="mb-3 input-group mb-3-foto">
-                            <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                            <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                                placeholder="Observação"></textarea>
-                        </div>
-                        <div class="mb-3 input-group mb-3-foto">
-                            <input type="file" @change="apresentarImagem" accept="image/*" />
-                        </div>
-                    </form>
-                    <div class="input-imagem">
-                        <div class="boxSelect">
-                            <img v-if="resizedImage" :src="resizedImage" alt="Resized Image" />
-                        </div>
+            </div>
+
+        </div>
+
+        <!-- Modal de Edição -->
+        <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar animal</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="submitForm">
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                <input v-model="formData.brinco" type="text" class="form-control" id="brincoEditar"
+                                    placeholder="Número do Brinco" required>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                                    placeholder="Data de nascimento" class="form-control" id="dataNascimentoEdicao"
+                                    v-model="formData.dataNascimento" required>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                                <select v-model="formData.sexo" class="form-select" id="sexoEditar">
+                                    <option disabled value="">Selecione o sexo</option>
+                                    <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao"
+                                        v-bind:selected="formData.sexo === opcao">{{ opcao }}</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-horse"></i></span>
+                                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
+                                    aria-label="Raça Predominante" required>
+                                    <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                                <textarea v-model="formData.racaObservacao" class="form-control"
+                                    id="racaObservacaoEditar" placeholder="Observações sobre a Raça"></textarea>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete"
+                                    required>
+                                    <option disabled selected>Selecione o piquete</option>
+                                    <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{
+                    piquete.nome }}</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-mars"></i></span>
+                                <input v-model="formData.brincoPai" @input="filterMachos()" type="text"
+                                    class="form-control" placeholder="Digite o brinco do Pai...">
+                            </div>
+                            <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
+                                <button type="button" class="list-group-item list-group-item-action"
+                                    v-for="animal in machosFiltrados" :key="animal.id" @click="selectPai(animal)">
+                                    {{ animal.brinco }}
+                                </button>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-venus"></i></span>
+                                <input v-model="formData.brincoMae" @input="filterFemeas()" type="text"
+                                    class="form-control" placeholder="Digite o brinco da Mãe...">
+                            </div>
+                            <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
+                                <button type="button" class="list-group-item list-group-item-action"
+                                    v-for="animal in femeasFiltradas" :key="animal.id" @click="selectMae(animal)">
+                                    {{ animal.brinco }}
+                                </button>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                <input v-model="formData.rfid" type="text" class="form-control" id="rfid"
+                                    placeholder="RFID" required>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
+                                    placeholder="Observações" required>
+                            </div>
+                            <div class="mb-3 input-group">
+                                <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
+                            </div>
+                            <div v-if="comprado" class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
+                                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                                    placeholder="Data da compra" class="form-control" id="dataDaCompra"
+                                    v-model="formData.dataCompra" required>
+                            </div>
+                            <div v-if="comprado" class="mb-3 input-group">
+                                <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
+                                <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"
+                                    placeholder="Valor da compra" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button v-if="resizedImage" @click="salvarImagem" class="btn btn-primary">Salvar Imagem</button>
+            </div>
+        </div>
+
+        <!-- Modal de Ocorrência -->
+        <div class="modal fade" id="ocorrenciaModal" tabindex="-1" aria-labelledby="ocorrenciaModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ocorrenciaModalLabel">Registrar Ocorrência</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="registrarOcorrencia">
+                            <div class="mb-3">
+                                <label for="dataOcorrencia" class="form-label">Data da Ocorrência</label>
+                                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                                    placeholder="Data da Ocorência" class="form-control" id="dataOcorrencia"
+                                    v-model="novaOcorrencia.dataOcorrencia" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tipoOcorrencia" class="form-label">Tipo da Ocorrência</label>
+                                <select class="form-select" id="tipoOcorrencia" v-model="novaOcorrencia.tipoOcorrencia"
+                                    required>
+                                    <option value="Morte">Morte</option>
+                                    <option value="Doença">Doença</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricaoOcorrencia" class="form-label">Descrição</label>
+                                <textarea class="form-control" id="descricaoOcorrencia"
+                                    v-model="novaOcorrencia.descricao"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal de Visualização de foto -->
-    <div class="modal fade" id="visuModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="cadastroModalLabel">Animal: yyyy</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body-visu">
-                    <div class="slide">
-                        <div class="slider">
-                            <div class="content" v-for="(foto, index) in fotos" :key="index">
-                                <h2>{{ foto.dataFoto }}</h2>
-                                <img :src="getImagePath(foto.foto)">
-                                <h2>Observação:</h2>
-                                <p>{{ foto.observacao }}</p>
+        <!-- Modal de Cadastro de foto -->
+        <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Fotos</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body-cadastro">
+                        <form class="form-foto">
+                            <div class="mb-3 input-group mb-3-foto">
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                                    placeholder="Data da foto" class="form-control" id="dataFoto"
+                                    v-model="formData.dataFoto" required>
+                            </div>
+                            <div class="mb-3 input-group mb-3-foto">
+                                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                                <textarea v-model="formData.observacao" class="form-control" id="observacao"
+                                    placeholder="Observação"></textarea>
+                            </div>
+                            <div class="mb-3 input-group mb-3-foto">
+                                <input type="file" @change="apresentarImagem" accept="image/*" />
+                            </div>
+                        </form>
+                        <div class="input-imagem">
+                            <div class="boxSelect">
+                                <img v-if="resizedImage" :src="resizedImage" alt="Resized Image" />
                             </div>
                         </div>
-                        <button id="voltaSlide" @click="controlaSlide('voltaSlide')">&#9664;</button>
-                        <button id="passaSlide" @click="controlaSlide('passaSlide')">&#9654;</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button v-if="resizedImage" @click="salvarImagem" class="btn btn-primary">Salvar Imagem</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Modal de Visualização de foto -->
+        <div class="modal fade" id="visuModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="cadastroModalLabel">Animal: yyyy</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body-visu">
+                        <div class="slide">
+                            <div class="slider">
+                                <div class="content" v-for="(foto, index) in fotos" :key="index">
+                                    <h2>{{ foto.dataFoto }}</h2>
+                                    <img :src="getImagePath(foto.foto)">
+                                    <h2>Observação:</h2>
+                                    <p>{{ foto.observacao }}</p>
+                                </div>
+                            </div>
+                            <button id="voltaSlide" @click="controlaSlide('voltaSlide')">&#9664;</button>
+                            <button id="passaSlide" @click="controlaSlide('passaSlide')">&#9654;</button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
                 </div>
-                <div class="modal-body">
-                    Tem certeza de que deseja excluir este animal?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" @click="apagarAnimal">Excluir</button>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmação de Exclusão -->
+        <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
+            aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza de que deseja excluir este animal?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" @click="apagarAnimal">Excluir</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>
@@ -322,38 +410,38 @@ export default {
     methods: {
 
         async buscarAnimalDaApi() {
-      try {
-        const response = await api.get(`http://127.0.0.1:8000/animais/animal/${this.animalId}/`);
-        this.animais = response.data;
-        this.animal = this.animais[0];
-        this.formData.animal = this.animal.id;
-      } catch (error) {
-        console.error('Erro ao buscar animal da API:', error);
-      }
-    },
+            try {
+                const response = await api.get(`http://127.0.0.1:8000/animais/animal/${this.animalId}/`);
+                this.animais = response.data;
+                this.animal = this.animais[0];
+                this.formData.animal = this.animal.id;
+            } catch (error) {
+                console.error('Erro ao buscar animal da API:', error);
+            }
+        },
 
-    async buscarPiquetesDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
-          params: {
-            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-          },
-        });
-        this.piquetes = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar piquetes da API:', error);
-      }
-    },
+        async buscarPiquetesDaApi() {
+            try {
+                const response = await api.get('http://127.0.0.1:8000/piquetes/', {
+                    params: {
+                        propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+                    },
+                });
+                this.piquetes = response.data;
+            } catch (error) {
+                console.error('Erro ao buscar piquetes da API:', error);
+            }
+        },
 
-    async buscarRacasDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/racas/', {
-        });
-        this.racas = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar raças da API:', error);
-      }
-    },
+        async buscarRacasDaApi() {
+            try {
+                const response = await api.get('http://127.0.0.1:8000/racas/', {
+                });
+                this.racas = response.data;
+            } catch (error) {
+                console.error('Erro ao buscar raças da API:', error);
+            }
+        },
 
         formatDate(date) {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -377,7 +465,7 @@ export default {
                 valorCompra: animal.valorCompra,
             };
 
-            if(this.formData.dataCompra != null){
+            if (this.formData.dataCompra != null) {
                 this.comprado = true;
             }
         },
@@ -405,8 +493,8 @@ export default {
                 alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
             }
             this.fecharModal("confirmacaoExclusaoModal");
-        }, 
-        
+        },
+
         async submitForm() {
             try {
                 console.log('formdata: ', this.formData);
@@ -430,32 +518,32 @@ export default {
         abrirModalOcorrencia() {
             // Limpar dados da ocorrência anterior
             this.novaOcorrencia = {
-            dataOcorrencia: '',
-            tipoOcorrencia: '',
-            descricao: null,
+                dataOcorrencia: '',
+                tipoOcorrencia: '',
+                descricao: null,
             };
         },
 
-        
+
         async registrarOcorrencia() {
             try {
-            // Enviar dados da ocorrência para a API
-            const response = await api.post(`http://127.0.0.1:8000/ocorrencias/`, {
-                animal: this.animal.id,
-                dataOcorrencia: this.novaOcorrencia.dataOcorrencia,
-                tipo: this.novaOcorrencia.tipoOcorrencia,
-                descricao: this.novaOcorrencia.descricao,
-            });
-            if (response.status === 201) {
-                alert('Ocorrência registrada com sucesso!');
-                // Atualizar lista de animais
-                this.buscarAnimalDaApi();
-            } else {
-                alert('Erro ao registrar ocorrência. Tente novamente mais tarde.');
-            }
+                // Enviar dados da ocorrência para a API
+                const response = await api.post(`http://127.0.0.1:8000/ocorrencias/`, {
+                    animal: this.animal.id,
+                    dataOcorrencia: this.novaOcorrencia.dataOcorrencia,
+                    tipo: this.novaOcorrencia.tipoOcorrencia,
+                    descricao: this.novaOcorrencia.descricao,
+                });
+                if (response.status === 201) {
+                    alert('Ocorrência registrada com sucesso!');
+                    // Atualizar lista de animais
+                    this.buscarAnimalDaApi();
+                } else {
+                    alert('Erro ao registrar ocorrência. Tente novamente mais tarde.');
+                }
             } catch (error) {
-            console.error('Erro ao enviar requisição:', error);
-            alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+                console.error('Erro ao enviar requisição:', error);
+                alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
             }
             this.fecharModal("ocorrenciaModal");
         },
@@ -593,16 +681,36 @@ export default {
 </script>
 
 <style scoped>
+.table-container {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #4CAF50; /* Adiciona uma borda verde na parte inferior */
+}
+
 .animal-view {
     padding: 20px;
 }
 
 .actions {
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .actions button {
     margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.actions .btn {
+    width: 200px;
 }
 
 table {
@@ -621,93 +729,94 @@ th {
 }
 
 .boxSelect {
-  width: 900px;
-  height: 500px;
-  border: 1px solid black;
-  border-radius: 20px;
-  margin-bottom: 20px;
+    width: 900px;
+    height: 500px;
+    border: 1px solid black;
+    border-radius: 20px;
+    margin-bottom: 20px;
 }
 
 .boxSelect img {
-  width: 900px;
-  height: 500px;
-  object-fit: cover;
-  border-radius: 20px;
+    width: 900px;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 20px;
 }
 
 .modal-body-cadastro {
-  justify-content: center;
-  margin-top: 20px;
+    justify-content: center;
+    margin-top: 20px;
 }
 
 .modal-body-visu {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 .slide {
-  position: relative;
+    position: relative;
 }
 
 .slider {
-  display: flex;
-  overflow-x: hidden;
-  width: 900px;
-  border-radius: 20px;
+    display: flex;
+    overflow-x: hidden;
+    width: 900px;
+    border-radius: 20px;
 }
 
 .slide button {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: none;
-  background-color: cornflowerblue;
-  color: beige;
-  position: absolute;
-  top: 50%;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background-color: cornflowerblue;
+    color: beige;
+    position: absolute;
+    top: 50%;
 }
 
 .slide button:hover {
-  background-color: rgb(51, 93, 170);
+    background-color: rgb(51, 93, 170);
 }
 
 .slide button:first-of-type {
-  left: 0;
-  transform: translate(-50%, -50%);
+    left: 0;
+    transform: translate(-50%, -50%);
 }
+
 .slide button:last-of-type {
-  right: 0;
-  transform: translate(50%, -50%);
+    right: 0;
+    transform: translate(50%, -50%);
 }
 
 
 .content img {
-  width: 900px;
-  height: 500px;
-  object-fit: cover;
-  display: flex;
-  border-radius: 20px;
+    width: 900px;
+    height: 500px;
+    object-fit: cover;
+    display: flex;
+    border-radius: 20px;
 }
 
-h2{
-  display: block;
-  font-size: 20px;
+h2 {
+    display: block;
+    font-size: 20px;
 }
 
 .mb-3-foto {
-  width: 900px;
+    width: 900px;
 }
 
 .form-foto {
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-  justify-content: center;
-} 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
 .input-imagem {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0;
 }
 </style>

@@ -238,7 +238,7 @@ a {
 
 /* Adiciona margem superior ao conteúdo para evitar sobreposição com o navbar */
 .content {
-  margin-top: 60px;
+  margin-top: 50px;
 }
 
 </style>

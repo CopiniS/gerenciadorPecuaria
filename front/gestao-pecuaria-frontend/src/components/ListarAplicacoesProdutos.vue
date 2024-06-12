@@ -69,12 +69,29 @@
                     class="form-control" id="dataAplicacaoCadastro" v-model="formData.dataAplicacao" required>
                 </div>
                 <div class="mb-3 input-group">
+                    <input type="radio" v-model="radioEscolha" value="brinco"> Brinco 
+                </div>
+                <div class="mb-3 input-group">
+                    <input type="radio" v-model="radioEscolha" value="piquete"> Piquete
+                </div>
+                <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'">
                     <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
                 </div>
                 <div class="list-group" v-if="brinco && animaisFiltrados.length">
                     <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
                     {{ animal.brinco }}
                     </button>
+                </div>
+                <div class="mb-3 input-group" v-if="radioEscolha === 'piquete'">
+                  <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                  <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
+                    placeholder="Digite o nome do piquete...">
+                </div>
+                <div class="list-group" v-if="piquete && filteredPiquetes.length">
+                  <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
+                    :key="piquete.id" @click="selecionarPiquete(piquete)">
+                    {{ piquete.nome }}
+                  </button>
                 </div>
                 <div class="mb-3 input-group">
                     <input v-model="nomeProduto" @input="filterProdutos" type="text" class="form-control" placeholder="Digite o produto...">
@@ -256,6 +273,11 @@ export default {
         dataParaExclusao: null,
         camposHabilitadosAnimal: false,
         camposHabilitadosProduto: false,
+        piquetes: [],
+        piquete: '',
+        piqueteId: null,
+        filteredPiquetes: [],
+        radioEscolha: 'brinco',
         formData: {
             id: null,
             produto: '',
@@ -278,6 +300,7 @@ export default {
     this.buscarAnimaisDaApi();
     this.buscarProdutosDaApi();
     this.buscarAplicacoesDaApi();
+    this.buscarPiquetesDaApi();
   },
   methods: {
     
@@ -310,6 +333,25 @@ export default {
         } catch (error) {
             console.error('Erro ao buscar animais da API:', error);
         }
+    },
+
+    async buscarPiquetesDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/');
+        this.piquetes = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar piquetes da API:', error);
+      }
+    },
+
+    filtrarPiquetes() {
+      this.filteredPiquetes = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piquete));
+    },
+
+    selecionarPiquete(piquete) {
+      this.piqueteId = piquete.id;
+      this.piquete = piquete.nome;
+      this.filteredPiquetes = [];
     },
 
     filterAnimais() {

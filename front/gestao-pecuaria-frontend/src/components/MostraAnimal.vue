@@ -2,6 +2,19 @@
 <div>
     <div class="animal-view">
         <h1>Detalhes do Animal</h1>
+        <div class="actions">
+            <button @click="abrirModalOcorrencia(animal)" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#ocorrenciaModal">Incluir Ocorrência</button>
+            <button @click="editarAnimal(animal); preencheListas()" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#edicaoModal" data-bs-whatever="@mdo">Editar</button>
+            <button @click="editarAnimal(animal)" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
+            <button class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#cadastroModal">Adicionar Foto</button>
+            <button @click="buscarFotos()" class="btn btn-success" data-bs-toggle="modal"
+                data-bs-target="#visuModal">Visualizar Fotos</button>
+
+        </div>
         <table class="table table-bordered">
         <thead >
           <tr>
@@ -30,19 +43,7 @@
             </tr>
         </tbody>
         </table>
-        <div class="actions">
-            <button @click="abrirModalOcorrencia(animal)" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#ocorrenciaModal">Incluir Ocorrência</button>
-            <button @click="editarAnimal(animal); preencheListas()" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#edicaoModal" data-bs-whatever="@mdo">Editar</button>
-            <button @click="editarAnimal(animal)" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
-            <button class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#cadastroModal">Adicionar Foto</button>
-            <button @click="buscarFotos()" class="btn btn-success" data-bs-toggle="modal"
-                data-bs-target="#visuModal">Visualizar Fotos</button>
-
-        </div>
+        
     </div>
 
     <!-- Modal de Edição -->

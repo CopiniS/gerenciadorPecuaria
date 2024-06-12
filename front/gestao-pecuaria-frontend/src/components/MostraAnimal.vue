@@ -127,6 +127,18 @@
                             <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
                                 placeholder="Observações" required>
                         </div>
+                        <div class="mb-3 input-group">
+                            <input v-model="comprado" type="checkbox" id="check-comprado">  Animal Comprado
+                        </div>
+                        <div v-if="comprado" class="mb-3 input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
+                            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
+                            class="form-control" id="dataDaCompra" v-model="formData.dataCompra" required>
+                        </div>
+                        <div v-if="comprado" class="mb-3 input-group">
+                            <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
+                            <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"  placeholder="Valor da compra" required>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -282,6 +294,7 @@ export default {
             width: 0,
             resizedImage: null,
             fotos: [],
+            comprado: false,
             formData: {
                 id: null,
                 foto: null,
@@ -360,7 +373,13 @@ export default {
                 status: 'Vivo',
                 rfid: animal.rfid,
                 observacoes: animal.observacoes,
+                dataCompra: animal.dataCompra,
+                valorCompra: animal.valorCompra,
             };
+
+            if(this.formData.dataCompra != null){
+                this.comprado = true;
+            }
         },
         fecharModal(modalId) {
             var closeButton = document.getElementById(modalId).querySelector('.btn-close');

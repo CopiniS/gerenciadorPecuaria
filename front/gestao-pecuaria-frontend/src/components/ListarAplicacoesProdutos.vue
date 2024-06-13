@@ -104,18 +104,18 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-tags"></i></span>
                     <input v-model="formData.dosagem" type="text" class="form-control" id="dosagem" 
-                    :disabled="!(camposHabilitadosAnimal && camposHabilitadosProduto)" placeholder="Dosagem" required>
+                    :disabled="!((camposHabilitadosPiquete||camposHabilitadosAnimal) && camposHabilitadosProduto)" placeholder="Dosagem" required>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-tags"></i></span>
                     <input v-model="formData.observacao" type="text" class="form-control" id="observacao" 
-                    :disabled="!(camposHabilitadosAnimal && camposHabilitadosProduto)" placeholder="Observação" required>
+                    :disabled="!((camposHabilitadosPiquete||camposHabilitadosAnimal) && camposHabilitadosProduto)" placeholder="Observação" required>
                 </div>
             </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+            <button type="button" class="btn btn-primary" @click="preencheListaAnimais">Enviar</button>
           </div>
         </div>
       </div>
@@ -272,6 +272,7 @@ export default {
         aplicacaoParaExcluir: null,
         dataParaExclusao: null,
         camposHabilitadosAnimal: false,
+        camposHabilitadosPiquete: false,
         camposHabilitadosProduto: false,
         piquetes: [],
         piquete: '',
@@ -281,7 +282,7 @@ export default {
         formData: {
             id: null,
             produto: '',
-            animal: '',
+            animal: [],
             dosagem: '',
             dataAplicacao: '',
             observacao: null,
@@ -289,7 +290,7 @@ export default {
       mostrarFormulario: false,
       filtro: {
         produto: '',
-        animal: '',
+        animal: [],
         dataAplicacao: '',
       },
       modalTitle: 'Cadastro de Aplicacao',
@@ -349,6 +350,7 @@ export default {
     },
 
     selecionarPiquete(piquete) {
+      this.camposHabilitadosPiquete = true;
       this.piqueteId = piquete.id;
       this.piquete = piquete.nome;
       this.filteredPiquetes = [];
@@ -414,6 +416,17 @@ export default {
       this.camposHabilitadosAnimal = true;
       this.camposHabilitadosProduto = true;
     },
+
+    preencheListaAnimais(){
+      this.formData.animal = [];
+      let listaAnimais;
+      listaAnimais = this.animais.filter(animal => animal.piquete == this.piqueteId);
+      listaAnimais.forEach(animal => {
+          this.formData.animal.push(animal.id);
+      });
+      this.submitForm();
+    },
+
     resetForm() {
       this.formData = {
         id: null,

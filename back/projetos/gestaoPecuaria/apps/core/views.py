@@ -280,6 +280,22 @@ class AplicacaoProdutoViewSet(viewsets.ModelViewSet):
         serializer = serializers.AplicacaoProdutoComAnimalAndProdutoSerializer(queryset, many=True)
         return Response(serializer.data)
     
+    def create(self, request, *args, **kwargs):
+        animais = request.data['animal']
+        respostas = []
+        deuErro = False
+        for animal in animais:
+            request.data['animal'] = animal
+            response = super().create(request, *args, **kwargs)
+            respostas.append(response)
+        for resposta in respostas:
+            if resposta.status_code != status.HTTP_201_CREATED:
+                deuErro = True
+        if not deuErro:
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
     @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
     def delete_por_data(self, request, *args, **kwargs):
         data = kwargs.get('data')

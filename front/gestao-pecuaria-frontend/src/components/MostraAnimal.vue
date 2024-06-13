@@ -16,7 +16,7 @@
             </div>
 
             <div class="d-flex align-items-start table-container flex-column">
-                    <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+                    <form class="row g-3 align-items-center">
                     <div class="col-auto d-flex align-items-center">
                         <label for="brinco" class="form-label me-2">Brinco</label>
                         <input v-model="formData.brinco" type="text" class="form-control" id="brinco"
@@ -40,6 +40,7 @@
                         <label for="raca" class="form-label me-2">Raça</label>
                         <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
                             aria-label="Raça Predominante" required>
+                            <option disabled value="">Selecione a raça</option>
                             <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }} </option>
                         </select>
                     </div>
@@ -86,16 +87,16 @@
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="observacoes" class="form-label me-2">Observações</label>
-                        <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-                            placeholder="Observações" required>
+                        <textarea v-model="formData.observacoes" class="form-control" id="observacoes"
+                            placeholder="Observações" required> </textarea>
                     </div>
-                    <div class="col-auto d-flex align-items-center">
+                    <div v-if="formData.dataCompra" class="col-auto d-flex align-items-center">
                         <label for="dataCompra" class="form-label me-2">DataCompra</label>
                         <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                             placeholder="Data da compra" class="form-control" id="dataDaCompra"
                             v-model="formData.dataCompra" required>
                     </div>
-                    <div class="col-auto d-flex align-items-center">
+                    <div v-if="formData.valorCompra" class="col-auto d-flex align-items-center">
                         <label for="valor" class="form-label me-2">Valor Compra</label>
                         <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"
                             placeholder="Valor da compra" required>
@@ -113,9 +114,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="ocorrencia in animal.ocorrencias" :key="ocorrencia.id">
-                        <td>{{ formatarData(ocorrencia.data) }}</td>
-                        <td>{{ ocorrencia.tipoOcorrencia }}</td>
+                    <tr v-for="ocorrencia in ocorrencias" :key="ocorrencia.id">
+                        <td>{{ formatarData(ocorrencia.dataOcorrencia) }}</td>
+                        <td>{{ ocorrencia.tipo }}</td>
                         <td>{{ ocorrencia.descricao }}</td>
                         <td>
                             <button @click="editarOcorrencia(ocorrencia)" class="btn btn-warning btn-sm">Editar</button>
@@ -209,8 +210,8 @@
                             </div>
                             <div class="mb-3 input-group">
                                 <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                                <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-                                    placeholder="Observações" required>
+                                <textarea v-model="formData.observacoes" class="form-control" id="observacoes"
+                                    placeholder="Observações" required></textarea>
                             </div>
                             <div class="mb-3 input-group">
                                 <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
@@ -377,6 +378,7 @@ export default {
             femeasFiltradas: [],
             machosFiltrados: [],
             racas: [],
+            ocorrencias: [],
             piquetes: [],
             slider: null,
             width: 0,
@@ -415,8 +417,24 @@ export default {
                 this.animais = response.data;
                 this.animal = this.animais[0];
                 this.formData.animal = this.animal.id;
+                this.buscarOcorrenciasDoAnimal();
+                this.editarAnimal(this.animal);
             } catch (error) {
                 console.error('Erro ao buscar animal da API:', error);
+            }
+        },
+
+        async buscarOcorrenciasDoAnimal() {
+            console.log('aaa: ', this.animal.id)
+            try {
+                const response = await api.get(`http://127.0.0.1:8000/ocorrencias/`, {
+                    params: {
+                        animalSelecionado: this.animal.id
+                    },
+                });
+                this.ocorrencias = response.data;
+            } catch (error) {
+                console.error('Erro ao buscar ocorrencias do animal na API:', error);
             }
         },
 
@@ -729,7 +747,8 @@ th {
 }
 
 .boxSelect {
-    width: 900px;
+    width: 90%; 
+    max-width: 900px;
     height: 500px;
     border: 1px solid black;
     border-radius: 20px;
@@ -737,8 +756,8 @@ th {
 }
 
 .boxSelect img {
-    width: 900px;
-    height: 500px;
+    width: 100%; 
+    height: 100%;
     object-fit: cover;
     border-radius: 20px;
 }
@@ -804,7 +823,7 @@ h2 {
 }
 
 .mb-3-foto {
-    width: 900px;
+    width: 90%;
 }
 
 .form-foto {

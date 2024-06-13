@@ -197,10 +197,10 @@ class OcorrenciaViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.OcorrenciaSerializer
 
     def list(self, request, *args, **kwargs):
-        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
+        animal_selecionado = request.query_params.get('animalSelecionado', None)
         queryset = models.Ocorrencia.objects.all()
-        if propriedade_selecionada is not None:
-            queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
+        if animal_selecionado is not None:
+            queryset = queryset.filter(animal=animal_selecionado)
         serializer = serializers.OcorrenciaSerializer(queryset, many=True)
         return Response(serializer.data)
 

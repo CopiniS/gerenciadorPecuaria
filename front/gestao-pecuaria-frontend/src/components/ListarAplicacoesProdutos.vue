@@ -115,7 +115,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="preencheListaAnimais">Enviar</button>
+            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
           </div>
         </div>
       </div>
@@ -354,6 +354,7 @@ export default {
       this.piqueteId = piquete.id;
       this.piquete = piquete.nome;
       this.filteredPiquetes = [];
+      this.preencheListaAnimais()
     },
 
     filterAnimais() {
@@ -361,8 +362,11 @@ export default {
     },
 
     selectAnimal(animal) {
+        this.formData.animal = [];
         this.brinco = animal.brinco;
-        this.formData.animal = animal.id;
+        console.log('animalId antes: ', this.formData.animal);
+        this.formData.animal.push(animal.id);
+        console.log('animalId depois: ', this.formData.animal);
         this.camposHabilitadosAnimal = true;
         this.animaisFiltrados = [];
     },
@@ -424,7 +428,6 @@ export default {
       listaAnimais.forEach(animal => {
           this.formData.animal.push(animal.id);
       });
-      this.submitForm();
     },
 
     resetForm() {

@@ -119,7 +119,8 @@
                         <td>{{ ocorrencia.tipo }}</td>
                         <td>{{ ocorrencia.descricao }}</td>
                         <td>
-                            <button @click="editarOcorrencia(ocorrencia)" class="btn btn-warning btn-sm">Editar</button>
+                            <button @click="editarOcorrencia(ocorrencia)" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#ocorrenciaModalEdicao">Editar</button>
                             <button @click="excluirOcorrencia(ocorrencia.id)" class="btn btn-danger btn-sm">Excluir</button>
                         </td>
                     </tr>
@@ -130,7 +131,7 @@
 
         </div>
 
-        <!-- Modal de Edição -->
+        <!-- Modal de Edição de animal -->
         <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -255,8 +256,8 @@
                                     v-model="novaOcorrencia.dataOcorrencia" required>
                             </div>
                             <div class="mb-3">
-                                <label for="tipoOcorrencia" class="form-label">Tipo da Ocorrência</label>
-                                <select class="form-select" id="tipoOcorrencia" v-model="novaOcorrencia.tipoOcorrencia"
+                                <label for="tipo" class="form-label">Tipo da Ocorrência</label>
+                                <select class="form-select" id="tipo" v-model="novaOcorrencia.tipo"
                                     required>
                                     <option value="Morte">Morte</option>
                                     <option value="Doença">Doença</option>
@@ -274,6 +275,46 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Edição de Ocorrência -->
+        <div class="modal fade" id="ocorrenciaModalEdicao" tabindex="-1" aria-labelledby="ocorrenciaModalEdicaoLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ocorrenciaModalEdicaoLabel">Editar Ocorrência</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="submitEdicaoOcorrencia">
+                            <div class="mb-3">
+                                <label for="dataOcorrencia" class="form-label">Data da Ocorrência</label>
+                                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                                    placeholder="Data da Ocorência" class="form-control" id="dataOcorrencia"
+                                    v-model="novaOcorrencia.dataOcorrencia" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tipo" class="form-label">Tipo da Ocorrência</label>
+                                <select class="form-select" id="tipo" v-model="novaOcorrencia.tipo"
+                                    required>
+                                    <option value="Morte">Morte</option>
+                                    <option value="Doença">Doença</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descricaoOcorrencia" class="form-label">Descrição</label>
+                                <textarea class="form-control" id="descricaoOcorrencia"
+                                    v-model="novaOcorrencia.descricao"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 
         <!-- Modal de Cadastro de foto -->
         <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel"
@@ -394,7 +435,7 @@ export default {
             },
             novaOcorrencia: {
                 dataOcorrencia: '',
-                tipoOcorrencia: '',
+                tipo: '',
                 descricao: null,
             },
         };
@@ -487,6 +528,16 @@ export default {
                 this.comprado = true;
             }
         },
+
+        editarOcorrencia(ocorrencia){
+            this.novaOcorrencia = {
+                id: ocorrencia.id,
+                dataOcorrencia: ocorrencia.dataOcorrencia,
+                tipo: ocorrencia.tipo,
+                descricao: ocorrencia.descricao,
+            }
+        },
+
         fecharModal(modalId) {
             var closeButton = document.getElementById(modalId).querySelector('.btn-close');
             if (closeButton) {
@@ -515,13 +566,11 @@ export default {
 
         async submitForm() {
             try {
-                console.log('formdata: ', this.formData);
                 const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
                 });
 
                 if (response.status === 200) {
                     alert('Alterações salvas com sucesso!');
-                    this.resetForm();
                     this.buscarAnimalDaApi();
                     this.fecharModal("edicaoModal");
                 } else {
@@ -533,11 +582,20 @@ export default {
             }
         },
 
+        resetFormOcorrecia(){
+            this.novaOcorrencia = {
+                id: null,
+                dataOcorrencia: '',
+                tipo: '',
+                descricao: null,
+            };
+        },
+
         abrirModalOcorrencia() {
             // Limpar dados da ocorrência anterior
             this.novaOcorrencia = {
                 dataOcorrencia: '',
-                tipoOcorrencia: '',
+                tipo: '',
                 descricao: null,
             };
         },
@@ -549,7 +607,7 @@ export default {
                 const response = await api.post(`http://127.0.0.1:8000/ocorrencias/`, {
                     animal: this.animal.id,
                     dataOcorrencia: this.novaOcorrencia.dataOcorrencia,
-                    tipo: this.novaOcorrencia.tipoOcorrencia,
+                    tipo: this.novaOcorrencia.tipo,
                     descricao: this.novaOcorrencia.descricao,
                 });
                 if (response.status === 201) {
@@ -564,6 +622,25 @@ export default {
                 alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
             }
             this.fecharModal("ocorrenciaModal");
+        },
+
+        async submitEdicaoOcorrencia(){
+            try {
+                const response = await api.patch(`http://127.0.0.1:8000/ocorrencias/${this.novaOcorrencia.id}/`, this.novaOcorrencia , {
+                });
+
+                if (response.status === 200) {
+                    alert('Alterações salvas com sucesso!');
+                    this.resetFormOcorrecia();
+                    this.buscarOcorrenciasDoAnimal();
+                    this.fecharModal("ocorrenciaModalEdicao");
+                } else {
+                    alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+                }
+                } catch (error) {
+                console.error('Erro ao enviar requisição:', error);
+                alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+            }
         },
 
         async preencheListas() {

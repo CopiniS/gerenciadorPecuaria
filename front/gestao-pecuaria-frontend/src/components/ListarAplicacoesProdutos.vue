@@ -473,7 +473,6 @@ export default {
         }
       } else {
         try {
-          console.log('formDAta: ', this.formData)
           const response = await api.patch(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`, this.formData , {
         });
 

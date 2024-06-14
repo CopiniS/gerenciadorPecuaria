@@ -41,6 +41,11 @@ class ProdutoSerializer(serializers.ModelSerializer):
         model = models.Produto
         fields = "__all__"
 
+class EstoqueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Estoque
+        field = "__all__"
+
 class PesagemSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Pesagem
@@ -130,3 +135,8 @@ class FotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Foto
         fields = "__all__"
+
+class MovimentacaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Movimentacao
+        field = "__all__"

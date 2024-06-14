@@ -137,6 +137,19 @@ class ProdutoViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(alimenticios, many=True)
         return Response(serializer.data)
 
+class EstoqueViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = models.Estoque.objects.all()
+    serializer_class = serializers.EstoqueSerializer
+
+    def list(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
+        queryset = models.Estoque.objects.all()
+        if propriedade_selecionada is not None:
+            queryset = queryset.filter(propriedade=propriedade_selecionada)
+        serializer = serializers.EstoqueSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class PesagemViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -319,5 +332,11 @@ class FotoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(animal=animalSelecionado)
         serializer = serializers.FotoSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+class MovimentacaoViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = models.Movimentacao.objects.all()
+    serializer_class = serializers.MovimentacaoSerializer
+
     
 

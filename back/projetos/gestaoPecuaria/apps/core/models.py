@@ -49,9 +49,13 @@ class Produto(models.Model):
     tipo = models.CharField('Tipo', max_length=50)
     categoria = models.CharField('Categoria', max_length=50)
     descricao = models.CharField('Descricao', max_length=255, null=True)
-    estoque = models.DecimalField('Estoque', max_digits=10, decimal_places=3)
     produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)
     
+class Estoque(models.Model):
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
+    quantidade = models.DecimalField('Quantidade', max_digits=10, decimal_places=3)
+
 class Pesagem(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
     dataPesagem = models.DateField('Data de pesagem')
@@ -113,3 +117,10 @@ class Foto(models.Model):
     dataFoto = models.DateField('Data da foto')
     observacao = models.CharField('Observação', max_length=255, null =True)
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+
+class Movimentacao(models.Model):
+    dataMovimentacao = models.DateField('Data da Movimentação')
+    piqueteOrigem = models.ForeignKey(Piquete, on_delete=models.CASCADE, related_name='movimentacoes_origem')
+    piqueteDestino = models.ForeignKey(Piquete, on_delete=models.CASCADE, related_name='movimentacoes_destino')
+    animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
+    motivo = models.CharField('Motivo', max_length=255, null=True)

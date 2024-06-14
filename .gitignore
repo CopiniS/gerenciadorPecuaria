@@ -18,5 +18,5 @@ vue.config.js
 front/gestao-pecuaria-frontend/README.md
 front/gestao-pecuaria-frontend/.gitignore
 .env
-media/fotos-animais
+back/projetos/gestaoPecuaria/media/fotos-animais
 

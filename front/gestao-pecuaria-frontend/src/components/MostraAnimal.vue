@@ -912,13 +912,14 @@ th {
 
 .slide {
     position: relative;
+    width: 90%; 
+    max-width: 900px;
 }
 
 .slider {
     display: flex;
     overflow-x: hidden;
-    width: 900px;
-    border-radius: 20px;
+    width: 100%; 
 }
 
 .slide button {
@@ -927,7 +928,6 @@ th {
     border-radius: 50%;
     border: none;
     background-color: cornflowerblue;
-    color: beige;
     position: absolute;
     top: 50%;
 }
@@ -946,14 +946,18 @@ th {
     transform: translate(50%, -50%);
 }
 
+.content{
+    width: 100%;
+    background-color: #4CAF50;
+}
 
 .content img {
-    width: 900px;
+    width: 100%;
     height: 500px;
     object-fit: cover;
-    display: flex;
     border-radius: 20px;
 }
+
 
 h2 {
     display: block;

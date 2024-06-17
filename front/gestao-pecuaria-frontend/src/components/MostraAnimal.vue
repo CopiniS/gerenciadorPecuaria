@@ -3,16 +3,16 @@
         <div class="animal-view">
             <h1>Detalhes do Animal</h1>
             <div class="actions d-flex flex-wrap">
-                <button @click="abrirModalOcorrencia(animal)" class="btn btn-success mx-1" data-bs-toggle="modal"
-                    data-bs-target="#ocorrenciaModal">Incluir Ocorrência</button>
                 <button @click="editarAnimal(animal); preencheListas()" class="btn btn-success mx-1"
-                    data-bs-toggle="modal" data-bs-target="#edicaoModal" data-bs-whatever="@mdo">Editar</button>
+                    data-bs-toggle="modal" data-bs-target="#edicaoModal" data-bs-whatever="@mdo" >Editar</button>
                 <button @click="editarAnimal(animal)" class="btn btn-success mx-1" data-bs-toggle="modal"
                     data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
                 <button class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#cadastroModal">Adicionar
                     Foto</button>
                 <button @click="buscarFotos()" class="btn btn-success mx-1" data-bs-toggle="modal"
                     data-bs-target="#visuModal">Visualizar Fotos</button>
+                <button @click="abrirModalOcorrencia(animal)" class="btn btn-success mx-1" data-bs-toggle="modal"
+                    data-bs-target="#ocorrenciaModal">Incluir Ocorrência</button>
             </div>
 
             <div class="d-flex align-items-start table-container flex-column">
@@ -31,7 +31,7 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="sexo" class="form-label me-2">Sexo</label>
                         <select v-model="formDataAnimal.sexo" class="form-select" id="sexo">
-                            <option disabled value="">Selecione o sexo</option>
+                            <option disabled value="" >Selecione o sexo</option>
                             <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao"
                                 v-bind:selected="formDataAnimal.sexo === opcao">{{ opcao }}</option>
                         </select>
@@ -40,7 +40,7 @@
                         <label for="raca" class="form-label me-2">Raça</label>
                         <select v-model="formDataAnimal.racaPredominante" class="form-select" id="racaPredominante"
                             aria-label="Raça Predominante" required>
-                            <option disabled value="">Selecione a raça</option>
+                            <option disabled value="" >Selecione a raça</option>
                             <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }} </option>
                         </select>
                     </div>
@@ -53,7 +53,7 @@
                         <label for="piquete" class="form-label me-2">Piquete</label>
                         <select v-model="formDataAnimal.piquete" class="form-select" id="piquete" aria-label="Piquete"
                             required>
-                            <option disabled selected>Selecione o piquete</option>
+                            <option disabled>Selecione o piquete</option>
                             <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{
                     piquete.nome }}</option>
                         </select>
@@ -102,7 +102,9 @@
                             placeholder="Valor da compra" required>
                     </div>
                 </form>
+            </div>
 
+            <div class="d-flex align-items-start table-container flex-column">
                 <h2>Ocorrências</h2>
             <table class="table table-bordered">
                 <thead>
@@ -119,15 +121,14 @@
                         <td>{{ ocorrencia.tipo }}</td>
                         <td>{{ ocorrencia.descricao }}</td>
                         <td>
-                            <button @click="editarOcorrencia(ocorrencia)" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#ocorrenciaModalEdicao">Editar</button>
-                            <button @click="excluirOcorrencia(ocorrencia.id)" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#confirmacaoExclusaoOcorrenciaModal">Excluir</button>
+                            <button @click="editarOcorrencia(ocorrencia)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                                data-bs-target="#ocorrenciaModalEdicao" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+                            <button @click="excluirOcorrencia(ocorrencia.id)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                                data-bs-target="#confirmacaoExclusaoOcorrenciaModal"><i class="fas fa-trash-alt"></i></button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
             </div>
 
         </div>
@@ -178,7 +179,7 @@
                                 <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                 <select v-model="formDataAnimal.piquete" class="form-select" id="piquete" aria-label="Piquete"
                                     required>
-                                    <option disabled selected>Selecione o piquete</option>
+                                    <option disabled>Selecione o piquete</option>
                                     <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{
                     piquete.nome }}</option>
                                 </select>
@@ -549,17 +550,21 @@ export default {
                 brinco: animal.brinco,
                 dataNascimento: animal.dataNascimento,
                 sexo: animal.sexo,
-                racaPredominante: animal.racaPredominante.id,
+                racaPredominante: null,
                 racaObservacao: animal.racaObservacao,
                 piquete: animal.piquete.id,
                 brincoPai: animal.brincoPai,
                 brincoMae: animal.brincoMae,
-                status: 'Vivo',
+                status: animal.status,
                 rfid: animal.rfid,
                 observacoes: animal.observacoes,
                 dataCompra: animal.dataCompra,
                 valorCompra: animal.valorCompra,
             };
+
+            if(animal.racaPredominante){
+                this.formDataAnimal.racaPredominante = animal.racaPredominante.id
+            }
 
             if (this.formDataAnimal.dataCompra != null) {
                 this.comprado = true;

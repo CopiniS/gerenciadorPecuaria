@@ -522,8 +522,6 @@ export default {
     mounted() {
         this.animalId = localStorage.getItem('animalSelecionado');
         this.buscarAnimalDaApi();
-        this.slider = document.querySelector('.slider');
-        this.width = window.getComputedStyle(this.slider).width;
         this.preencheListas();
         this.buscarPiquetesDaApi();
         this.buscarRacasDaApi();
@@ -824,6 +822,7 @@ export default {
                 });
                 this.fotos = response.data;
                 this.fotos = this.fotos.sort((a, b) => new Date(b.dataFoto) - new Date(a.dataFoto));
+                console.log('fotos: ', this.fotos)
             } catch (error) {
                 console.error('Erro ao buscar fotos da API:', error);
             }

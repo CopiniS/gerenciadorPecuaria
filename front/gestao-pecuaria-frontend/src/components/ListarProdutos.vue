@@ -43,6 +43,7 @@
               <th scope="col">Tipo</th>
               <th scope="col">Categoria</th>
               <th scope="col">Estoque</th>
+              <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -336,10 +337,11 @@ export default {
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 .background {
-  background-color: #f0f0f0; /* Um tom mais escuro que o branco */
+  background-color: #ededef; /* Um tom mais escuro que o branco */
   min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
 }
+
 
 .table-container {
   margin-left: 20px;
@@ -353,9 +355,11 @@ export default {
 .button-container {
   text-align: left; 
   margin-bottom: 20px; 
+  
 }
 .table-container table tbody tr td {
-  background-color: #f0f0f0; /* Cor de fundo das células da tabela */
+  background-color: #ad1717 !important; /* Cor de fundo das células da tabela */
+  color: #9b0b0b !important; /* Cor do texto das células */
 }
 
 .table-container table thead tr th {

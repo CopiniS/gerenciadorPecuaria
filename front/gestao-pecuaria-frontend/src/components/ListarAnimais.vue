@@ -1,7 +1,7 @@
 <template>
-<div>
-  <h2>Animais</h2>
-  <div class="d-flex align-items-start table-container flex-column">
+  <div class="background">
+    <h2>Animais</h2>
+    <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
         <h2 class="me-3">Filtros</h2>
         <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
@@ -13,8 +13,8 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de nascimento" 
-          class="form-control" id="dataNascimento" v-model="formData.dataNascimento" required>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de nascimento"
+            class="form-control" id="dataNascimento" v-model="formData.dataNascimento" required>
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="sexo" class="form-label me-2">Sexo</label>
@@ -61,170 +61,172 @@
       </form>
     </div>
 
-  <div>
-    <div class="table-container">
-      <div class="button-container">
-    <button @click="resetForm(); preencheListas()" type="button" class="btn btn-success" data-bs-toggle="modal"
-      data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Adicionar</button>
-  </div>
-      <table class="table table-bordered">
-        <thead >
-          <tr>
-            <th scope="col">Brinco</th>
-            <th scope="col">Data Nascimento</th>
-            <th scope="col">Sexo</th>
-            <th scope="col">Piquete</th>
-            <th scope="col">Status</th>
-            <th scope="col">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(animal, index) in animais" :key="index" :class="{'status-Vivo': animal.status === 'Vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente'}">
-            <td>{{ animal.brinco }}</td>
-            <td>{{ formatarData(animal.dataNascimento) }}</td>
-            <td>{{ animal.sexo }}</td>
-            <td>{{ animal.piquete.nome }}</td>
-            <td>{{ animal.status }}</td>
-            <td>
-              <div class="button-group">
-                <button @click="vizualizarAnimal(animal)" class="btn-acoes btn-sm" ><i class="fas fa-eye"></i></button>
-                
-                <button @click="editarAnimal(animal)" class="btn-acoes" data-bs-toggle="modal"
-                  data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
-              </div>
-            </td>
+    <div>
+      <div class="table-container">
+        <div class="button-container">
+          <button @click="resetForm(); preencheListas()" type="button" class="btn btn-success" data-bs-toggle="modal"
+            data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Adicionar</button>
+        </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Brinco</th>
+              <th scope="col">Data Nascimento</th>
+              <th scope="col">Sexo</th>
+              <th scope="col">Piquete</th>
+              <th scope="col">Status</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(animal, index) in animais" :key="index"
+              :class="{ 'status-Vivo': animal.status === 'Vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente' }">
+              <td>{{ animal.brinco }}</td>
+              <td>{{ formatarData(animal.dataNascimento) }}</td>
+              <td>{{ animal.sexo }}</td>
+              <td>{{ animal.piquete.nome }}</td>
+              <td>{{ animal.status }}</td>
+              <td>
+                <div class="d-flex justify-content-center button-group">
+                  <button @click="vizualizarAnimal(animal)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
+                  <button @click="editarAnimal(animal)" class="btn-acoes" data-bs-toggle="modal"
+                    data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                </div>
+              </td>
 
-          </tr>
-        </tbody>
-      </table>
-  </div>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <!-- Modal de Cadastro -->
-    <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de animal</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
-              <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete"
-                placeholder="Selecione o piquete" required>
-                <option disabled value="">Selecione o piquete</option>
-                <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
-              </select>
+      <!-- Modal de Cadastro -->
+      <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de animal</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <hr>
-            <form @submit.prevent="submitForm">
+            <div class="modal-body">
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user-tag"></i>*</span>
-                <input v-model="formData.brinco" type="text" class="form-control" id="brinco"
-                  placeholder="Número do Brinco" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de nascimento" 
-                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-venus-mars">*</i></span>
-                <select v-model="formData.sexo" class="form-select" id="sexo" aria-label="Sexo" required
-                  placeholder="Selecione o sexo">
-                  <option disabled value="">Selecione o sexo</option>
-                  <option value="macho">Macho</option>
-                  <option value="femea">Fêmea</option>
+                <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
+                <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete"
+                  placeholder="Selecione o piquete" required>
+                  <option disabled value="">Selecione o piquete</option>
+                  <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
                 </select>
               </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-horse"></i></span>
-                <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
-                  aria-label="Raça Predominante" required>
-                  <option disabled value="">Selecione a raça predominante</option>
-                  <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
-                </select>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
-                  placeholder="Observações sobre a Raça"></textarea>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-mars"></i></span>
-                <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
-                  placeholder="Digite o brinco do Pai...">
-              </div>
-              <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="animal in machosFiltrados"
-                  :key="animal.id" @click="selectPai(animal)">
-                  {{ animal.brinco }}
-                </button>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-venus"></i></span>
-                <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
-                  placeholder="Digite o brinco da Mãe...">
-              </div>
-              <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
-                  :key="animal.id" @click="selectMae(animal)">
-                  {{ animal.brinco }}
-                </button>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                <input v-model="formData.rfid" type="text" class="form-control" id="rfid"
-                  placeholder="RFID" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-                  placeholder="Observações" required>
-              </div>
-              <div class="mb-3 input-group">
-                <input v-model="comprado" type="checkbox" id="check-comprado">  Animal Comprado
-              </div>
-              <div v-if="comprado" class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
-                class="form-control" id="dataDaCompra" v-model="formData.dataCompra" required>
-              </div>
-              <div v-if="comprado" class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
-                <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"  placeholder="Valor da compra" required>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+              <hr>
+              <form @submit.prevent="submitForm">
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-user-tag"></i>*</span>
+                  <input v-model="formData.brinco" type="text" class="form-control" id="brinco"
+                    placeholder="Número do Brinco" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
+                  <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                    placeholder="Data de nascimento" class="form-control" id="dataNascimentoCadastro"
+                    v-model="formData.dataNascimento" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-venus-mars">*</i></span>
+                  <select v-model="formData.sexo" class="form-select" id="sexo" aria-label="Sexo" required
+                    placeholder="Selecione o sexo">
+                    <option disabled value="">Selecione o sexo</option>
+                    <option value="macho">Macho</option>
+                    <option value="femea">Fêmea</option>
+                  </select>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-horse"></i></span>
+                  <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
+                    aria-label="Raça Predominante" required>
+                    <option disabled value="">Selecione a raça predominante</option>
+                    <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
+                  </select>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                  <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
+                    placeholder="Observações sobre a Raça"></textarea>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-mars"></i></span>
+                  <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
+                    placeholder="Digite o brinco do Pai...">
+                </div>
+                <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
+                  <button type="button" class="list-group-item list-group-item-action" v-for="animal in machosFiltrados"
+                    :key="animal.id" @click="selectPai(animal)">
+                    {{ animal.brinco }}
+                  </button>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-venus"></i></span>
+                  <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
+                    placeholder="Digite o brinco da Mãe...">
+                </div>
+                <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
+                  <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
+                    :key="animal.id" @click="selectMae(animal)">
+                    {{ animal.brinco }}
+                  </button>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                  <input v-model="formData.rfid" type="text" class="form-control" id="rfid" placeholder="RFID" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                  <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
+                    placeholder="Observações" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
+                </div>
+                <div v-if="comprado" class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
+                  <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                    placeholder="Data da compra" class="form-control" id="dataDaCompra" v-model="formData.dataCompra"
+                    required>
+                </div>
+                <div v-if="comprado" class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
+                  <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"
+                    placeholder="Valor da compra" required>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            Tem certeza de que deseja excluir este animal?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarAnimal">Excluir</button>
+      <!-- Modal de Confirmação de Exclusão -->
+      <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
+        aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Tem certeza de que deseja excluir este animal?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger" @click="apagarAnimal">Excluir</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -237,8 +239,8 @@ export default {
       animais: [],
       racas: [],
       piquetes: [],
-      listaMachos:[],
-      listaFemeas:[],
+      listaMachos: [],
+      listaFemeas: [],
       femeasFiltradas: [],
       machosFiltrados: [],
       comprado: false,
@@ -265,17 +267,17 @@ export default {
         dataNascimento: '',
         sexo: '',
         raca: '',
-        brincoPai: '', 
-        brincoMae: '', 
-        observacoes: '', 
-        piquete: '', 
-        status: '', 
+        brincoPai: '',
+        brincoMae: '',
+        observacoes: '',
+        piquete: '',
+        status: '',
       },
       novaOcorrencia: {
-      dataOcorrencia: '',
-      tipoOcorrencia: '',
-      descricao: null,
-    },
+        dataOcorrencia: '',
+        tipoOcorrencia: '',
+        descricao: null,
+      },
       modalTitle: 'Cadastro de Animal',
     }
   },
@@ -426,34 +428,34 @@ export default {
       }
     },
 
-    async preencheListas(){
+    async preencheListas() {
       this.preencherListaMachos();
       this.preencherListaFemeas();
     },
 
-    async preencherListaFemeas(){
+    async preencherListaFemeas() {
       const response = await api.get(`http://127.0.0.1:8000/animais/femeas`, {
         params: {
-            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-          },
+          propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+        },
       });
       this.listaFemeas = response.data;
     },
 
-    async preencherListaMachos(){
+    async preencherListaMachos() {
       const response = await api.get(`http://127.0.0.1:8000/animais/machos`, {
         params: {
-            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-          },
+          propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+        },
       });
       this.listaMachos = response.data;
     },
 
-    filterFemeas(){
+    filterFemeas() {
       this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoMae));
     },
 
-    filterMachos(){
+    filterMachos() {
       this.machosFiltrados = this.listaMachos.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoPai));
     },
 
@@ -468,34 +470,34 @@ export default {
     },
 
     formatarData(data) {
-    const date = new Date(data);
-    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
-    return utcDate.toLocaleDateString('pt-BR', options);
+      const date = new Date(data);
+      const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+      return utcDate.toLocaleDateString('pt-BR', options);
     },
 
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },
     limparFiltro() {
-      this.filtro.brinco ='';
-      this.filtro.dataNascimento ='';
-      this.filtro.sexo ='';
-      this.filtro.raca ='';
-      this.filtro.brincoPai ='';
-      this.filtro.brincoMae =''; 
-      this.filtro.observacoes =''; 
-      this.filtro.piquete =''; 
-      this.filtro.status =''; 
+      this.filtro.brinco = '';
+      this.filtro.dataNascimento = '';
+      this.filtro.sexo = '';
+      this.filtro.raca = '';
+      this.filtro.brincoPai = '';
+      this.filtro.brincoMae = '';
+      this.filtro.observacoes = '';
+      this.filtro.piquete = '';
+      this.filtro.status = '';
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
-    
-  vizualizarAnimal(animal) {
-    localStorage.setItem('animalSelecionado', animal.id);
-    this.$router.push('/vizualizarAnimal');
-  }
+
+    vizualizarAnimal(animal) {
+      localStorage.setItem('animalSelecionado', animal.id);
+      this.$router.push('/vizualizarAnimal');
+    }
 
   }
 }
@@ -503,6 +505,12 @@ export default {
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+.background {
+  background-color:  #ededef; /* Um tom mais escuro que o branco */
+  min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
+  padding: 20px;
+}
 
 .table-container {
   margin-left: 20px;
@@ -513,13 +521,19 @@ export default {
   padding: 20px;
 }
 
+.table-container table tbody tr td {
+  background-color: #f0f0f0; /* Cor de fundo das células da tabela */
+}
+
 .button-container {
-  text-align: left; 
-  margin-bottom: 20px; 
+  text-align: left;
+  margin-bottom: 20px;
 }
 
 .table-container table thead tr th {
-  border-bottom: 2px solid #4CAF50; /* Adiciona uma borda verde na parte inferior */
+  border-bottom: 2px solid #4CAF50;
+  background-color: #f0f0f0;
+  /* Adiciona uma borda verde na parte inferior */
 }
 
 .btn-acoes {
@@ -534,17 +548,21 @@ export default {
 
 .button-group {
   display: flex;
-  gap: 10px; 
+  gap: 10px;
 }
+
 .status-Vivo {
-  background-color: #d4edda; /* Verde claro para 'Vivo' */
+  background-color: #d4edda;
+  /* Verde claro para 'Vivo' */
 }
 
 .status-morto {
-  background-color: #f8d7da; /* Vermelho claro para 'morto' */
+  background-color: #f8d7da;
+  /* Vermelho claro para 'morto' */
 }
 
 .status-doente {
-  background-color: #fff3cd; /* Amarelo claro para 'doente' */
+  background-color: #fff3cd;
+  /* Amarelo claro para 'doente' */
 }
 </style>

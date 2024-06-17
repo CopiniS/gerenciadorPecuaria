@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="background">
         <div class="animal-view">
             <h1>Detalhes do Animal</h1>
             <div class="actions d-flex flex-wrap">
@@ -836,7 +836,14 @@ export default {
 };
 </script>
 
+
 <style scoped>
+
+.background {
+  background-color:  #ededef; /* Um tom mais escuro que o branco */
+  min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
+  padding: 20px;
+}
 .table-container {
     margin-left: 20px;
     margin-right: 20px;
@@ -848,6 +855,7 @@ export default {
 
 .table-container table thead tr th {
   border-bottom: 2px solid #4CAF50; /* Adiciona uma borda verde na parte inferior */
+  background-color: #f0f0f0;
 }
 
 .animal-view {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="background">
     <div class="modal" id="editPropertyModal" tabindex="-1" role="dialog" style="display: block;">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -158,6 +158,12 @@ export default {
 
 <style>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+.background {
+  background-color:  #ededef; /* Um tom mais escuro que o branco */
+  min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
+  padding: 20px;
+}
 
 .modal {
   display: none;

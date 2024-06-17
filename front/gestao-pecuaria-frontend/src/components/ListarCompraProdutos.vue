@@ -35,7 +35,7 @@
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-            <button class="btn btn-dark" @click="aplicarFiltro">Filtrar</button>
+            <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
         </div>
       </form>
     </div>
@@ -43,7 +43,7 @@
     <h2>Histórico de Compras de Produtos</h2>
     <div class="table-container">
     <div class="button-container">
-      <button @click="resetForm()" type="button" class="btn btn-dark" data-bs-toggle="modal"
+      <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
         data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Compra Produto</button>
     </div>
       <table class="table table-bordered">
@@ -399,7 +399,7 @@ export default {
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 .background {
-  background-color: #f0f0f0; /* Um tom mais escuro que o branco */
+  background-color:  #ededef; /* Um tom mais escuro que o branco */
   min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
 }
@@ -422,7 +422,7 @@ export default {
 }
 
 .table-container table thead tr th {
-  border-bottom: 2px solid #0f0f0f;
+  border-bottom: 2px solid #176d1a;
   background-color: #f0f0f0;
 }
 .btn-acoes {
@@ -432,7 +432,7 @@ export default {
 }
 
 .btn-acoes i {
-  color: #0f0f0f;
+  color: #4CAF50;
 }
 
 .button-group {

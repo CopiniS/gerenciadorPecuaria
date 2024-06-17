@@ -96,6 +96,8 @@ mounted() {
 
 <style>
 /* Estilos para o modal */
+
+
 .modal {
   display: none;
   position: fixed;

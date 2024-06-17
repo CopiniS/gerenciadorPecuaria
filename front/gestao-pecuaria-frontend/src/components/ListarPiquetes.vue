@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="background">
   <h2>Piquetes</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
@@ -298,6 +298,12 @@ export default {
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
+.background {
+  background-color:  #ededef; /* Um tom mais escuro que o branco */
+  min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
+  padding: 20px;
+}
+
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
@@ -314,6 +320,7 @@ export default {
 
 .table-container table thead tr th {
   border-bottom: 2px solid #4CAF50; /* Adiciona uma borda verde na parte inferior */
+  background-color: #f0f0f0;
 }
 
 .btn-acoes {

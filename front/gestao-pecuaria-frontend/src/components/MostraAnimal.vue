@@ -358,6 +358,46 @@
         </div>
 
         <!-- Modal de Visualização de foto -->
+<div class="modal fade" id="visuModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="cadastroModalLabel">Animal: yyyy</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body-visu">
+                <div id="carouselExampleCaptions" class="carousel slide">
+                    <div class="carousel-indicators">
+                        <button v-for="(foto, index) in fotos" :key="index" :data-bs-target="'#carouselExampleCaptions'" :data-bs-slide-to="index" :class="{'active': index === 0}" :aria-label="'Slide ' + (index + 1)" :aria-current="index === 0 ? 'true' : ''"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div v-for="(foto, index) in fotos" :key="index" :class="['carousel-item', { active: index === 0 }]">
+                            <img :src="getImagePath(foto.foto)" class="d-block w-100" :alt="'Foto ' + (index + 1)">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>{{ foto.dataFoto }}</h5>
+                                <h6>Observação:</h6>
+                                <p>{{ foto.observacao }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <!-- Modal de Visualização de foto
         <div class="modal fade" id="visuModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -383,7 +423,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Modal de Confirmação de Exclusão -->
         <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
@@ -921,42 +961,6 @@ th {
 .modal-body-visu {
     display: flex;
     justify-content: center;
-}
-
-.slide {
-    position: relative;
-    width: 90%; 
-    max-width: 900px;
-}
-
-.slider {
-    display: flex;
-    overflow-x: hidden;
-    width: 100%; 
-}
-
-.slide button {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: none;
-    background-color: cornflowerblue;
-    position: absolute;
-    top: 50%;
-}
-
-.slide button:hover {
-    background-color: rgb(51, 93, 170);
-}
-
-.slide button:first-of-type {
-    left: 0;
-    transform: translate(-50%, -50%);
-}
-
-.slide button:last-of-type {
-    right: 0;
-    transform: translate(50%, -50%);
 }
 
 .content{

@@ -9,7 +9,7 @@
         <a class="navbar-brand" href="#">Propriedade atual: {{ nomeProp }}</a>
         <div class="offcanvas offcanvas-start text-bg-dark custom-offcanvas justify-content-center" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
           <div class="offcanvas-header">
-            <button type="button" class="btn-close custom-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
@@ -178,7 +178,7 @@ li {
 }
 
 a {
-  color: #0c0c0c !important; /* Tom de cinza claro para o texto */
+  color: #cfcfcf !important; /* Tom de cinza claro para o texto */
   white-space: nowrap; /* Impede a quebra de linha */
   font-size: 1.1em; /* Aumenta o tamanho da letra */
 }
@@ -193,30 +193,24 @@ a {
 
 .nav-item .dropdown-item i {
   margin-right: 8px; /* Espaço entre o ícone e o texto */
-  color: black; /* Cor preta para todos os ícones */
 }
 
 .dropdown-menu {
-  background-color:   #e2e0e0 !important; /* Fundo cinza escuro para o dropdown */
+  background-color: #252525 !important; /* Fundo cinza escuro para o dropdown */
   border: none; /* Remove a borda do dropdown */
 }
 
 .dropdown-item:hover {
-  background-color: #cbc6c6 !important; /* Fundo cinza mais claro no hover */
-  color: #050505 !important; /* Cor do texto no hover */
-}
-
-.custom-navbar {
-  background-color: #05803c !important; /* Cor personalizada para o navbar */
+  background-color: #3a3a3a !important; /* Fundo cinza mais claro no hover */
+  color: #cfcfcf !important; /* Cor do texto no hover */
 }
 
 .nav-item:hover {
-  background-color: #cbc6c6 !important; /* Fundo cinza mais claro no hover */
+  background-color: #3a3a3a !important; /* Fundo cinza mais claro no hover */
   color: #cfcfcf !important; /* Cor do texto no hover */
 }
 
 .custom-offcanvas {
-  background-color: #f6f6fc !important; /* Cor personalizada para o offcanvas */
   width: 350px !important; /* Largura personalizada para o menu lateral */
 }
 

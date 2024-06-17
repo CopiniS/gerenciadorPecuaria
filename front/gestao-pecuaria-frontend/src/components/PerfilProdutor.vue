@@ -1,4 +1,5 @@
 <template>
+  <div class="background">
     <div class="form-container">
       <form id="formProdutor">
         <div class="row">
@@ -47,6 +48,7 @@
         <button type="button" class="btn btn-primary" @click="editar">Cadastrar</button>
       </form>
     </div>
+  </div>
   </template>
 
 <script>

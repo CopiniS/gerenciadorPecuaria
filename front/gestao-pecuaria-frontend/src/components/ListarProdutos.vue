@@ -267,6 +267,9 @@ export default {
           quantidade = e.quantidade;
         }
       });
+      if(!quantidade){
+        quantidade = 0;
+      }
       return quantidade;
     },
 

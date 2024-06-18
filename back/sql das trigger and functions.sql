@@ -435,3 +435,41 @@ CREATE TRIGGER apos_atualizar_ocorrencia
 AFTER UPDATE ON core_ocorrencia
 FOR EACH ROW
 EXECUTE FUNCTION trigger_atualizar_ocorrencia();
+
+
+----------------------------------------------------------------------------------------------------------------
+
+--COMPONENTE MOVIMENTAÇÃO
+
+-- Função para atualizar o piquete do animal após o INSERT da Movimentacao
+CREATE OR REPLACE FUNCTION trigger_inserir_movimentacao() RETURNS TRIGGER AS $$
+BEGIN
+	UPDATE core_animal
+	SET piquete_id = NEW."piqueteDestino_id"
+	WHERE id = NEW.animal_id;
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger que dispara após o INSERT
+CREATE TRIGGER apos_inserir_movimentacao
+AFTER INSERT ON core_movimentacao
+FOR EACH ROW
+EXECUTE FUNCTION trigger_inserir_movimentacao();
+
+
+-- Função para atualizar o piquete do animal após o DELETE da movimentacao
+CREATE OR REPLACE FUNCTION trigger_excluir_movimentacao() RETURNS TRIGGER AS $$
+BEGIN
+	UPDATE core_animal
+	SET piquete_id = OLD."piqueteOrigem_id"
+	WHERE id = OLD.animal_id;
+	RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger que dispara após o delete
+CREATE TRIGGER apos_excluir_movimentacao
+AFTER DELETE ON core_movimentacao
+FOR EACH ROW
+EXECUTE FUNCTION trigger_excluir_movimentacao();

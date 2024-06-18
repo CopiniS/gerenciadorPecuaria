@@ -50,7 +50,7 @@ class ProdutoSerializer(serializers.ModelSerializer):
 class EstoqueSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Estoque
-        field = "__all__"
+        fields = "__all__"
 
 class PesagemSerializer(serializers.ModelSerializer):
     class Meta:

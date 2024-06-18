@@ -362,13 +362,13 @@ export default {
     selecionarPiqueteOrigem(piquete) {
       this.piqueteId = piquete.id;
       this.formData.piqueteOrigem = piquete.id;
-      this.piqueteOrigemNome = piquete.nome;
+      this.piqueteOrigemNome = piquete.nome + " - " + piquete.propriedade.nome;
       this.filteredPiquetesOrigem = [];
       this.preencheListaAnimais()
     },
 
     selecionarPiqueteDestino(piquete) {
-      this.piqueteDestinoNome = piquete.nome;
+      this.piqueteDestinoNome = piquete.nome + " - " + piquete.propriedade.nome;
       this.formData.piqueteDestino = piquete.id;
       this.filteredPiquetesDestino = [];
     },

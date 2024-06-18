@@ -51,7 +51,7 @@
               <td>{{ produto.nome }}</td>
               <td>{{ produto.tipo }}</td>
               <td>{{ produto.categoria }}</td>
-              <td>{{ produto.estoque }}</td>
+              <td>{{ achaEstoque(produto.id) }}</td>
               <td>
                 <button @click="editarProduto(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
                   data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.estoque" type="text" class="form-control" id="estoque" placeholder="Estoque" required>
+                  <input type="text" class="form-control" id="estoque" placeholder="Estoque" required>
                 </div>
               </form>
             </div>
@@ -142,7 +142,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.estoque" type="text" class="form-control" id="estoqueEditar" placeholder="Estoque" required>
+                  <input type="text" class="form-control" id="estoqueEditar" placeholder="Estoque" required>
                 </div>
               </form>
             </div>
@@ -185,13 +185,13 @@ export default {
   data() {
     return {
       produtos: [],
+      estoque: [],
       formData: {
         id: null,
         nome: '',
         tipo: '',
         categoria: '',
         descricao: null,
-        estoque: '',
       },
       mostrarFormulario: false,
       filtro: {
@@ -204,6 +204,7 @@ export default {
   },
   mounted() {
     this.buscarProdutosDaApi();
+    this.buscarEstoqueDaApi();
   },
   methods: {
     async buscarProdutosDaApi() {
@@ -216,6 +217,20 @@ export default {
         console.error('Erro ao buscar produtos da API:', error);
       }
     },
+
+    async buscarEstoqueDaApi(){
+      try {
+        const response = await api.get('http://127.0.0.1:8000/estoque/' , {
+          params: {
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+            },
+        });
+        this.estoque = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar estoque da API:', error);
+      }
+    },
+
     editarProduto(produto) {
       this.modalTitle = 'Editar Produto';
       this.formData = {
@@ -224,7 +239,6 @@ export default {
         tipo: produto.tipo,
         categoria: produto.categoria,
         descricao:produto.descricao,
-        estoque: produto.estoque,
       };
     },
     resetForm() {
@@ -234,7 +248,6 @@ export default {
         tipo: '',
         categoria: '',
         descricao: null,
-        estoque: '',
       };
       this.modalTitle = 'Cadastro de Produto';
     },
@@ -246,6 +259,17 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
+    achaEstoque(produtoId){
+      let quantidade;
+      this.estoque.forEach(e => {
+        if(e.produto === produtoId){
+          quantidade = e.quantidade;
+        }
+      });
+      return quantidade;
+    },
+
     confirmarExclusao(produto) {
       this.formData = {
         id: produto.id,
@@ -253,7 +277,6 @@ export default {
         tipo: produto.tipo,
         categoria: produto.categoria,
         descricao:produto.descricao,
-        estoque: produto.estoque,
       };
     },
     async apagarProduto() {
@@ -274,14 +297,7 @@ export default {
       this.fecharModal("confirmacaoExclusaoModal");
     },
 
-    async verificaEstoqueVazio(){
-      if(this.formData.estoque === ''){
-        this.formData.estoque = 0;
-      }
-    },
-    
     async submitForm() {
-      this.verificaEstoqueVazio();
       if (this.modalTitle === 'Cadastro de Produto') {
         try {
           const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {

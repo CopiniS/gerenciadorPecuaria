@@ -18,6 +18,12 @@ class PiqueteSerializer(serializers.ModelSerializer):
         model = models.Piquete
         fields = "__all__"
 
+class PiqueteComPropriedadeSerializer(serializers.ModelSerializer):
+    propriedade = PropriedadeSerializer(read_only=True)
+    class Meta:
+        model = models.Piquete
+        fields = "__all__"
+
 class AnimalSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Animal
@@ -139,4 +145,13 @@ class FotoSerializer(serializers.ModelSerializer):
 class MovimentacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Movimentacao
-        field = "__all__"
+        fields = "__all__"
+
+class MovimentacaoComPiquetesSerializer(serializers.ModelSerializer):
+    piqueteOrigem = PiqueteComPropriedadeSerializer(read_only=True)
+    piqueteDestino = PiqueteComPropriedadeSerializer(read_only=True)
+    animal = AnimalSerializer(read_only=True)
+
+    class Meta:
+        model = models.Movimentacao
+        fields = "__all__"

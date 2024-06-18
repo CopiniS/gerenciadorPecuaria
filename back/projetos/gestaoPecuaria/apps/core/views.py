@@ -70,6 +70,14 @@ class AnimalViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(vivosProp, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'], url_path='vivos-piquetes')
+    def list_vivos(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
+        vivos = models.Animal.objects.filter(status = 'Vivo')
+        vivosProp = vivos.filter(piquete__propriedade=propriedade_selecionada) 
+        serializer = serializers.AnimalComPiqueteAndRacaSerializer(vivosProp, many=True)
+        return Response(serializer.data)
+    
     @action(detail=False, methods=['get'], url_path='femeas/vivas')
     def list_femeasVivas(self, request, *args, **kwargs):
         propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
@@ -99,6 +107,11 @@ class PiqueteViewSet(viewsets.ModelViewSet):
         serializer = serializers.PiqueteSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'], url_path='piquetes-propriedades')
+    def list_piquetes_propriedade(self, request, *args, **kwargs):
+        piquetes = models.Piquete.objects.all()
+        serializer = serializers.PiqueteComPropriedadeSerializer(piquetes, many=True)
+        return Response(serializer.data)
 
 class VeterinarioViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -337,6 +350,40 @@ class MovimentacaoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = models.Movimentacao.objects.all()
     serializer_class = serializers.MovimentacaoSerializer
+
+    def create(self, request, *args, **kwargs):
+        animais = request.data['animal']
+        respostas = []
+        deuErro = False
+        for animal in animais:
+            request.data['animal'] = animal
+            response = super().create(request, *args, **kwargs)
+            respostas.append(response)
+        for resposta in respostas:
+            if resposta.status_code != status.HTTP_201_CREATED:
+                deuErro = True
+        if not deuErro:
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    def list(self, request, *args, **kwargs):
+        queryset = models.Movimentacao.objects.all()
+        serializer = serializers.MovimentacaoComPiquetesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
+    def delete_por_data(self, request, *args, **kwargs):
+        data = kwargs.get('data')
+        try:
+            objetos = self.get_queryset().filter(dataMovimentacao=data)
+            objetos.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    
 
     
 

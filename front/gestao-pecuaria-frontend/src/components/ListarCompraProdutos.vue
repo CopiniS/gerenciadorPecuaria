@@ -418,6 +418,10 @@ export default {
 }
 
 .table-container table tbody tr td {
+  background-color: #ededef !important; /* Cor de fundo das células da tabela */
+}
+
+.table-container table tbody tr td {
   background-color: #f0f0f0; /* Cor de fundo das células da tabela */
 }
 

@@ -589,6 +589,11 @@ export default {
   background-color: #f0f0f0;
 }
 
+.table-container table tbody tr td {
+  background-color: #ededef !important; /* Cor de fundo das células da tabela */
+}
+
+
 .btn-acoes {
   background-color: transparent;
   border: none;

@@ -517,6 +517,10 @@ export default {
   margin-bottom: 20px;
 }
 
+.table-container table tbody tr td {
+  background-color: #ededef !important; /* Cor de fundo das células da tabela */
+}
+
 .table-container table thead tr th {
   border-bottom: 2px solid #4CAF50;
   background-color: #f0f0f0;

@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
+
 
 class PropriedadeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -368,7 +370,13 @@ class MovimentacaoViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
     def list(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         queryset = models.Movimentacao.objects.all()
+        if propriedade_selecionada is not None:
+            queryset = queryset.filter(
+            Q(piqueteOrigem__propriedade=propriedade_selecionada) | 
+            Q(piqueteDestino__propriedade=propriedade_selecionada)
+        )
         serializer = serializers.MovimentacaoComPiquetesSerializer(queryset, many=True)
         return Response(serializer.data)
 

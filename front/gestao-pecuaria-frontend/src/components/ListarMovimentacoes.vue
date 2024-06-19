@@ -132,6 +132,7 @@
                   <th scope="col">Animal</th>
                   <th scope="col">Piquete de origem</th>
                   <th scope="col">Piquete de destino</th>
+                  <th scope="col">Tipo</th>
                   <th scope="col">Motivo</th>
                 </tr>
               </thead>
@@ -140,6 +141,7 @@
                   <td>{{ movimentacao.animal.brinco}}</td>
                   <td>{{ movimentacao.piqueteOrigem.nome}} - {{ movimentacao.piqueteOrigem.propriedade.nome }}</td>
                   <td>{{ movimentacao.piqueteDestino.nome}} - {{ movimentacao.piqueteDestino.propriedade.nome }}</td>
+                  <td>{{ achaTipo(movimentacao)}}</td>
                   <td>{{ movimentacao.motivo}}</td>
                   <td>
                     <button @click="editarMovimentacao(movimentacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
@@ -282,6 +284,7 @@ export default {
         movimentacaoParaExcluir: null,
         dataParaExclusao: null,
         piquetes: [],
+        piquetesDaPropriedade: [],
         piqueteOrigemNome: '',
         piqueteDestinoNome: '',
         piqueteId: null,
@@ -308,6 +311,7 @@ export default {
     this.buscarAnimaisDaApi();
     this.buscarMovimentacoesDaApi();
     this.buscarPiquetesDaApi();
+    this.buscarPiquetesDaPropriedade();
   },
   methods: {
     
@@ -351,8 +355,21 @@ export default {
       }
     },
 
+    async buscarPiquetesDaPropriedade() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/piquetes', {
+          params: {
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+            },
+        });
+        this.piquetesDaPropriedade = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar piquetes da API:', error);
+      }
+    },
+
     filtrarPiquetesOrigem() {
-      this.filteredPiquetesOrigem = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteOrigemNome));
+      this.filteredPiquetesOrigem = this.piquetesDaPropriedade.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteOrigemNome));
     },
 
     filtrarPiquetesDestino() {
@@ -391,13 +408,28 @@ export default {
     async buscarMovimentacoesDaApi(){
         try {
             const response = await api.get('http://127.0.0.1:8000/movimentacoes/' , {
+              params: {
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+            },
             });
             this.movimentacoes = response.data;
             this.preencherdatasMovimentacoes();
-            console.log('movimentacoes: ', this.movimentacoes);
         } catch (error) {
         console.error('Erro ao buscar aplicações de produtos da API:', error);
         }
+    },
+
+    achaTipo(movimentacao){ 
+      if(movimentacao.piqueteOrigem.propriedade.id == localStorage.getItem('propriedadeSelecionada')
+      && movimentacao.piqueteDestino.propriedade.id == localStorage.getItem('propriedadeSelecionada')){
+        return 'Interna'
+      }
+      else if(movimentacao.piqueteOrigem.propriedade.id == localStorage.getItem('propriedadeSelecionada')){
+        return 'Saída'
+      }
+      else{
+        return 'Entrada'
+      }
     },
 
     editarMovimentacao(movimentacao) {
@@ -451,7 +483,6 @@ export default {
 
     async submitForm() {
       
-      console.log('formData: ', this.formData);
       if (this.modalTitle === 'Cadastro de Movimentacao') {
         try {
           const response = await api.post('http://127.0.0.1:8000/movimentacoes/', this.formData , {

@@ -92,13 +92,19 @@
                 <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
                 class="form-control" id="dataCompraCadastro" v-model="formData.dataCompra" required>
               </div>
-              <div class="mb-3 input-group">
-                <input v-model="nomeDigitado" @input="filterProdutos" type="text" class="form-control" placeholder="Digite o produto...">
-              </div>
-              <div class="list-group" v-if="nomeDigitado && produtosFiltrados.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="produto in produtosFiltrados" :key="produto.id" @click="selectProduto(produto)">
-                  {{ produto.nome }}
-                </button>
+              <div class="select mb-3 input-group">
+                  <div class="select-option mb-3 input-group" @click="toggleDropdown">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    <input v-model="nomeDigitado" @click="iniciaProdutosFiltrados()" type="text" class="form-control" placeholder="Selecione o produto" readonly id="caixa-select">
+                  </div>
+                  <div class="itens " v-show="dropdownOpen">
+                      <div class="busca">
+                          <input v-model="nomeBuscado" @input="filterProdutos" type="text" class="form-control" placeholder="Busque o produto">
+                      </div>
+                      <ul class="options">
+                          <li v-for="produto in produtosFiltrados" :key="produto.id" :value="produto.id" @click="selectProduto(produto)">{{ produto.nome }}</li>
+                      </ul>
+                  </div>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
@@ -211,6 +217,8 @@ export default {
       produtos: [],
       produtosFiltrados: [],
       nomeDigitado: '',
+      nomeBuscado: '',
+      dropdownOpen: false,
       formData: {
         id: null,
         dataCompra: '',
@@ -260,13 +268,23 @@ export default {
       }
     },
 
+    toggleDropdown() {
+            this.dropdownOpen = !this.dropdownOpen;
+    },
+
+    iniciaProdutosFiltrados(){
+      this.produtosFiltrados = this.produtos;
+    },
+
     filterProdutos() {
-      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeBuscado));
     },
     selectProduto(produto) {
       this.nomeDigitado = produto.nome;
       this.formData.produto = produto.id;
       this.produtosFiltrados = [];
+      this.dropdownOpen = false;
+      this.nomeBuscado = '';
     },
 
     editarCompra(compra) {
@@ -443,5 +461,93 @@ export default {
   display: flex;
   gap: 10px; 
 }
+
+.select-option{
+  width: 100%;
+  cursor: pointer;
+}
+
+  .itens {
+    position: absolute;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    width: 100%;
+    margin-top: 40px;
+    z-index: 999;
+    padding: 20px;
+  }
+
+  .options {
+    max-height: 200px; /* Ajuste a altura conforme necessário */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .options li {
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .options li:hover {
+    background-color: #f0f0f0;
+  }
+
+
+/* .select-option input{
+  width: 100%;
+  cursor: pointer;
+}
+
+.select-option::after{
+  content: '';
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #000; 
+  pointer-events: none;
+}
+
+.itens{
+  background-color: #fff;
+  position: absolute;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 999;
+  padding: 20px;
+}
+
+.busca{
+  width: 100%;
+  font-size: 17px;
+  padding: 10px;
+  outline: 0;
+  border-radius: 5px;
+}
+
+.options{
+  margin-top: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.options li{
+  padding: 10px 15 px;
+  border-radius: 5px;
+  font-size: 21px;
+  cursor: pointer;
+  border-bottom: 1px solid gray;
+} */
 
 </style>

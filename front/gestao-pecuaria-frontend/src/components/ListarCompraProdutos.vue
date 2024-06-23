@@ -1,5 +1,5 @@
 <template>
-    <div class="background">
+  <div class="background">
     <h2>Compras</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
@@ -9,8 +9,8 @@
       <form class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataCompra" class="form-label me-2">Data da Compra</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
-          class="form-control" id="dataCompra" v-model="filtro.dataCompra">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra"
+            class="form-control" id="dataCompra" v-model="filtro.dataCompra">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>
@@ -26,26 +26,26 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="validade" class="form-label me-2">Validade</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
-          class="form-control" id="validade" v-model="filtro.validade">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra"
+            class="form-control" id="validade" v-model="filtro.validade">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="lote" class="form-label me-2">Lote</label>
           <input type="text" class="form-control" id="lote" v-model="filtro.lote">
         </div>
         <div class="col-auto">
-            <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-            <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
         </div>
       </form>
     </div>
 
     <h2>Histórico de Compras de Produtos</h2>
     <div class="table-container">
-    <div class="button-container">
-      <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Compra de Produto</button>
-    </div>
+      <div class="button-container">
+        <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
+          data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Compra de Produto</button>
+      </div>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -69,8 +69,8 @@
             <td>
               <button @click="editarCompra(compra)" class="btn-acoes btn-sm" data-bs-toggle="modal"
                 data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
-              <button @click="confirmarExclusao(compra)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                  class="fas fa-trash-alt"></i></button>
+              <button @click="confirmarExclusao(compra)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
             </td>
           </tr>
         </tbody>
@@ -89,35 +89,37 @@
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
-                class="form-control" id="dataCompraCadastro" v-model="formData.dataCompra" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra"
+                  class="form-control" id="dataCompraCadastro" v-model="formData.dataCompra" required>
               </div>
               <div class="select mb-3 input-group">
-                  <div class="select-option mb-3 input-group" @click="toggleDropdown">
-                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                    <input v-model="nomeDigitado" @click="iniciaProdutosFiltrados()" type="text" class="form-control" placeholder="Selecione o produto" readonly id="caixa-select">
-                  </div>
-                  <div class="itens " v-show="dropdownOpen">
-                      <div class="busca">
-                          <input v-model="nomeBuscado" @input="filterProdutos" type="text" class="form-control" placeholder="Busque o produto">
-                      </div>
-                      <ul class="options">
-                          <li v-for="produto in produtosFiltrados" :key="produto.id" :value="produto.id" @click="selectProduto(produto)">{{ produto.nome }}</li>
-                      </ul>
-                  </div>
+                <div class="select-option mb-3 input-group" @click="toggleDropdown">
+                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                  <input v-model="nomeBuscado" @input="filterProdutos" @click="iniciaProdutosFiltrados()" type="text"
+                    class="form-control" placeholder="Digite ou selecione o produto" id="caixa-select">
+                </div>
+                <div class="itens" v-show="dropdownOpen">
+                  <ul class="options">
+                    <li v-for="produto in produtosFiltrados" :key="produto.id" :value="produto.id"
+                      @click="selectProduto(produto)">{{ produto.nome }}</li>
+                  </ul>
+                </div>
               </div>
+
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                <input v-model="formData.valorUnitario" type="number" class="form-control" id="valorUnitario" placeholder="Valor Unitário" required>
+                <input v-model="formData.valorUnitario" type="number" class="form-control" id="valorUnitario"
+                  placeholder="Valor Unitário" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                <input v-model="formData.quantidadeComprada" type="number" class="form-control" id="quantidadeComprada" placeholder="Quantidade Comprada" required>
+                <input v-model="formData.quantidadeComprada" type="number" class="form-control" id="quantidadeComprada"
+                  placeholder="Quantidade Comprada" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Validade" 
-                class="form-control" id="validadeCadastro" v-model="formData.validade" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Validade"
+                  class="form-control" id="validadeCadastro" v-model="formData.validade" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
@@ -145,29 +147,33 @@
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra" 
-                class="form-control" id="dataCompraEdicao" v-model="formData.dataCompra" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra"
+                  class="form-control" id="dataCompraEdicao" v-model="formData.dataCompra" required>
               </div>
               <div class="mb-3 input-group">
-                <input v-model="nomeDigitado" @input="filterProdutos" type="text" class="form-control" placeholder="Digite o produto...">
+                <input v-model="nomeDigitado" @input="filterProdutos" type="text" class="form-control"
+                  placeholder="Digite o produto...">
               </div>
               <div class="list-group" v-if="nomeDigitado && produtosFiltrados.length">
-                <button type="button" class="list-group-item list-group-item-action" v-for="produto in produtosFiltrados" :key="produto.id" @click="selectProduto(produto)">
+                <button type="button" class="list-group-item list-group-item-action"
+                  v-for="produto in produtosFiltrados" :key="produto.id" @click="selectProduto(produto)">
                   {{ produto.nome }}
                 </button>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                <input v-model="formData.valorUnitario" type="number" class="form-control" id="valorUnitario" placeholder="Valor Unitário" required>
+                <input v-model="formData.valorUnitario" type="number" class="form-control" id="valorUnitario"
+                  placeholder="Valor Unitário" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                <input v-model="formData.quantidadeComprada" type="number" class="form-control" id="quantidadeComprada" placeholder="Quantidade Comprada" required>
+                <input v-model="formData.quantidadeComprada" type="number" class="form-control" id="quantidadeComprada"
+                  placeholder="Quantidade Comprada" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Validade" 
-                class="form-control" id="validade" v-model="formData.validade" required>
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Validade"
+                  class="form-control" id="validade" v-model="formData.validade" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
@@ -259,7 +265,7 @@ export default {
       }
     },
 
-    async buscarProdutos(){
+    async buscarProdutos() {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/');
         this.produtos = response.data;
@@ -269,10 +275,10 @@ export default {
     },
 
     toggleDropdown() {
-            this.dropdownOpen = !this.dropdownOpen;
+      this.dropdownOpen = !this.dropdownOpen;
     },
 
-    iniciaProdutosFiltrados(){
+    iniciaProdutosFiltrados() {
       this.produtosFiltrados = this.produtos;
     },
 
@@ -312,7 +318,7 @@ export default {
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       };
       this.nomeDigitado = '',
-      this.modalTitle = 'Cadastro de Compra de Produto';
+        this.modalTitle = 'Cadastro de Compra de Produto';
     },
     confirmarExclusao(compra) {
       this.formData = {
@@ -350,7 +356,7 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    
+
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Compra de Produto') {
         try {
@@ -389,22 +395,22 @@ export default {
     },
 
     formatarData(data) {
-    const date = new Date(data);
-    const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
-    return utcDate.toLocaleDateString('pt-BR', options);
+      const date = new Date(data);
+      const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+      return utcDate.toLocaleDateString('pt-BR', options);
     },
 
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },
     limparFiltro() {
-      this.filtro.dataCompra ='';
-      this.filtro.produto ='';
-      this.filtro.valorUnitario ='';
-      this.filtro.quantidadeComprada ='';
-      this.filtro.validade ='';
-      this.filtro.lote ='';
+      this.filtro.dataCompra = '';
+      this.filtro.produto = '';
+      this.filtro.valorUnitario = '';
+      this.filtro.quantidadeComprada = '';
+      this.filtro.validade = '';
+      this.filtro.lote = '';
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
@@ -417,8 +423,10 @@ export default {
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 .background {
-  background-color:  #ededef; /* Um tom mais escuro que o branco */
-  min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
+  background-color: #ededef;
+  /* Um tom mais escuro que o branco */
+  min-height: 100vh;
+  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
 }
 
@@ -431,22 +439,25 @@ export default {
 }
 
 .button-container {
-  text-align: left; 
-  margin-bottom: 20px; 
+  text-align: left;
+  margin-bottom: 20px;
 }
 
 .table-container table tbody tr td {
-  background-color: #ededef !important; /* Cor de fundo das células da tabela */
+  background-color: #ededef !important;
+  /* Cor de fundo das células da tabela */
 }
 
 .table-container table tbody tr td {
-  background-color: #f0f0f0; /* Cor de fundo das células da tabela */
+  background-color: #f0f0f0;
+  /* Cor de fundo das células da tabela */
 }
 
 .table-container table thead tr th {
   border-bottom: 2px solid #176d1a;
   background-color: #f0f0f0;
 }
+
 .btn-acoes {
   background-color: transparent;
   border: none;
@@ -459,65 +470,17 @@ export default {
 
 .button-group {
   display: flex;
-  gap: 10px; 
+  gap: 10px;
 }
 
-.select-option{
+.select-option {
   width: 100%;
   cursor: pointer;
 }
 
-  .itens {
-    position: absolute;
-    background-color: #fff;
-    color: #000;
-    border: 1px solid #ccc;
-    border-radius: 7px;
-    width: 100%;
-    margin-top: 40px;
-    z-index: 999;
-    padding: 20px;
-  }
-
-  .options {
-    max-height: 200px; /* Ajuste a altura conforme necessário */
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .options li {
-    padding: 10px;
-    cursor: pointer;
-  }
-
-  .options li:hover {
-    background-color: #f0f0f0;
-  }
-
-
-/* .select-option input{
-  width: 100%;
-  cursor: pointer;
-}
-
-.select-option::after{
-  content: '';
+.itens {
   position: absolute;
-  right: 10px; 
-  top: 50%;
-  transform: translateY(-50%);
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid #000; 
-  pointer-events: none;
-}
-
-.itens{
   background-color: #fff;
-  position: absolute;
   color: #000;
   border: 1px solid #ccc;
   border-radius: 7px;
@@ -527,27 +490,22 @@ export default {
   padding: 20px;
 }
 
-.busca{
-  width: 100%;
-  font-size: 17px;
-  padding: 10px;
-  outline: 0;
-  border-radius: 5px;
-}
-
-.options{
-  margin-top: 10px;
-  max-height: 250px;
+.options {
+  max-height: 200px;
+  /* Ajuste a altura conforme necessário */
   overflow-y: auto;
+  border: 1px solid #ddd;
+  margin: 0;
   padding: 0;
+  list-style: none;
 }
 
-.options li{
-  padding: 10px 15 px;
-  border-radius: 5px;
-  font-size: 21px;
+.options li {
+  padding: 10px;
   cursor: pointer;
-  border-bottom: 1px solid gray;
-} */
+}
 
+.options li:hover {
+  background-color: #f0f0f0;
+}
 </style>

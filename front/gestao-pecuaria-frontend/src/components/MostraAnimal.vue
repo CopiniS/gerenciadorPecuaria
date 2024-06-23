@@ -20,17 +20,17 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="brinco" class="form-label me-2">Brinco</label>
                         <input v-model="formDataAnimal.brinco" type="text" class="form-control" id="brinco"
-                            placeholder="Número do Brinco" required>
+                            placeholder="Número do Brinco" disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
                         <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                             placeholder="Data de nascimento" class="form-control" id="dataNascimento"
-                            v-model="formDataAnimal.dataNascimento" required>
+                            v-model="formDataAnimal.dataNascimento" disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="sexo" class="form-label me-2">Sexo</label>
-                        <select v-model="formDataAnimal.sexo" class="form-select" id="sexo">
+                        <select v-model="formDataAnimal.sexo" class="form-select" id="sexo" disabled>
                             <option disabled value="" >Selecione o sexo</option>
                             <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao"
                                 v-bind:selected="formDataAnimal.sexo === opcao">{{ opcao }}</option>
@@ -39,7 +39,7 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="raca" class="form-label me-2">Raça</label>
                         <select v-model="formDataAnimal.racaPredominante" class="form-select" id="racaPredominante"
-                            aria-label="Raça Predominante" required>
+                            aria-label="Raça Predominante" disabled>
                             <option disabled value="" >Selecione a raça</option>
                             <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }} </option>
                         </select>
@@ -47,12 +47,12 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="observacaoRaca" class="form-label me-2">Observações da Raça</label>
                         <textarea v-model="formDataAnimal.racaObservacao" class="form-control" id="racaObservacao"
-                            placeholder="Observações sobre a Raça"></textarea>
+                            placeholder="Observações sobre a Raça" disabled></textarea>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="piquete" class="form-label me-2">Piquete</label>
                         <select v-model="formDataAnimal.piquete" class="form-select" id="piquete" aria-label="Piquete"
-                            required>
+                        disabled>
                             <option disabled>Selecione o piquete</option>
                             <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{
                     piquete.nome }}</option>
@@ -61,7 +61,7 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="brincoPai" class="form-label me-2">Brinco pai</label>
                         <input v-model="formDataAnimal.brincoPai" @input="filterMachos()" type="text" class="form-control"
-                            placeholder="Digite o brinco do Pai...">
+                            placeholder="Digite o brinco do Pai..." disabled>
                     </div>
                     <div class="list-group" v-if="formDataAnimal.brincoPai && machosFiltrados.length">
                         <button type="button" class="list-group-item list-group-item-action"
@@ -72,7 +72,7 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="brincoMae" class="form-label me-2">Brinco mãe</label>
                         <input v-model="formDataAnimal.brincoMae" @input="filterFemeas()" type="text" class="form-control"
-                            placeholder="Digite o brinco da Mãe...">
+                            placeholder="Digite o brinco da Mãe..." disabled>
                     </div>
                     <div class="list-group" v-if="formDataAnimal.brincoMae && femeasFiltradas.length">
                         <button type="button" class="list-group-item list-group-item-action"
@@ -83,23 +83,23 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="rfid" class="form-label me-2">RfId</label>
                         <input v-model="formDataAnimal.rfid" type="text" class="form-control" id="rfid" placeholder="RFID"
-                            required>
+                        disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="observacoes" class="form-label me-2">Observações</label>
                         <textarea v-model="formDataAnimal.observacoes" class="form-control" id="observacoes"
-                            placeholder="Observações" required> </textarea>
+                            placeholder="Observações" disabled> </textarea>
                     </div>
                     <div v-if="formDataAnimal.dataCompra" class="col-auto d-flex align-items-center">
                         <label for="dataCompra" class="form-label me-2">DataCompra</label>
                         <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                             placeholder="Data da compra" class="form-control" id="dataDaCompra"
-                            v-model="formDataAnimal.dataCompra" required>
+                            v-model="formDataAnimal.dataCompra" disabled>
                     </div>
                     <div v-if="formDataAnimal.valorCompra" class="col-auto d-flex align-items-center">
                         <label for="valor" class="form-label me-2">Valor Compra</label>
                         <input v-model="formDataAnimal.valorCompra" type="text" class="form-control" id="valorCompra"
-                            placeholder="Valor da compra" required>
+                            placeholder="Valor da compra" disabled>
                     </div>
                 </form>
             </div>
@@ -995,5 +995,20 @@ h2 {
     display: flex;
     justify-content: center;
     margin-bottom: 0;
+}
+
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.btn-acoes i {
+  color: #176d1a;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px; 
 }
 </style>

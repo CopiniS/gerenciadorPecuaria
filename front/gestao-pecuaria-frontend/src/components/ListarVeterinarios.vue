@@ -1,5 +1,15 @@
 <template>
 <div class="background">
+
+  <nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Veterinários</button>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
+ </div>
+
 <h2>Veterinários</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
@@ -33,8 +43,7 @@
   <div>
     <div class="table-container">
     <div class="button-container">
-      <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Veterinário</button>
+      <button @click="() => {this.$router.push('/cadastroVeterinario');}" type="button" class="btn btn-success">Cadastrar Veterinário</button>
     </div>
       <table class="table table-bordered">
         <thead>
@@ -172,7 +181,8 @@ export default {
         telefone: '',
         email: '',
         crmv: '',
-      },mostrarFormulario: false,
+      },
+      mostrarFormulario: false,
       filtro: {
         nome: '',
         telefone: '',
@@ -316,6 +326,11 @@ export default {
   padding: 20px;
 }
 
+.nav-link.active {
+  background-color: #d0d0d0 !important;
+  /* Cor um pouco mais escura quando a aba está ativa */
+}
+
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
@@ -347,6 +362,10 @@ export default {
 
 .btn-acoes i {
   color: #176d1a;
+}
+
+.btn-success {
+  background-color: #176d1a;
 }
 
 .button-group {

@@ -21,6 +21,7 @@ import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
 import ViewAnimal from '@/views/ViewAnimal.vue';
 import TelaMovimentacoes from '@/views/TelaMovimentacoes.vue';
 import CadastroVeterinario from '@/components/CadastroVeterinario.vue';
+import EdicaoVeterinario from '@/components/EdicaoVeterinario.vue'
 
 const routes = [
   
@@ -138,7 +139,11 @@ const routes = [
     name: 'CadastroVeterinario',
     component: CadastroVeterinario
   },
-
+  {
+    path: '/editarVeterinario',
+    name: 'EdicaoVeterinario',
+    component: EdicaoVeterinario
+  },
 ];
 
 const router = createRouter({

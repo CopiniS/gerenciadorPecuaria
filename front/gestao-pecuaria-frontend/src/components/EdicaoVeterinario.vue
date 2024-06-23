@@ -2,43 +2,46 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'veterinarios' }" id="nav-vet-tab" @click="selectTab('veterinarios')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Veterinários</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro</button>
+        <button class="nav-link" :class="{ active: activeTab === 'veterinarios' }" id="nav-vet-tab"
+          @click="selectTab('veterinarios')" type="button" role="tab" aria-controls="nav-vet"
+          aria-selected="true">Veterinários</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
+          aria-selected="false">Edição</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'veterinarios' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'veterinarios' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Veterinários</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
+        aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Veterinário</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder">
+              <input v-model="formData.nome" :class="{ 'is-invalid': !isNomeValido }" type="text" class="form-control"
+                id="nome" :placeholder="nomePlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-phone"></i></span>
-              <input
-                v-model="formData.telefone"
-                @input="applyPhoneMask"
-                :class="{'is-invalid': !isTelefoneValido}"
-                type="text"
-                class="form-control"
-                id="telefone"
-                :placeholder="telefonePlaceholder">
+              <input v-model="formData.telefone" @input="applyPhoneMask" :class="{ 'is-invalid': !isTelefoneValido }"
+                type="text" class="form-control" id="telefone" :placeholder="telefonePlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-              <input v-model="formData.email" :class="{'is-invalid': !isEmailValido}" type="email" class="form-control" id="email" :placeholder="emailPlaceholder">
+              <input v-model="formData.email" :class="{ 'is-invalid': !isEmailValido }" type="email" class="form-control"
+                id="email" :placeholder="emailPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-              <input v-model="formData.crmv" :class="{'is-invalid': !isCrmvValido}" type="text" class="form-control" id="crmv" :placeholder="crmvPlaceholder">
+              <input v-model="formData.crmv" :class="{ 'is-invalid': !isCrmvValido }" type="text" class="form-control"
+                id="crmv" :placeholder="crmvPlaceholder">
             </div>
             <div class="button-group justify-content-end">
-              <button type="button" class="btn btn-secondary" @click="selectTab('veterinarios')">Cancelar</button>
-              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+              <button type="button" class="btn btn-secondary" @click="cancelarEdicao">Cancelar</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
             </div>
           </form>
         </div>
@@ -54,7 +57,7 @@ export default {
   name: 'TelaVeterinarios',
   data() {
     return {
-      activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      activeTab: 'edicao', // Começa na aba de edição
       formData: {
         id: null,
         nome: '',
@@ -72,7 +75,28 @@ export default {
       crmvPlaceholder: 'CRMV',
     };
   },
+  mounted() {
+    // Verifica se há um veterinário selecionado no localStorage para edição
+    const veterinarioId = localStorage.getItem('veterinarioSelecionado');
+    if (veterinarioId) {
+      // Requisição para obter os dados do veterinário
+      this.fetchVeterinario(veterinarioId);
+    }
+  },
   methods: {
+    async fetchVeterinario(id) {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/veterinarios/${id}`);
+        const veterinario = response.data;
+        this.formData.id = veterinario.id;
+        this.formData.nome = veterinario.nome;
+        this.formData.telefone = veterinario.telefone;
+        this.formData.email = veterinario.email;
+        this.formData.crmv = veterinario.crmv;
+      } catch (error) {
+        console.error('Erro ao carregar dados do veterinário:', error);
+      }
+    },
     validarFormulario() {
       this.isNomeValido = !!this.formData.nome.trim();
       if (!this.isNomeValido) this.formData.nome = '';
@@ -115,21 +139,25 @@ export default {
       }
     },
 
+    cancelarEdicao() {
+      this.$router.push('/Veterinarios');
+    },
+
     async submitForm() {
       if (this.validarFormulario()) {
         try {
-          const response = await api.post('http://127.0.0.1:8000/veterinarios/', this.formData, {});
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
+          const response = await api.patch(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/`, this.formData, {});
+          if (response.status === 200) {
+            alert('Veterinário atualizado com sucesso!');
             this.resetForm();
           } else {
-            alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');
+            alert('Erro ao atualizar veterinário. Tente novamente mais tarde.');
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } 
+      }
     },
 
     resetForm() {
@@ -212,5 +240,4 @@ export default {
 .is-invalid {
   border-color: #dc3545;
 }
-
 </style>

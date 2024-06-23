@@ -62,8 +62,7 @@
             <td>{{ veterinario.email }}</td>
             <td>{{ veterinario.crmv }}</td>
             <td>
-              <button @click="editarVeterinario(veterinario)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+              <button @click="editarVeterinario(veterinario)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
               <button @click="confirmarExclusao(veterinario)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
                   class="fas fa-trash-alt"></i></button>
             </td>
@@ -72,41 +71,6 @@
       </table>
     </div>
 
-    <!-- Modal de Cadastro de Veterinários -->
-    <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Veterinários</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                <input v-model="formData.telefone" type="text" class="form-control" id="telefone" placeholder="Telefone" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input v-model="formData.email" type="email" class="form-control" id="email" placeholder="Email" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                <input v-model="formData.crmv" type="text" class="form-control" id="crmv" placeholder="CRMV" required>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Modal de Edição de Veterinário -->
     <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
@@ -207,14 +171,8 @@ export default {
       }
     },
     editarVeterinario(veterinario) {
-      this.modalTitle = 'Editar Veterinário';
-      this.formData = {
-        id: veterinario.id,
-        nome: veterinario.nome,
-        telefone: veterinario.telefone,
-        email: veterinario.email,
-        crmv: veterinario.crmv,
-      };
+      localStorage.setItem('veterinarioSelecionado', veterinario.id);
+      this.$router.push('/editarVeterinario')
     },
     resetForm() {
       this.formData = {

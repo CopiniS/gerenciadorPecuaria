@@ -9,11 +9,11 @@
       <form class="row g-3 align-items-center" v-show="mostrarFormulario">
           <div class="col-auto d-flex align-items-center">
               <label for="nome" class="form-label me-2">Nome</label>
-              <input type="text" class="form-control" id="nome" v-model="filtro.nome">
+              <input type="text" class="form-control filtro-nome" id="nome" v-model="filtro.nome">
           </div>
           <div class="col-auto d-flex align-items-center">
               <label for="tipo" class="form-label me-2">Tipo</label>
-              <select class="form-select" id="tipo" v-model="filtro.tipo">
+              <select class="form-select filtro-tipo" id="tipo" v-model="filtro.tipo">
                   <option value="">Selecione o tipo</option>
                   <option value="alimenticio">Alimentício</option>
                   <option value="sanitario">Sanitário</option>
@@ -21,7 +21,7 @@
           </div>
           <div class="col-auto d-flex align-items-center">
               <label for="categoria" class="form-label me-2">Categoria</label>
-              <input type="text" class="form-control" id="categoria" v-model="filtro.categoria">
+              <input type="text" class="form-control filtro-categoria" id="categoria" v-model="filtro.categoria">
           </div>
           <div class="col-auto">
               <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -331,7 +331,7 @@ export default {
 }
 
 .table-container table thead tr th {
-  border-bottom: 2px solid #4CAF50; /* Adiciona uma borda verde na parte inferior */
+  border-bottom: 2px solid #176d1a; /* Adiciona uma borda verde na parte inferior */
   background-color: #f0f0f0;
 }
 
@@ -342,12 +342,24 @@ export default {
 }
 
 .btn-acoes i {
-  color: #4CAF50;
+  color: #176d1a;
 }
 
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.filtro-nome {
+  background-color: #ededef  !important; /* Azul claro */
+}
+
+.filtro-tipo {
+  background-color: #ede9e9 !important; /* Laranja claro */
+}
+
+.filtro-categoria {
+  background-color: #fcf8f8 !important; /* Verde claro */
 }
 
 </style>

@@ -65,7 +65,7 @@
       <div class="table-container">
         <div class="button-container">
           <button @click="resetForm(); preencheListas()" type="button" class="btn btn-success" data-bs-toggle="modal"
-            data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Adicionar</button>
+            data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Animal</button>
         </div>
         <table class="table table-bordered">
           <thead>
@@ -531,7 +531,7 @@ export default {
 }
 
 .table-container table thead tr th {
-  border-bottom: 2px solid #4CAF50;
+  border-bottom: 2px solid #176d1a;
   background-color: #f0f0f0;
   /* Adiciona uma borda verde na parte inferior */
 }
@@ -543,7 +543,7 @@ export default {
 }
 
 .btn-acoes i {
-  color: #4CAF50;
+  color: #176d1a;
 }
 
 .button-group {

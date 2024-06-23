@@ -7,7 +7,7 @@
                     data-bs-toggle="modal" data-bs-target="#edicaoModal" data-bs-whatever="@mdo" >Editar</button>
                 <button @click="editarAnimal(animal)" class="btn btn-success mx-1" data-bs-toggle="modal"
                     data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
-                <button class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#cadastroModal">Adicionar
+                <button class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#cadastroModal">RAOO
                     Foto</button>
                 <button @click="buscarFotos()" class="btn btn-success mx-1" data-bs-toggle="modal"
                     data-bs-target="#visuModal">Visualizar Fotos</button>

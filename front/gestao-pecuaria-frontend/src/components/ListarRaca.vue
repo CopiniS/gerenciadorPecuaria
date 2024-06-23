@@ -22,7 +22,7 @@
       <div class="table-container">
         <div class="button-container">
           <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-            data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar</button>
+            data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Raca</button>
         </div>
         <table class="table table-bordered">
           <thead>
@@ -50,7 +50,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Raça</h1>
+              <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastrar Raça</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -254,7 +254,7 @@ export default {
 }
 
 .table-container table thead tr th {
-  border-bottom: 2px solid #4CAF50;
+  border-bottom: 2px solid #176d1a;
   background-color: #f0f0f0;
   /* Adiciona uma borda verde na parte inferior */
 }
@@ -267,7 +267,7 @@ export default {
 }
 
 .btn-acoes i {
-  color: #4CAF50;
+  color: #176d1a;
 }
 
 .button-group {

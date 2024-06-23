@@ -44,7 +44,7 @@
     <div class="table-container">
     <div class="button-container">
       <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
-        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Compra Produto</button>
+        data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Compra de Produto</button>
     </div>
       <table class="table table-bordered">
         <thead>
@@ -454,7 +454,7 @@ export default {
 }
 
 .btn-acoes i {
-  color: #4CAF50;
+  color: #176d1a;
 }
 
 .button-group {

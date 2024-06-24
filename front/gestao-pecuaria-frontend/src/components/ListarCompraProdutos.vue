@@ -95,7 +95,7 @@
               <div class="select mb-3 input-group">
                 <div class="select-option mb-3 input-group" @click="toggleDropdown">
                   <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                  <input v-model="nomeBuscado" @input="filterProdutos" @click="iniciaProdutosFiltrados()" type="text"
+                  <input v-model="nomeDigitado" @input="filterProdutos" @click="filterProdutos()" type="text"
                     class="form-control" placeholder="Digite ou selecione o produto" id="caixa-select">
                 </div>
                 <div class="itens" v-show="dropdownOpen">
@@ -223,7 +223,6 @@ export default {
       produtos: [],
       produtosFiltrados: [],
       nomeDigitado: '',
-      nomeBuscado: '',
       dropdownOpen: false,
       formData: {
         id: null,
@@ -278,19 +277,14 @@ export default {
       this.dropdownOpen = !this.dropdownOpen;
     },
 
-    iniciaProdutosFiltrados() {
-      this.produtosFiltrados = this.produtos;
-    },
-
     filterProdutos() {
-      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeBuscado));
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));
     },
     selectProduto(produto) {
       this.nomeDigitado = produto.nome;
       this.formData.produto = produto.id;
       this.produtosFiltrados = [];
       this.dropdownOpen = false;
-      this.nomeBuscado = '';
     },
 
     editarCompra(compra) {

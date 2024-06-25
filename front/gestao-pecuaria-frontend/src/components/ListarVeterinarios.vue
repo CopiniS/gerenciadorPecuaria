@@ -3,14 +3,15 @@
 
   <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Veterinários</button>
+    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
+    data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Veterinários</button>
   </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
   <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
  </div>
 
-<h2>Veterinários</h2>
+<h2>Lista de Veterinários</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
         <h2 class="me-3">Filtros</h2>
@@ -56,7 +57,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(veterinario, index) in lotes" :key="index">
+          <tr v-for="(veterinario, index) in veterinarios" :key="index">
             <td>{{ veterinario.nome }}</td>
             <td>{{ veterinario.telefone }}</td>
             <td>{{ veterinario.email }}</td>
@@ -69,43 +70,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-
-
-    <!-- Modal de Edição de Veterinário -->
-    <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Veterinário</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.nome" type="text" class="form-control" id="nomeEditar" placeholder="Nome" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                <input v-model="formData.telefone" type="text" class="form-control" id="telefoneEditar" placeholder="Telefone" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input v-model="formData.email" type="email" class="form-control" id="emailEditar" placeholder="Email" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                <input v-model="formData.crmv" type="text" class="form-control" id="crmvEditar" placeholder="CRMV" required>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Modal de Confirmação de Exclusão -->
@@ -138,7 +102,7 @@ export default {
   name: 'TelaVeterinarios',
   data() {
     return {
-      lotes: [],
+      veterinarios: [],
       formData: {
         id: null,
         nome: '',
@@ -165,7 +129,7 @@ export default {
         const response = await api.get('http://127.0.0.1:8000/veterinarios/' , {
           // Parâmetros da requisição (se houver)
         });
-        this.lotes = response.data;
+        this.veterinarios = response.data;
       } catch (error) {
         console.error('Erro ao buscar veterinários da API:', error);
       }

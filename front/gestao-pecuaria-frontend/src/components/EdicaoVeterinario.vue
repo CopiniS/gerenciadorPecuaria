@@ -4,10 +4,10 @@
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'veterinarios' }" id="nav-vet-tab"
           @click="selectTab('veterinarios')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Veterinários</button>
+          aria-selected="true">Lista de Veterinário</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
           @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
-          aria-selected="false">Edição</button>
+          aria-selected="false">Edição de Veterinário</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -150,6 +150,7 @@ export default {
           if (response.status === 200) {
             alert('Veterinário atualizado com sucesso!');
             this.resetForm();
+            this.$router.push('/Veterinarios');
           } else {
             alert('Erro ao atualizar veterinário. Tente novamente mais tarde.');
           }

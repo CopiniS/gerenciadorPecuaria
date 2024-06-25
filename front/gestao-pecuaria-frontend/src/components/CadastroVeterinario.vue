@@ -2,8 +2,10 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'veterinarios' }" id="nav-vet-tab" @click="selectTab('veterinarios')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Veterinários</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro</button>
+        <button class="nav-link" :class="{ active: activeTab === 'veterinarios' }" id="nav-vet-tab" @click="selectTab('veterinarios')" 
+        type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Veterinários</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
+        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Veterinários</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -122,6 +124,7 @@ export default {
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
+            this.$router.push('/Veterinarios');
           } else {
             alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');
           }

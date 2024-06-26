@@ -117,7 +117,6 @@ export default {
         email: '',
         crmv: ''
       },
-      modalTitle: 'Cadastro de Veterinário',
     }
   },
   mounted() {
@@ -138,16 +137,13 @@ export default {
       localStorage.setItem('veterinarioSelecionado', veterinario.id);
       this.$router.push('/editarVeterinario')
     },
-    resetForm() {
+
+    confirmarExclusao(veterinario) {
       this.formData = {
-        id: null,
-        nome: '',
-        telefone: '',
-        email: '',
-        crmv: '',
+        id: veterinario.id,
       };
-      this.modalTitle = 'Cadastro de Veterinário';
     },
+
     fecharModal(modalId) {
       var closeButton = document.getElementById(modalId).querySelector('.btn-close');
       if (closeButton) {
@@ -156,15 +152,7 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    confirmarExclusao(veterinario) {
-      this.formData = {
-        id: veterinario.id,
-        nome: veterinario.nome,
-        telefone: veterinario.telefone,
-        email: veterinario.email,
-        crmv: veterinario.crmv,
-      };
-    },
+
     async apagarVeterinario() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/` , {
@@ -180,47 +168,9 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.fecharModal("confirmacaoExclusaoModal");
+      this.fecharModal('confirmacaoExclusaoModal');
     },
-    
-    
-    async submitForm() {
-      if (this.modalTitle === 'Cadastro de Veterinário') {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/veterinarios/', this.formData , {
-        });
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.buscarVeterinariosDaApi();
-            this.fecharModal("cadastroModal");
-          } else {
-            alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      } else {
-        try {
-          const response = await api.patch(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/`, this.formData , {
-        });
-
-          if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.resetForm();
-            this.buscarVeterinariosDaApi();
-            this.fecharModal("edicaoModal");
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },

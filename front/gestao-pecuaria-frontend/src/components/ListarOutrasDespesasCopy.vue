@@ -1,17 +1,6 @@
 <template>
-<div class="background">
-
-  <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
-    data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Despesas</button>
-  </div>
-</nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
- </div>
-
-<h2>Lista de Despesas</h2>
+  <div class="background">
+    <h2>Outras Despesas</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -41,32 +30,100 @@
       </form>
     </div>
 
-  <div>
-    <div class="table-container">
-        <div class="button-container">
-            <button @click="acessarCadastro()" type="button" class="btn btn-success" >Cadastrar Despesa</button>
-        </div>
+    <div>
+      <div class="table-container">
+      <div class="button-container">
+        <button @click="resetForm()" type="button" class="btn btn-success" data-bs-toggle="modal"
+          data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Despesa</button>
+      </div>
         <table class="table table-bordered">
-            <thead>
-                <tr>
-                <th scope="col">Data</th>
-                <th scope="col">Valor</th>
-                <th scope="col">Descricao</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(despesa, index) in despesas" :key="index">
-                <td>{{ formatarData(despesa.dataDespesa) }}</td>
-                <td>{{ despesa.valor }}</td>
-                <td>{{ despesa.descricao }}</td>
-                <td>
-                    <button @click="acessarEdicao(despesa)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
-                    <button @click="confirmarExclusao(despesa)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                        class="fas fa-trash-alt"></i></button>
-                </td>
-                </tr>
-            </tbody>
+          <thead>
+            <tr>
+              <th scope="col">Data</th>
+              <th scope="col">Valor</th>
+              <th scope="col">Descricao</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(despesa, index) in despesas" :key="index">
+              <td>{{ formatarData(despesa.dataDespesa) }}</td>
+              <td>{{ despesa.valor }}</td>
+              <td>{{ despesa.descricao }}</td>
+              <td>
+                <button @click="editarDespesa(despesa)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                  data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+                <button @click="confirmarExclusao(despesa)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
+                    class="fas fa-trash-alt"></i></button>
+              </td>
+            </tr>
+          </tbody>
         </table>
+      </div>
+
+      <!-- Modal de Cadastro de Despesa -->
+      <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Despesa</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="submitForm">
+                <div class="mb-3 input-group">
+                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da despesa" 
+                    class="form-control" id="dataDespesa" v-model="formData.dataDespesa" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.valor" type="text" class="form-control" id="valor" placeholder="Valor" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.descricao" type="text" class="form-control" id="descricao" placeholder="Descrição" required>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" @click="submitForm">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de Edição de Despesa -->
+      <div class="modal fade" id="edicaoModal" tabindex="-1" aria-labelledby="edicaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="edicaoModalLabel">Editar Despesa</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="submitForm">
+                <div class="mb-3 input-group">
+                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da despesa" 
+                    class="form-control" id="dataDespesa" v-model="formData.dataDespesa" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.valor" type="text" class="form-control" id="valor" placeholder="Valor" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input v-model="formData.descricao" type="text" class="form-control" id="descricao" placeholder="Descrição" required>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" @click="submitForm">Salvar</button>
+            </div>
+          </div>
+        </div>
     </div>
 
     <!-- Modal de Confirmação de Exclusão -->
@@ -79,17 +136,17 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir esta despesa?
+            Tem certeza de que deseja excluir este produto?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarDespesa()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarProduto()">Excluir</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+  </div>
 </template>
 
 <script>
@@ -132,20 +189,26 @@ export default {
         console.error('Erro ao buscar outras despesas da API:', error);
       }
     },
-
-    acessarEdicao(despesa) {
-      this.$router.push({
-        name: 'EdicaoDespesa', 
-        params: { despesaId: despesa.id } 
-      })
+    editarDespesa(despesa) {
+      this.modalTitle = 'Editar Despesa';
+      this.formData = {
+        id: despesa.id,
+        dataDespesa: despesa.dataDespesa,
+        valor: despesa.valor,
+        descricao: despesa.descricao,
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
+      };
     },
-
-    acessarCadastro(){
-        this.$router.push({
-        name: 'CadastroDespesa', 
-      })
+    resetForm() {
+      this.formData = {
+        id: '',
+        dataDespesa: '',
+        valor: '',
+        descricao: null,
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
+      };
+      this.modalTitle = 'Cadastro de Despesa'; 
     },
-
     fecharModal(modalId) {
       var closeButton = document.getElementById(modalId).querySelector('.btn-close');
       if (closeButton) {
@@ -157,9 +220,12 @@ export default {
     confirmarExclusao(despesa) {
       this.formData = {
         id: despesa.id,
+        dataDespesa: despesa.dataDespesa,
+        valor: despesa.valor,
+        descricao: despesa.descricao,
       };
     },
-    async apagarDespesa() {
+    async apagarProduto() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, {
         });
@@ -246,11 +312,6 @@ export default {
   padding: 20px;
 }
 
-.nav-link.active {
-  background-color: #d0d0d0 !important;
-  /* Cor um pouco mais escura quando a aba está ativa */
-}
-
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
@@ -284,13 +345,21 @@ export default {
   color: #176d1a;
 }
 
-.btn-success {
-  background-color: #176d1a;
-}
-
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.filtro-nome {
+  background-color: #ededef  !important; /* Azul claro */
+}
+
+.filtro-tipo {
+  background-color: #ede9e9 !important; /* Laranja claro */
+}
+
+.filtro-categoria {
+  background-color: #fcf8f8 !important; /* Verde claro */
 }
 
 </style>

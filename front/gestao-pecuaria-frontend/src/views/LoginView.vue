@@ -49,7 +49,7 @@ export default {
       localStorage.setItem('refresh_exp', response.data.refresh_exp);
       
       alert('Login feito com sucesso');
-      this.$router.push('/propriedades');
+      this.$router.push('/propriedades-escolha');
     },
     registrar() {
       this.$router.push('/cadastro');

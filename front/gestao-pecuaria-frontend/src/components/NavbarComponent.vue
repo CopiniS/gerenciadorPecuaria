@@ -24,24 +24,8 @@
                 <a href="/meuperfil" class="nav-link"><i class="fas fa-user"></i> Perfil</a>
               </li>
               <hr class="custom-hr">
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  <i class="fas fa-landmark"></i> Propriedade
-                </a>
-                <ul class="dropdown-menu justify-content-center">
-                  <li><a class="dropdown-item" href="/propriedade"><i class="fas fa-edit"></i> Editar Propriedade</a>
-                  </li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/propriedades"><i class="fas fa-exchange-alt"></i> Trocar de
-                      Propriedade</a></li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/cadastropropriedade"><i class="fas fa-plus"></i> Cadastrar
-                      Propriedade</a></li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/propriedade" @click.prevent="confirmarApagarPropriedade"><i
-                        class="fas fa-trash-alt"></i> Excluir Propriedade</a></li>
-                </ul>
+              <li class="nav-item">
+                <a href="/propriedades" class="nav-link"><i class="fas fa-user"></i> Propriedades</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item dropdown">

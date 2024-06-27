@@ -1,13 +1,14 @@
 <template>
-    <Propriedade/>
+    <PropriedadesLista/>
   </template>
   
 <script>
-  import Propriedade from '../components/Propriedade.vue'
+  import PropriedadesLista from '@/components/PropriedadesLista.vue';
 
   export default {
     name: 'TelaPropriedade',
     components: {
-      Propriedade,
+      PropriedadesLista,
     }
-}</script>
+  }
+</script>

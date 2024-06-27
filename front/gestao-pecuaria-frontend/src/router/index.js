@@ -6,7 +6,8 @@ import Login from '@/views/LoginView.vue'
 import Cadastro from '@/views/CadastroView.vue'
 import PopUpPropriedade from '@/views/PopUpPropriedade.vue'
 import TelaPiquetes from '@/views/TelaPiquetes.vue';
-import CadastroPropriedade from '@/components/CadastroPropriedade.vue';
+import PropriedadeCadastro from '@/components/PropriedadeCadastro.vue';
+import PropriedadeEdicao from '@/components/PropriedadeEdicao.vue';
 import InicialView from '@/views/InicialView.vue';
 import PerfilProdutor from '@/components/PerfilProdutor.vue';
 import TelaVeterinarios from '@/views/TelaVeterinarios.vue';
@@ -49,19 +50,25 @@ const routes = [
     component: InicialView, 
   },
   {
-    path: '/propriedades',
+    path: '/propriedades-escolha',
     name: 'PopUpPropriedade',
     component: PopUpPropriedade, 
   },
   {
-    path: '/propriedade',
+    path: '/propriedades',
     name: 'TelaPropriedade',
     component: TelaPropriedade, 
   },
   {
-    path: '/cadastropropriedade',
-    name: 'CadastroPropriedade',
-    component: CadastroPropriedade, 
+    path: '/propriedade-cadastro',
+    name: 'PropriedadeCadastro',
+    component: PropriedadeCadastro, 
+  },
+  {
+    path: '/propriedade-edicao/:propriedadeId',
+    name: 'PropriedadeEdicao',
+    component: PropriedadeEdicao, 
+    props: true
   },
   {
     path: '/animais',

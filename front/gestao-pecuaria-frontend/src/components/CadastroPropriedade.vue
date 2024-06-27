@@ -86,12 +86,10 @@ export default {
             },
         };
     },
+    
     mounted() {
         this.buscarEstadosDaApi();
     },
-
-
-
     methods: {
 
         async buscarCidadesPorEstado(estadoId) {

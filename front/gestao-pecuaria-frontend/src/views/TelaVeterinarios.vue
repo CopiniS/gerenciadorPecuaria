@@ -1,15 +1,13 @@
 <template>
-    <ListarVeterinarios/>
+    <VeterinariosLista/>
 </template>
   
-  <script>
-import ListarVeterinarios from '../components/ListarVeterinarios.vue';
-
-
-export default {
-  name: 'TelaVeterinarios',
-  components: {
-    ListarVeterinarios
-  }
-}
-  </script>
+<script>
+    import VeterinariosLista from '../components/VeterinariosLista.vue';
+    export default {
+      name: 'TelaVeterinarios',
+      components: {
+        VeterinariosLista
+      }
+    }
+</script>

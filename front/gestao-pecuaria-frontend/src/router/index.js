@@ -20,10 +20,10 @@ import TelaInseminacoes from '@/views/TelaInseminacoes.vue'
 import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
 import ViewAnimal from '@/views/ViewAnimal.vue';
 import TelaMovimentacoes from '@/views/TelaMovimentacoes.vue';
-import CadastroVeterinario from '@/components/CadastroVeterinario.vue';
-import EdicaoVeterinario from '@/components/EdicaoVeterinario.vue';
-import EdicaoOutraDespesa from '@/components/EdicaoOutraDespesa.vue';
-import CadastroOutraDespesa from '@/components/CadastroOutraDespesa.vue';
+import VeterinarioCadastro from '@/components/VeterinarioCadastro.vue';
+import VeterinarioEdicao from '@/components/VeterinarioEdicao.vue';
+import OutraDespesaEdicao from '@/components/OutraDespesaEdicao.vue';
+import OutraDespesaCadastro from '@/components/OutraDespesaCadastro.vue';
 
 const routes = [
   
@@ -122,11 +122,6 @@ const routes = [
     component: TelaInseminacoes
   },
   {
-    path: '/outras-despesas',
-    name: 'TelaOutrasDespesas',
-    component: TelaOutrasDespesas,
-  },
-  {
     path: '/vizualizarAnimal',
     name: 'VizualizarAnimal',
     component: ViewAnimal
@@ -139,25 +134,31 @@ const routes = [
   {
     path: '/cadastroVeterinario',
     name: 'CadastroVeterinario',
-    component: CadastroVeterinario
+    component: VeterinarioCadastro
   },
   {
     path: '/editarVeterinario',
     name: 'EdicaoVeterinario',
-    component: EdicaoVeterinario
+    component: VeterinarioEdicao
+  },
+
+  {
+    path: '/outras-despesas',
+    name: 'TelaOutrasDespesas',
+    component: TelaOutrasDespesas,
   },
 
   {
     path: '/editar-despesa/:despesaId',
     name: 'EdicaoDespesa',
-    component: EdicaoOutraDespesa,
+    component: OutraDespesaEdicao,
     props: true
   },
 
   {
     path: '/cadastrar-despesa',
     name: 'CadastroDespesa',
-    component: CadastroOutraDespesa
+    component: OutraDespesaCadastro
   },
 ];
 

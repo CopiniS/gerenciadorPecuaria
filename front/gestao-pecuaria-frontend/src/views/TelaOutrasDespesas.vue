@@ -1,14 +1,14 @@
 <template>
-    <ListarOutrasDespesas/>
+    <OutrasDespesasLista/>
 </template>
   
 <script>
-    import ListarOutrasDespesas from '@/components/ListarOutrasDespesas.vue';
+    import OutrasDespesasLista from '@/components/OutrasDespesasLista.vue';
 
     export default {
     name: 'TelaOutrasDespesas',
     components: {
-        ListarOutrasDespesas
+        OutrasDespesasLista
     }
     }
 </script>

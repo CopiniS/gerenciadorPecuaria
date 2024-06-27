@@ -99,15 +99,12 @@ export default {
         crmv: '',
       };
 
-      this.isNomeValido = true;
-      this.isTelefoneValido = true;
-      this.isEmailValido = true;
-      this.isCrmvValido = true;
-      this.nomePlaceholder = 'Nome';
-      this.telefonePlaceholder = 'Telefone';
-      this.emailPlaceholder = 'Email';
-      this.crmvPlaceholder = 'CRMV';
+      this.isDataValida = true,
+      this.isValorValido = true,
+      this.dataPlaceholder = 'Data da Despesa',
+      this.valorPlaceholder = 'Valor'
     },
+
   },
 };
 </script>

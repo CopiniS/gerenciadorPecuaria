@@ -24,6 +24,8 @@ import VeterinarioCadastro from '@/components/VeterinarioCadastro.vue';
 import VeterinarioEdicao from '@/components/VeterinarioEdicao.vue';
 import OutraDespesaEdicao from '@/components/OutraDespesaEdicao.vue';
 import OutraDespesaCadastro from '@/components/OutraDespesaCadastro.vue';
+import PiqueteCadastro from '@/components/PiqueteCadastro.vue';
+import PiqueteEdicao from '@/components/PiqueteEdicao.vue';
 
 const routes = [
   
@@ -76,6 +78,20 @@ const routes = [
     name: 'TelaPiquetes',
     component: TelaPiquetes, 
   },
+
+  {
+    path: '/piquetes-cadastro',
+    name: 'PiqueteCadastro',
+    component: PiqueteCadastro, 
+  },
+
+  {
+    path: '/piquetes-edicao/:piqueteId',
+    name: 'PiqueteEdicao',
+    component: PiqueteEdicao, 
+    props: true,
+  },
+
   {
     path: '/meuperfil',
     name: 'PerfilProdutor',

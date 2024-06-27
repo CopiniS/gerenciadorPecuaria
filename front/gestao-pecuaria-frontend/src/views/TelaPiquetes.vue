@@ -1,14 +1,14 @@
 <template>
-    <ListarPiquetes/>
+    <PiquetesLista/>
 </template>
   
   <script>
-import ListarPiquetes from '../components/ListarPiquetes.vue';
+import PiquetesLista from '../components/PiquetesLista.vue';
 
 export default {
   name: 'TelaPiquetes',
   components: {
-    ListarPiquetes
+    PiquetesLista
   }
 }
   </script>

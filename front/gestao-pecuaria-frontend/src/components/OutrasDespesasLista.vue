@@ -177,44 +177,6 @@ export default {
       this.fecharModal("confirmacaoExclusaoModal");
     },
 
-    async submitForm() {
-      if (this.modalTitle === 'Cadastro de Despesa') {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/outras-despesas/', this.formData, {
-          });
-
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.buscarDespesasDaApi();
-            this.fecharModal("cadastroModal");
-            this.resetForm();
-          } else {
-            alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      } else {
-        try {
-          const response = await api.patch(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, this.formData, {
-          });
-
-          if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.buscarDespesasDaApi();
-            this.fecharModal("edicaoModal");
-            this.resetForm();
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
     formatarData(data) {
       const date = new Date(data);
       const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());

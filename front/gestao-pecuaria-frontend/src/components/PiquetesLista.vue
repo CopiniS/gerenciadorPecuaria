@@ -176,13 +176,6 @@ export default {
       this.fecharModal("confirmacaoExclusaoModal");
     },
 
-    formatarData(data) {
-      const date = new Date(data);
-      const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
-      return utcDate.toLocaleDateString('pt-BR', options);
-    },
-
     aplicarFiltro() {
       // Implementar a lógica para aplicar o filtro
     },

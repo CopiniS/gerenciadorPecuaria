@@ -88,7 +88,7 @@ mounted() {
       this.$router.push('/inicio');
   },
   criarPropriedadeForm() {
-    this.$router.push('/cadastropropriedade');
+    this.$router.push('/propriedade-cadastro');
     }
   }
 };

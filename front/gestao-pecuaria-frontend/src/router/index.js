@@ -21,6 +21,9 @@ import TelaCompraProdutos from '@/views/TelaCompraProdutos.vue';
 import CompraProdutoCadastro from '@/components/CompraProdutoCadastro.vue';
 import CompraProdutoEdicao from '@/components/CompraProdutoEdicao.vue';
 import TelaSuplementacao from '@/views/TelaSuplementacao.vue';
+import SuplementacaoCadastro from '@/components/SuplementacaoCadastro.vue';
+import SuplementacaoEdicao from '@/components/SuplementacaoEdicao.vue';
+import SuplementacaoFinalizacao from '@/components/SuplementacaoFinalizacao.vue';
 import TelaAplicacoesProdutos from '@/views/TelaAplicacoesProdutos.vue'
 import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue'
 import TelaInseminacoes from '@/views/TelaInseminacoes.vue'
@@ -164,10 +167,28 @@ const routes = [
     props: true
   },
   {
-    path: '/Suplementacao',
+    path: '/suplementacoes',
     name: 'TelaSuplementacao',
     component: TelaSuplementacao
   },
+  {
+    path: '/suplementacao-cadastro',
+    name: 'SuplementacaoCadastro',
+    component: SuplementacaoCadastro
+  },
+  {
+    path: '/suplementacao-edicao/:suplementacaoId',
+    name: 'SuplementacaoEdicao',
+    component: SuplementacaoEdicao,
+    props: true
+  },
+  {
+    path: '/suplementacao-finalizacao/:suplementacaoId',
+    name: 'SuplementacaoFinalizacao',
+    component: SuplementacaoFinalizacao,
+    props: true
+  },
+
   {
     path: '/aplicacoes-produtos',
     name: 'TelaAplicacoesProdutos',

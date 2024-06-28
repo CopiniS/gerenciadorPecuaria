@@ -76,7 +76,7 @@
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/Suplementacao" class="nav-link"><i class="fas fa-prescription-bottle-alt"></i>
+                <a href="/suplementacoes" class="nav-link"><i class="fas fa-prescription-bottle-alt"></i>
                   Suplementações</a>
               </li>
               <hr class="custom-hr">

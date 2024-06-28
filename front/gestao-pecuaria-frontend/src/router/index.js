@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import TelaAnimais from '@/views/TelaAnimais.vue';
 import TelaPropriedade from '@/views/TelaPropriedade.vue';
 import TelaRaca from '@/views/TelaRaca.vue';
+import RacaCadastro from '@/components/RacaCadastro.vue';
+import RacaEdicao from '@/components/RacaEdicao.vue';
 import Login from '@/views/LoginView.vue'
 import Cadastro from '@/views/CadastroView.vue'
 import PopUpPropriedade from '@/views/PopUpPropriedade.vue'
@@ -76,9 +78,20 @@ const routes = [
     component: TelaAnimais, 
   },
   {
-    path: '/raca',
+    path: '/racas',
     name: 'TelaRaca',
     component: TelaRaca, 
+  },
+  {
+    path: '/raca-cadastro',
+    name: 'RacaCadastro',
+    component: RacaCadastro, 
+  },
+  {
+    path: '/raca-edicao/:racaId',
+    name: 'RacaEdicao',
+    component: RacaEdicao, 
+    props: true
   },
   {
     path: '/piquetes',

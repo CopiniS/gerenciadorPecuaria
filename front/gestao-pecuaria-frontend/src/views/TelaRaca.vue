@@ -1,14 +1,14 @@
 <template>
-    <ListarRaca/>
+    <RacasLista/>
 </template>
   
   <script>
- import ListarRaca from '../components/ListarRaca.vue'
+ import RacasLista from '../components/RacasLista.vue'
 
 export default {
   name: 'TelaRaca',
   components: {
-    ListarRaca,
+    RacasLista,
   }
 }
   </script>

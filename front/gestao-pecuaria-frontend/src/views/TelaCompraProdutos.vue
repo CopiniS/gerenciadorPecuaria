@@ -1,15 +1,15 @@
 <template>
-    <ListarCompraProdutos/>
+    <CompraProdutosLista/>
 </template>
   
   <script>
-import ListarCompraProdutos from '@/components/ListarCompraProdutos.vue';
+import CompraProdutosLista from '@/components/CompraProdutosLista.vue';
 
 
 export default {
   name: 'TelaCompraProdutos',
   components: {
-    ListarCompraProdutos
+    CompraProdutosLista
   }
 }
   </script>

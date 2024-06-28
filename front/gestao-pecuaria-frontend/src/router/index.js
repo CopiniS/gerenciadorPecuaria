@@ -18,6 +18,8 @@ import ProdutoCadastro from '@/components/ProdutoCadastro.vue'
 import ProdutoEdicao from '@/components/ProdutoEdicao.vue'
 import TelaPesagens from '@/views/TelaPesagens.vue';
 import TelaCompraProdutos from '@/views/TelaCompraProdutos.vue';
+import CompraProdutoCadastro from '@/components/CompraProdutoCadastro.vue';
+import CompraProdutoEdicao from '@/components/CompraProdutoEdicao.vue';
 import TelaSuplementacao from '@/views/TelaSuplementacao.vue';
 import TelaAplicacoesProdutos from '@/views/TelaAplicacoesProdutos.vue'
 import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue'
@@ -149,6 +151,17 @@ const routes = [
     path: '/compraprodutos',
     name: 'TelaCompraProdutos',
     component: TelaCompraProdutos
+  },
+  {
+    path: '/compraprodutos-cadastro',
+    name: 'CompraProdutoCadastro',
+    component: CompraProdutoCadastro
+  },
+  {
+    path: '/compraprodutos-edicao/:compraId',
+    name: 'CompraProdutoEdicao',
+    component: CompraProdutoEdicao,
+    props: true
   },
   {
     path: '/Suplementacao',

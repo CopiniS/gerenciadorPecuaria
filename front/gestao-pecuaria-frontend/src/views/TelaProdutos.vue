@@ -1,14 +1,14 @@
 <template>
-    <ListarProdutos/>
+    <ProdutosLista/>
 </template>
   
   <script>
-import ListarProdutos from '@/components/ListarProdutos.vue';
+import ProdutosLista from '@/components/ProdutosLista.vue';
 
 export default {
   name: 'TelaProdutos',
   components: {
-   ListarProdutos
+   ProdutosLista
   }
 }
   </script>

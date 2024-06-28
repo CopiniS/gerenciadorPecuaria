@@ -14,6 +14,8 @@ import InicialView from '@/views/InicialView.vue';
 import PerfilProdutor from '@/components/PerfilProdutor.vue';
 import TelaVeterinarios from '@/views/TelaVeterinarios.vue';
 import TelaProdutos from '@/views/TelaProdutos.vue';
+import ProdutoCadastro from '@/components/ProdutoCadastro.vue'
+import ProdutoEdicao from '@/components/ProdutoEdicao.vue'
 import TelaPesagens from '@/views/TelaPesagens.vue';
 import TelaCompraProdutos from '@/views/TelaCompraProdutos.vue';
 import TelaSuplementacao from '@/views/TelaSuplementacao.vue';
@@ -126,6 +128,17 @@ const routes = [
     path: '/produtos',
     name: 'TelaProdutos',
     component: TelaProdutos, 
+  },
+  {
+    path: '/produtos-cadastro',
+    name: 'ProdutoCadastro',
+    component: ProdutoCadastro, 
+  },
+  {
+    path: '/produtos-edicao/:produtoId',
+    name: 'ProdutoEdicao',
+    component: ProdutoEdicao,
+    props: true, 
   },
   {
     path: '/Pesagens',

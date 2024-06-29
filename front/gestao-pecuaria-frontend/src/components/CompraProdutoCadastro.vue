@@ -20,8 +20,8 @@
                 <input type="text" :class="{'is-invalid': !isDataCompraValida}" onfocus="(this.type='date')" onblur="(this.type='text')" 
                 :placeholder="dataCompraPlaceholder" class="form-control" id="dataCompraCadastro" v-model="formData.dataCompra">
               </div>
-              <div class="select mb-3 input-group">
-                <div class="select-option mb-3 input-group" @click="toggleDropdown">
+              <div ref="dropdown" class="select mb-3 input-group">
+                <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
                   <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                   <input v-model="nomeDigitado" :class="{'is-invalid': !isProdutoValido}" @input="filterProdutos" @click="filterProdutos()" type="text"
                     class="form-control" :placeholder="produtoPlaceholder" id="caixa-select">
@@ -104,6 +104,7 @@ export default {
 
   mounted() {
     this.buscarProdutos();
+    document.addEventListener('click', this.handleClickOutside);
   },
   
   methods: {
@@ -118,8 +119,16 @@ export default {
     },
 
     toggleDropdown() {
-      this.dropdownOpen = !this.dropdownOpen;
+        this.dropdownOpen = !this.dropdownOpen;
     },
+
+    handleClickOutside(event) {
+        if (this.dropdownOpen && !this.$refs.dropdown.contains(event.target)) {
+            this.dropdownOpen = false;
+            this.nomeDigitado = '';
+        }
+    },
+    
 
     filterProdutos() {
       this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));

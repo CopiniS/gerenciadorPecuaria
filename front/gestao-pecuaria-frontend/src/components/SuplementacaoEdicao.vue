@@ -26,6 +26,11 @@
                 :placeholder="dataInicialPlaceholder" class="form-control" id="dataInicialCadastro" v-model="formData.dataInicial">
               </div>
               <div class="mb-3 input-group">
+                <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
+                <input :disabled="!estaFinalizado" :class="{'is-invalid': !isDataFinalValida}" type="text" onfocus="(this.type='date')" 
+                onblur="(this.type='text')" :placeholder="dataFinalPlaceholder" class="form-control" id="dataFinalEdicao" v-model="formData.dataFinal">
+              </div>
+              <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                 <input v-model="nomeProduto" @input="filtrarProdutos" :class="{'is-invalid': !isProdutoValido}" type="text" class="form-control"
                   :placeholder="produtoPlaceholder">
@@ -76,6 +81,7 @@ export default {
             filteredPiquetes: [],
             nomeProduto: '',
             nomePiquete: '',
+            estaFinalizado: false,
             formData: {
                 id: null,
                 produto: '',
@@ -88,10 +94,12 @@ export default {
             isPiqueteValido: true,
             isQuantidadeValida: true,
             isDataInicialValida: true,
+            isDataFinalValida: true,
             produtoPlaceholder: 'Produto usado na Suplementação',
             piquetePlaceholder: 'Piquete da Suplementação',
             quantidadePlaceholder: 'Quantidade de produto',
             dataInicialPlaceholder: 'Data Inicial da Suplementação',
+            dataFinalPlaceholder: 'Data Final da Suplementação'
         };
     },
  
@@ -104,6 +112,7 @@ export default {
         this.buscarPiquetesDaApi();
     },
     methods: {
+
     async fetchSuplementacao(id) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/suplementacoes/${id}`);
@@ -116,10 +125,21 @@ export default {
         this.formData.dataFinal = suplementacao.dataFinal;
         this.nomeProduto = suplementacao.produto.nome;
         this.nomePiquete = suplementacao.piquete.nome;
+        this.verificaFinalizado(suplementacao);
       } catch (error) {
         console.error('Erro ao carregar dados da suplementacao:', error);
       }
     },
+
+    verificaFinalizado(suplementacao){
+      if(suplementacao.dataFinal != null){
+        this.estaFinalizado = true;
+      }
+      else{
+        this.estaFinalizado = false;
+      }
+    },
+
 
     async buscarProdutosDaApi() {
       try {
@@ -215,10 +235,12 @@ export default {
       this.isPiqueteValido = true,
       this.isQuantidadeValida = true,
       this.isDataInicialValida = true,
+      this.isDataFinalValida = true,
       this.produtoPlaceholder = 'Produto usado na Suplementação',
       this.piquetePlaceholder = 'Piquete da Suplementação',
       this.quantidadePlaceholder = 'Quantidade de produto',
-      this.dataInicialPlaceholder = 'Data Inicial da Suplementação'
+      this.dataInicialPlaceholder = 'Data Inicial da Suplementação',
+      this.dataFinalPlaceholder = 'Data Final da Suplementação'
     },
   },
 };

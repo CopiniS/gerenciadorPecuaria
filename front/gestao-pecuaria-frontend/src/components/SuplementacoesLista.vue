@@ -83,8 +83,7 @@
             <td :class="{ 'status-andamento': !suplementacao.dataFinal, 'status-finalizada': suplementacao.dataFinal }">{{
           suplementacao.dataFinal ? 'Finalizada' : 'Em Andamento' }}</td>
             <td>
-                <button v-if="!suplementacao.dataFinal" @click="acessarFinalizacao(suplementacao)" class="btn-acoes btn-sm"
-                data-bs-toggle="modal" data-bs-target="#finalizarModal" data-bs-whatever="@mdo">
+                <button v-if="!suplementacao.dataFinal" @click="acessarFinalizacao(suplementacao)" class="btn-acoes btn-sm">
                 <i class="fas fa-check"></i>
                 </button>
                 <button @click="acessarEdicao(suplementacao)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>

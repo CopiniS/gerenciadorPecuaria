@@ -25,7 +25,10 @@ import SuplementacaoCadastro from '@/components/SuplementacaoCadastro.vue';
 import SuplementacaoEdicao from '@/components/SuplementacaoEdicao.vue';
 import SuplementacaoFinalizacao from '@/components/SuplementacaoFinalizacao.vue';
 import TelaAplicacoesProdutos from '@/views/TelaAplicacoesProdutos.vue'
-import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue'
+import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue';
+import VendaAnimalCadastro from '@/components/VendaAnimalCadastro.vue';
+import VendaAnimalEdicao from '@/components/VendaAnimalEdicao.vue';
+import VendaAnimalVisualizacao from '@/components/VendaAnimalVisualizacao.vue';
 import TelaInseminacoes from '@/views/TelaInseminacoes.vue'
 import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
 import ViewAnimal from '@/views/ViewAnimal.vue';
@@ -198,6 +201,23 @@ const routes = [
     path: '/vendas-animais',
     name: 'TelaVendasAnimais',
     component: TelaVendasAnimais
+  },
+  {
+    path: '/vendas-animais-cadastro',
+    name: 'VendaAnimalCadastro',
+    component: VendaAnimalCadastro
+  },
+  {
+    path: '/vendas-animais-edicao/:vendaId',
+    name: 'VendaAnimalEdicao',
+    component: VendaAnimalEdicao,
+    props: true
+  },
+  {
+    path: '/vendas-animais-visualizacao/:vendasSelecionadas',
+    name: 'VendaAnimalVisualizacao',
+    component: VendaAnimalVisualizacao,
+    props: true
   },
   {
     path: '/inseminacoes',

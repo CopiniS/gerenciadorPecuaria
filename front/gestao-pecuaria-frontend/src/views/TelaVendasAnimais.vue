@@ -1,15 +1,15 @@
 <template>
-    <ListarVendasAnimais/>
+    <VendaAnimaisLista/>
 </template>
   
   <script>
-import ListarVendasAnimais from '@/components/ListarVendasAnimais.vue';
+import VendaAnimaisLista from '@/components/VendaAnimaisLista.vue';
 
 
 export default {
   name: 'TelaVendasAnimais',
   components: {
-    ListarVendasAnimais
+    VendaAnimaisLista
   }
 }
   </script>

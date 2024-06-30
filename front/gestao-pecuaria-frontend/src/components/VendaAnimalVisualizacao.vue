@@ -2,7 +2,9 @@
 <div class="background">
   <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
+    <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab" @click="selectTab('vendas')" 
+    type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Venda</button>
+    <button class="nav-link active" :class="{ active: activeTab === 'visualizacao' }" id="nav-vet-tab" data-bs-toggle="tab" 
     data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Visualização</button>
   </div>
 </nav>
@@ -61,8 +63,7 @@
                   <td>{{ venda.precoKg}}</td>
                   <td>{{ venda.valorTotal}}</td>
                   <td>
-                    <button @click="editarVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-                    data-bs-target="#edicaoModal" data-bs-whatever="@mdo"><i class="fas fa-edit"></i></button>
+                    <button @click="acessarEdicao(venda)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
                     <button @click="confirmarExclusaoVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                     data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
                   </td>
@@ -100,20 +101,12 @@ import api from '/src/interceptadorAxios'
 export default {
   data() {
     return {
+      activeTab: 'visualizacao',
       vendas: [],
       datasVendas: [],
+      dataSelecionada: null,
       vendaParaExcluir: null,
       vendasSelecionadas: [],
-      formData: {
-        id: null,
-        animal: '',
-        dataVenda: '',
-        peso: '',
-        precoKg: '',
-        valorTotal: '',
-        finalidade: '',
-        observacao: null,
-      },
       mostrarFormulario: false,
       filtro: {
         nome: '',
@@ -123,28 +116,32 @@ export default {
     }
   },
   mounted() {
-    const vendasSelecionadasJSON = this.$route.params.vendasSelecionadas;
-        if (vendasSelecionadasJSON) {
-            this.fetchVendas(vendasSelecionadasJSON);
+    const dataSelecionada = this.$route.params.dataSelecionada;
+        if (dataSelecionada) {
+            this.dataSelecionada = dataSelecionada;
+            this.fetchVendas();
         }
   },
   methods: {
 
-    async fetchVendas(vendasSelecionadasJSON) {
+    async fetchVendas() {
       try {
-        this.vendasSelecionadas = JSON.parse(decodeURIComponent(vendasSelecionadasJSON));
+        const response = await api.get(`http://127.0.0.1:8000/vendas-animais/por-data/`, {
+          params: {
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada'),
+                dataSelecionada: this.dataSelecionada
+            },
+        });
+        this.vendasSelecionadas = response.data;
+        
+        if(this.vendasSelecionadas.length === 0){
+        this.$router.push('/vendas-animais');
+        }
       } catch (error) {
         console.error('Erro ao carregar dados da venda:', error);
       }
     },
 
-    acessarCadastro(){
-        this.$router.push({
-        name: 'VendaAnimalCadastro', 
-      })
-    },
-
-    
     formatarData(data) {
         const date = new Date(data);
         const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
@@ -161,6 +158,20 @@ export default {
       }
     },
 
+    acessarEdicao(venda) {
+      this.$router.push({
+        name: 'VendaAnimalEdicao', 
+        params: { vendaId: venda.id } 
+      })
+    },
+
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'vendas') {
+        this.$router.push('/vendas-animais');
+      }
+    },
+
     confirmarExclusaoVenda(venda) {
       this.vendaParaExcluir = venda;
     },
@@ -171,9 +182,8 @@ export default {
 
         if (response.status === 204) {
           alert('Venda excluído com sucesso!');
-          this.detalhesVendas = this.detalhesVendas.filter(animal => animal.id !== this.vendaParaExcluir.id);
+          this.fetchVendas();
           this.vendaParaExcluir = null;
-          this.buscarVendasDaApi();
         } else {
           alert('Erro ao excluir a venda. Tente novamente mais tarde.');
         }
@@ -181,7 +191,7 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.fecharModal('confirmacaoExclusaoAnimalModal');
+      this.fecharModal('confirmacaoExclusaoModal');
     },
 
     aplicarFiltro() {

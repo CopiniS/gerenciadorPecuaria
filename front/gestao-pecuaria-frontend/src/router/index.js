@@ -214,7 +214,7 @@ const routes = [
     props: true
   },
   {
-    path: '/vendas-animais-visualizacao/:vendasSelecionadas',
+    path: '/vendas-animais-visualizacao/:dataSelecionada',
     name: 'VendaAnimalVisualizacao',
     component: VendaAnimalVisualizacao,
     props: true

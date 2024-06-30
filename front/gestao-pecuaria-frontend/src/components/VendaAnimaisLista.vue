@@ -146,16 +146,9 @@ export default {
     },
     
     acessarVisualizacao(data) {
-        this.vendasSelecionadas = []
-        this.vendas.forEach(venda => {
-        if(data === venda.dataVenda){
-          this.vendasSelecionadas.push(venda);
-        }
-        this.vendasSelecionadasJSON = encodeURIComponent(JSON.stringify(this.vendasSelecionadas));
-        });
         this.$router.push({
             name: 'VendaAnimalVisualizacao', 
-            params: { vendasSelecionadas: this.vendasSelecionadasJSON } 
+            params: { dataSelecionada: data } 
       })
     },
 

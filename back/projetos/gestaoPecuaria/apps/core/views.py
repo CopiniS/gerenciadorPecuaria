@@ -283,6 +283,20 @@ class VendaAnimalViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
         serializer = serializers.VendaAnimalComAnimalSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='por-data')
+    def list_por_datas(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
+        data_selecionada = request.query_params.get('dataSelecionada', None)
+        queryset = models.VendaAnimal.objects.all()
+        if propriedade_selecionada is not None and data_selecionada is not None:
+            queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
+            queryset = queryset.filter(dataVenda=data_selecionada)
+            
+        serializer = serializers.VendaAnimalComAnimalSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 
     @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
     def delete_por_data(self, request, *args, **kwargs):

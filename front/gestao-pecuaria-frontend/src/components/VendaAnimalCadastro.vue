@@ -78,7 +78,6 @@ export default {
       animais: [],
       animaisFiltrados: [],
       brinco: '',
-      camposHabilitados: false,
       formData: {
         id: null,
         animal: '',
@@ -129,7 +128,6 @@ export default {
     selectAnimal(animal) {
         this.brinco = animal.brinco;
         this.formData.animal = animal.id;
-        this.camposHabilitados = true;
         this.animaisFiltrados = [];
     },
 
@@ -180,18 +178,26 @@ export default {
     resetForm() {
       this.formData = {
         id: null,
-        nome: '',
-        tipoCultivo: '',
-        area: '',
-        propriedade: localStorage.getItem('propriedadeSelecionada')
-      };
-
-      this.isNomeValido = true,
-      this.isTipoCultivoValido = true,
-      this.isAreaValida = true,
-      this.nomePlaceholder = 'Nome do Venda',
-      this.tipoCultivoPlaceholder = 'Tipo do cultivo'
-      this.areaPlaceholder = 'Área do Venda'
+        animal: '',
+        dataVenda: '',
+        peso: '',
+        precoKg: '',
+        valorTotal: '',
+        finalidade: '',
+        observacao: null,
+      },
+      this.this.this.isAnimalValido = true,
+      this.this.isDataValida = true,
+      this.isPesoValido =  true,
+      this.isprecoKgValido = true,
+      this.isValorTotalValido = true,
+      this.isFinalidadeValida = true,
+      this.animalPlaceholder = 'Brinco do animal',
+      this.dataPlaceholder = 'Data da venda',
+      this.pesoPlaceholder = 'Peso do animal',
+      this.precoKgPlaceholder = 'Preço por KG',
+      this.valorTotalPlaceholder = 'Valor Total',
+      this.finalidadePlaceholder = 'Finalidade'
     },
   },
 };

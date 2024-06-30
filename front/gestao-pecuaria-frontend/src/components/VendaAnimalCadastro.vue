@@ -61,7 +61,6 @@
                     <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
                 </div>
               </form>
-            
         </div>
       </div>
     </div>
@@ -186,8 +185,8 @@ export default {
         finalidade: '',
         observacao: null,
       },
-      this.this.this.isAnimalValido = true,
-      this.this.isDataValida = true,
+      this.isAnimalValido = true,
+      this.isDataValida = true,
       this.isPesoValido =  true,
       this.isprecoKgValido = true,
       this.isValorTotalValido = true,

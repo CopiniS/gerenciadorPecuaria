@@ -296,7 +296,12 @@ class VendaAnimalViewSet(viewsets.ModelViewSet):
         serializer = serializers.VendaAnimalComAnimalSerializer(queryset, many=True)
         return Response(serializer.data)
 
-
+    @action(detail=False, methods=['get'], url_path=r'venda/(?P<id>\d+)')
+    def retornaAnimalSelecionado(self, request, *args, **kwargs):
+        id_venda = kwargs.get('id')
+        venda = self.get_queryset().filter(id=id_venda)
+        serializer = serializers.VendaAnimalComAnimalSerializer(venda, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
     def delete_por_data(self, request, *args, **kwargs):

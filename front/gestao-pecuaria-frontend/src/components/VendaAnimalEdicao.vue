@@ -116,27 +116,64 @@ export default {
         if (vendaId) {
             this.fetchVenda(vendaId);
         }
+        this.buscarAnimaisDaApi();
     },
     methods: {
     async fetchVenda(id) {
       try {
-        const response = await api.get(`http://127.0.0.1:8000/vendas-animais/${id}`);
+        const response = await api.get(`http://127.0.0.1:8000/vendas-animais/venda/${id}`);
         const venda = response.data;
-        this.formData.id = venda.id;
-        this.formData.animal = venda.animal.id;
-        this.formData.dataVenda = venda.dataVenda;
-        this.formData.peso = venda.peso;
-        this.formData.precoKg = venda.precoKg;
-        this.formData.valorTotal = venda.valorTotal;
-        this.formData.finalidade = venda.finalidade;
-        this.formData.observacao = venda.observacao;
+        this.formData.id = venda[0].id;
+        this.formData.animal = venda[0].animal.id;
+        this.formData.dataVenda = venda[0].dataVenda;
+        this.formData.peso = venda[0].peso;
+        this.formData.precoKg = venda[0].precoKg;
+        this.formData.valorTotal = venda[0].valorTotal;
+        this.formData.finalidade = venda[0].finalidade;
+        this.formData.observacao = venda[0].observacao;
 
-        this.brinco = venda.animal.brinco;
-        this.dataSelecionada = venda.dataVenda
+        this.brinco = venda[0].animal.brinco;
+        this.dataSelecionada = venda[0].dataVenda
       } catch (error) {
         console.error('Erro ao carregar dados da venda:', error);
       }
     },
+
+    async buscarAnimaisDaApi() {
+        try {
+            const response = await api.get('http://127.0.0.1:8000/animais/vivos' , {
+            params: {
+                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+            },
+            });
+            this.animais = response.data;
+        } catch (error) {
+            console.error('Erro ao buscar animais da API:', error);
+        }
+    },
+
+    filterAnimais() {
+        this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
+    },
+
+    selectAnimal(animal) {
+        this.brinco = animal.brinco;
+        this.formData.animal = animal.id;
+        this.animaisFiltrados = [];
+    },
+
+    atualizaValorTotalPeloPeso(){
+      if(this.formData.precoKg != ''){
+        this.formData.valorTotal = this.formData.precoKg * this.formData.peso
+      }
+    },
+
+    atualizaValorTotalPeloPrecoKg(){
+      if(this.formData.peso != ''){
+        this.formData.valorTotal = this.formData.precoKg * this.formData.peso
+      }
+    },
+
     validarFormulario() {
       return true;
     },
@@ -161,7 +198,7 @@ export default {
     async submitForm() {
       if (this.validarFormulario()) {
        try {
-          const response = await api.patch(`http://127.0.0.1:8000/vendas/${this.formData.id}/`, this.formData , {
+          const response = await api.patch(`http://127.0.0.1:8000/vendas-animais/${this.formData.id}/`, this.formData , {
         });
 
           if (response.status === 200) {
@@ -189,8 +226,8 @@ export default {
         finalidade: '',
         observacao: null,
       },
-      this.this.this.isAnimalValido = true,
-      this.this.isDataValida = true,
+      this.isAnimalValido = true,
+      this.isDataValida = true,
       this.isPesoValido =  true,
       this.isprecoKgValido = true,
       this.isValorTotalValido = true,

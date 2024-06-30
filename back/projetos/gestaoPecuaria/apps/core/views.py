@@ -179,6 +179,13 @@ class PesagemViewSet(viewsets.ModelViewSet):
         serializer = serializers.PesagemComAnimaisSerializer(queryset, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'], url_path=r'pesagem/(?P<id>\d+)')
+    def retornaPesagemSecionada(self, request, *args, **kwargs):
+        id_pesagem = kwargs.get('id')
+        pesagem = self.get_queryset().filter(id=id_pesagem)
+        serializer = serializers.PesagemComAnimaisSerializer(pesagem, many=True)
+        return Response(serializer.data)
+
     @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
     def delete_por_data(self, request, *args, **kwargs):
         data = kwargs.get('data')
@@ -204,6 +211,12 @@ class CompraProdutoViewSet(viewsets.ModelViewSet):
         serializer = serializers.CompraProdutosComProdutosSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'], url_path=r'compra/(?P<id>\d+)')
+    def retornaCompraSecionada(self, request, *args, **kwargs):
+        id_compra = kwargs.get('id')
+        compra = self.get_queryset().filter(id=id_compra)
+        serializer = serializers.CompraProdutosComProdutosSerializer(compra, many=True)
+        return Response(serializer.data)
 
 class SuplementacaoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -216,6 +229,13 @@ class SuplementacaoViewSet(viewsets.ModelViewSet):
         if propriedade_selecionada is not None:
             queryset = queryset.filter(animal__piquete__propriedade=propriedade_selecionada)
         serializer = serializers.SuplementacaoComProdutoAndPiqueteSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path=r'suplementacao/(?P<id>\d+)')
+    def retornaSuplementacaoSecionada(self, request, *args, **kwargs):
+        id_suplementacao = kwargs.get('id')
+        suplementacao = self.get_queryset().filter(id=id_suplementacao)
+        serializer = serializers.SuplementacaoComProdutoAndPiqueteSerializer(suplementacao, many=True)
         return Response(serializer.data)
 
 
@@ -246,6 +266,13 @@ class InseminacaoViewSet(viewsets.ModelViewSet):
         serializer = serializers.InseminacaoComAnimalAndVeterinarioSerializer(queryset, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'], url_path=r'inseminacao/(?P<id>\d+)')
+    def retornaInseminacaoSecionada(self, request, *args, **kwargs):
+        id_inseminacao = kwargs.get('id')
+        inseminacao = self.get_queryset().filter(id=id_inseminacao)
+        serializer = serializers.InseminacaoComAnimalAndVeterinarioSerializer(inseminacao, many=True)
+        return Response(serializer.data)
+    
     @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
     def delete_por_data(self, request, *args, **kwargs):
         data = kwargs.get('data')
@@ -256,6 +283,7 @@ class InseminacaoViewSet(viewsets.ModelViewSet):
         except Exception as e:
             print(e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class OutraDespesaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -297,7 +325,7 @@ class VendaAnimalViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path=r'venda/(?P<id>\d+)')
-    def retornaAnimalSelecionado(self, request, *args, **kwargs):
+    def retornaVendaSelecionada(self, request, *args, **kwargs):
         id_venda = kwargs.get('id')
         venda = self.get_queryset().filter(id=id_venda)
         serializer = serializers.VendaAnimalComAnimalSerializer(venda, many=True)
@@ -343,6 +371,13 @@ class AplicacaoProdutoViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
+    @action(detail=False, methods=['get'], url_path=r'aplicacao/(?P<id>\d+)')
+    def retornaAplicacaoSecionada(self, request, *args, **kwargs):
+        id_aplicacao = kwargs.get('id')
+        aplicacao = self.get_queryset().filter(id=id_aplicacao)
+        serializer = serializers.AplicacaoProdutoComAnimalAndProdutoSerializer(aplicacao, many=True)
+        return Response(serializer.data)
+
     @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')
     def delete_por_data(self, request, *args, **kwargs):
         data = kwargs.get('data')
@@ -396,7 +431,14 @@ class MovimentacaoViewSet(viewsets.ModelViewSet):
             Q(piqueteOrigem__propriedade=propriedade_selecionada) | 
             Q(piqueteDestino__propriedade=propriedade_selecionada)
         )
-        serializer = serializers.MovimentacaoComPiquetesSerializer(queryset, many=True)
+        serializer = serializers.MovimentacaoComPiquetesAndAnimalSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path=r'movimentacao/(?P<id>\d+)')
+    def retornaMovimentacaoSecionada(self, request, *args, **kwargs):
+        id_movimentacao = kwargs.get('id')
+        movimentacao = self.get_queryset().filter(id=id_movimentacao)
+        serializer = serializers.MovimentacaoComPiquetesAndAnimalSerializer(movimentacao, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['delete'], url_path='datas/(?P<data>[^/.]+)')

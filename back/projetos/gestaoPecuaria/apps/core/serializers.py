@@ -147,7 +147,7 @@ class MovimentacaoSerializer(serializers.ModelSerializer):
         model = models.Movimentacao
         fields = "__all__"
 
-class MovimentacaoComPiquetesSerializer(serializers.ModelSerializer):
+class MovimentacaoComPiquetesAndAnimalSerializer(serializers.ModelSerializer):
     piqueteOrigem = PiqueteComPropriedadeSerializer(read_only=True)
     piqueteDestino = PiqueteComPropriedadeSerializer(read_only=True)
     animal = AnimalSerializer(read_only=True)

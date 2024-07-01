@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ListarAnimais from '@/components/ListarAnimais.vue';
+import ListarAnimais from '@/components/AnimaisLista.vue';
 
 export default {
   components: {

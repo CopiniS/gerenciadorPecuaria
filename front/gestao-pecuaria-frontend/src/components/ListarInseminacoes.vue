@@ -28,7 +28,7 @@
       <div class="table-container">
         <div class="button-container">
           <button @click="resetForm(); preencherListaFemeas()" type="button" class="btn btn-success"
-            data-bs-toggle="modal" data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Adicionar</button>
+            data-bs-toggle="modal" data-bs-target="#cadastroModal" data-bs-whatever="@mdo">Cadastrar Inseminação</button>
         </div>
         <table class="table table-bordered">
           <thead>

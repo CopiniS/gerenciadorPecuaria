@@ -3,7 +3,7 @@
 </template>
   
   <script>
-import MostraAnimal from '../components/MostraAnimal.vue';
+import MostraAnimal from '../components/AnimalVizualizacao.vue';
 
 
 export default {

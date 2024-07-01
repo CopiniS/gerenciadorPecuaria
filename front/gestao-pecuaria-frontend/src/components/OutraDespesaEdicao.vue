@@ -84,7 +84,16 @@ export default {
       }
     },
     validarFormulario() {
-      return true;
+      this.isDataValida = !!this.formData.dataDespesa.trim();
+      if (!this.isDataValida) this.formData.dataDespesa = '';
+
+      this.isValorValido = !!this.formData.valor.trim();
+      if (!this.isValorValido) this.formData.valor = '';
+
+      this.dataPlaceholder = this.isDataValida ? 'Data da Despesa' : 'Campo Data da Despesa é obrigatório';
+      this.valorPlaceholder = this.isValorValido ? 'Valor' : 'Campo Valor é obrigatório';
+
+      return this.isDataValida && this.isValorValido;
     },
 
     selectTab(tab) {

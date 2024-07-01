@@ -593,7 +593,7 @@ export default {
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 .background {
-  background-color:  #ededef; /* Um tom mais escuro que o branco */
+  background-color:  #f0f0f0; /* Um tom mais escuro que o branco */
   min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
 }

@@ -1,20 +1,21 @@
-
 <template>
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-produtos-tab" @click="selectTab('produtos')" 
-        type="button" role="tab" aria-controls="nav-produtos" aria-selected="true">Lista de Produtos</button>
+        <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-produtos-tab"
+          @click="selectTab('produtos')" type="button" role="tab" aria-controls="nav-produtos"
+          aria-selected="true">Lista de Produtos</button>
         <button class="nav-link" :class="{ active: activeTab === 'compras' }" id="nav-vet-tab"
-          @click="selectTab('compras')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Histórico de Compras</button>
+          @click="selectTab('compras')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Histórico
+          de Compras</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
-          aria-selected="false">Edição de Compra</button>
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
+          de Compra</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'produtos' }" id="nav-produtos" role="tabpanel" aria-labelledby="nav-produtos-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'produtos' }" id="nav-produtos" role="tabpanel"
+        aria-labelledby="nav-produtos-tab">
       </div>
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'compras' }" id="nav-vet" role="tabpanel"
         aria-labelledby="nav-vet-tab">
@@ -24,49 +25,52 @@
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Compra</h1>
           <form @submit.prevent="submitForm">
-              <div class="mb-3 input-group">
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <input type="text" :class="{ 'is-invalid': !isDataCompraValida }" onfocus="(this.type='date')"
+                onblur="(this.type='text')" :placeholder="dataCompraPlaceholder" class="form-control"
+                id="dataCompraCadastro" v-model="formData.dataCompra">
+            </div>
+            <div class="select mb-3 input-group">
+              <div class="select-option mb-3 input-group" @click="toggleDropdown">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" :class="{'is-invalid': !isDataCompraValida}" onfocus="(this.type='date')" onblur="(this.type='text')" 
-                :placeholder="dataCompraPlaceholder" class="form-control" id="dataCompraCadastro" v-model="formData.dataCompra">
+                <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="filterProdutos"
+                  @click="filterProdutos()" type="text" class="form-control" :placeholder="produtoPlaceholder"
+                  id="caixa-select">
               </div>
-              <div class="select mb-3 input-group">
-                <div class="select-option mb-3 input-group" @click="toggleDropdown">
-                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                  <input v-model="nomeDigitado" :class="{'is-invalid': !isProdutoValido}" @input="filterProdutos" @click="filterProdutos()" type="text"
-                    class="form-control" :placeholder="produtoPlaceholder" id="caixa-select">
-                </div>
-                <div class="itens" v-show="dropdownOpen">
-                  <ul class="options">
-                    <li v-for="produto in produtosFiltrados" :key="produto.id" :value="produto.id"
-                      @click="selectProduto(produto)">{{ produto.nome }}</li>
-                  </ul>
-                </div>
+              <div class="itens" v-show="dropdownOpen">
+                <ul class="options">
+                  <li v-for="produto in produtosFiltrados" :key="produto.id" :value="produto.id"
+                    @click="selectProduto(produto)">{{ produto.nome }}</li>
+                </ul>
               </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                <input v-model="formData.valorUnitario" :class="{'is-invalid': !isValorUnitarioValido}" type="number" class="form-control" id="valorUnitario"
-                  :placeholder="valorUnitarioPlaceholder">
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-boxes"></i></span>
-                <input v-model="formData.quantidadeComprada" :class="{'is-invalid': !isQuantidadeCompradaValida}" type="number" class="form-control" id="quantidadeComprada"
-                  :placeholder="quantidadeCompradaPlaceholder">
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" :class="{'is-invalid': !isValidadeValida}" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="validadePlaceholder"
-                  class="form-control" id="validadeCadastro" v-model="formData.validade" required>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
-                <input v-model="formData.lote" :class="{'is-invalid': !isLoteValido}" type="text" 
-                class="form-control" id="lote" :placeholder="lotePlaceholder">
-              </div>
-              <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('compras')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
-              </div>
-            </form>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+              <input v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="number"
+                class="form-control" id="valorUnitario" :placeholder="valorUnitarioPlaceholder">
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+              <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
+                type="number" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <input type="text" :class="{ 'is-invalid': !isValidadeValida }" onfocus="(this.type='date')"
+                onblur="(this.type='text')" :placeholder="validadePlaceholder" class="form-control"
+                id="validadeCadastro" v-model="formData.validade" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
+              <input v-model="formData.lote" :class="{ 'is-invalid': !isLoteValido }" type="text" class="form-control"
+                id="lote" :placeholder="lotePlaceholder">
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('compras')">Cancelar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -77,46 +81,46 @@
 import api from '/src/interceptadorAxios';
 
 export default {
-    data() {
-        return {
-            activeTab: 'edicao', // Começa na aba de edição
-            produtos: [],
-            produtosFiltrados: [],
-            nomeDigitado: '',
-            dropdownOpen: false,
-            formData: {
-                id: null,
-                dataCompra: '',
-                produto: '',
-                valorUnitario: '',
-                quantidadeComprada: '',
-                validade: '',
-                lote: '',
-                propriedade: localStorage.getItem('propriedadeSelecionada'),
-            },
-            isDataCompraValida: true,
-            isProdutoValido: true,
-            isValorUnitarioValido: true,
-            isQuantidadeCompradaValida: true,
-            isValidadeValida: true,
-            isLoteValido: true,
-            dataCompraPlaceholder: 'Data da Compra',
-            produtoPlaceholder: 'Produto',
-            valorUnitarioPlaceholder: 'Valor do Produto',
-            quantidadeCompradaPlaceholder: 'Quantidade Comprada',
-            validadePlaceholder: 'Validade do produto',
-            lotePlaceholder: 'Lote do Produto',
-        };
-    },
- 
-    mounted() {
-        const compraId = this.$route.params.compraId;
-        if (compraId) {
-            this.fetchCompra(compraId);
-        }
-        this.buscarProdutos();
-    },
-    methods: {
+  data() {
+    return {
+      activeTab: 'edicao', // Começa na aba de edição
+      produtos: [],
+      produtosFiltrados: [],
+      nomeDigitado: '',
+      dropdownOpen: false,
+      formData: {
+        id: null,
+        dataCompra: '',
+        produto: '',
+        valorUnitario: '',
+        quantidadeComprada: '',
+        validade: '',
+        lote: '',
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
+      },
+      isDataCompraValida: true,
+      isProdutoValido: true,
+      isValorUnitarioValido: true,
+      isQuantidadeCompradaValida: true,
+      isValidadeValida: true,
+      isLoteValido: true,
+      dataCompraPlaceholder: 'Data da Compra',
+      produtoPlaceholder: 'Produto',
+      valorUnitarioPlaceholder: 'Valor do Produto',
+      quantidadeCompradaPlaceholder: 'Quantidade Comprada',
+      validadePlaceholder: 'Validade do produto',
+      lotePlaceholder: 'Lote do Produto',
+    };
+  },
+
+  mounted() {
+    const compraId = this.$route.params.compraId;
+    if (compraId) {
+      this.fetchCompra(compraId);
+    }
+    this.buscarProdutos();
+  },
+  methods: {
     async fetchCompra(id) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/compras-produtos/${id}`);
@@ -159,7 +163,24 @@ export default {
     },
 
     validarFormulario() {
-      return true;
+      this.isDataCompraValida = !!this.formData.dataCompra.trim();
+      if (!this.isDataCompraValida) this.formData.dataCompra = '';
+
+      this.isProdutoValido = !!this.formData.produto.trim();
+      if (!this.isProdutoValido) this.formData.produto = '';
+
+      this.isValidadeValida = !!this.formData.validade.trim();
+      if (!this.isValidadeValida) this.formData.validade = '';
+
+      this.isLoteValido = !!this.formData.lote.trim();
+      if (!this.isLoteValido) this.formData.lote = '';
+
+      this.dataCompraPlaceholder = this.isDataCompraValida ? 'Data da Compra' : 'Campo Data da Compra é obrigatório';
+      this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo Produto é obrigatório';
+      this.validadePlaceholder = this.isValidadeValida ? 'Validade do produto' : 'Campo Validade é obrigatório';
+      this.lotePlaceholder = this.isLoteValido ? 'Lote do Produto' : 'Campo Lote é obrigatório';
+
+      return this.isDataCompraValida && this.isProdutoValido && this.isValidadeValida && this.isLoteValido;
     },
 
     selectTab(tab) {
@@ -178,9 +199,9 @@ export default {
 
     async submitForm() {
       if (this.validarFormulario()) {
-       try {
-          const response = await api.patch(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/`, this.formData , {
-        });
+        try {
+          const response = await api.patch(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/`, this.formData, {
+          });
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
@@ -207,18 +228,18 @@ export default {
         lote: '',
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
-      this.isDataCompraValido = true,
-      this.isProdutoValido = true,
-      this.isValorUnitarioValido = true,
-      this.isQuantidadeCompradaValida = true,
-      this.isValidadeValida = true,
-      this.isLoteValido = true,
-      this.dataCompraPlaceholder = 'Data da Compra',
-      this.produtoPlaceholder = 'Produto',
-      this.valorUnitarioPlaceholder = 'Valor do Produto',
-      this.quantidadeCompradaPlaceholder = 'Quantidade Comprada',
-      this.validadePlaceholder = 'Validade do produto',
-      this.lotePlaceholder = 'Lote do Produto'
+        this.isDataCompraValido = true,
+        this.isProdutoValido = true,
+        this.isValorUnitarioValido = true,
+        this.isQuantidadeCompradaValida = true,
+        this.isValidadeValida = true,
+        this.isLoteValido = true,
+        this.dataCompraPlaceholder = 'Data da Compra',
+        this.produtoPlaceholder = 'Produto',
+        this.valorUnitarioPlaceholder = 'Valor do Produto',
+        this.quantidadeCompradaPlaceholder = 'Quantidade Comprada',
+        this.validadePlaceholder = 'Validade do produto',
+        this.lotePlaceholder = 'Lote do Produto'
     },
   },
 };

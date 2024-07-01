@@ -33,6 +33,9 @@ import TelaInseminacoes from '@/views/TelaInseminacoes.vue'
 import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
 import ViewAnimal from '@/views/ViewAnimal.vue';
 import TelaMovimentacoes from '@/views/TelaMovimentacoes.vue';
+import MovimentacaoCadastro from '@/components/MovimentacaoCadastro.vue';
+import MovimentacaoEdicao from '@/components/MovimentacaoEdicao.vue';
+import MovimentacaoVisualizacao from '@/components/MovimentacaoVisualizacao.vue';
 import VeterinarioCadastro from '@/components/VeterinarioCadastro.vue';
 import VeterinarioEdicao from '@/components/VeterinarioEdicao.vue';
 import OutraDespesaEdicao from '@/components/OutraDespesaEdicao.vue';
@@ -230,9 +233,25 @@ const routes = [
     component: ViewAnimal
   },
   {
-    path: '/Movimentacoes',
+    path: '/movimentacoes',
     name: 'TelaMovimentacoes',
     component: TelaMovimentacoes
+  },
+  {
+    path: '/movimentacoes-cadastro',
+    name: 'MovimentacaoCadastro',
+    component: MovimentacaoCadastro
+  },
+  {
+    path: '/movimentacoes-edicao/:movimentacaoId',
+    name: 'MovimentacaoEdicao',
+    component: MovimentacaoEdicao,
+    props: true
+  },
+  {
+    path: '/movimentacoes-visualizacao/:',
+    name: 'MovimentacaoVisualizacao',
+    component: MovimentacaoVisualizacao
   },
   {
     path: '/cadastroVeterinario',

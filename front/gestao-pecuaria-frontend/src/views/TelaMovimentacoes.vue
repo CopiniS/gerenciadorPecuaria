@@ -1,14 +1,14 @@
 <template>
-    <ListarMovimentacoes/>
+    <MovimentacoesLista/>
 </template>
   
   <script>
-import ListarMovimentacoes from '../components/ListarMovimentacoes.vue';
+import MovimentacoesLista from '../components/MovimentacoesLista.vue';
 
 export default {
   name: 'TelaMovimentacoes',
   components: {
-    ListarMovimentacoes
+    MovimentacoesLista
   }
 }
   </script>

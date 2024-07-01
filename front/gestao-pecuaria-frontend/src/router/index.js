@@ -39,6 +39,8 @@ import OutraDespesaEdicao from '@/components/OutraDespesaEdicao.vue';
 import OutraDespesaCadastro from '@/components/OutraDespesaCadastro.vue';
 import PiqueteCadastro from '@/components/PiqueteCadastro.vue';
 import PiqueteEdicao from '@/components/PiqueteEdicao.vue';
+import AnimaisCadastro from '@/components/AnimaisCadastro.vue';
+import AnimaisEdicao from '@/components/AnimaisEdicao.vue';
 
 const routes = [
   
@@ -120,6 +122,18 @@ const routes = [
     name: 'PiqueteEdicao',
     component: PiqueteEdicao, 
     props: true,
+  },
+
+  {
+    path: '/animais-cadastro',
+    name: 'AnimaisCadastro',
+    component: AnimaisCadastro, 
+  },
+
+  {
+    path: '/animal-edicao',
+    name: 'AnimalEdicao',
+    component: AnimaisEdicao,
   },
 
   {

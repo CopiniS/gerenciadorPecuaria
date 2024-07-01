@@ -28,20 +28,10 @@
                 <a href="/propriedades" class="nav-link"><i class="fas fa-user"></i> Propriedades</a>
               </li>
               <hr class="custom-hr">
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">
+              <li class="nav-item">
+                <a href="/produtos" class="nav-link">
                   <i class="fas fa-box"></i> Produto
                 </a>
-                <ul class="dropdown-menu justify-content-center">
-                  <li><a class="dropdown-item" href="/produtos"><i class="fas fa-list"></i> Lista de Produtos</a></li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/compraprodutos"><i class="fas fa-shopping-cart"></i> Compra de
-                      Produtos</a></li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/aplicacoes-produtos"><i class="fas fa-syringe"></i> Aplicações de
-                      Produtos</a></li>
-                </ul>
               </li>
 
               <hr class="custom-hr">

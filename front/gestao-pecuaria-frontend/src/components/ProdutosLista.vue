@@ -45,6 +45,8 @@
     <div class="table-container">
         <div class="button-container">
             <button @click="acessarCadastro()" type="button" class="btn btn-success" >Cadastrar Produto</button>
+            <button @click="() => { this.$router.push('/compraprodutos'); }" type="button" class="btn btn-success">Histórico de
+              Compras</button>
         </div>
         <table class="table table-bordered">
           <thead>
@@ -270,7 +272,8 @@ export default {
 }
 
 .btn-success {
-  background-color: #176d1a;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .button-group {

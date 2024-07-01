@@ -2,14 +2,23 @@
 <div class="background">
 
   <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
-    data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Histórico de Compras</button>
-  </div>
-</nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
- </div>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-produtos-tab" @click="selectTab('produtos')" 
+        type="button" role="tab" aria-controls="nav-produtos" aria-selected="true">Lista de Produtos</button>
+        
+        <button class="nav-link" :class="{ active: activeTab === 'compras' }" id="nav-compras-tab" @click="selectTab('compras')" 
+        type="button" role="tab" aria-controls="nav-compras" aria-selected="false">Histórico de Compras</button>
+        
+      </div>
+    </nav>
+    
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'produtos' }" id="nav-produtos" role="tabpanel" aria-labelledby="nav-produtos-tab">
+      </div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'compras' }" id="nav-compras" role="tabpanel" aria-labelledby="nav-compras-tab">
+        
+      </div>
+    </div>
 
 <h2>Histórico de Compras</h2>
     <div class="d-flex align-items-start table-container flex-column">
@@ -117,6 +126,7 @@ import api from '/src/interceptadorAxios'
 export default {
   data() {
     return {
+      activeTab: 'compras',
       compras: [],
       formData: {
         id: null,
@@ -143,6 +153,12 @@ export default {
     this.buscarComprasDaApi();
   },
   methods: {
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'produtos') {
+        this.$router.push('/produtos');
+      }
+    },
     async buscarComprasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/compras-produtos/', {

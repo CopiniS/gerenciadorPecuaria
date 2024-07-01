@@ -138,8 +138,23 @@ export default {
         },
 
     validarFormulario(){
-        //AQUI FALTA FAZER A VALIDAÇÂO. VER PAGINA DE VETERINARIOS
-        return true;
+      this.isNomeValido = !!this.nome;
+      this.isCidadeValida = !!this.cidade;
+      this.isEstadoValido = !!this.estado;
+      this.isEnderecoValido = !!this.endereco;
+      this.isLatitudeValida = this.validarLatitude(this.latitude);
+      this.isLongitudeValida = this.validarLongitude(this.longitude);
+      this.isAreaValida = !!this.area;
+
+      return this.isNomeValido && this.isCidadeValida && this.isEstadoValido && this.isEnderecoValido && this.isLatitudeValida && this.isLongitudeValida && this.isAreaValida;
+    },
+    validarLatitude(latitude) {
+      const lat = parseFloat(latitude);
+      return !isNaN(lat) && lat >= -90 && lat <= 90;
+    },
+    validarLongitude(longitude) {
+      const lon = parseFloat(longitude);
+      return !isNaN(lon) && lon >= -180 && lon <= 180;
     },
 
     selectTab(tab) {

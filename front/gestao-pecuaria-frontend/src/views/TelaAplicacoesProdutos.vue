@@ -3,7 +3,7 @@
 </template>
   
   <script>
-import ListarAplicacoesProdutos from '@/components/ListarAplicacoesProdutos.vue';
+import ListarAplicacoesProdutos from '@/components/AplicacoesProdutosLista.vue';
 
 
 export default {

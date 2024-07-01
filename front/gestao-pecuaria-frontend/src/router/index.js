@@ -44,6 +44,8 @@ import PiqueteCadastro from '@/components/PiqueteCadastro.vue';
 import PiqueteEdicao from '@/components/PiqueteEdicao.vue';
 import AnimaisCadastro from '@/components/AnimaisCadastro.vue';
 import AnimaisEdicao from '@/components/AnimaisEdicao.vue';
+import AplicacoesProdutosCadastro from '@/components/AplicacoesProdutosCadastro.vue';
+import AplicacoesProdutosEdicao from '@/components/AplicacoesProdutosEdicao.vue';
 
 const routes = [
   
@@ -207,6 +209,18 @@ const routes = [
     name: 'SuplementacaoFinalizacao',
     component: SuplementacaoFinalizacao,
     props: true
+  },
+
+  {
+    path: '/aplicacoes-produtos-cadastro',
+    name: 'AplicacoesProdutosCadastro',
+    component: AplicacoesProdutosCadastro
+  },
+
+  {
+    path: '/aplicacoes-produtos-edicao',
+    name: 'AplicacoesProdutosEdicao',
+    component: AplicacoesProdutosEdicao
   },
 
   {

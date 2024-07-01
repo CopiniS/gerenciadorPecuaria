@@ -1,15 +1,16 @@
 <template>
   <div class="background">
-    
+
     <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-aniamis-tab" data-bs-toggle="tab" 
-    data-bs-target="#nav-animais" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista de Animais</button>
-  </div>
-</nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-animais-tab" tabindex="0"></div>
- </div>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-aniamis-tab" data-bs-toggle="tab" data-bs-target="#nav-animais"
+          type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista de Animais</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-animais-tab"
+        tabindex="0"></div>
+    </div>
 
     <h2>Animais</h2>
     <div class="d-flex align-items-start table-container flex-column">
@@ -75,8 +76,23 @@
     <div>
       <div class="table-container">
         <div class="button-container">
-          <button @click="() => {this.$router.push('/animais-cadastro');}" type="button" class="btn btn-success"
-           >Cadastrar Animal</button>
+          <button @click="() => { this.$router.push('/animais-cadastro'); }" type="button"
+            class="btn btn-success">Cadastrar Animal</button>
+
+          <button @click="() => { this.$router.push('/racas'); }" type="button" class="btn btn-success">Lista de
+            Raças</button>
+          <button @click="() => { this.$router.push('/Pesagens'); }" type="button" class="btn btn-success">Lista de
+            Pesagens</button>
+          <button @click="() => { this.$router.push('/suplementacoes'); }" type="button" class="btn btn-success">Lista de
+            Suplementações</button>
+          <button @click="() => { this.$router.push('/vendas-animais'); }" type="button" class="btn btn-success">Lista de
+            Vendas</button>
+          <button @click="() => { this.$router.push('/inseminacoes'); }" type="button" class="btn btn-success">Lista de
+            Inseminações</button>
+          <button @click="() => { this.$router.push('/Movimentacoes'); }" type="button" class="btn btn-success">Lista de
+            Movimentaçoes</button>
+          <button @click="() => { this.$router.push('/aplicacoes-produtos'); }" type="button"
+            class="btn btn-success">Aplicação de Produtos</button>
         </div>
         <table class="table table-bordered">
           <thead>
@@ -413,8 +429,10 @@ export default {
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 .background {
-  background-color:  #ededef; /* Um tom mais escuro que o branco */
-  min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
+  background-color: #ededef;
+  /* Um tom mais escuro que o branco */
+  min-height: 100vh;
+  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
 }
 
@@ -428,12 +446,19 @@ export default {
 }
 
 .table-container table tbody tr td {
-  background-color: #f0f0f0; /* Cor de fundo das células da tabela */
+  background-color: #f0f0f0;
+  /* Cor de fundo das células da tabela */
 }
 
 .button-container {
   text-align: left;
   margin-bottom: 20px;
+  margin-right: 10px;
+}
+
+.btn-success {
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .table-container table thead tr th {

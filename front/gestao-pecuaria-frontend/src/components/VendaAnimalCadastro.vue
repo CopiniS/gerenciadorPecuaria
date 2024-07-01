@@ -57,7 +57,7 @@
                     placeholder="Observação"></textarea>
                 </div>
                 <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('vendas-animais')">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
                     <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
                 </div>
               </form>

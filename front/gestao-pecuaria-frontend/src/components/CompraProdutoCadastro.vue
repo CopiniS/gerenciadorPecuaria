@@ -24,19 +24,18 @@
                 <input type="text" :class="{'is-invalid': !isDataCompraValida}" onfocus="(this.type='date')" onblur="(this.type='text')" 
                 :placeholder="dataCompraPlaceholder" class="form-control" id="dataCompraCadastro" v-model="formData.dataCompra">
               </div>
-              <div ref="dropdown" class="select mb-3 input-group">
-                <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
-                  <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                  <input v-model="nomeDigitado" :class="{'is-invalid': !isProdutoValido}" @input="filterProdutos" @click="filterProdutos()" type="text"
-                    class="form-control" :placeholder="produtoPlaceholder" id="caixa-select">
-                </div>
-                <div class="itens" v-show="dropdownOpen">
-                  <ul class="options">
-                    <li v-for="produto in produtosFiltrados" :key="produto.id" :value="produto.id"
-                      @click="selectProduto(produto)">{{ produto.nome }}</li>
-                  </ul>
-                </div>
-              </div>
+              <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')" @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedProduto">
+  <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
+    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+    <input v-model="nomeDigitado" :class="{'is-invalid': !isProdutoValido}" @input="filterProdutos" @click="filterProdutos()" type="text" class="form-control" :placeholder="produtoPlaceholder" id="caixa-select">
+  </div>
+  <div class="itens" v-show="dropdownOpen">
+    <ul class="options">
+      <li v-for="(produto, index) in produtosFiltrados" :key="produto.id" :value="produto.id" @click="selectProduto(produto)" :class="{ 'highlighted': index === highlightedIndex }">{{ produto.nome }}</li>
+    </ul>
+  </div>
+</div>
+
 
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
@@ -80,6 +79,7 @@ export default {
       produtos: [],
       produtosFiltrados: [],
       nomeDigitado: '',
+      highlightedIndex: -1,
       dropdownOpen: false,
       formData: {
         id: null,
@@ -203,12 +203,29 @@ export default {
       this.validadePlaceholder = 'Validade do produto',
       this.lotePlaceholder = 'Lote do Produto'
     },
+    navigateOptions(direction) {
+      if (!this.dropdownOpen) return;
+      if (direction === 'up' && this.highlightedIndex > 0) {
+        this.highlightedIndex--;
+      } else if (direction === 'down' && this.highlightedIndex < this.produtosFiltrados.length - 1) {
+        this.highlightedIndex++;
+      }
+    },
+    selectHighlightedProduto() {
+      if (this.highlightedIndex !== -1) {
+        const produto = this.produtosFiltrados[this.highlightedIndex];
+        this.selectProduto(produto);
+      }
+    }
   },
 };
 </script>
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+.highlighted {
+  background-color: #f0f0f0;
+}
 
 .background {
   background-color: #ededef;

@@ -2,8 +2,8 @@
 <div class="background">
   <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab" @click="selectTab('vendas')" 
-    type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Venda</button>
+    <button class="nav-link" :class="{ active: activeTab === 'movimentacoes' }" id="nav-vet-tab" @click="selectTab('movimentacoes')" 
+    type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Movimentações</button>
     <button class="nav-link active" :class="{ active: activeTab === 'visualizacao' }" id="nav-vet-tab" data-bs-toggle="tab" 
     data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Visualização</button>
   </div>
@@ -44,27 +44,21 @@
 
   <div>
     <div class="table-container">
-        <p><strong>Data da Venda:</strong> {{ formatarData(this.dataSelecionada) }}</p>
+        <p><strong>Data da Movimentação:</strong> {{ formatarData(this.dataSelecionada) }}</p>
+        <p><strong>Piquete de Origem:</strong> {{ this.piqueteOrigem }}</p>
+        <p><strong>Piquete de Destino:</strong> {{ this.piqueteDestino }}</p>
             <table class="table table-striped">
               <thead>
                 <tr>
                   <th scope="col">Animal</th>
-                  <th scope="col">Peso</th>
-                  <th scope="col">Finalidade</th>
-                  <th scope="col">Preço do Kg</th>
-                  <th scope="col">Valor total</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="venda in this.vendasSelecionadas" :key="venda.id">
-                  <td>{{ venda.animal.brinco}}</td>
-                  <td>{{ venda.peso}}</td>
-                  <td>{{ venda.finalidade}}</td>
-                  <td>{{ venda.precoKg}}</td>
-                  <td>{{ venda.valorTotal}}</td>
+                <tr v-for="movimentacao in this.movimentacoesSelecionadas" :key="movimentacao.id">
+                  <td>{{ movimentacao.animal.brinco}}</td>
                   <td>
-                    <button @click="acessarEdicao(venda)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
-                    <button @click="confirmarExclusaoVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    <button @click="acessarEdicao(movimentacao)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                    <button @click="confirmarExclusaoMovimentacao(movimentacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                     data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
                   </td>
                 </tr>
@@ -82,11 +76,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir esta Venda?
+            Tem certeza de que deseja excluir esta Movimentacao?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarVenda()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarMovimentacao()">Excluir</button>
           </div>
         </div>
       </div>
@@ -102,11 +96,13 @@ export default {
   data() {
     return {
       activeTab: 'visualizacao',
-      vendas: [],
-      datasVendas: [],
+      movimentacoes: [],
+      datasMovimentacoes: [],
       dataSelecionada: null,
-      vendaParaExcluir: null,
-      vendasSelecionadas: [],
+      piqueteOrigem: null,
+      piqueteDestino: null,
+      movimentacaoParaExcluir: null,
+      movimentacoesSelecionadas: [],
       mostrarFormulario: false,
       filtro: {
         nome: '',
@@ -116,29 +112,35 @@ export default {
     }
   },
   mounted() {
-    const dataSelecionada = this.$route.params.dataSelecionada;
-        if (dataSelecionada) {
+    const dataSelecionada = this.$route.params.data;
+    const piqueteOrigem = this.$route.params.piqueteOrigem;
+    const piqueteDestino = this.$route.params.piqueteDestino;
+
+        if (dataSelecionada && piqueteOrigem && piqueteDestino) {
             this.dataSelecionada = dataSelecionada;
-            this.fetchVendas();
+            this.piqueteOrigem = piqueteOrigem;
+            this.piqueteDestino = piqueteDestino;
+            this.fetchMovimentacoes();
         }
   },
   methods: {
 
-    async fetchVendas() {
+    async fetchMovimentacoes() {
       try {
-        const response = await api.get(`http://127.0.0.1:8000/vendas-animais/por-data/`, {
+        const response = await api.get(`http://127.0.0.1:8000/movimentacoes/por-detalhe/`, {
           params: {
-                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada'),
-                dataSelecionada: this.dataSelecionada
+                dataSelecionada: this.dataSelecionada,
+                piqueteOrigem: this.piqueteOrigem,
+                piqueteDestino: this.piqueteDestino
             },
         });
-        this.vendasSelecionadas = response.data;
+        this.movimentacoesSelecionadas = response.data;
         
-        if(this.vendasSelecionadas.length === 0){
-        this.$router.push('/vendas-animais');
+        if(this.movimentacoesSelecionadas.length === 0){
+        this.$router.push('/movimentacoes');
         }
       } catch (error) {
-        console.error('Erro ao carregar dados da venda:', error);
+        console.error('Erro ao carregar dados da movimentacao:', error);
       }
     },
 
@@ -158,34 +160,34 @@ export default {
       }
     },
 
-    acessarEdicao(venda) {
+    acessarEdicao(movimentacao) {
       this.$router.push({
-        name: 'VendaAnimalEdicao', 
-        params: { vendaId: venda.id } 
+        name: 'MovimentacaoEdicao', 
+        params: { movimentacaoId: movimentacao.id } 
       })
     },
 
     selectTab(tab) {
       this.activeTab = tab;
-      if (tab === 'vendas') {
-        this.$router.push('/vendas-animais');
+      if (tab === 'movimentacoes') {
+        this.$router.push('/movimentacoes');
       }
     },
 
-    confirmarExclusaoVenda(venda) {
-      this.vendaParaExcluir = venda;
+    confirmarExclusaoMovimentacao(movimentacao) {
+      this.movimentacaoParaExcluir = movimentacao;
     },
     
-    async apagarVenda() {
+    async apagarMovimentacao() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/vendas-animais/${this.vendaParaExcluir.id}/`);
+        const response = await api.delete(`http://127.0.0.1:8000/movimentacoes/${this.movimentacaoParaExcluir.id}/`);
 
         if (response.status === 204) {
-          alert('Venda excluído com sucesso!');
-          this.fetchVendas();
-          this.vendaParaExcluir = null;
+          alert('Movimentacao excluído com sucesso!');
+          this.fetchMovimentacoes();
+          this.movimentacaoParaExcluir = null;
         } else {
-          alert('Erro ao excluir a venda. Tente novamente mais tarde.');
+          alert('Erro ao excluir a movimentacao. Tente novamente mais tarde.');
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);

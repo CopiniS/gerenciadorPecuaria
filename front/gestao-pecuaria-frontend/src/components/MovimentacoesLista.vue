@@ -45,17 +45,19 @@
               <th scope="col">Data Movimentação</th>
               <th scope="col">Piquete de Origem</th>
               <th scope="col">Piquete de Destino</th>
+              <th scope="col">Tipo</th>
               <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(detalhesMovimentacao, index) in listaDetalhes" :key="index">
-              <td>{{ detalhesMovimentacao.dataMovimentacao }}</td>
+              <td>{{ formatarData(detalhesMovimentacao.dataMovimentacao) }}</td>
               <td>{{ detalhesMovimentacao.piqueteOrigem.nome }} - {{ detalhesMovimentacao.piqueteOrigem.propriedade.nome }}</td>
               <td>{{ detalhesMovimentacao.piqueteDestino.nome }} - {{ detalhesMovimentacao.piqueteDestino.propriedade.nome }}</td>
+              <td>{{ achaTipo(detalhesMovimentacao)}}</td>
               <td>
-                <button @click="acessarVisualizacao(data)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
-                <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                <button @click="acessarVisualizacao(detalhesMovimentacao)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
+                <button @click="confirmarExclusao(detalhesMovimentacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                 data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
               </td>
             </tr>
@@ -77,7 +79,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarMovimentacaoPorData()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarMovimentacaoPorDetalhe()">Excluir</button>
           </div>
         </div>
       </div>
@@ -139,17 +141,34 @@ export default {
       this.listaDetalhes.push(detalhesMovimentacao)
       });
     },
+
+    achaTipo(movimentacao){ 
+      if(movimentacao.piqueteOrigem.propriedade.id == localStorage.getItem('propriedadeSelecionada')
+      && movimentacao.piqueteDestino.propriedade.id == localStorage.getItem('propriedadeSelecionada')){
+        return 'Interna'
+      }
+      else if(movimentacao.piqueteOrigem.propriedade.id == localStorage.getItem('propriedadeSelecionada')){
+        return 'Saída'
+      }
+      else{
+        return 'Entrada'
+      }
+    },
     
-    acessarVisualizacao(data) {
+    acessarVisualizacao(movimentacao) {
         this.$router.push({
-            name: 'MovimentacaoAnimalVisualizacao', 
-            params: { dataSelecionada: data } 
+            name: 'MovimentacaoVisualizacao', 
+            params: { 
+              data: movimentacao.dataMovimentacao, 
+              piqueteOrigem: movimentacao.piqueteOrigem.id,
+              piqueteDestino: movimentacao.piqueteDestino.id
+             } 
       })
     },
 
     acessarCadastro(){
         this.$router.push({
-        name: 'MovimentacaoAnimalCadastro', 
+        name: 'MovimentacaoCadastro', 
       })
     },
 
@@ -172,7 +191,7 @@ export default {
     confirmarExclusao(data) {
       this.dataParaExclusao = data;
     },
-    async apagarMovimentacaoPorData() {
+    async apagarMovimentacaoPorDetalhe() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/movimentacoes-animais/datas/${this.dataParaExclusao}/`, {
         });

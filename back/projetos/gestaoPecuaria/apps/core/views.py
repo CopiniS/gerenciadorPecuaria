@@ -433,6 +433,21 @@ class MovimentacaoViewSet(viewsets.ModelViewSet):
         )
         serializer = serializers.MovimentacaoComPiquetesAndAnimalSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='por-detalhe')
+    def list_por_detalhe(self, request, *args, **kwargs):
+        dataSelecionada = request.query_params.get('dataSelecionada', None)
+        piqueteOrigem = request.query_params.get('piqueteOrigem', None)
+        piqueteDestino = request.query_params.get('piqueteDestino', None)
+        queryset = models.Movimentacao.objects.all()
+        if dataSelecionada is not None and piqueteOrigem is not None and piqueteDestino is not None:
+            queryset = queryset.filter(
+            Q(dataMovimentacao=dataSelecionada) &
+            Q(piqueteOrigem=piqueteOrigem) & 
+            Q(piqueteDestino=piqueteDestino) 
+        )
+        serializer = serializers.MovimentacaoComPiquetesAndAnimalSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path=r'movimentacao/(?P<id>\d+)')
     def retornaMovimentacaoSecionada(self, request, *args, **kwargs):

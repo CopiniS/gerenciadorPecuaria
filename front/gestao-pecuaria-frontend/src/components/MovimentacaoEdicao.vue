@@ -3,45 +3,30 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab"
-          @click="selectTab('vendas')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Lista de Vendas</button>
+        <button class="nav-link" :class="{ active: activeTab === 'movimentacoes' }" id="nav-vet-tab"
+          @click="selectTab('movimentacoes')" type="button" role="tab" aria-controls="nav-vet"
+          aria-selected="true">Lista de Movimentações</button>
         <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-vet-tab"
           @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Visualização de Vendas</button>
+          aria-selected="true">Visualização de Movimentações</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
           @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
-          aria-selected="false">Edição de Venda</button>
+          aria-selected="false">Edição de Movimentação</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'vendas' }" id="nav-vet" role="tabpanel"
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'movimentacoes' }" id="nav-vet" role="tabpanel"
         aria-labelledby="nav-vet-tab">
       </div>
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
         aria-labelledby="nav-edicao-tab">
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="edicaoLabel">Edição de Venda</h1>
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Movimentação</h1>
           <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da venda" 
-                    class="form-control" id="dataVenda" v-model="formData.dataVenda" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input @input="atualizaValorTotalPeloPrecoKg()" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
-                    placeholder="Selecione o tipo" required>
-                    <option disabled value="">Finalidade</option>
-                    <option value="Cria">Cria</option>
-                    <option value="Recria">Recria</option>
-                    <option value="Engorda">Engorda</option>
-                    <option value="Abate">Abate</option>
-                </select>
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da movimentação" 
+                    class="form-control" id="dataMovimentacaoCadastro" v-model="formData.dataMovimentacao" required>
                 </div>
                 <div class="mb-3 input-group">
                     <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
@@ -52,23 +37,38 @@
                     </button>
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input @input="atualizaValorTotalPeloPeso()" v-model="formData.peso" type="text" class="form-control" id="peso" placeholder="Peso" required>
+                  <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                  <input v-model="piqueteOrigemNome" @input="filtrarPiquetesOrigem()" type="text" class="form-control"
+                    placeholder="Piquete de Origem..." :disabled="true">
+                </div>
+                <div class="list-group" v-if="piqueteOrigemNome && filteredPiquetesOrigem.length">
+                  <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetesOrigem"
+                    :key="piquete.id" @click="selecionarPiqueteOrigem(piquete)">
+                    {{ piquete.nome }}
+                  </button>
+                </div>
+
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                  <input v-model="piqueteDestinoNome" @input="filtrarPiquetesDestino()" type="text" class="form-control"
+                    placeholder="Piquete de Destino...">
+                </div>
+                <div class="list-group" v-if="piqueteDestinoNome && filteredPiquetesDestino.length">
+                  <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetesDestino"
+                    :key="piquete.id" @click="selecionarPiqueteDestino(piquete)">
+                    {{ piquete.nome }} - {{ piquete.propriedade.nome }}
+                  </button>
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal" placeholder="Valor Total" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                  <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                    placeholder="Observação"></textarea>
+                    <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                    <input v-model="formData.motivo" type="text" class="form-control" id="motivo" 
+                    placeholder="Motivo">
                 </div>
                 <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
+                    <button type="button" class="btn btn-secondary" @click="selectTab('movimentacoes')">Cancelar</button>
+                    <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
                 </div>
-              </form>
+            </form>
         </div>
       </div>
     </div>
@@ -83,65 +83,75 @@ export default {
         return {
             activeTab: 'edicao', // Começa na aba de edição
             animais: [],
-            animaisFiltrados: [],
-            brinco: '',
-            dataSelecionada: null,
-            formData: {
-              id: null,
-              animal: '',
-              dataVenda: '',
-              peso: '',
-              precoKg: '',
-              valorTotal: '',
-              finalidade: '',
-              observacao: null,
-            },
-            isAnimalValido: true,
-            isDataValida: true,
-            isPesoValido: true,
-            isprecoKgValido: true,
-            isValorTotalValido: true,
-            isFinalidadeValida: true,
-            animalPlaceholder: 'Brinco do animal',
-            dataPlaceholder: 'Data da venda',
-            pesoPlaceholder: 'Peso do animal',
-            precoKgPlaceholder: 'Preço por KG',
-            valorTotalPlaceholder: 'Valor Total',
-            finalidadePlaceholder: 'Finalidade',
+      animaisFiltrados: [],
+      brinco: '',
+      piquetes: [],
+      piquetesDaPropriedade: [],
+      piqueteOrigemNome: '',
+      piqueteDestinoNome: '',
+      propriedadeAtual: null,
+      piqueteId: null,
+      filteredPiquetesOrigem: [],
+      filteredPiquetesDestino: [],
+      dataSelecionada: null,
+      piqueteOrigemSelecionado: null,
+      piqueteDestinoSelecionado: null,
+      formData: {
+          id: null,
+          animal: null,
+          dataMovimentacao: null,
+          piqueteOrigem: null,
+          piqueteDestino: null,
+          motivo: null,
+      },
+      isAnimalValido: true,
+      isDataValida: true,
+      isPiqueteOrigemValido: true,
+      isPiqueteDestinoValido: true,
+      isMotivoKgValido: true,
+      animalPlaceholder: 'Brinco do animal',
+      dataPlaceholder: 'Data da movimentacao',
+      piqueteOrigemPlaceholder: 'Piquete de Origem',
+      piqueteDestinoPlaceholder: 'Piquete de Destino',
+      motivoPlaceholder: 'Motivo da movimentação',
         };
     },
  
     mounted() {
-        const vendaId = this.$route.params.vendaId;
-        if (vendaId) {
-            this.fetchVenda(vendaId);
+        const movimentacaoId = this.$route.params.movimentacaoId;
+        if (movimentacaoId) {
+            this.fetchMovimentacao(movimentacaoId);
         }
         this.buscarAnimaisDaApi();
+        this.buscarPiquetesDaApi();
     },
     methods: {
-    async fetchVenda(id) {
+    async fetchMovimentacao(id) {
       try {
-        const response = await api.get(`http://127.0.0.1:8000/vendas-animais/venda/${id}`);
-        const venda = response.data;
-        this.formData.id = venda[0].id;
-        this.formData.animal = venda[0].animal.id;
-        this.formData.dataVenda = venda[0].dataVenda;
-        this.formData.peso = venda[0].peso;
-        this.formData.precoKg = venda[0].precoKg;
-        this.formData.valorTotal = venda[0].valorTotal;
-        this.formData.finalidade = venda[0].finalidade;
-        this.formData.observacao = venda[0].observacao;
+        const response = await api.get(`http://127.0.0.1:8000/movimentacoes/movimentacao/${id}`);
+        const movimentacao = response.data;
+        this.formData.id = movimentacao[0].id;
+        this.formData.animal = movimentacao[0].animal.id;
+        this.formData.dataMovimentacao = movimentacao[0].dataMovimentacao;
+        this.formData.piqueteOrigem = movimentacao[0].piqueteOrigem.id;
+        this.formData.piqueteDestino = movimentacao[0].piqueteDestino.id;
+        this.formData.motivo = movimentacao[0].motivo;
 
-        this.brinco = venda[0].animal.brinco;
-        this.dataSelecionada = venda[0].dataVenda
+        this.brinco = movimentacao[0].animal.brinco;
+        this.piqueteOrigemNome = movimentacao[0].piqueteOrigem.nome
+        this.piqueteDestinoNome = movimentacao[0].piqueteDestino.nome
+        this.dataSelecionada = movimentacao[0].dataMovimentacao
+        this.piqueteOrigemSelecionado = movimentacao[0].piqueteOrigem.id
+        this.piqueteDestinoSelecionado = movimentacao[0].piqueteDestino.id
+        
       } catch (error) {
-        console.error('Erro ao carregar dados da venda:', error);
+        console.error('Erro ao carregar dados da movimentacao:', error);
       }
     },
 
     async buscarAnimaisDaApi() {
         try {
-            const response = await api.get('http://127.0.0.1:8000/animais/vivos' , {
+            const response = await api.get('http://127.0.0.1:8000/animais/vivos-piquetes' , {
             params: {
                 propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
@@ -152,59 +162,73 @@ export default {
         }
     },
 
+    async buscarPiquetesDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/piquetes-propriedades');
+        this.piquetes = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar piquetes da API:', error);
+      }
+    },
+
+    filtrarPiquetesDestino() {
+      this.filteredPiquetesDestino = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteDestinoNome));
+    },
+
+    selecionarPiqueteDestino(piquete) {
+      this.piqueteDestinoNome = piquete.nome + " - " + piquete.propriedade.nome;
+      this.formData.piqueteDestino = piquete.id;
+      this.filteredPiquetesDestino = [];
+    },
+    
     filterAnimais() {
         this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
     },
 
     selectAnimal(animal) {
+      console.log();
         this.brinco = animal.brinco;
+        this.formData.piqueteOrigem = animal.piquete.id;
+        this.piqueteOrigemNome = animal.piquete.nome
         this.formData.animal = animal.id;
         this.animaisFiltrados = [];
     },
-
-    atualizaValorTotalPeloPeso(){
-      if(this.formData.precoKg != ''){
-        this.formData.valorTotal = this.formData.precoKg * this.formData.peso
-      }
-    },
-
-    atualizaValorTotalPeloPrecoKg(){
-      if(this.formData.peso != ''){
-        this.formData.valorTotal = this.formData.precoKg * this.formData.peso
-      }
-    },
-
     validarFormulario() {
       return true;
     },
 
     selectTab(tab) {
       this.activeTab = tab;
-      if (tab === 'vendas') {
-        this.$router.push('/vendas-animais');
+      if (tab === 'movimentacoes') {
+        this.$router.push('/movimentacoes');
       }
       else if(tab === 'visualizacao'){
         this.$router.push({
-            name: 'VendaAnimalVisualizacao', 
-            params: { dataSelecionada: this.dataSelecionada } 
+            name: 'MovimentacaoVisualizacao', 
+            params: { 
+              data: this.dataSelecionada,
+              piqueteOrigem: this.piqueteOrigemSelecionado,
+              piqueteDestino: this.piqueteDestinoSelecionado
+               } 
         })
       }
     },
 
     cancelarEdicao() {
-      this.$router.push('/vendas-animais');
+      this.$router.push('/movimentacoes');
     },
 
     async submitForm() {
+      console.log(this.formData);
       if (this.validarFormulario()) {
        try {
-          const response = await api.patch(`http://127.0.0.1:8000/vendas-animais/${this.formData.id}/`, this.formData , {
+          const response = await api.patch(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, this.formData , {
         });
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
+            this.selectTab('visualizacao');
             this.resetForm();
-            this.$router.push('/vendas-animais');
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -217,27 +241,23 @@ export default {
 
     resetForm() {
       this.formData = {
-        id: null,
-        animal: '',
-        dataVenda: '',
-        peso: '',
-        precoKg: '',
-        valorTotal: '',
-        finalidade: '',
-        observacao: null,
+          id: null,
+          animal: [],
+          dataMovimentacao: null,
+          piqueteOrigem: null,
+          piqueteDestino: null,
+          motivo: null,
       },
       this.isAnimalValido = true,
       this.isDataValida = true,
-      this.isPesoValido =  true,
-      this.isprecoKgValido = true,
-      this.isValorTotalValido = true,
-      this.isFinalidadeValida = true,
+      this.isPiqueteOrigemValido = true,
+      this.isPiqueteDestinoValido = true,
+      this.isMotivoKgValido = true,
       this.animalPlaceholder = 'Brinco do animal',
-      this.dataPlaceholder = 'Data da venda',
-      this.pesoPlaceholder = 'Peso do animal',
-      this.precoKgPlaceholder = 'Preço por KG',
-      this.valorTotalPlaceholder = 'Valor Total',
-      this.finalidadePlaceholder = 'Finalidade'
+      this.dataPlaceholder = 'Data da movimentacao',
+      this.piqueteOrigemPlaceholder = 'Piquete de Origem',
+      this.piqueteDestinoPlaceholder = 'Piquete de Destino',
+      this.motivoPlaceholder = 'Motivo da movimentação'
     },
   },
 };

@@ -277,9 +277,10 @@ const routes = [
     props: true
   },
   {
-    path: '/movimentacoes-visualizacao/:',
+    path: '/movimentacoes-visualizacao/:data/:piqueteOrigem/:piqueteDestino',
     name: 'MovimentacaoVisualizacao',
-    component: MovimentacaoVisualizacao
+    component: MovimentacaoVisualizacao,
+    props: true
   },
   {
     path: '/cadastroVeterinario',

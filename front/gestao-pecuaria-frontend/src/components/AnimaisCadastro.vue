@@ -46,6 +46,8 @@
                 <option disabled value="">Selecione a raça predominante</option>
                 <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
               </select>
+              <button @click="() => { this.$router.push('/raca-cadastro'); }" type="button" class="btn btn-acoes"><i class="fas fa-plus"></i></button>
+              
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
@@ -308,7 +310,15 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
 
+.btn-acoes i {
+  color: #176d1a;
+}
 .nav-link.active {
   background-color: #d0d0d0 !important;
   /* Cor um pouco mais escura quando a aba está ativa */

@@ -49,8 +49,8 @@ export default {
   methods: {
 
     validarFormulario(){
-        //AQUI FALTA FAZER A VALIDAÇÂO. VER PAGINA DE VETERINARIOS
-        return true;
+      this.isNomeValido = !!this.formData.racaPredominante && this.formData.racaPredominante.trim() !== '';
+      return this.isNomeValido;
     },
 
     selectTab(tab) {

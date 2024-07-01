@@ -70,7 +70,8 @@ export default {
       }
     },
     validarFormulario() {
-      return true;
+      this.isNomeValido = !!this.formData.racaPredominante && this.formData.racaPredominante.trim() !== '';
+      return this.isNomeValido;
     },
 
     selectTab(tab) {

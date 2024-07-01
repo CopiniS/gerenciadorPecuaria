@@ -49,6 +49,8 @@
     <div class="table-container">
         <div class="button-container">
             <button @click="acessarCadastro()" type="button" class="btn btn-success" >Cadastrar Propriedade</button>
+            <button @click="() => { this.$router.push('/piquetes'); }" type="button" class="btn btn-success">Lista de
+              Piquetes</button>
         </div>
         <table class="table table-bordered">
         <thead>
@@ -60,6 +62,7 @@
             <th scope="col">Latitude</th>
             <th scope="col">Longitude</th>
             <th scope="col">Área</th>
+            <th scope="col">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -250,7 +253,10 @@ export default {
   text-align: left; 
   margin-bottom: 20px; 
 }
-
+.btn-success {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
 .table-container table tbody tr td {
   background-color: #ededef !important; /* Cor de fundo das células da tabela */
 }
@@ -268,10 +274,6 @@ export default {
 
 .btn-acoes i {
   color: #176d1a;
-}
-
-.btn-success {
-  background-color: #176d1a;
 }
 
 .button-group {

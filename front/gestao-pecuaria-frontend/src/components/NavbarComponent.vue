@@ -45,26 +45,11 @@
               </li>
 
               <hr class="custom-hr">
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">
+              <li class="nav-item ">
+                <a href="/animais" class="nav-link">
                   <i class="fas fa-paw"></i> Animais
                 </a>
-                <ul class="dropdown-menu justify-content-center">
-                  <li><a class="dropdown-item" href="/animais"><i class="fas fa-paw"></i> Lista de Animais</a></li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/raca"><i class="fas fa-dna"></i> Raças</a></li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/Pesagens"><i class="fas fa-weight"></i> Pesagens</a></li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/vendas-animais"><i class="fas fa-calculator"></i> Vendas de
-                      animais</a></li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/inseminacoes"><i class="fas fa-capsules"></i> Inseminações</a>
-                  </li>
-                  <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/Movimentacoes"><i class="fas fa-cogs"></i> Movimentacoes</a></li>
-                </ul>
+                
               </li>
               <hr class="custom-hr">
               <li class="nav-item">

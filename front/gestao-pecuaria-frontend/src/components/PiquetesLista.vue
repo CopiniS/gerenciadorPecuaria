@@ -2,14 +2,23 @@
 <div class="background">
 
   <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
-    data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Piquetes</button>
-  </div>
-</nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
- </div>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link" :class="{ active: activeTab === 'propriedades' }" id="nav-propriedades-tab" @click="selectTab('propriedades')" 
+        type="button" role="tab" aria-controls="nav-propriedades" aria-selected="true">Lista de Propriedades</button>
+        
+        <button class="nav-link" :class="{ active: activeTab === 'piquetes' }" id="nav-piquetes-tab" @click="selectTab('piquetes')" 
+        type="button" role="tab" aria-controls="nav-piquetes" aria-selected="false">Lista de Piquetes</button>
+        
+      </div>
+    </nav>
+    
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'propriedades' }" id="nav-propriedades" role="tabpanel" aria-labelledby="nav-propriedades-tab">
+      </div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'piquetes' }" id="nav-piquetes" role="tabpanel" aria-labelledby="nav-piquetes-tab">
+        
+      </div>
+    </div>
 
 <h2>Lista de Piquetes</h2>
     <div class="d-flex align-items-start table-container flex-column">
@@ -98,6 +107,7 @@ import api from '/src/interceptadorAxios'
 export default {
   data() {
     return {
+      activeTab: 'piquetes',
       piquetes: [],
       tiposCultivo: ['Pastagem Natural', 'Lavoura', 'Confinamento'],
       formData: {
@@ -119,6 +129,12 @@ export default {
     this.buscarPiquetesDaApi();
   },
   methods: {
+     selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'propriedades') {
+        this.$router.push('/propriedades');
+      }
+    },
     async buscarPiquetesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/' , {

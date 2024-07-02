@@ -2,37 +2,44 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'despesas' }" id="nav-vet-tab" @click="selectTab('despesas')" 
-        type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Despesas</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Despesa</button>
+        <button class="nav-link" :class="{ active: activeTab === 'despesas' }" id="nav-vet-tab"
+          @click="selectTab('despesas')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
+          Despesas</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Despesa</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'despesas' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'despesas' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Despesa</h1>
           <form @submit.prevent="submitForm">
-                <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                    <input :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
-                    class="form-control" id="dataDespesa" v-model="formData.dataDespesa" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.valor" :class="{'is-invalid': !isValorValido}" @input="aplicaFormatacaoBRL" type="text" class="form-control" id="valor" :placeholder="valorPlaceholder">
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.descricao" type="text" class="form-control" id="descricao" placeholder="Descrição">
-                </div>
-                <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
-                </div>
-            </form>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+              <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
+                onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataDespesa"
+                v-model="formData.dataDespesa" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" @input="aplicaFormatacaoBRL"
+                type="text" class="form-control" id="valor" :placeholder="valorPlaceholder">
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
+                placeholder="Descrição">
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -61,8 +68,17 @@ export default {
   },
   methods: {
 
-    validarFormulario(){
-        return true;
+    validarFormulario() {
+      this.isDataValida = !!this.formData.dataDespesa.trim();
+      if (!this.isDataValida) this.formData.dataDespesa = '';
+
+      this.isValorValido = !!this.formData.valor.trim();
+      if (!this.isValorValido) this.formData.valor = '';
+
+      this.dataPlaceholder = this.isDataValida ? 'Data da Despesa' : 'Campo Data da Despesa é obrigatório';
+      this.valorPlaceholder = this.isValorValido ? 'Valor' : 'Campo Valor é obrigatório';
+
+      return this.isDataValida && this.isValorValido;
     },
 
     selectTab(tab) {
@@ -87,7 +103,7 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } 
+      }
     },
 
     resetForm() {
@@ -100,9 +116,9 @@ export default {
       };
 
       this.isDataValida = true,
-      this.isValorValido = true,
-      this.dataPlaceholder = 'Data da Despesa',
-      this.valorPlaceholder = 'Valor'
+        this.isValorValido = true,
+        this.dataPlaceholder = 'Data da Despesa',
+        this.valorPlaceholder = 'Valor'
     },
 
   },
@@ -167,5 +183,4 @@ export default {
 .is-invalid {
   border-color: #dc3545;
 }
-
 </style>

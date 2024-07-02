@@ -186,7 +186,19 @@ export default {
     },
 
     validarFormulario() {
-      return true;
+      this.isDataInicialValida = !!this.formData.dataInicial.trim();
+      if (!this.isDataInicialValida) this.dataInicialPlaceholder = 'Campo Data Inicial da Suplementação é obrigatório';
+
+      this.isProdutoValido = !!this.formData.produto;
+      if (!this.isProdutoValido) this.produtoPlaceholder = 'Campo Produto usado na Suplementação é obrigatório';
+
+      this.isPiqueteValido = !!this.formData.piquete;
+      if (!this.isPiqueteValido) this.piquetePlaceholder = 'Campo Piquete da Suplementação é obrigatório';
+
+      this.isQuantidadeValida = !!this.formData.quantidade;
+      if (!this.isQuantidadeValida) this.quantidadePlaceholder = 'Campo Quantidade de produto é obrigatório';
+
+      return this.isDataInicialValida && this.isProdutoValido && this.isPiqueteValido && this.isQuantidadeValida;
     },
 
     selectTab(tab) {

@@ -99,7 +99,16 @@ export default {
       }
     },
     validarFormulario() {
-      return true;
+      this.isNomeValido = !!this.formData.nome.trim();
+      if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Piquete é obrigatório';
+
+      this.isTipoCultivoValido = !!this.formData.tipoCultivo.trim();
+      if (!this.isTipoCultivoValido) this.tipoCultivoPlaceholder = 'Campo Tipo do cultivo é obrigatório';
+
+      this.isAreaValida = !!this.formData.area.trim();
+      if (!this.isAreaValida) this.areaPlaceholder = 'Campo Área do Piquete é obrigatório';
+
+      return this.isNomeValido && this.isTipoCultivoValido && this.isAreaValida;
     },
 
     selectTab(tab) {

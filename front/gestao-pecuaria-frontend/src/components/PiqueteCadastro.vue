@@ -2,49 +2,55 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'propriedades' }" id="nav-propriedades-tab" @click="selectTab('propriedades')" 
-        type="button" role="tab" aria-controls="nav-propriedades" aria-selected="true">Lista de Propriedades</button>
-        
-        <button class="nav-link" :class="{ active: activeTab === 'piquetes' }" id="nav-vet-tab" @click="selectTab('piquetes')" 
-        type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Piquete</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Piquete</button>
+        <button class="nav-link" :class="{ active: activeTab === 'propriedades' }" id="nav-propriedades-tab"
+          @click="selectTab('propriedades')" type="button" role="tab" aria-controls="nav-propriedades"
+          aria-selected="true">Lista de Propriedades</button>
+
+        <button class="nav-link" :class="{ active: activeTab === 'piquetes' }" id="nav-vet-tab"
+          @click="selectTab('piquetes')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
+          Piquete</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Piquete</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'propriedades' }" id="nav-propriedades" role="tabpanel" aria-labelledby="nav-propriedades-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'propriedades' }" id="nav-propriedades"
+        role="tabpanel" aria-labelledby="nav-propriedades-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'piquetes' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'piquetes' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Piquete</h1>
-            <form @submit.prevent="submitForm">
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" 
+          <form @submit.prevent="submitForm">
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.nome" :class="{ 'is-invalid': !isNomeValido }" type="text" class="form-control"
                 id="nome" :placeholder="nomePlaceholder">
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                <select v-model="formData.tipoCultivo" :class="{'is-invalid': !isTipoCultivoValido}" 
-                class="form-select" id="tipoCultivo" aria-label="Tipo de Cultivo">
-                  <option disabled value="">{{ tipoCultivoPlaceholder }}</option>
-                  <option>Pastagem Natural</option>
-                  <option>Lavoura</option>
-                  <option>Confinamento</option>
-                </select>
-              </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control" 
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+              <select v-model="formData.tipoCultivo" :class="{ 'is-invalid': !isTipoCultivoValido }" class="form-select"
+                id="tipoCultivo" aria-label="Tipo de Cultivo">
+                <option disabled value="">{{ tipoCultivoPlaceholder }}</option>
+                <option>Pastagem Natural</option>
+                <option>Lavoura</option>
+                <option>Confinamento</option>
+              </select>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.area" :class="{ 'is-invalid': !isAreaValida }" type="text" class="form-control"
                 id="area" :placeholder="areaPlaceholder">
-              </div>
-              <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('piquetes')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
-                </div>
-            </form>
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('piquetes')">Cancelar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -75,9 +81,17 @@ export default {
   },
   methods: {
 
-    validarFormulario(){
-        //AQUI FALTA FAZER A VALIDAÇÂO. VER PAGINA DE VETERINARIOS
-        return true;
+    validarFormulario() {
+      this.isNomeValido = !!this.formData.nome.trim();
+      if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Piquete é obrigatório';
+
+      this.isTipoCultivoValido = !!this.formData.tipoCultivo.trim();
+      if (!this.isTipoCultivoValido) this.tipoCultivoPlaceholder = 'Campo Tipo do cultivo é obrigatório';
+
+      this.isAreaValida = !!this.formData.area.trim();
+      if (!this.isAreaValida) this.areaPlaceholder = 'Campo Área do Piquete é obrigatório';
+
+      return this.isNomeValido && this.isTipoCultivoValido && this.isAreaValida;
     },
 
     selectTab(tab) {
@@ -93,8 +107,8 @@ export default {
     async submitForm() {
       if (this.validarFormulario()) {
         try {
-          const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData , {
-        });
+          const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData, {
+          });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
@@ -107,7 +121,7 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } 
+      }
     },
 
     resetForm() {
@@ -120,10 +134,10 @@ export default {
       };
 
       this.isNomeValido = true,
-      this.isTipoCultivoValido = true,
-      this.isAreaValida = true,
-      this.nomePlaceholder = 'Nome do Piquete',
-      this.tipoCultivoPlaceholder = 'Tipo do cultivo'
+        this.isTipoCultivoValido = true,
+        this.isAreaValida = true,
+        this.nomePlaceholder = 'Nome do Piquete',
+        this.tipoCultivoPlaceholder = 'Tipo do cultivo'
       this.areaPlaceholder = 'Área do Piquete'
     },
   },
@@ -188,5 +202,4 @@ export default {
 .is-invalid {
   border-color: #dc3545;
 }
-
 </style>

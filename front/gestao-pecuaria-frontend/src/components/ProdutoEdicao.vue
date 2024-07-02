@@ -1,14 +1,13 @@
-
 <template>
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-vet-tab"
-          @click="selectTab('produtos')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Lista de Produtos</button>
+          @click="selectTab('produtos')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
+          Produtos</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
-          aria-selected="false">Edição de Produto</button>
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
+          de Produto</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -20,33 +19,34 @@
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Produto</h1>
           <form @submit.prevent="submitForm">
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                    placeholder="Selecione o tipo" required>
-                    <option disabled value="">Tipo</option>
-                    <option value="sanitario">Sanitário</option>
-                    <option value="alimenticio">Alimentício</option>
-                </select>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.categoria" type="text" class="form-control" id="categoria" placeholder="Categoria" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                  <textarea v-model="formData.descricao" class="form-control" id="descricao"
-                    placeholder="Descrição"></textarea>
-                </div>
-                <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
-                </div>
-              </form>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
+                placeholder="Selecione o tipo" required>
+                <option disabled value="">Tipo</option>
+                <option value="sanitario">Sanitário</option>
+                <option value="alimenticio">Alimentício</option>
+              </select>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+              <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
+                placeholder="Categoria" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+              <textarea v-model="formData.descricao" class="form-control" id="descricao"
+                placeholder="Descrição"></textarea>
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -57,32 +57,32 @@
 import api from '/src/interceptadorAxios';
 
 export default {
-    data() {
-        return {
-            activeTab: 'edicao', // Começa na aba de edição
-            formData: {
-                id: null,
-                nome: '',
-                tipo: '',
-                categoria: '',
-                descricao: null,
-            },
-            isNomeValido: true,
-            isTipoValido: true,
-            isCategoriaValida: true,
-            nomePlaceholder: 'Nome do Produto',
-            tipoPlaceholder: 'Tipo do produto',
-            categoriaPlaceholder: 'Categoria do Produto',
-        };
-    },
- 
-    mounted() {
-        const produtoId = this.$route.params.produtoId;
-        if (produtoId) {
-            this.fetchProduto(produtoId);
-        }
-    },
-    methods: {
+  data() {
+    return {
+      activeTab: 'edicao', // Começa na aba de edição
+      formData: {
+        id: null,
+        nome: '',
+        tipo: '',
+        categoria: '',
+        descricao: null,
+      },
+      isNomeValido: true,
+      isTipoValido: true,
+      isCategoriaValida: true,
+      nomePlaceholder: 'Nome do Produto',
+      tipoPlaceholder: 'Tipo do produto',
+      categoriaPlaceholder: 'Categoria do Produto',
+    };
+  },
+
+  mounted() {
+    const produtoId = this.$route.params.produtoId;
+    if (produtoId) {
+      this.fetchProduto(produtoId);
+    }
+  },
+  methods: {
     async fetchProduto(id) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/produtos/${id}`);
@@ -97,7 +97,16 @@ export default {
       }
     },
     validarFormulario() {
-      return true;
+      this.isNomeValido = !!this.formData.nome.trim();
+      if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Produto é obrigatório';
+
+      this.isTipoValido = !!this.formData.tipo.trim();
+      if (!this.isTipoValido) this.tipoPlaceholder = 'Campo Tipo do produto é obrigatório';
+
+      this.isCategoriaValida = !!this.formData.categoria.trim();
+      if (!this.isCategoriaValida) this.categoriaPlaceholder = 'Campo Categoria do Produto é obrigatório';
+
+      return this.isNomeValido && this.isTipoValido && this.isCategoriaValida;
     },
 
     selectTab(tab) {
@@ -113,9 +122,9 @@ export default {
 
     async submitForm() {
       if (this.validarFormulario()) {
-       try {
-          const response = await api.patch(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, this.formData , {
-        });
+        try {
+          const response = await api.patch(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, this.formData, {
+          });
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
@@ -141,10 +150,10 @@ export default {
       };
 
       this.isNomeValido = true,
-      this.isTipoValido = true,
-      this.isCategoriaValida = true,
-      this.nomePlaceholder = 'Nome do Produto',
-      this.tipoPlaceholder = 'Tipo do produto'
+        this.isTipoValido = true,
+        this.isCategoriaValida = true,
+        this.nomePlaceholder = 'Nome do Produto',
+        this.tipoPlaceholder = 'Tipo do produto'
       this.categoriaPlaceholder = 'Categoria do Produto'
     },
   },

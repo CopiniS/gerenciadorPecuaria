@@ -126,6 +126,7 @@ export default {
 
   methods: {
 
+
     async buscarProdutos() {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/');
@@ -158,79 +159,97 @@ export default {
     },
 
     validarFormulario() {
-      //AQUI FALTA FAZER A VALIDAÇÂO. VER PAGINA DE VETERINARIOS
-      return true;
+
+      this.isDataCompraValida = !!this.formData.dataCompra.trim();
+      if (!this.isDataCompraValida) this.formData.dataCompra = '';
+
+      this.isProdutoValido = !!this.formData.produto.trim();
+      if (!this.isProdutoValido) this.formData.produto = '';
+
+      this.isValidadeValida = !!this.formData.validade.trim();
+      if (!this.isValidadeValida) this.formData.validade = '';
+
+      this.isLoteValido = !!this.formData.lote.trim();
+      if (!this.isLoteValido) this.formData.lote = '';
+
+      this.dataCompraPlaceholder = this.isDataCompraValida ? 'Data da Compra' : 'Campo Data da Compra é obrigatório';
+      this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo Produto é obrigatório';
+      this.validadePlaceholder = this.isValidadeValida ? 'Validade do produto' : 'Campo Validade é obrigatório';
+      this.lotePlaceholder = this.isLoteValido ? 'Lote do Produto' : 'Campo Lote é obrigatório';
+
+      return this.isDataCompraValida && this.isProdutoValido && this.isValidadeValida && this.isLoteValido;
     },
+  
 
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'compras') {
-        this.$router.push('/compraprodutos');
-      }
-      if (tab === 'produtos') {
-        this.$router.push('/produtos');
-      }
-    },
+  selectTab(tab) {
+    this.activeTab = tab;
+    if (tab === 'compras') {
+      this.$router.push('/compraprodutos');
+    }
+    if (tab === 'produtos') {
+      this.$router.push('/produtos');
+    }
+  },
 
-    async submitForm() {
-      if (this.validarFormulario()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData, {
-          });
+  async submitForm() {
+    if (this.validarFormulario()) {
+      try {
+        const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData, {
+        });
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/compraprodutos');
-          } else {
-            alert('Erro ao cadastrar compra. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        if (response.status === 201) {
+          alert('Cadastro realizado com sucesso!');
+          this.resetForm();
+          this.$router.push('/compraprodutos');
+        } else {
+          alert('Erro ao cadastrar compra. Tente novamente mais tarde.');
         }
-      }
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        dataCompra: '',
-        produto: '',
-        valorUnitario: '',
-        quantidadeComprada: '',
-        validade: '',
-        lote: '',
-        propriedade: localStorage.getItem('propriedadeSelecionada'),
-      },
-        this.isDataCompraValido = true,
-        this.isProdutoValido = true,
-        this.isValorUnitarioValido = true,
-        this.isQuantidadeCompradaValida = true,
-        this.isValidadeValida = true,
-        this.isLoteValido = true,
-        this.dataCompraPlaceholder = 'Data da Compra',
-        this.produtoPlaceholder = 'Produto',
-        this.valorUnitarioPlaceholder = 'Valor do Produto',
-        this.quantidadeCompradaPlaceholder = 'Quantidade Comprada',
-        this.validadePlaceholder = 'Validade do produto',
-        this.lotePlaceholder = 'Lote do Produto'
-    },
-    navigateOptions(direction) {
-      if (!this.dropdownOpen) return;
-      if (direction === 'up' && this.highlightedIndex > 0) {
-        this.highlightedIndex--;
-      } else if (direction === 'down' && this.highlightedIndex < this.produtosFiltrados.length - 1) {
-        this.highlightedIndex++;
-      }
-    },
-    selectHighlightedProduto() {
-      if (this.highlightedIndex !== -1) {
-        const produto = this.produtosFiltrados[this.highlightedIndex];
-        this.selectProduto(produto);
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
     }
   },
+
+  resetForm() {
+    this.formData = {
+      id: null,
+      dataCompra: '',
+      produto: '',
+      valorUnitario: '',
+      quantidadeComprada: '',
+      validade: '',
+      lote: '',
+      propriedade: localStorage.getItem('propriedadeSelecionada'),
+    },
+      this.isDataCompraValido = true,
+      this.isProdutoValido = true,
+      this.isValorUnitarioValido = true,
+      this.isQuantidadeCompradaValida = true,
+      this.isValidadeValida = true,
+      this.isLoteValido = true,
+      this.dataCompraPlaceholder = 'Data da Compra',
+      this.produtoPlaceholder = 'Produto',
+      this.valorUnitarioPlaceholder = 'Valor do Produto',
+      this.quantidadeCompradaPlaceholder = 'Quantidade Comprada',
+      this.validadePlaceholder = 'Validade do produto',
+      this.lotePlaceholder = 'Lote do Produto'
+  },
+  navigateOptions(direction) {
+    if (!this.dropdownOpen) return;
+    if (direction === 'up' && this.highlightedIndex > 0) {
+      this.highlightedIndex--;
+    } else if (direction === 'down' && this.highlightedIndex < this.produtosFiltrados.length - 1) {
+      this.highlightedIndex++;
+    }
+  },
+  selectHighlightedProduto() {
+    if (this.highlightedIndex !== -1) {
+      const produto = this.produtosFiltrados[this.highlightedIndex];
+      this.selectProduto(produto);
+    }
+  }
+},
 };
 </script>
 

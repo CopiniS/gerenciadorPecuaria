@@ -2,46 +2,51 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-vet-tab" @click="selectTab('produtos')" 
-        type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Produto</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Produto</button>
+        <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-vet-tab"
+          @click="selectTab('produtos')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
+          Produto</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Produto</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'produtos' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'produtos' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Produto</h1>
-            <form @submit.prevent="submitForm">
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                    placeholder="Selecione o tipo" required>
-                    <option disabled value="">Tipo</option>
-                    <option value="sanitario">Sanitário</option>
-                    <option value="alimenticio">Alimentício</option>
-                </select>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-seedling"></i></span>
-                  <input v-model="formData.categoria" type="text" class="form-control" id="categoria" placeholder="Categoria" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                  <textarea v-model="formData.descricao" class="form-control" id="descricao"
-                    placeholder="Descrição"></textarea>
-                </div>
-                <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
-                </div>
-              </form>
+          <form @submit.prevent="submitForm">
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
+                placeholder="Selecione o tipo" required>
+                <option disabled value="">Tipo</option>
+                <option value="sanitario">Sanitário</option>
+                <option value="alimenticio">Alimentício</option>
+              </select>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+              <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
+                placeholder="Categoria" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+              <textarea v-model="formData.descricao" class="form-control" id="descricao"
+                placeholder="Descrição"></textarea>
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -72,9 +77,17 @@ export default {
   },
   methods: {
 
-    validarFormulario(){
-        //AQUI FALTA FAZER A VALIDAÇÂO. VER PAGINA DE VETERINARIOS
-        return true;
+    validarFormulario() {
+      this.isNomeValido = !!this.formData.nome.trim();
+      if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Produto é obrigatório';
+
+      this.isTipoValido = !!this.formData.tipo.trim();
+      if (!this.isTipoValido) this.tipoPlaceholder = 'Campo Tipo do produto é obrigatório';
+
+      this.isCategoriaValida = !!this.formData.categoria.trim();
+      if (!this.isCategoriaValida) this.categoriaPlaceholder = 'Campo Categoria do Produto é obrigatório';
+
+      return this.isNomeValido && this.isTipoValido && this.isCategoriaValida;
     },
 
     selectTab(tab) {
@@ -87,8 +100,8 @@ export default {
     async submitForm() {
       if (this.validarFormulario()) {
         try {
-          const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData , {
-        });
+          const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {
+          });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
@@ -101,7 +114,7 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } 
+      }
     },
 
     resetForm() {
@@ -114,10 +127,10 @@ export default {
       };
 
       this.isNomeValido = true,
-      this.isTipoValido = true,
-      this.isCategoriaValida = true,
-      this.nomePlaceholder = 'Nome do Produto',
-      this.tipoPlaceholder = 'Tipo do produto'
+        this.isTipoValido = true,
+        this.isCategoriaValida = true,
+        this.nomePlaceholder = 'Nome do Produto',
+        this.tipoPlaceholder = 'Tipo do produto'
       this.categoriaPlaceholder = 'Categoria do Produto'
     },
   },
@@ -182,5 +195,4 @@ export default {
 .is-invalid {
   border-color: #dc3545;
 }
-
 </style>

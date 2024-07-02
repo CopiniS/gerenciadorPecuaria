@@ -17,6 +17,9 @@ import TelaProdutos from '@/views/TelaProdutos.vue';
 import ProdutoCadastro from '@/components/ProdutoCadastro.vue'
 import ProdutoEdicao from '@/components/ProdutoEdicao.vue'
 import TelaPesagens from '@/views/TelaPesagens.vue';
+import PesagemCadastro from '@/components/PesagemCadastro.vue';
+import PesagemEdicao from '@/components/PesagemEdicao.vue';
+import PesagemVisualizacao from '@/components/PesagemVisualizacao.vue';
 import TelaCompraProdutos from '@/views/TelaCompraProdutos.vue';
 import CompraProdutoCadastro from '@/components/CompraProdutoCadastro.vue';
 import CompraProdutoEdicao from '@/components/CompraProdutoEdicao.vue';
@@ -168,9 +171,26 @@ const routes = [
     props: true, 
   },
   {
-    path: '/Pesagens',
+    path: '/pesagens',
     name: 'TelaPesagens',
     component: TelaPesagens 
+  },
+  {
+    path: '/pesagens-cadastro',
+    name: 'PesagemCadastro',
+    component: PesagemCadastro 
+  },
+  {
+    path: '/pesagens-edicao/:pesagemId',
+    name: 'PesagemEdicao',
+    component: PesagemEdicao,
+    props: true
+  },
+  {
+    path: '/pesagens-visualizacao/:dataSelecionada',
+    name: 'PesagemVisualizacao',
+    component: PesagemVisualizacao,
+    props: true
   },
   {
     path: '/compraprodutos',

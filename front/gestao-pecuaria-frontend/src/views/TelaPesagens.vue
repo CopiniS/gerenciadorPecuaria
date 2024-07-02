@@ -1,16 +1,16 @@
 <template>
-    <ListarPesagens/>
+    <PesagensLista/>
 </template>
   
   <script>
-import ListarPesagens from '@/components/ListarPesagens.vue';
+import PesagensLista from '@/components/PesagensLista.vue';
 
 
 
 export default {
   name: 'TelaPesagens',
   components: {
-    ListarPesagens
+    PesagensLista
   }
 }
   </script>

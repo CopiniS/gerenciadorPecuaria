@@ -1,14 +1,14 @@
 <template>
-    <ListarInseminacoes/>
+    <InseminacoesLista/>
 </template>
   
 <script>
-    import ListarInseminacoes from '@/components/ListarInseminacoes.vue';
+    import InseminacoesLista from '@/components/InseminacoesLista.vue';
 
     export default {
     name: 'TelaInseminacoes',
     components: {
-        ListarInseminacoes
+        InseminacoesLista
     }
     }
 </script>

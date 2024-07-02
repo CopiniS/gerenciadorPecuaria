@@ -42,7 +42,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-horse"></i></span>
-              <select v-model="formData.racaPredominante" :class="{'is-invalid': !isRacaPredominanteValido}" class="form-select" id="racaPredominante" aria-label="Raça Predominante" :placeholder="racaPredominantePlaceholder" required>
+              <select v-model="formData.racaPredominante" :class="{'is-invalid': !isRacaPredominanteValido}" class="form-select" id="racaPredominante" aria-label="Raça Predominante" :placeholder="racaPredominantePlaceholder">
                 <option disabled value="">Selecione a raça predominante</option>
                 <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
               </select>
@@ -73,7 +73,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <input v-model="formData.rfid" :class="{'is-invalid': !isRfidValido}" type="text" class="form-control" id="rfid" :placeholder="rfidPlaceholder" required pattern="\d*">
+              <input v-model="formData.rfid" :class="{'is-invalid': !isRfidValido}" type="text" class="form-control" id="rfid" :placeholder="rfidPlaceholder" pattern="\d*">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
@@ -119,17 +119,17 @@ export default {
       comprado: false,
       formData: {
         id: null,
-        brinco: '',
-        dataNascimento: '',
-        sexo: '',
+        brinco: null,
+        dataNascimento: null,
+        sexo: null,
         racaPredominante: null,
         racaObservacao: null,
-        piquete: '',
-        brincoPai: '',
-        brincoMae: '',
+        piquete: null,
+        brincoPai: null,
+        brincoMae: null,
         status: 'Vivo',
-        rfid: '',
-        observacoes: '',
+        rfid: null,
+        observacoes: null,
         dataBaixa: null,
         dataCompra: null,
         valorCompra: null,
@@ -161,11 +161,15 @@ export default {
   methods: {
     validarFormulario() {
       this.isPiqueteValido = !!this.formData.piquete;
-      this.isBrincoValido = /^\d+$/.test(this.formData.brinco.trim());
+      if(this.formData.brinco){
+        this.isBrincoValido = /^\d+$/.test(this.formData.brinco.trim());
+      }
       this.isDataNascimentoValido = !!this.formData.dataNascimento;
       this.isSexoValido = !!this.formData.sexo;
-      this.isRacaPredominanteValido = !!this.formData.racaPredominante;
-      this.isRfidValido = /^\d+$/.test(this.formData.rfid.trim());
+      //this.isRacaPredominanteValido = !!this.formData.racaPredominante | ;
+      if(this.rfid){
+        this.isRfidValido = /^\d*$/.test(this.formData.rfid.trim());
+      }
 
       if (this.comprado) {
         this.isDataCompraValido = !!this.formData.dataCompra;
@@ -235,7 +239,6 @@ export default {
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.$router.push('/animais');
-            this.buscarAnimaisDaApi();
             this.preencherListaFemeas();
             this.preencherListaMachos();
           } else {

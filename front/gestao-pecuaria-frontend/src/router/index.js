@@ -34,7 +34,6 @@ import AplicacoesProdutosEdicao from '@/components/AplicacoesProdutosEdicao.vue'
 import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue';
 import VendaAnimalCadastro from '@/components/VendaAnimalCadastro.vue';
 import VendaAnimalEdicao from '@/components/VendaAnimalEdicao.vue';
-import VendaAnimalVisualizacao from '@/components/VendaAnimalVisualizacao.vue';
 import TelaInseminacoes from '@/views/TelaInseminacoes.vue';
 import InseminacaoCadastro from '@/components/InseminacaoCadastro.vue';
 import InseminacaoEdicao from '@/components/InseminacaoEdicao.vue';
@@ -270,12 +269,6 @@ const routes = [
     path: '/vendas-animais-edicao/:vendaId',
     name: 'VendaAnimalEdicao',
     component: VendaAnimalEdicao,
-    props: true
-  },
-  {
-    path: '/vendas-animais-visualizacao/:dataSelecionada',
-    name: 'VendaAnimalVisualizacao',
-    component: VendaAnimalVisualizacao,
     props: true
   },
   {

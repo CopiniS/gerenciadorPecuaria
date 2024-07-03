@@ -6,9 +6,6 @@
         <button class="nav-link" :class="{ active: activeTab === 'movimentacoes' }" id="nav-vet-tab"
           @click="selectTab('movimentacoes')" type="button" role="tab" aria-controls="nav-vet"
           aria-selected="true">Lista de Movimentações</button>
-        <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-vet-tab"
-          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Visualização de Movimentações</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
           @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
           aria-selected="false">Edição de Movimentação</button>
@@ -202,16 +199,6 @@ export default {
       if (tab === 'movimentacoes') {
         this.$router.push('/movimentacoes');
       }
-      else if(tab === 'visualizacao'){
-        this.$router.push({
-            name: 'MovimentacaoVisualizacao', 
-            params: { 
-              data: this.dataSelecionada,
-              piqueteOrigem: this.piqueteOrigemSelecionado,
-              piqueteDestino: this.piqueteDestinoSelecionado
-               } 
-        })
-      }
     },
 
     cancelarEdicao() {
@@ -227,7 +214,7 @@ export default {
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
-            this.selectTab('visualizacao');
+            this.selectTab('movimentacoes');
             this.resetForm();
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');

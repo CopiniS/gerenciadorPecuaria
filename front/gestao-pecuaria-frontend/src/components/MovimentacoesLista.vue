@@ -43,6 +43,7 @@
           <thead>
             <tr>
               <th scope="col">Data Movimentação</th>
+              <th scope="col">Animal</th>
               <th scope="col">Piquete de Origem</th>
               <th scope="col">Piquete de Destino</th>
               <th scope="col">Tipo</th>
@@ -50,14 +51,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(detalhesMovimentacao, index) in listaDetalhes" :key="index">
-              <td>{{ formatarData(detalhesMovimentacao.dataMovimentacao) }}</td>
-              <td>{{ detalhesMovimentacao.piqueteOrigem.nome }} - {{ detalhesMovimentacao.piqueteOrigem.propriedade.nome }}</td>
-              <td>{{ detalhesMovimentacao.piqueteDestino.nome }} - {{ detalhesMovimentacao.piqueteDestino.propriedade.nome }}</td>
-              <td>{{ achaTipo(detalhesMovimentacao)}}</td>
+            <tr v-for="(movimentacao, index) in movimentacoes" :key="index">
+              <td>{{ formatarData(movimentacao.dataMovimentacao) }}</td>
+              <td>{{ movimentacao.animal.brinco}}</td>
+              <td>{{ movimentacao.piqueteOrigem.nome }} - {{ movimentacao.piqueteOrigem.propriedade.nome }}</td>
+              <td>{{ movimentacao.piqueteDestino.nome }} - {{ movimentacao.piqueteDestino.propriedade.nome }}</td>
+              <td>{{ achaTipo(movimentacao)}}</td>
               <td>
-                <button @click="acessarVisualizacao(detalhesMovimentacao)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
-                <button @click="confirmarExclusao(detalhesMovimentacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                <button @click="acessarEdicao(movimentacao)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="confirmarExclusaoMovimentacao(movimentacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                 data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
               </td>
             </tr>
@@ -79,7 +81,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarMovimentacaoPorDetalhe()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarMovimentacao()">Excluir</button>
           </div>
         </div>
       </div>
@@ -95,8 +97,6 @@ export default {
   data() {
     return {
       movimentacoes: [],
-      dataParaExclusao: null,
-      listaDetalhes: [],
       formData: {
             animal: [],
             dataMovimentacao: null,
@@ -123,23 +123,10 @@ export default {
             },
         });
         this.movimentacoes = response.data;
-        this.preencherDetalhesMovimentacoes();
 
       } catch (error) {
         console.error('Erro ao buscar movimentacoes da API:', error);
       }
-    },
-
-    async preencherDetalhesMovimentacoes(){
-      let detalhesMovimentacao = null;
-      this.movimentacoes.forEach(movimentacao => {
-        detalhesMovimentacao = {
-            dataMovimentacao: movimentacao.dataMovimentacao,
-            piqueteOrigem: movimentacao.piqueteOrigem,
-            piqueteDestino: movimentacao.piqueteDestino,
-        }
-      this.listaDetalhes.push(detalhesMovimentacao)
-      });
     },
 
     achaTipo(movimentacao){ 
@@ -155,14 +142,10 @@ export default {
       }
     },
     
-    acessarVisualizacao(movimentacao) {
-        this.$router.push({
-            name: 'MovimentacaoVisualizacao', 
-            params: { 
-              data: movimentacao.dataMovimentacao, 
-              piqueteOrigem: movimentacao.piqueteOrigem.id,
-              piqueteDestino: movimentacao.piqueteDestino.id
-             } 
+    acessarEdicao(movimentacao) {
+      this.$router.push({
+        name: 'MovimentacaoEdicao', 
+        params: { movimentacaoId: movimentacao.id } 
       })
     },
 
@@ -188,17 +171,19 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    confirmarExclusao(data) {
-      this.dataParaExclusao = data;
+
+    confirmarExclusaoMovimentacao(movimentacao) {
+      this.formData.id = movimentacao.id;
     },
-    async apagarMovimentacaoPorDetalhe() {
+
+    async apagarMovimentacao() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/movimentacoes-animais/datas/${this.dataParaExclusao}/`, {
+        const response = await api.delete(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, {
         });
 
         if (response.status === 204) {
-          alert('Movimentacoes excluídas com sucesso!');
-          this.dataParaExclusao = null;
+          alert('Movimentacão excluída com sucesso!');
+          this.buscarMovimentacoesDaApi();
         } else {
           alert('Erro ao excluir movimentacoes. Tente novamente mais tarde.');
         }
@@ -206,7 +191,6 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.buscarMovimentacoesDaApi();
       this.fecharModal('confirmacaoExclusaoModal');
     },
 

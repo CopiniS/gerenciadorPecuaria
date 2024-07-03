@@ -42,7 +42,6 @@ import ViewAnimal from '@/views/ViewAnimal.vue';
 import TelaMovimentacoes from '@/views/TelaMovimentacoes.vue';
 import MovimentacaoCadastro from '@/components/MovimentacaoCadastro.vue';
 import MovimentacaoEdicao from '@/components/MovimentacaoEdicao.vue';
-import MovimentacaoVisualizacao from '@/components/MovimentacaoVisualizacao.vue';
 import OutraDespesaEdicao from '@/components/OutraDespesaEdicao.vue';
 import OutraDespesaCadastro from '@/components/OutraDespesaCadastro.vue';
 import PiqueteCadastro from '@/components/PiqueteCadastro.vue';
@@ -306,12 +305,6 @@ const routes = [
     path: '/movimentacoes-edicao/:movimentacaoId',
     name: 'MovimentacaoEdicao',
     component: MovimentacaoEdicao,
-    props: true
-  },
-  {
-    path: '/movimentacoes-visualizacao/:data/:piqueteOrigem/:piqueteDestino',
-    name: 'MovimentacaoVisualizacao',
-    component: MovimentacaoVisualizacao,
     props: true
   },
 

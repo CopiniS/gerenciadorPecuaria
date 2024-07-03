@@ -38,7 +38,6 @@ import VendaAnimalVisualizacao from '@/components/VendaAnimalVisualizacao.vue';
 import TelaInseminacoes from '@/views/TelaInseminacoes.vue';
 import InseminacaoCadastro from '@/components/InseminacaoCadastro.vue';
 import InseminacaoEdicao from '@/components/InseminacaoEdicao.vue';
-import InseminacaoVisualizacao from '@/components/InseminacaoVisualizacao.vue';
 import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
 import ViewAnimal from '@/views/ViewAnimal.vue';
 import TelaMovimentacoes from '@/views/TelaMovimentacoes.vue';
@@ -293,12 +292,6 @@ const routes = [
     path: '/inseminacoes-edicao/:inseminacaoId',
     name: 'InseminacaoEdicao',
     component: InseminacaoEdicao,
-    props: true
-  },
-  {
-    path: '/inseminacoes-visualizacao/:dataSelecionada',
-    name: 'InseminacaoVisualizacao',
-    component: InseminacaoVisualizacao,
     props: true
   },
   {

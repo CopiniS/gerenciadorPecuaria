@@ -50,15 +50,21 @@
           <thead>
             <tr>
               <th scope="col">Data Inseminação</th>
+              <th scope="col">Animal</th>
+              <th scope="col">Veterinario</th>
+              <th scope="col">Touro</th>
               <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data, index) in datasInseminacoes" :key="index">
-              <td>{{ formatarData(data) }}</td>
+            <tr v-for="(inseminacao, index) in inseminacoes" :key="index">
+              <td>{{ formatarData(inseminacao.dataInseminacao) }}</td>
+              <td>{{ inseminacao.animal.brinco }}</td>
+              <td>{{ inseminacao.veterinario.nome }}</td>
+              <td>{{ inseminacao.identificadorTouro }}</td>
               <td>
-                <button @click="acessarVisualizacao(data)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
-                <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                <button @click="acessarEdicao(inseminacao)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="confirmarExclusaoInseminacao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                 data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
               </td>
             </tr>
@@ -80,7 +86,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarInseminacaoPorData()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarInseminacao()">Excluir</button>
           </div>
         </div>
       </div>
@@ -96,10 +102,6 @@ export default {
   data() {
     return {
       inseminacoes: [],
-      datasInseminacoes: [],
-      dataParaExclusao: null,
-      inseminacoesSelecionadas: [],
-      inseminacoesSelecionadasJSON: null,
       formData: {
         id: null,
         dataInseminacao: '',
@@ -127,25 +129,16 @@ export default {
             },
         });
         this.inseminacoes = response.data;
-        this.preencherDatasInseminacoes();
 
       } catch (error) {
         console.error('Erro ao buscar inseminacoes da API:', error);
       }
     },
-
-    async preencherDatasInseminacoes(){
-      const datasSet = new Set();
-      this.inseminacoes.forEach(inseminacao => {
-        datasSet.add(inseminacao.dataInseminacao);
-      });
-      this.datasInseminacoes = Array.from(datasSet).sort((b, a) => new Date(a) - new Date(b));
-    },
     
-    acessarVisualizacao(data) {
-        this.$router.push({
-            name: 'InseminacaoVisualizacao', 
-            params: { dataSelecionada: data } 
+    acessarEdicao(inseminacao) {
+      this.$router.push({
+        name: 'InseminacaoEdicao', 
+        params: { inseminacaoId: inseminacao.id } 
       })
     },
 
@@ -155,7 +148,6 @@ export default {
       })
     },
 
-    
     formatarData(data) {
         const date = new Date(data);
         const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
@@ -171,17 +163,19 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    confirmarExclusao(data) {
-      this.dataParaExclusao = data;
+
+    confirmarExclusaoInseminacao(inseminacao) {
+      this.formData.id = inseminacao.id;
     },
-    async apagarInseminacaoPorData() {
+
+    async apagarInseminacao() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/datas/${this.dataParaExclusao}/`, {
+        const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/${this.formData.id}/`, {
         });
 
         if (response.status === 204) {
-          alert('Inseminacoes excluídas com sucesso!');
-          this.dataParaExclusao = null;
+          alert('Inseminação excluída com sucesso!');
+          this.buscarInseminacoesDaApi();
         } else {
           alert('Erro ao excluir inseminacoes. Tente novamente mais tarde.');
         }
@@ -189,7 +183,6 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.buscarInseminacoesDaApi();
       this.fecharModal('confirmacaoExclusaoModal');
     },
 

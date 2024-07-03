@@ -5,9 +5,6 @@
         <button class="nav-link" :class="{ active: activeTab === 'inseminacoes' }" id="nav-vet-tab"
           @click="selectTab('inseminacoes')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
           Inseminações</button>
-        <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-vet-tab"
-          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Visualização de Inseminações</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
           @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
           de Inseminação</button>
@@ -175,12 +172,6 @@ export default {
       this.activeTab = tab;
       if (tab === 'inseminacoes') {
         this.$router.push('/inseminacoes');
-      }
-      else if (tab === 'visualizacao') {
-        this.$router.push({
-          name: 'InseminacaoVisualizacao',
-          params: { dataSelecionada: this.dataSelecionada }
-        })
       }
     },
 

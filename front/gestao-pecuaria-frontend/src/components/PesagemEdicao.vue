@@ -42,7 +42,7 @@
                 <input v-model="formData.observacao" type="text" class="form-control" id="observacao" :disabled="!camposHabilitados" placeholder="Observação" required>
               </div>
               <div class="button-group justify-content-end">
-                <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>
+                <button type="button" class="btn btn-secondary" @click="selectTab('pesagens')">Cancelar</button>
                 <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
               </div>
             </form>
@@ -144,12 +144,6 @@ export default {
       this.activeTab = tab;
       if (tab === 'pesagens') {
         this.$router.push('/pesagens');
-      }
-      else if (tab === 'visualizacao') {
-        this.$router.push({
-          name: 'PesagemVisualizacao',
-          params: { dataSelecionada: this.dataSelecionada }
-        })
       }
     },
 

@@ -5,9 +5,6 @@
         <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab"
           @click="selectTab('vendas')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
           Vendas</button>
-        <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-vet-tab"
-          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Visualização de Vendas</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
           @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
           de Venda</button>
@@ -69,7 +66,7 @@
                 placeholder="Observação"></textarea>
             </div>
             <div class="button-group justify-content-end">
-              <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>
+              <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
               <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
             </div>
           </form>
@@ -179,44 +176,45 @@ export default {
     },
 
     validarFormulario() {
-      this.isDataValida = !!this.formData.dataVenda.trim();
-      if (!this.isDataValida) {
-        this.dataPlaceholder = 'Campo Data da Venda é obrigatório';
-      }
+      return true;
+      // this.isDataValida = !!this.formData.dataVenda.trim();
+      // if (!this.isDataValida) {
+      //   this.dataPlaceholder = 'Campo Data da Venda é obrigatório';
+      // }
 
-      this.isAnimalValido = !!this.formData.animal.trim();
-      if (!this.isAnimalValido) {
-        this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
-      }
+      // this.isAnimalValido = !!this.formData.animal.trim();
+      // if (!this.isAnimalValido) {
+      //   this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
+      // }
 
-      this.isPesoValido = !!this.formData.peso.trim();
-      if (!this.isPesoValido) {
-        this.pesoPlaceholder = 'Campo Peso é obrigatório';
-      }
+      // this.isPesoValido = !!this.formData.peso.trim();
+      // if (!this.isPesoValido) {
+      //   this.pesoPlaceholder = 'Campo Peso é obrigatório';
+      // }
 
-      this.isprecoKgValido = !!this.formData.precoKg.trim();
-      if (!this.isprecoKgValido) {
-        this.precoKgPlaceholder = 'Campo Preço por Kg é obrigatório';
-      }
+      // this.isprecoKgValido = !!this.formData.precoKg.trim();
+      // if (!this.isprecoKgValido) {
+      //   this.precoKgPlaceholder = 'Campo Preço por Kg é obrigatório';
+      // }
 
-      this.isValorTotalValido = !!this.formData.valorTotal.trim();
-      if (!this.isValorTotalValido) {
-        this.valorTotalPlaceholder = 'Campo Valor Total é obrigatório';
-      }
+      // this.isValorTotalValido = !!this.formData.valorTotal.trim();
+      // if (!this.isValorTotalValido) {
+      //   this.valorTotalPlaceholder = 'Campo Valor Total é obrigatório';
+      // }
 
-      this.isFinalidadeValida = !!this.formData.finalidade.trim();
-      if (!this.isFinalidadeValida) {
-        this.finalidadePlaceholder = 'Campo Finalidade é obrigatório';
-      }
+      // this.isFinalidadeValida = !!this.formData.finalidade.trim();
+      // if (!this.isFinalidadeValida) {
+      //   this.finalidadePlaceholder = 'Campo Finalidade é obrigatório';
+      // }
 
-      return (
-        this.isDataValida &&
-        this.isAnimalValido &&
-        this.isPesoValido &&
-        this.isprecoKgValido &&
-        this.isValorTotalValido &&
-        this.isFinalidadeValida
-      );
+      // return (
+      //   this.isDataValida &&
+      //   this.isAnimalValido &&
+      //   this.isPesoValido &&
+      //   this.isprecoKgValido &&
+      //   this.isValorTotalValido &&
+      //   this.isFinalidadeValida
+      // );
     },
 
 
@@ -224,12 +222,6 @@ export default {
       this.activeTab = tab;
       if (tab === 'vendas') {
         this.$router.push('/vendas-animais');
-      }
-      else if (tab === 'visualizacao') {
-        this.$router.push({
-          name: 'VendaAnimalVisualizacao',
-          params: { dataSelecionada: this.dataSelecionada }
-        })
       }
     },
 

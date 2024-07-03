@@ -50,15 +50,25 @@
           <thead>
             <tr>
               <th scope="col">Data Venda</th>
+              <th scope="col">Animal</th>
+              <th scope="col">Finalidade</th>
+              <th scope="col">Peso</th>
+              <th scope="col">Preço do Kg</th>
+              <th scope="col">Valor total</th>
               <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data, index) in datasVendas" :key="index">
-              <td>{{ formatarData(data) }}</td>
+            <tr v-for="(venda, index) in vendas" :key="index">
+              <td>{{ formatarData(venda.dataVenda) }}</td>
+              <td>{{ venda.animal.brinco}}</td>
+              <td>{{ venda.finalidade}}</td>
+              <td>{{ venda.peso}}</td>
+              <td>{{ venda.precoKg}}</td>
+              <td>{{ venda.valorTotal}}</td>
               <td>
-                <button @click="acessarVisualizacao(data)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
-                <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                <button @click="acessarEdicao(venda)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="confirmarExclusaoVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                 data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
               </td>
             </tr>
@@ -80,7 +90,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarVendaPorData()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarVenda()">Excluir</button>
           </div>
         </div>
       </div>
@@ -96,10 +106,6 @@ export default {
   data() {
     return {
       vendas: [],
-      datasVendas: [],
-      dataParaExclusao: null,
-      vendasSelecionadas: [],
-      vendasSelecionadasJSON: null,
       formData: {
         id: null,
         animal: '',
@@ -130,25 +136,16 @@ export default {
             },
         });
         this.vendas = response.data;
-        this.preencherDatasVendas();
 
       } catch (error) {
         console.error('Erro ao buscar vendas da API:', error);
       }
     },
-
-    async preencherDatasVendas(){
-      const datasSet = new Set();
-      this.vendas.forEach(venda => {
-        datasSet.add(venda.dataVenda);
-      });
-      this.datasVendas = Array.from(datasSet).sort((b, a) => new Date(a) - new Date(b));
-    },
     
-    acessarVisualizacao(data) {
-        this.$router.push({
-            name: 'VendaAnimalVisualizacao', 
-            params: { dataSelecionada: data } 
+    acessarEdicao(venda) {
+      this.$router.push({
+        name: 'VendaAnimalEdicao', 
+        params: { vendaId: venda.id } 
       })
     },
 
@@ -174,17 +171,19 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
-    confirmarExclusao(data) {
-      this.dataParaExclusao = data;
+
+    confirmarExclusaoVenda(venda) {
+      this.formData.id = venda.id;
     },
-    async apagarVendaPorData() {
+
+    async apagarVenda() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/vendas-animais/datas/${this.dataParaExclusao}/`, {
+        const response = await api.delete(`http://127.0.0.1:8000/vendas-animais/${this.formData.id}/`, {
         });
 
         if (response.status === 204) {
           alert('Vendas excluídas com sucesso!');
-          this.dataParaExclusao = null;
+          this.buscarVendasDaApi();
         } else {
           alert('Erro ao excluir vendas. Tente novamente mais tarde.');
         }
@@ -192,7 +191,6 @@ export default {
         console.error('Erro ao enviar requisição:', error);
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-      this.buscarVendasDaApi();
       this.fecharModal('confirmacaoExclusaoModal');
     },
 

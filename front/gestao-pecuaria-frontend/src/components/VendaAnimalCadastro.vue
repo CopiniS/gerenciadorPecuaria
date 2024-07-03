@@ -143,44 +143,45 @@ export default {
     },
 
     validarFormulario() {
-      this.isDataValida = !!this.formData.dataVenda.trim();
-      if (!this.isDataValida) {
-        this.dataPlaceholder = 'Campo Data da Venda é obrigatório';
-      }
+      return true;
+      // this.isDataValida = !!this.formData.dataVenda.trim();
+      // if (!this.isDataValida) {
+      //   this.dataPlaceholder = 'Campo Data da Venda é obrigatório';
+      // }
 
-      this.isAnimalValido = !!this.formData.animal.trim();
-      if (!this.isAnimalValido) {
-        this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
-      }
+      // this.isAnimalValido = !!this.formData.animal.trim();
+      // if (!this.isAnimalValido) {
+      //   this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
+      // }
 
-      this.isPesoValido = !!this.formData.peso.trim();
-      if (!this.isPesoValido) {
-        this.pesoPlaceholder = 'Campo Peso é obrigatório';
-      }
+      // this.isPesoValido = !!this.formData.peso.trim();
+      // if (!this.isPesoValido) {
+      //   this.pesoPlaceholder = 'Campo Peso é obrigatório';
+      // }
 
-      this.isprecoKgValido = !!this.formData.precoKg.trim();
-      if (!this.isprecoKgValido) {
-        this.precoKgPlaceholder = 'Campo Preço por Kg é obrigatório';
-      }
+      // this.isprecoKgValido = !!this.formData.precoKg.trim();
+      // if (!this.isprecoKgValido) {
+      //   this.precoKgPlaceholder = 'Campo Preço por Kg é obrigatório';
+      // }
 
-      this.isValorTotalValido = !!this.formData.valorTotal.trim();
-      if (!this.isValorTotalValido) {
-        this.valorTotalPlaceholder = 'Campo Valor Total é obrigatório';
-      }
+      // this.isValorTotalValido = !!this.formData.valorTotal.trim();
+      // if (!this.isValorTotalValido) {
+      //   this.valorTotalPlaceholder = 'Campo Valor Total é obrigatório';
+      // }
 
-      this.isFinalidadeValida = !!this.formData.finalidade.trim();
-      if (!this.isFinalidadeValida) {
-        this.finalidadePlaceholder = 'Campo Finalidade é obrigatório';
-      }
+      // this.isFinalidadeValida = !!this.formData.finalidade.trim();
+      // if (!this.isFinalidadeValida) {
+      //   this.finalidadePlaceholder = 'Campo Finalidade é obrigatório';
+      // }
 
-      return (
-        this.isDataValida &&
-        this.isAnimalValido &&
-        this.isPesoValido &&
-        this.isprecoKgValido &&
-        this.isValorTotalValido &&
-        this.isFinalidadeValida
-      );
+      // return (
+      //   this.isDataValida &&
+      //   this.isAnimalValido &&
+      //   this.isPesoValido &&
+      //   this.isprecoKgValido &&
+      //   this.isValorTotalValido &&
+      //   this.isFinalidadeValida
+      // );
     },
 
     selectTab(tab) {

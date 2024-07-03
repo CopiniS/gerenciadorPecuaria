@@ -44,7 +44,7 @@
   <div>
     <div class="table-container">
     <div class="button-container">
-      <button @click="() => {this.$router.push('/cadastroVeterinario');}" type="button" class="btn btn-success">Cadastrar Veterinário</button>
+      <button @click="acessarCadastro()" class="btn btn-success">Cadastrar Veterinário</button>
     </div>
       <table class="table table-bordered">
         <thead>
@@ -63,7 +63,7 @@
             <td>{{ veterinario.email }}</td>
             <td>{{ veterinario.crmv }}</td>
             <td>
-              <button @click="editarVeterinario(veterinario)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+              <button @click="acessarEdicao(veterinario)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
               <button @click="confirmarExclusao(veterinario)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
                   class="fas fa-trash-alt"></i></button>
             </td>
@@ -133,9 +133,18 @@ export default {
         console.error('Erro ao buscar veterinários da API:', error);
       }
     },
-    editarVeterinario(veterinario) {
-      localStorage.setItem('veterinarioSelecionado', veterinario.id);
-      this.$router.push('/editarVeterinario')
+    
+    acessarEdicao(veterinario) {
+      this.$router.push({
+        name: 'VeterinarioEdicao', 
+        params: { veterinarioId: veterinario.id } 
+      })
+    },
+
+    acessarCadastro(){
+      this.$router.push({
+        name: 'VeterinarioCadastro'
+        })
     },
 
     confirmarExclusao(veterinario) {

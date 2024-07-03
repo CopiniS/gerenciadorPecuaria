@@ -113,7 +113,7 @@ export default {
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'veterinarios') {
-        this.$router.push('/Veterinarios');
+        this.$router.push('/veterinarios');
       }
     },
 
@@ -124,7 +124,7 @@ export default {
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
-            this.$router.push('/Veterinarios');
+            this.$router.push('/veterinarios');
           } else {
             alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');
           }

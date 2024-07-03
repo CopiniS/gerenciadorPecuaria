@@ -13,6 +13,8 @@ import PropriedadeEdicao from '@/components/PropriedadeEdicao.vue';
 import InicialView from '@/views/InicialView.vue';
 import PerfilProdutor from '@/components/PerfilProdutor.vue';
 import TelaVeterinarios from '@/views/TelaVeterinarios.vue';
+import VeterinarioCadastro from '@/components/VeterinarioCadastro.vue';
+import VeterinarioEdicao from '@/components/VeterinarioEdicao.vue';
 import TelaProdutos from '@/views/TelaProdutos.vue';
 import ProdutoCadastro from '@/components/ProdutoCadastro.vue'
 import ProdutoEdicao from '@/components/ProdutoEdicao.vue'
@@ -27,7 +29,9 @@ import TelaSuplementacao from '@/views/TelaSuplementacao.vue';
 import SuplementacaoCadastro from '@/components/SuplementacaoCadastro.vue';
 import SuplementacaoEdicao from '@/components/SuplementacaoEdicao.vue';
 import SuplementacaoFinalizacao from '@/components/SuplementacaoFinalizacao.vue';
-import TelaAplicacoesProdutos from '@/views/TelaAplicacoesProdutos.vue'
+import TelaAplicacoesProdutos from '@/views/TelaAplicacoesProdutos.vue';
+import AplicacoesProdutosCadastro from '@/components/AplicacoesProdutosCadastro.vue';
+import AplicacoesProdutosEdicao from '@/components/AplicacoesProdutosEdicao.vue';
 import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue';
 import VendaAnimalCadastro from '@/components/VendaAnimalCadastro.vue';
 import VendaAnimalEdicao from '@/components/VendaAnimalEdicao.vue';
@@ -42,16 +46,12 @@ import TelaMovimentacoes from '@/views/TelaMovimentacoes.vue';
 import MovimentacaoCadastro from '@/components/MovimentacaoCadastro.vue';
 import MovimentacaoEdicao from '@/components/MovimentacaoEdicao.vue';
 import MovimentacaoVisualizacao from '@/components/MovimentacaoVisualizacao.vue';
-import VeterinarioCadastro from '@/components/VeterinarioCadastro.vue';
-import VeterinarioEdicao from '@/components/VeterinarioEdicao.vue';
 import OutraDespesaEdicao from '@/components/OutraDespesaEdicao.vue';
 import OutraDespesaCadastro from '@/components/OutraDespesaCadastro.vue';
 import PiqueteCadastro from '@/components/PiqueteCadastro.vue';
 import PiqueteEdicao from '@/components/PiqueteEdicao.vue';
 import AnimaisCadastro from '@/components/AnimaisCadastro.vue';
 import AnimaisEdicao from '@/components/AnimaisEdicao.vue';
-import AplicacoesProdutosCadastro from '@/components/AplicacoesProdutosCadastro.vue';
-import AplicacoesProdutosEdicao from '@/components/AplicacoesProdutosEdicao.vue';
 
 const routes = [
   
@@ -152,11 +152,24 @@ const routes = [
     name: 'PerfilProdutor',
     component: PerfilProdutor, 
   },
+
   {
-    path: '/Veterinarios',
+    path: '/veterinarios',
     name: 'TelaVeterinarios',
     component: TelaVeterinarios, 
   },
+  {
+    path: '/veterinarios/cadastro',
+    name: 'VeterinarioCadastro',
+    component: VeterinarioCadastro
+  },
+  {
+    path: '/veterinarios/edicao/:veterinarioId',
+    name: 'VeterinarioEdicao',
+    component: VeterinarioEdicao,
+    props: true
+  },
+
   {
     path: '/produtos',
     name: 'TelaProdutos',
@@ -321,16 +334,6 @@ const routes = [
     name: 'MovimentacaoVisualizacao',
     component: MovimentacaoVisualizacao,
     props: true
-  },
-  {
-    path: '/cadastroVeterinario',
-    name: 'CadastroVeterinario',
-    component: VeterinarioCadastro
-  },
-  {
-    path: '/editarVeterinario',
-    name: 'EdicaoVeterinario',
-    component: VeterinarioEdicao
   },
 
   {

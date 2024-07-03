@@ -53,7 +53,7 @@
                 <ul class="dropdown-menu justify-content-center">
                   <li><a class="dropdown-item" href="/animais"><i class="fas fa-paw"></i> Lista de Animais</a></li>
                   <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/raca"><i class="fas fa-dna"></i> Raças</a></li>
+                  <li><a class="dropdown-item" href="/racas"><i class="fas fa-dna"></i> Raças</a></li>
                   <hr class="custom-hr">
                   <li><a class="dropdown-item" href="/Pesagens"><i class="fas fa-weight"></i> Pesagens</a></li>
                   <hr class="custom-hr">
@@ -63,7 +63,7 @@
                   <li><a class="dropdown-item" href="/inseminacoes"><i class="fas fa-capsules"></i> Inseminações</a>
                   </li>
                   <hr class="custom-hr">
-                  <li><a class="dropdown-item" href="/Movimentacoes"><i class="fas fa-cogs"></i> Movimentacoes</a></li>
+                  <li><a class="dropdown-item" href="/movimentacoes"><i class="fas fa-cogs"></i> Movimentacoes</a></li>
                 </ul>
               </li>
               <hr class="custom-hr">
@@ -72,7 +72,7 @@
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/Veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</a>
+                <a href="/veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">

@@ -135,12 +135,12 @@ export default {
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'veterinarios') {
-        this.$router.push('/Veterinarios');
+        this.$router.push('/veterinarios');
       }
     },
 
     cancelarEdicao() {
-      this.$router.push('/Veterinarios');
+      this.$router.push('/veterinarios');
     },
 
     async submitForm() {
@@ -150,7 +150,7 @@ export default {
           if (response.status === 200) {
             alert('Veterinário atualizado com sucesso!');
             this.resetForm();
-            this.$router.push('/Veterinarios');
+            this.$router.push('/veterinarios');
           } else {
             alert('Erro ao atualizar veterinário. Tente novamente mais tarde.');
           }

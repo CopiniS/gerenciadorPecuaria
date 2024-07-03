@@ -47,7 +47,7 @@
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/Veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</a>
+                <a href="/veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">

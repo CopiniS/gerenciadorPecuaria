@@ -321,9 +321,7 @@ export default {
       this.modalTitle = 'Cadastro de Pesagem';
       this.camposHabilitados = false;
     },
-    confirmarExclusao(data) {
-      this.dataParaExclusao = data;
-    },
+    
     confirmarExclusaoPesagem(pesagem) {
       this.pesagemParaExcluir = pesagem;
     },

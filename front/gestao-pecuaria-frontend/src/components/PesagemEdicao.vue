@@ -5,9 +5,6 @@
         <button class="nav-link" :class="{ active: activeTab === 'pesagens' }" id="nav-vet-tab"
           @click="selectTab('pesagens')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
           Pesagens</button>
-        <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-vet-tab"
-          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Visualização de Pesagens</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
           @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
           de Pesagem</button>

@@ -49,16 +49,20 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-              <th scope="col">Data Pesagem</th>
+              <th scope="col">Data</th>
+              <th scope="col">Brinco</th>
+              <th scope="col">Peso</th>
               <th scope="col">Ações</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data, index) in datasPesagens" :key="index">
-              <td>{{ formatarData(data) }}</td>
+            <tr v-for="(pesagem, index) in pesagens" :key="index">
+              <td>{{ formatarData(pesagem.dataPesagem) }}</td>
+              <td>{{ pesagem.animal.brinco}}</td>
+              <td>{{ pesagem.peso}}</td>
               <td>
-                <button @click="acessarVisualizacao(data)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
-                <button @click="confirmarExclusao(data)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                <button @click="acessarEdicao(pesagem)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="confirmarExclusaoPesagem(pesagem)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                 data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
               </td>
             </tr>
@@ -80,7 +84,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarPesagemPorData()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarPesagem()">Excluir</button>
           </div>
         </div>
       </div>
@@ -96,9 +100,6 @@ export default {
   data() {
     return {
       pesagens: [],
-      datasPesagens: [],
-      dataParaExclusao: null,
-      pesagensSelecionadas: [],
       formData: {
         id: null,
         dataPesagem: '',
@@ -126,25 +127,37 @@ export default {
             },
         });
         this.pesagens = response.data;
-        this.preencherDatasPesagens();
 
       } catch (error) {
         console.error('Erro ao buscar pesagens da API:', error);
       }
     },
 
-    async preencherDatasPesagens(){
-      const datasSet = new Set();
-      this.pesagens.forEach(pesagem => {
-        datasSet.add(pesagem.dataPesagem);
-      });
-      this.datasPesagens = Array.from(datasSet).sort((b, a) => new Date(a) - new Date(b));
+    async apagarPesagem() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/pesagens/${this.formData.id}/`);
+
+        if (response.status === 204) {
+          alert('Pesagem excluído com sucesso!');
+          this.buscarPesagensDaApi();
+        } else {
+          alert('Erro ao excluir a pesagem. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoModal');
+    },
+
+    confirmarExclusaoPesagem(pesagem) {
+      this.formData.id = pesagem.id;
     },
     
-    acessarVisualizacao(data) {
-        this.$router.push({
-            name: 'PesagemVisualizacao', 
-            params: { dataSelecionada: data } 
+    acessarEdicao(pesagem) {
+      this.$router.push({
+        name: 'PesagemEdicao', 
+        params: { pesagemId: pesagem.id } 
       })
     },
 
@@ -169,27 +182,6 @@ export default {
       } else {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
-    },
-    confirmarExclusao(data) {
-      this.dataParaExclusao = data;
-    },
-    async apagarPesagemPorData() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/pesagens/datas/${this.dataParaExclusao}/`, {
-        });
-
-        if (response.status === 204) {
-          alert('Pesagens excluídas com sucesso!');
-          this.dataParaExclusao = null;
-        } else {
-          alert('Erro ao excluir pesagens. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.buscarPesagensDaApi();
-      this.fecharModal('confirmacaoExclusaoModal');
     },
 
     aplicarFiltro() {

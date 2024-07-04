@@ -2,27 +2,19 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab" @click="selectTab('animais')" 
-        type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista de Animais</button>
-        
-        <button class="nav-link" :class="{ active: activeTab === 'aplicacao' }" id="nav-aplicacao-tab" @click="selectTab('aplicacao')" 
-        type="button" role="tab" aria-controls="nav-aplicacao" aria-selected="false">Lista de Aplicação</button>
+        <button class="nav-link" :class="{ active: activeTab === 'aplicacoes' }" id="nav-vet-tab" @click="selectTab('aplicacoes')" 
+        type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Aplicação</button>
         <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
         type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Aplicação</button>
       </div>
     </nav>
-    
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais" role="tabpanel" aria-labelledby="nav-animais-tab">
-      </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'aplicacao' }" id="nav-aplicacao" role="tabpanel" aria-labelledby="nav-aplicacao-tab">
-        
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'aplicacoes' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
       </div>
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
-      
-        <div class="table-container" id="aplicacao" tabindex="-1" aria-labelledby="aplicacaoLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="aplicacaoLabel">Cadastro de Aplicação</h1>
-          <form @submit.prevent="submitFormAplicacao">
+        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Aplicação</h1>
+            <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
@@ -47,12 +39,12 @@
             </div>
             <div class="mb-3 input-group" v-if="radioEscolha === 'piquete'">
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="piquete" @input="filtrarPiquetes" type="text" class="form-control"
+              <input v-model="nomePiquete" @input="filtrarPiquetes" type="text" class="form-control"
                 placeholder="Digite o nome do piquete...">
             </div>
-            <div class="list-group" v-if="piquete && filteredPiquetes.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="piquete in filteredPiquetes"
-                :key="piquete.id" @click="selecionarPiquete(piquete)">
+            <div class="list-group" v-if="nomePiquete && piquetesFiltrados.length">
+              <button type="button" class="list-group-item list-group-item-action" v-for="piquete in piquetesFiltrados"
+                :key="piquete.id" @click="selectPiquete(piquete)">
                 {{ piquete.nome }}
               </button>
             </div>
@@ -76,10 +68,10 @@
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.observacao" type="text" class="form-control" id="observacao"
                 :disabled="!((camposHabilitadosPiquete || camposHabilitadosAnimal) && camposHabilitadosProduto)"
-                placeholder="Observação" required>
+                placeholder="Observação">
             </div>
             <div class="button-group justify-content-end">
-              <button type="button" class="btn btn-secondary" @click="selectTab('aplicacao')">Cancelar</button>
+              <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
               <button type="submit" class="btn btn-success">Enviar</button>
             </div>
           </form>
@@ -89,34 +81,23 @@
   </div>
 </template>
 
-
 <script>
-import api from '/src/interceptadorAxios'
+import api from '/src/interceptadorAxios';
 
 export default {
-  name: 'TelaAplicacoesProdutos',
   data() {
     return {
-      activeTab: 'cadastro',
+      activeTab: 'cadastro',  // Aba inicial é 'cadastro'
       animais: [],
       animaisFiltrados: [],
       brinco: '',
-      aplicacoes: [],
       produtos: [],
       produtosFiltrados: [],
       nomeProduto: '',
-      datasAplicacoes: [],
-      dataSelecionada: null,
-      detalhesAplicacao: [],
-      aplicacaoParaExcluir: null,
-      dataParaExclusao: null,
-      camposHabilitadosAnimal: false,
-      camposHabilitadosPiquete: false,
-      camposHabilitadosProduto: false,
       piquetes: [],
-      piquete: '',
+      nomePiquete: '',
       piqueteId: null,
-      filteredPiquetes: [],
+      piquetesFiltrados: [],
       radioEscolha: 'brinco',
       formData: {
         id: null,
@@ -126,50 +107,26 @@ export default {
         dataAplicacao: '',
         observacao: null,
       },
-      isProdutoValido: true,
-      isDosagemValido: true,
-      isDataAplicacaoValido: true,
-      isBrincoValido: true,
+      isAnimalValido: true,
+      isDataValida: true,
       isPiqueteValido: true,
-      piquetePlaceholder: 'Selecione o piquete',
-      brincoPlaceholder: 'Digite o brinco',
-      dataAplicacaoPlaceholder: 'Selecione a data da aplicacao',
-      dosagemPlaceholder: 'Digite a dosagem',
-      produtoPlaceholder: 'Selecione o produto',
-    }
-
+      isDosagemValida: true,
+      isObservacaoValida: true,
+      animalPlaceholder: 'Brinco do animal',
+      dataPlaceholder: 'Data da aplicacao',
+      piquetePlaceholder: 'Piquete',
+      dosagemPlaceholder: 'Dosagem do produto',
+      observacaoPlaceholder: 'Observação',
+    };
   },
-  mounted() {
+
+    mounted() {
     this.buscarAnimaisDaApi();
     this.buscarProdutosDaApi();
     this.buscarPiquetesDaApi();
   },
+
   methods: {
-    validarFormulario() {
-      this.isProdutoValido = !!this.formData.produto;
-      this.isDosagemValido = !!this.formData.dosagem;
-      this.isDataAplicacaoValido = !!this.formData.dataAplicacao;
-      this.isBrincoValido = !!this.formData.brinco;
-      this.isPiqueteValido = !!this.formData.piquete;
-
-      this.produtoPlaceholder = this.isProdutoValido ? 'Selecione o produto' : 'Produto é obrigatório';
-      this.dosagemPlaceholder = this.isDosagemValido ? 'Digite a dosagem' : 'Dosagem é obrigatória';
-      this.dataAplicacaoPlaceholder = this.isDataAplicacaoValido ? 'Selecione a data da aplicacao' : 'Data de aplicação é obrigatória';
-      this.brincoPlaceholder = this.isBrincoValido ? 'Digite o brinco' : 'Brinco é obrigatório';
-      this.piquetePlaceholder = this.isPiqueteValido ? 'Selecione o piquete' : 'Piquete é obrigatório';
-
-      return this.isProdutoValido && this.isDosagemValido && this.isDataAplicacaoValido && this.isBrincoValido && this.isPiqueteValido;
-    },
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'animais') {
-        this.$router.push('/animais');
-      }
-      if (tab === 'aplicacao') {
-        this.$router.push('/aplicacoes-produtos');
-      }
-    },
-
     async buscarAnimaisDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/vivos', {
@@ -183,6 +140,18 @@ export default {
       }
     },
 
+    filterAnimais() {
+      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
+    },
+
+    selectAnimal(animal) {
+      this.formData.animal = [];
+      this.brinco = animal.brinco;
+      this.formData.animal.push(animal.id);
+      this.camposHabilitadosAnimal = true;
+      this.animaisFiltrados = [];
+    },
+
     async buscarPiquetesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/');
@@ -193,29 +162,15 @@ export default {
     },
 
     filtrarPiquetes() {
-      this.filteredPiquetes = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piquete));
+      this.piquetesFiltrados = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.nomePiquete));
     },
 
-    selecionarPiquete(piquete) {
+    selectPiquete(piquete) {
       this.camposHabilitadosPiquete = true;
       this.piqueteId = piquete.id;
-      this.piquete = piquete.nome;
-      this.filteredPiquetes = [];
+      this.nomePiquete = piquete.nome;
+      this.piquetesFiltrados = [];
       this.preencheListaAnimais()
-    },
-
-    filterAnimais() {
-      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
-    },
-
-    selectAnimal(animal) {
-      this.formData.animal = [];
-      this.brinco = animal.brinco;
-      console.log('animalId antes: ', this.formData.animal);
-      this.formData.animal.push(animal.id);
-      console.log('animalId depois: ', this.formData.animal);
-      this.camposHabilitadosAnimal = true;
-      this.animaisFiltrados = [];
     },
 
     async buscarProdutosDaApi() {
@@ -247,27 +202,36 @@ export default {
       });
     },
 
+    validarFormulario() {
+      return true;
+    },
+
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'aplicacoes') {
+        this.$router.push('/aplicacoes-produtos');
+      }
+    },
+
     async submitForm() {
       if (this.validarFormulario()) {
         try {
-          const response = await api.post('http://127.0.0.1:8000/aplicacoes-produtos/', this.formData, {
-          });
+          const response = await api.post('http://127.0.0.1:8000/aplicacoes-produtos/', this.formData , {
+        });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.buscarAplicacoesDaApi();
-            this.fecharModal("cadastroModal");
+            this.$router.push('/aplicacoes-produtos');
           } else {
-            alert('Erro ao cadastrar aplicação de produto. Tente novamente mais tarde.');
+            alert('Erro ao cadastrar aplicacao. Tente novamente mais tarde.');
           }
         } catch (error) {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-    } 
-  }
-  }
+      } 
+    },
+  },
 };
 </script>
 
@@ -276,10 +240,12 @@ export default {
 
 .background {
   background-color: #ededef;
-  /* Um tom mais escuro que o branco */
   min-height: 100vh;
-  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
+}
+
+.nav-link.active {
+  background-color: #d0d0d0 !important;
 }
 
 .table-container {
@@ -296,12 +262,36 @@ export default {
   margin-bottom: 20px;
 }
 
+.table-container table tbody tr td {
+  background-color: #ededef !important;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #176d1a;
+  background-color: #f0f0f0;
+}
+
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.btn-acoes i {
+  color: #176d1a;
+}
+
+.btn-success {
+  background-color: #176d1a;
+}
+
 .button-group {
   display: flex;
   gap: 10px;
 }
-.nav-link.active {
-  background-color: #d0d0d0 !important;
-  /* Cor um pouco mais escura quando a aba está ativa */
+
+.is-invalid {
+  border-color: #dc3545;
 }
+
 </style>

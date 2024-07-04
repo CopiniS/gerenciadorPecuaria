@@ -29,8 +29,8 @@ import SuplementacaoCadastro from '@/components/SuplementacaoCadastro.vue';
 import SuplementacaoEdicao from '@/components/SuplementacaoEdicao.vue';
 import SuplementacaoFinalizacao from '@/components/SuplementacaoFinalizacao.vue';
 import TelaAplicacoesProdutos from '@/views/TelaAplicacoesProdutos.vue';
-import AplicacoesProdutosCadastro from '@/components/AplicacoesProdutosCadastro.vue';
-import AplicacoesProdutosEdicao from '@/components/AplicacoesProdutosEdicao.vue';
+import AplicacaoProdutoCadastro from '@/components/AplicacaoProdutoCadastro.vue';
+import AplicacaoProdutoEdicao from '@/components/AplicacaoProdutoEdicao.vue';
 import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue';
 import VendaAnimalCadastro from '@/components/VendaAnimalCadastro.vue';
 import VendaAnimalEdicao from '@/components/VendaAnimalEdicao.vue';
@@ -238,15 +238,16 @@ const routes = [
   },
 
   {
-    path: '/aplicacoes-produtos-cadastro',
-    name: 'AplicacoesProdutosCadastro',
-    component: AplicacoesProdutosCadastro
+    path: '/aplicacoes-produtos/cadastro',
+    name: 'AplicacaoProdutoCadastro',
+    component: AplicacaoProdutoCadastro,
   },
 
   {
-    path: '/aplicacoes-produtos-edicao',
-    name: 'AplicacoesProdutosEdicao',
-    component: AplicacoesProdutosEdicao
+    path: '/aplicacoes-produtos/edicao/:aplicacaoId',
+    name: 'AplicacaoProdutoEdicao',
+    component: AplicacaoProdutoEdicao,
+    props: true,
   },
 
   {

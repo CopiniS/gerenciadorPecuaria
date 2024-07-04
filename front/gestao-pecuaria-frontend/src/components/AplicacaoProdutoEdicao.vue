@@ -1,0 +1,286 @@
+<template>
+  <div class="background">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link" :class="{ active: activeTab === 'aplicacoes' }" id="nav-vet-tab"
+          @click="selectTab('aplicacoes')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
+          Aplicações</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
+          de Aplicação</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'aplicacoes' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab">
+      </div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
+        aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Aplicação</h1>
+          <form @submit.prevent="submitForm">
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                placeholder="Data da aplicação" class="form-control" id="dataAplicacaoCadastro"
+                v-model="formData.dataAplicacao" required>
+            </div>
+            <div class="list-group" v-if="brinco && animaisFiltrados.length">
+              <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados"
+                :key="animal.id" @click="selectAnimal(animal)">
+                {{ animal.brinco }}
+              </button>
+            </div>
+            <div class="mb-3 input-group">
+              <input v-model="nomeProduto" @input="filterProdutos" type="text" class="form-control"
+                placeholder="Digite o produto...">
+            </div>
+            <div class="list-group" v-if="nomeProduto && produtosFiltrados.length">
+              <button type="button" class="list-group-item list-group-item-action"
+                v-for="produto in produtosFiltrados" :key="produto.id" @click="selectProduto(produto)">
+                {{ produto.nome }}
+              </button>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.dosagem" type="text" class="form-control" id="dosagem" placeholder="Dosagem" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.observacao" type="text" class="form-control" id="observacao" placeholder="Observação">
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
+              <button type="submit" class="btn btn-success">Enviar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import api from '/src/interceptadorAxios';
+
+export default {
+  data() {
+    return {
+      activeTab: 'edicao', // Começa na aba de edição
+      animais: [],
+      animaisFiltrados: [],
+      brinco: '',
+      produtos: [],
+      produtosFiltrados: [],
+      nomeProduto: '',
+      radioEscolha: 'brinco',
+      formData: {
+        id: null,
+        produto: '',
+        animal: [],
+        dosagem: '',
+        dataAplicacao: '',
+        observacao: null,
+      },
+      isAnimalValido: true,
+      isDataValida: true,
+      isPiqueteValido: true,
+      isDosagemValida: true,
+      isObservacaoValida: true,
+      animalPlaceholder: 'Brinco do animal',
+      dataPlaceholder: 'Data da aplicacao',
+      piquetePlaceholder: 'Piquete',
+      dosagemPlaceholder: 'Dosagem do produto',
+      observacaoPlaceholder: 'Observação',
+    };
+  },
+
+  mounted() {
+    const aplicacaoId = this.$route.params.aplicacaoId;
+    if (aplicacaoId) {
+      this.fetchAplicacao(aplicacaoId);
+    }
+    this.buscarAnimaisDaApi();
+    this.buscarProdutosDaApi();
+  },
+  methods: {
+    async fetchAplicacao(id) {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/aplicacoes-produtos/aplicacao/${id}`);
+        const aplicacao = response.data;
+        this.formData.id = aplicacao[0].id;
+        this.formData.animal = aplicacao[0].animal.id;
+        this.formData.dataAplicacao = aplicacao[0].dataAplicacao;
+        this.formData.produto = aplicacao[0].produto.id;
+        this.formData.dosagem = aplicacao[0].dosagem;
+        this.formData.observacao = aplicacao[0].observacao;
+
+        this.brinco = aplicacao[0].animal.brinco;
+        this.nomeProduto = aplicacao[0].produto.nome;
+      } catch (error) {
+        console.error('Erro ao carregar dados da aplicacao:', error);
+      }
+    },
+
+    async buscarAnimaisDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/animais/vivos', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.animais = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar animais da API:', error);
+      }
+    },
+
+    filterAnimais() {
+      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
+    },
+
+    selectAnimal(animal) {
+      this.formData.animal = [];
+      this.brinco = animal.brinco;
+      this.formData.animal.push(animal.id);
+      this.camposHabilitadosAnimal = true;
+      this.animaisFiltrados = [];
+    },
+
+    async buscarProdutosDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/produtos/sanitarios', {});
+        this.produtos = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar produtos da API:', error);
+      }
+    },
+
+    filterProdutos() {
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeProduto));
+    },
+
+    selectProduto(produto) {
+      this.nomeProduto = produto.nome;
+      this.formData.produto = produto.id;
+      this.camposHabilitadosProduto = true;
+      this.produtosFiltrados = [];
+    },
+
+    validarFormulario() {
+      return true;
+    },
+
+
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'aplicacoes') {
+        this.$router.push('/aplicacoes-produtos');
+      }
+    },
+
+    cancelarEdicao() {
+      this.$router.push('/aplicacoes');
+    },
+
+    async submitForm() {
+      if (this.validarFormulario()) {
+        try {
+            console.log(this.formData);
+          const response = await api.patch(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`, this.formData, {
+          });
+
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.resetForm();
+            this.$router.push('/aplicacoes');
+          } else {
+            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+    resetForm() {
+      this.formData = {
+        id: null,
+        dataAplicacao: '',
+        veterinario: '',
+        animal: '',
+        identificadorTouro: '',
+      },
+      this.isAnimalValido = true,
+      this.isDataValida = true,
+      this.isVeterinarioValido = true,
+      this.isIdentificadorTouroValido = true,
+      this.animalPlaceholder = 'Brinco do animal',
+      this.dataPlaceholder = 'Data da aplicacao',
+      this.veterinarioPlaceholder = 'Veterinário',
+      this.identificadorTouroPlaceholder = 'Identificador do Touro'
+    },
+  },
+};
+</script>
+
+<style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+.background {
+  background-color: #ededef;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.nav-link.active {
+  background-color: #d0d0d0 !important;
+}
+
+.table-container {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.button-container {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.table-container table tbody tr td {
+  background-color: #ededef !important;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #176d1a;
+  background-color: #f0f0f0;
+}
+
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.btn-acoes i {
+  color: #176d1a;
+}
+
+.btn-success {
+  background-color: #176d1a;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+}
+</style>

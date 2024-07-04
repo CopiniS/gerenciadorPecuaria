@@ -1,17 +1,14 @@
 <template>
 <div class="background">
   <nav>
-      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'aplicacao' }" id="nav-aplicacao-tab" @click="selectTab('aplicacao')" 
-        type="button" role="tab" aria-controls="nav-aplicacao" aria-selected="false">Lista de Aplicação</button>
-        
-      </div>
-    </nav>
-    
-    <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'aplicacao' }" id="nav-aplicacao" role="tabpanel" aria-labelledby="nav-aplicacao-tab">
-      </div>
-    </div>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
+    data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Aplicações</button>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
+ </div>
 
   <h2>Aplicações de Produtos</h2>
     <div class="d-flex align-items-start table-container flex-column">

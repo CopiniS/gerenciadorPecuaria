@@ -154,7 +154,11 @@ export default {
 
     async buscarPiquetesDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/piquetes/');
+        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
         this.piquetes = response.data;
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);

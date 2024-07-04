@@ -51,7 +51,7 @@
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
-              <button type="submit" class="btn btn-success">Enviar</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
             </div>
           </form>
         </div>
@@ -192,8 +192,7 @@ export default {
 
           if (response.status === 200) {
             alert('Alterações salvas com sucesso!');
-            this.resetForm();
-            this.$router.push('/aplicacoes');
+            this.$router.push('/aplicacoes-produtos');
           } else {
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
@@ -202,24 +201,6 @@ export default {
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
       }
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        dataAplicacao: '',
-        veterinario: '',
-        animal: '',
-        identificadorTouro: '',
-      },
-      this.isAnimalValido = true,
-      this.isDataValida = true,
-      this.isVeterinarioValido = true,
-      this.isIdentificadorTouroValido = true,
-      this.animalPlaceholder = 'Brinco do animal',
-      this.dataPlaceholder = 'Data da aplicacao',
-      this.veterinarioPlaceholder = 'Veterinário',
-      this.identificadorTouroPlaceholder = 'Identificador do Touro'
     },
   },
 };

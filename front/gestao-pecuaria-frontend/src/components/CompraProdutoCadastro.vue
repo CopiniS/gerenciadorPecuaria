@@ -142,12 +142,11 @@ export default {
     },
 
     handleClickOutside(event) {
-  if (this.dropdownOpen && !this.$refs.dropdown.contains(event.target) && !event.target.closest('.input-group')) {
-    this.dropdownOpen = false;
-    this.nomeDigitado = '';
-  }
-},
-
+      if (this.dropdownOpen && !this.$refs.dropdown.contains(event.target)) {
+        this.dropdownOpen = false;
+        this.nomeDigitado = '';
+      }
+    },
 
     filterProdutos() {
       this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));

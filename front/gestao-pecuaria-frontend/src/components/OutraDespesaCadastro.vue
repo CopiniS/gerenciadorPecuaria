@@ -49,7 +49,7 @@
 <script>
 import api from '/src/interceptadorAxios';
 import $ from 'jquery';
-import 'jquery-maskmoney/dist/jquery.maskMoney.min.js';
+import 'jquery-mask-plugin';
 
 export default {
   data() {
@@ -70,15 +70,7 @@ export default {
   },
   
   mounted() {
-      // $(this.$refs.valor).mask("#.##0,00", { reverse: true });
-      // Aplicar a máscara ao campo de entrada quando o componente é montado
-      $(`#valor`).maskMoney({
-        prefix: 'R$ ',
-        allowNegative: false,
-        thousands: '.',
-        decimal: ',',
-        affixesStay: true
-      });
+      $(this.$refs.valor).mask("#.##0,00", { reverse: true });
   },
   
   methods: {

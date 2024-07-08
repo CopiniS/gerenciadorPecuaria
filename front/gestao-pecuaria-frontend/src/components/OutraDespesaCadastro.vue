@@ -27,7 +27,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" @input="aplicaFormatacaoBRL"
+              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor"
                 type="text" class="form-control" id="valor" :placeholder="valorPlaceholder">
             </div>
             <div class="mb-3 input-group">
@@ -48,6 +48,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery';
+import 'jquery-mask-plugin';
 
 export default {
   data() {
@@ -66,6 +68,11 @@ export default {
       valorPlaceholder: 'Valor',
     };
   },
+  
+  mounted() {
+      $(this.$refs.valor).mask("#.##0,00", { reverse: true });
+  },
+  
   methods: {
 
     validarFormulario() {

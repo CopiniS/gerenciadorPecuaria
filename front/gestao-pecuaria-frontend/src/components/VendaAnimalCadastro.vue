@@ -22,7 +22,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input @input="atualizaValorTotalPeloPrecoKg()" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
+                  <input ref="valor" @input="atualizaValorTotalPeloPrecoKg()" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" placeholder="Preço por Kg" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal" placeholder="Valor Total" required>
+                  <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal" placeholder="Valor Total" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
@@ -69,6 +69,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery';
+import 'jquery-mask-plugin';
 
 export default {
   data() {
@@ -103,6 +105,7 @@ export default {
   },
 
     mounted() {
+      $(this.$refs.valor).mask("#.##0,00", { reverse: true });
     this.buscarAnimaisDaApi();
   },
 

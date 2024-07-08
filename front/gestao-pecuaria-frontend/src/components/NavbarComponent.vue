@@ -54,7 +54,7 @@
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/propriedades" class="nav-link"><i class="fas fa-user"></i> Propriedades</a>
+                <a href="/propriedades" class="nav-link"><i class="fas fa-landmark"></i> Propriedades</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">

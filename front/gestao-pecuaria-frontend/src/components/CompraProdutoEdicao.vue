@@ -47,7 +47,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-              <input v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="number"
+              <input ref="valor" v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="text"
                 class="form-control" id="valorUnitario" :placeholder="valorUnitarioPlaceholder">
             </div>
             <div class="mb-3 input-group">
@@ -79,6 +79,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery';
+import 'jquery-mask-plugin';
 
 export default {
   data() {
@@ -114,12 +116,14 @@ export default {
   },
 
   mounted() {
+    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
     const compraId = this.$route.params.compraId;
     if (compraId) {
       this.fetchCompra(compraId);
     }
     this.buscarProdutos();
   },
+
   methods: {
     async fetchCompra(id) {
       try {
@@ -163,25 +167,33 @@ export default {
     },
 
     validarFormulario() {
-      this.isDataCompraValida = !!this.formData.dataCompra.trim();
-      if (!this.isDataCompraValida) this.formData.dataCompra = '';
 
-      this.isProdutoValido = !!this.formData.produto.trim();
-      if (!this.isProdutoValido) this.formData.produto = '';
+this.isDataCompraValida = !!this.formData.dataCompra.trim();
+if (!this.isDataCompraValida) this.formData.dataCompra = '';
 
-      this.isValidadeValida = !!this.formData.validade.trim();
-      if (!this.isValidadeValida) this.formData.validade = '';
+this.isProdutoValido = !!this.formData.produto.trim();
+if (!this.isProdutoValido) this.formData.produto = '';
 
-      this.isLoteValido = !!this.formData.lote.trim();
-      if (!this.isLoteValido) this.formData.lote = '';
+this.isValidadeValida = !!this.formData.validade.trim();
+if (!this.isValidadeValida) this.formData.validade = '';
 
-      this.dataCompraPlaceholder = this.isDataCompraValida ? 'Data da Compra' : 'Campo Data da Compra é obrigatório';
-      this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo Produto é obrigatório';
-      this.validadePlaceholder = this.isValidadeValida ? 'Validade do produto' : 'Campo Validade é obrigatório';
-      this.lotePlaceholder = this.isLoteValido ? 'Lote do Produto' : 'Campo Lote é obrigatório';
+this.isLoteValido = !!this.formData.lote.trim();
+if (!this.isLoteValido) this.formData.lote = '';
 
-      return this.isDataCompraValida && this.isProdutoValido && this.isValidadeValida && this.isLoteValido;
-    },
+this.dataCompraPlaceholder = this.isDataCompraValida ? 'Data da Compra' : 'Campo Data da Compra obrigatório';
+this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo Produto obrigatório';
+this.validadePlaceholder = this.isValidadeValida ? 'Validade do Produto' : 'Campo Validade obrigatório';
+this.lotePlaceholder = this.isLoteValido ? 'Lote do Produto' : 'Campo Lote obrigatório';
+this.isValorUnitarioValido = !isNaN(parseFloat(this.formData.valorUnitario));
+if (!this.isValorUnitarioValido) this.formData.valorUnitario = '';
+this.valorUnitarioPlaceholder = this.isValorUnitarioValido ? 'Valor do Produto' : 'Valor do produto deve ser numérico';
+
+this.isQuantidadeCompradaValida = !isNaN(parseInt(this.formData.quantidadeComprada));
+if (!this.isQuantidadeCompradaValida) this.formData.quantidadeComprada = '';
+this.quantidadeCompradaPlaceholder = this.isQuantidadeCompradaValida ? 'Quantidade Comprada' : 'Quantidade comprada deve ser um número inteiro';
+
+return this.isDataCompraValida && this.isProdutoValido && this.isValorUnitarioValido && this.isQuantidadeCompradaValida && this.isValidadeValida && this.isLoteValido;
+},
 
     selectTab(tab) {
       this.activeTab = tab;

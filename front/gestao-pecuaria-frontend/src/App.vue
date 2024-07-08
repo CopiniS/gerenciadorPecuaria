@@ -4,8 +4,6 @@
 
     <PopUpPropriedade v-if="isPropriedadePage"/>
 
-    <PropriedadeCadastro v-if="isPropriedadeCadastroPage"/>
-
     <LoginView v-if="isLoginPage" />
 
     <Cadastro v-if="isCadastroPage" />
@@ -18,7 +16,6 @@ import NavbarComponent from './components/NavbarComponent.vue'
 import LoginView from '@/views/LoginView.vue'
 import Cadastro from '@/views/CadastroView.vue'
 import PopUpPropriedade from './views/PopUpPropriedade.vue';
-import PropriedadeCadastro from './components/PropriedadeCadastro.vue';
 
 export default {
   name: 'App',
@@ -27,11 +24,10 @@ export default {
     LoginView,
     Cadastro, 
     PopUpPropriedade,
-    PropriedadeCadastro
   },
   computed: {
     notIsLoginAndCadastroPage() {
-      return this.$route.name !== "login" && this.$route.name !== "cadastro" && this.$route.name !== "PopUpPropriedade" && this.$route.name !== "PropriedadeCadastro";
+      return this.$route.name !== "login" && this.$route.name !== "cadastro" && this.$route.name !== "PopUpPropriedade"
     },
     isLoginPage() {
       return this.$route.name === "login";
@@ -42,9 +38,6 @@ export default {
     isPropriedadePage() {
       return this.$route.name === "PopUpPropriedade";
     },
-    isPropriedadeCadastroPage() {
-      return this.$route.name === "PropriedadeCadastro";
-    }
   }
 };
 </script>

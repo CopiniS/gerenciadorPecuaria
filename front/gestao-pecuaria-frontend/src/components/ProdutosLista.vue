@@ -63,7 +63,7 @@
               <td>{{ produto.nome }}</td>
               <td>{{ produto.tipo }}</td>
               <td>{{ produto.categoria }}</td>
-              <td>{{ achaEstoque(produto.id) }}</td>
+              <td :class="{ 'is-invalid': achaEstoque(produto.id) <= 0 }">{{ achaEstoque(produto.id) }}</td>
               <td>
                 <button @click="acessarEdicao(produto)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
                 <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
@@ -280,5 +280,7 @@ export default {
   display: flex;
   gap: 10px; 
 }
-
+.is-invalid {
+  color: #ff0015; 
+}
 </style>

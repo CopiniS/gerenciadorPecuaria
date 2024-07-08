@@ -49,7 +49,7 @@
 <script>
 import api from '/src/interceptadorAxios';
 import $ from 'jquery';
-import 'jquery-mask-plugin';
+import 'jquery-maskmoney/dist/jquery.maskMoney.min.js';
 
 export default {
   data() {
@@ -70,16 +70,24 @@ export default {
   },
   
   mounted() {
-      $(this.$refs.valor).mask("#.##0,00", { reverse: true });
+      // $(this.$refs.valor).mask("#.##0,00", { reverse: true });
+      // Aplicar a máscara ao campo de entrada quando o componente é montado
+      $(`#valor`).maskMoney({
+        prefix: 'R$ ',
+        allowNegative: false,
+        thousands: '.',
+        decimal: ',',
+        affixesStay: true
+      });
   },
   
   methods: {
 
     validarFormulario() {
-      this.isDataValida = !!this.formData.dataDespesa.trim();
+      this.isDataValida = !!this.formData.dataDespesa;
       if (!this.isDataValida) this.formData.dataDespesa = '';
 
-      this.isValorValido = !!this.formData.valor.trim();
+      this.isValorValido = !!this.formData.valor;
       if (!this.isValorValido) this.formData.valor = '';
 
       this.dataPlaceholder = this.isDataValida ? 'Data da Despesa' : 'Campo Data da Despesa é obrigatório';
@@ -98,6 +106,7 @@ export default {
     async submitForm() {
       if (this.validarFormulario()) {
         try {
+          console.log(this.formData);
           const response = await api.post('http://127.0.0.1:8000/outras-despesas/', this.formData, {});
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');

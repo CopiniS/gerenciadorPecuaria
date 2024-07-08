@@ -171,7 +171,7 @@ export default {
 
     trocaPropriedade(propriedadeId){
         localStorage.setItem('propriedadeSelecionada', propriedadeId);
-        this.$router.push('/inicio')
+        window.location.reload();
     },
 
     fecharModal(modalId) {

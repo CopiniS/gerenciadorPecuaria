@@ -2,6 +2,9 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
+          @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
+          de Animais</button>
         <button class="nav-link" :class="{ active: activeTab === 'racas' }" id="nav-vet-tab" @click="selectTab('racas')" 
         type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Raca</button>
         <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
@@ -9,6 +12,9 @@
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais" role="tabpanel"
+        aria-labelledby="nav-animais-tab">
+      </div>
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'racas' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
       </div>
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
@@ -57,6 +63,9 @@ export default {
       this.activeTab = tab;
       if (tab === 'racas') {
         this.$router.push('/racas');
+      }
+      if (tab === 'animais') {
+        this.$router.push('/animais');
       }
     },
 

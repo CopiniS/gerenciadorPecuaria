@@ -1,92 +1,102 @@
 <template>
-<div class="background">
-
-  <nav>
-  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-    <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
-    data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Racas</button>
-  </div>
-</nav>
-<div class="tab-content" id="nav-tabContent">
-  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
- </div>
-
-<h2>Lista de Racas</h2>
-    <div class="d-flex align-items-start table-container flex-column">
-      <div class="d-flex align-items-start">
-          <h2 class="me-3">Filtros</h2>
-          <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+  <div class="background">
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
+          @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
+          de Animais</button>
+        <button class="nav-link" :class="{ active: activeTab === 'racas' }" id="nav-cadastro-tab"
+          @click="selectTab('racas')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Lista de Raças</button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
-        <div class="col-auto d-flex align-items-center">
-          <label for="nome" class="form-label me-2">Nome</label>
-          <input type="text" class="form-control" id="nome" v-model="filtro.nome">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="tipoCultivo" class="form-label me-2">Tipo de Cultivo</label>
-          <select class="form-select" id="tipoCultivo" v-model="filtro.tipoCultivo">
-            <option value="">Selecione o tipo</option>
-          </select>
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="area" class="form-label me-2">Área</label>
-          <input type="number" class="form-control" id="area" v-model="filtro.area">
-        </div>
-        <div class="col-auto">
-          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
-        </div>
-      </form>
-    </div>
+    </nav>
 
-  <div>
-    <div class="table-container">
-        <div class="button-container">
-            <button @click="acessarCadastro()" type="button" class="btn btn-success" >Cadastrar Raca</button>
-        </div>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Nome</th>
-              <th scope="col">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(raca, index) in racas" :key="index">
-              <td>{{ raca.nome }}</td>
-              <td>
-                <button @click="acessarEdicao(raca)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
-                <button @click="confirmarExclusao(raca)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      
-        
-    </div>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais" role="tabpanel"
+        aria-labelledby="nav-animais-tab">
+      </div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'racas' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
+        <div  id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
+          <h2>Lista de Racas</h2>
+          <div class="d-flex align-items-start table-container flex-column">
+            <div class="d-flex align-items-start">
+              <h2 class="me-3">Filtros</h2>
+              <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+              <div class="col-auto d-flex align-items-center">
+                <label for="nome" class="form-label me-2">Nome</label>
+                <input type="text" class="form-control" id="nome" v-model="filtro.nome">
+              </div>
+              <div class="col-auto d-flex align-items-center">
+                <label for="tipoCultivo" class="form-label me-2">Tipo de Cultivo</label>
+                <select class="form-select" id="tipoCultivo" v-model="filtro.tipoCultivo">
+                  <option value="">Selecione o tipo</option>
+                </select>
+              </div>
+              <div class="col-auto d-flex align-items-center">
+                <label for="area" class="form-label me-2">Área</label>
+                <input type="number" class="form-control" id="area" v-model="filtro.area">
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+                <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+              </div>
+            </form>
+          </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            Tem certeza de que deseja excluir esta Raca?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarRaca()">Excluir</button>
+          <div>
+            <div class="table-container">
+              <div class="button-container">
+                <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Raca</button>
+              </div>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(raca, index) in racas" :key="index">
+                    <td>{{ raca.nome }}</td>
+                    <td>
+                      <button @click="acessarEdicao(raca)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                      <button @click="confirmarExclusao(raca)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+
+            </div>
+
+            <!-- Modal de Confirmação de Exclusão -->
+            <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
+              aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">Confirmação de Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza de que deseja excluir esta Raca?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" @click="apagarRaca()">Excluir</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -95,6 +105,7 @@ import api from '/src/interceptadorAxios'
 export default {
   data() {
     return {
+      activeTab: 'racas',
       racas: [],
       formData: {
         id: null,
@@ -109,6 +120,12 @@ export default {
     this.buscarRacasDaApi();
   },
   methods: {
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'animais') {
+        this.$router.push('/animais');
+      }
+    },
     async buscarRacasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/racas/');
@@ -117,17 +134,17 @@ export default {
         console.error('Erro ao buscar raças da API:', error);
       }
     },
-    
+
     acessarEdicao(raca) {
       this.$router.push({
-        name: 'RacaEdicao', 
-        params: { racaId: raca.id } 
+        name: 'RacaEdicao',
+        params: { racaId: raca.id }
       })
     },
 
-    acessarCadastro(){
-        this.$router.push({
-        name: 'RacaCadastro', 
+    acessarCadastro() {
+      this.$router.push({
+        name: 'RacaCadastro',
       })
     },
 
@@ -146,7 +163,7 @@ export default {
     },
     async apagarRaca() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/racas/${this.formData.id}/` , {
+        const response = await api.delete(`http://127.0.0.1:8000/racas/${this.formData.id}/`, {
         });
 
         if (response.status === 204) {
@@ -181,8 +198,10 @@ export default {
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 .background {
-  background-color:  #ededef; /* Um tom mais escuro que o branco */
-  min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
+  background-color: #ededef;
+  /* Um tom mais escuro que o branco */
+  min-height: 100vh;
+  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
 }
 
@@ -194,23 +213,25 @@ export default {
 .table-container {
   margin-left: 20px;
   margin-right: 20px;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
 
 .button-container {
-  text-align: left; 
-  margin-bottom: 20px; 
+  text-align: left;
+  margin-bottom: 20px;
 }
 
 .table-container table tbody tr td {
-  background-color: #ededef !important; /* Cor de fundo das células da tabela */
+  background-color: #ededef !important;
+  /* Cor de fundo das células da tabela */
 }
 
 .table-container table thead tr th {
-  border-bottom: 2px solid #176d1a; /* Adiciona uma borda verde na parte inferior */
+  border-bottom: 2px solid #176d1a;
+  /* Adiciona uma borda verde na parte inferior */
   background-color: #f0f0f0;
 }
 
@@ -226,7 +247,6 @@ export default {
 
 .button-group {
   display: flex;
-  gap: 10px; 
+  gap: 10px;
 }
-
 </style>

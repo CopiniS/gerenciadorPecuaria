@@ -36,8 +36,9 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                 <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="filterProdutos"
-                  @click="filterProdutos()" type="text" class="form-control" :placeholder="produtoPlaceholder"
-                  id="caixa-select">
+                  @click="filterProdutos" @keydown.up.prevent="navigateOptions('up')"
+                  @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
+                  :placeholder="produtoPlaceholder" id="caixa-select">
               </div>
               <div class="itens" v-show="dropdownOpen">
                 <ul class="options">
@@ -147,7 +148,6 @@ export default {
       }
     },
 
-
     filterProdutos() {
       this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));
     },
@@ -179,77 +179,100 @@ export default {
 
       return this.isDataCompraValida && this.isProdutoValido && this.isValidadeValida && this.isLoteValido;
     },
-  
 
-  selectTab(tab) {
-    this.activeTab = tab;
-    if (tab === 'compras') {
-      this.$router.push('/compraprodutos');
-    }
-    if (tab === 'produtos') {
-      this.$router.push('/produtos');
-    }
-  },
 
-  async submitForm() {
-    if (this.validarFormulario()) {
-      try {
-        const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData, {
-        });
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'compras') {
+        this.$router.push('/compraprodutos');
+      }
+      if (tab === 'produtos') {
+        this.$router.push('/produtos');
+      }
+    },
 
-        if (response.status === 201) {
-          alert('Cadastro realizado com sucesso!');
-          this.resetForm();
-          this.$router.push('/compraprodutos');
-        } else {
-          alert('Erro ao cadastrar compra. Tente novamente mais tarde.');
+    async submitForm() {
+      if (this.validarFormulario()) {
+        try {
+          const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData, {
+          });
+
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.resetForm();
+            this.$router.push('/compraprodutos');
+          } else {
+            alert('Erro ao cadastrar compra. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+    },
+
+    resetForm() {
+      this.formData = {
+        id: null,
+        dataCompra: '',
+        produto: '',
+        valorUnitario: '',
+        quantidadeComprada: '',
+        validade: '',
+        lote: '',
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
+      },
+        this.isDataCompraValido = true,
+        this.isProdutoValido = true,
+        this.isValorUnitarioValido = true,
+        this.isQuantidadeCompradaValida = true,
+        this.isValidadeValida = true,
+        this.isLoteValido = true,
+        this.dataCompraPlaceholder = 'Data da Compra',
+        this.produtoPlaceholder = 'Produto',
+        this.valorUnitarioPlaceholder = 'Valor do Produto',
+        this.quantidadeCompradaPlaceholder = 'Quantidade Comprada',
+        this.validadePlaceholder = 'Validade do produto',
+        this.lotePlaceholder = 'Lote do Produto'
+    },
+    navigateOptions(direction) {
+  if (!this.dropdownOpen) return;
+
+  if (direction === 'up' && this.highlightedIndex > 0) {
+    this.highlightedIndex--;
+    this.scrollIntoView();
+  } else if (direction === 'down' && this.highlightedIndex < this.produtosFiltrados.length - 1) {
+    this.highlightedIndex++;
+    this.scrollIntoView();
+  }
+},
+
+scrollIntoView() {
+  this.$nextTick(() => {
+    const container = this.$refs.dropdown.querySelector('.options');
+    const selected = this.$refs.dropdown.querySelector('.highlighted');
+
+    if (selected) {
+      const offsetTop = selected.offsetTop;
+      const containerHeight = container.offsetHeight;
+      const selectedHeight = selected.offsetHeight;
+
+      if (offsetTop < container.scrollTop) {
+        container.scrollTop = offsetTop;
+      } else if (offsetTop + selectedHeight > container.scrollTop + containerHeight) {
+        container.scrollTop = offsetTop + selectedHeight - containerHeight;
+      }
+    }
+  });
+},
+
+    selectHighlightedProduto() {
+      if (this.highlightedIndex !== -1) {
+        const produto = this.produtosFiltrados[this.highlightedIndex];
+        this.selectProduto(produto);
       }
     }
   },
-
-  resetForm() {
-    this.formData = {
-      id: null,
-      dataCompra: '',
-      produto: '',
-      valorUnitario: '',
-      quantidadeComprada: '',
-      validade: '',
-      lote: '',
-      propriedade: localStorage.getItem('propriedadeSelecionada'),
-    },
-      this.isDataCompraValido = true,
-      this.isProdutoValido = true,
-      this.isValorUnitarioValido = true,
-      this.isQuantidadeCompradaValida = true,
-      this.isValidadeValida = true,
-      this.isLoteValido = true,
-      this.dataCompraPlaceholder = 'Data da Compra',
-      this.produtoPlaceholder = 'Produto',
-      this.valorUnitarioPlaceholder = 'Valor do Produto',
-      this.quantidadeCompradaPlaceholder = 'Quantidade Comprada',
-      this.validadePlaceholder = 'Validade do produto',
-      this.lotePlaceholder = 'Lote do Produto'
-  },
-  navigateOptions(direction) {
-    if (!this.dropdownOpen) return;
-    if (direction === 'up' && this.highlightedIndex > 0) {
-      this.highlightedIndex--;
-    } else if (direction === 'down' && this.highlightedIndex < this.produtosFiltrados.length - 1) {
-      this.highlightedIndex++;
-    }
-  },
-  selectHighlightedProduto() {
-    if (this.highlightedIndex !== -1) {
-      const produto = this.produtosFiltrados[this.highlightedIndex];
-      this.selectProduto(produto);
-    }
-  }
-},
 };
 </script>
 

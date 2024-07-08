@@ -81,18 +81,7 @@
 
           <button @click="() => { this.$router.push('/racas'); }" type="button" class="btn btn-success">Lista de
             Raças</button>
-          <button @click="() => { this.$router.push('/Pesagens'); }" type="button" class="btn btn-success">Lista de
-            Pesagens</button>
-          <button @click="() => { this.$router.push('/suplementacoes'); }" type="button" class="btn btn-success">Lista de
-            Suplementações</button>
-          <button @click="() => { this.$router.push('/vendas-animais'); }" type="button" class="btn btn-success">Lista de
-            Vendas</button>
-          <button @click="() => { this.$router.push('/inseminacoes'); }" type="button" class="btn btn-success">Lista de
-            Inseminações</button>
-          <button @click="() => { this.$router.push('/Movimentacoes'); }" type="button" class="btn btn-success">Lista de
-            Movimentaçoes</button>
-          <button @click="() => { this.$router.push('/aplicacoes-produtos'); }" type="button"
-            class="btn btn-success">Aplicação de Produtos</button>
+          
         </div>
         <table class="table table-bordered">
           <thead>

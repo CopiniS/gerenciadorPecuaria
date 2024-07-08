@@ -138,10 +138,6 @@ export default {
   color: #176d1a;
 }
 
-.btn-success {
-  background-color: #176d1a;
-}
-
 .button-group {
   display: flex;
   gap: 10px;

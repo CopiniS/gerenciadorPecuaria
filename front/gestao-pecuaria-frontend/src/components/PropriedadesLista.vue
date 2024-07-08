@@ -81,7 +81,7 @@
                 <button v-if="propriedadeAtual == propriedade.id" @click="confirmarExclusao(propriedade)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                 data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i>
                 </button>
-                <button v-if="propriedadeAtual != propriedade.id" @click="trocaPropriedade(propriedade.id)">Trocar</button>
+                <button v-if="propriedadeAtual != propriedade.id" @click="trocaPropriedade(propriedade.id)" class="btn-acoes btn-sm"><i class="fas fa-exchange-alt"></i></button>
             </td>
           </tr>
         </tbody>

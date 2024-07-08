@@ -6,8 +6,17 @@
           aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="#">Nome da Aplicação</a>
-        <a class="navbar-brand" href="#">Propriedade atual: {{ nomeProp }}</a>
+        <a class="navbar-brand ms-2" href="#">Propriedade atual: {{ nomeProp }}</a>
+        <div class="dropdown ms-auto">
+          <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="fas fa-user"></i> Perfil
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="/meuperfil"><i class="fas fa-user"></i> Meu Perfil</a></li>
+            <li><a class="dropdown-item" href="/login"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+          </ul>
+        </div>
         <div class="offcanvas offcanvas-start text-bg-dark custom-offcanvas justify-content-center" tabindex="-1"
           id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
           <div class="offcanvas-header">
@@ -17,11 +26,31 @@
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
               <li class="nav-item">
-                <a href="/inicio" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="/animais" class="nav-link"><i class="fas fa-paw"></i> Animais</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/meuperfil" class="nav-link"><i class="fas fa-user"></i> Perfil</a>
+                <a href="/aplicacoes-produtos" class="nav-link"><i class="fas fa-flask"></i> Aplicações de Produtos</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/inseminacoes" class="nav-link"><i class="fas fa-syringe"></i> Inseminações</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/movimentacoes" class="nav-link"><i class="fas fa-arrows-alt"></i> Movimentações</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/outras-despesas" class="nav-link"><i class="fas fa-money-bill-wave"></i> Outras Despesas</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/pesagens" class="nav-link"><i class="fas fa-weight"></i> Pesagens</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/produtos" class="nav-link"><i class="fas fa-box"></i> Produto</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
@@ -29,39 +58,15 @@
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/produtos" class="nav-link">
-                  <i class="fas fa-box"></i> Produto
-                </a>
-              </li>
-
-              <hr class="custom-hr">
-              <li class="nav-item ">
-                <a href="/animais" class="nav-link">
-                  <i class="fas fa-paw"></i> Animais
-                </a>
-                
+                <a href="/suplementacoes" class="nav-link"><i class="fas fa-prescription-bottle-alt"></i> Suplementações</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/piquetes" class="nav-link"><i class="fas fa-layer-group"></i> Piquetes</a>
+                <a href="/vendas-animais" class="nav-link"><i class="fas fa-dollar-sign"></i> Vendas de Animais</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
                 <a href="/veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</a>
-              </li>
-              <hr class="custom-hr">
-              <li class="nav-item">
-                <a href="/suplementacoes" class="nav-link"><i class="fas fa-prescription-bottle-alt"></i>
-                  Suplementações</a>
-              </li>
-              <hr class="custom-hr">
-              <li class="nav-item">
-                <a href="/outras-despesas" class="nav-link"><i class="fas fa-money-bill-wave"></i> Outras Despesas</a>
-              </li>
-
-              <hr class="custom-hr">
-              <li class="nav-item">
-                <a href="/login" class="nav-link"><i class="fas fa-sign-out-alt"></i> Sair</a>
               </li>
               <hr class="custom-hr">
             </ul>
@@ -158,7 +163,6 @@ a {
   /* Aumenta o tamanho da letra */
 }
 
-
 .nav-item .dropdown-item {
   display: flex;
   align-items: center;
@@ -208,7 +212,6 @@ a {
   opacity: 1;
   /* Garantir que o botão esteja totalmente opaco */
 }
-
 
 /* Personaliza a barra de rolagem */
 ::-webkit-scrollbar {

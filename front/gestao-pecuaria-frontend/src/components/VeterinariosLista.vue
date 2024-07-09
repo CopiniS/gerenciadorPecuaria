@@ -168,7 +168,7 @@ export default {
     },
 
     aplicarFiltro() {
-      this.veterinarios = this.veterinarios.filter(veterinario => veterinario.nome.toLowerCase().includes(this.filtro.nome));
+      this.veterinarios = this.veterinariosDaApi.filter(veterinario => veterinario.nome.toLowerCase().includes(this.filtro.nome));
     },
     limparFiltro() {
       this.filtro.nome = '';

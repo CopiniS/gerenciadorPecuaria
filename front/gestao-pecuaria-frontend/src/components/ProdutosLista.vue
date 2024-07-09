@@ -17,7 +17,7 @@
           <h2 class="me-3">Filtros</h2>
           <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
           <div class="col-auto d-flex align-items-center">
               <label for="nome" class="form-label me-2">Nome</label>
               <input type="text" class="form-control" id="nome" v-model="filtro.nome">
@@ -36,7 +36,7 @@
           </div>
           <div class="col-auto">
               <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-              <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+              <button type="submit" class="btn btn-success">Filtrar</button>
           </div>
       </form>
     </div>
@@ -106,6 +106,7 @@ export default {
   data() {
     return {
       produtos: [],
+      produtosDaApi: [],
       estoque: [],
       formData: {
         id: null,
@@ -132,7 +133,8 @@ export default {
         const response = await api.get('http://127.0.0.1:8000/produtos/' , {
           // Parâmetros da requisição (se houver)
         });
-        this.produtos = response.data;
+        this.produtosDaApi = response.data;
+        this.produtos = this.produtosDaApi;
       } catch (error) {
         console.error('Erro ao buscar produtos da API:', error);
       }
@@ -210,12 +212,18 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.produtos = this.produtosDaApi.filter(produto => {
+        return  produto.nome.toLowerCase().includes(this.filtro.nome) &&
+                produto.tipo.includes(this.filtro.tipo) &&
+                produto.categoria.toLowerCase().includes(this.filtro.categoria);
+        });
     },
     limparFiltro() {
       this.filtro.nome = '';
       this.filtro.tipo = '';
       this.filtro.categoria = '';
+      this.produtos = this.produtosDaApi;
+
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

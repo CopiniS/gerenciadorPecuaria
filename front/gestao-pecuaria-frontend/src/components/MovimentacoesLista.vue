@@ -17,19 +17,40 @@
           <h2 class="me-3">Filtros</h2>
           <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
-          <label for="nome" class="form-label me-2">Animal</label>
-          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+          <label for="dataMovimentacao" class="form-label me-2">Data da Compra</label>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Movimentação Inicio"
+            class="form-control" id="dataMovimentacaoInicio" v-model="filtro.dataMovimentacaoInicio">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="dataCompra" class="form-label me-2">Data</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da aplicação" 
-          class="form-control" id="dataMovimentacao" v-model="filtro.dataMovimentacao" required>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Movimentação Fim"
+            class="form-control" id="dataMovimentacaoFim" v-model="filtro.dataMovimentacaoFim">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Piquete de Origem</label>
+          <input type="text" class="form-control" id="piqueteOrigem" v-model="filtro.piqueteOrigem">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Piquete de Destino</label>
+          <input type="text" class="form-control" id="piqueteDestino" v-model="filtro.piqueteDestino">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="tipoCultivo" class="form-label me-2">Tipo</label>
+          <select class="form-select" id="tipo" v-model="filtro.tipo">
+            <option value="">Selecione o tipo</option>
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+            <option value="interna">Interna</option>
+          </select>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Animal</label>
+          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+          <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>
     </div>
@@ -97,6 +118,7 @@ export default {
   data() {
     return {
       movimentacoes: [],
+      movimentacoesDaApi: [],
       formData: {
             animal: [],
             dataMovimentacao: null,
@@ -106,8 +128,12 @@ export default {
       },
       mostrarFormulario: false,
       filtro: {
-        animal: [],
-        dataMovimentacao: '',
+        dataMovimentacaoInicio: '',
+        dataMovimentacaoFim: '',
+        animal: '',
+        piqueteOrigem: '',
+        piqueteDestino: '',
+        tipo: '',
       },
     }
   },
@@ -122,7 +148,8 @@ export default {
                 propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
         });
-        this.movimentacoes = response.data;
+        this.movimentacoesDaApi = response.data;
+        this.movimentacoes = this.movimentacoesDaApi;
 
       } catch (error) {
         console.error('Erro ao buscar movimentacoes da API:', error);
@@ -195,12 +222,33 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      const propriedadeAtual = localStorage.getItem('propriedadeSelecionada');
+      this.movimentacoes = this.movimentacoesDaApi.filter(movimentacao => {
+        return  (new Date(movimentacao.dataMovimentacao) >= new Date(this.filtro.dataMovimentacaoInicio || '1970-01-01')) &&
+                (new Date(movimentacao.dataMovimentacao) <= new Date(this.filtro.dataMovimentacaoFim || '9999-12-31')) &&
+                movimentacao.animal.brinco.includes(this.filtro.animal) &&
+                movimentacao.piqueteOrigem.nome.includes(this.filtro.piqueteOrigem) &&
+                movimentacao.piqueteDestino.nome.includes(this.filtro.piqueteDestino) &&
+                (
+                  (this.filtro.tipo == 'entrada' && movimentacao.piqueteOrigem.propriedade.id != propriedadeAtual && 
+                  movimentacao.piqueteDestino.propriedade.id == propriedadeAtual) || 
+                  (this.filtro.tipo == 'saida' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
+                  movimentacao.piqueteDestino.propriedade.id != propriedadeAtual) || 
+                  (this.filtro.tipo == 'interna' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
+                  movimentacao.piqueteDestino.propriedade.id == propriedadeAtual ||
+                  this.filtro.tipo == '')
+                );
+      });
     },
     limparFiltro() {
-      this.filtro.nome = '';
-      this.filtro.tipo = '';
-      this.filtro.categoria = '';
+        this.filtro.dataMovimentacaoInicio = '';
+        this.filtro.dataMovimentacaoFim = '',
+        this.filtro.animal = '',
+        this.filtro.piqueteOrigem = '',
+        this.filtro.piqueteDestino = '',
+        this.filtro.tipo = '',
+
+        this.movimentacoes = this.movimentacoesDaApi;
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

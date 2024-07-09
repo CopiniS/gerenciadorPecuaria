@@ -17,27 +17,28 @@
           <h2 class="me-3">Filtros</h2>
           <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
-          <div class="col-auto d-flex align-items-center">
-              <label for="nome" class="form-label me-2">Nome</label>
-              <input type="text" class="form-control" id="nome" v-model="filtro.nome">
-          </div>
-          <div class="col-auto d-flex align-items-center">
-              <label for="tipo" class="form-label me-2">Tipo</label>
-              <select class="form-select" id="tipo" v-model="filtro.tipo">
-                  <option value="">Selecione o tipo</option>
-                  <option value="alimenticio">Alimentício</option>
-                  <option value="sanitario">Sanitário</option>
-              </select>
-          </div>
-          <div class="col-auto d-flex align-items-center">
-              <label for="categoria" class="form-label me-2">Categoria</label>
-              <input type="text" class="form-control" id="categoria" v-model="filtro.categoria">
-          </div>
-          <div class="col-auto">
-              <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-              <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
-          </div>
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataInseminacao" class="form-label me-2">Data da Inseminação</label>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Inseminação Inicio"
+            class="form-control" id="dataInseminacaoInicio" v-model="filtro.dataInseminacaoInicio">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Inseminação Fim"
+            class="form-control" id="dataInseminacaoFim" v-model="filtro.dataInseminacaoFim">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Animal</label>
+          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Veterinário</label>
+          <input type="text" class="form-control" id="veterinario" v-model="filtro.veterinario">
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+          <button type="submit" class="btn btn-success">Filtrar</button>
+        </div>
       </form>
     </div>
 
@@ -102,6 +103,7 @@ export default {
   data() {
     return {
       inseminacoes: [],
+      inseminacoesDaApi: [],
       formData: {
         id: null,
         dataInseminacao: '',
@@ -111,9 +113,10 @@ export default {
       },
       mostrarFormulario: false,
       filtro: {
-        nome: '',
-        tipo: '',
-        categoria: ''
+        dataInseminacaoInicio: '',
+        dataInseminacaoFim: '',
+        animal: '',
+        veterinario: ''
       },
     }
   },
@@ -128,7 +131,8 @@ export default {
                 propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
         });
-        this.inseminacoes = response.data;
+        this.inseminacoesDaApi = response.data;
+        this.inseminacoes = this.inseminacoesDaApi;
 
       } catch (error) {
         console.error('Erro ao buscar inseminacoes da API:', error);
@@ -187,12 +191,19 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.inseminacoes = this.inseminacoesDaApi.filter(inseminacao => {
+        return  (new Date(inseminacao.dataInseminacao) >= new Date(this.filtro.dataInseminacaoInicio || '1970-01-01')) &&
+                (new Date(inseminacao.dataInseminacao) <= new Date(this.filtro.dataInseminacaoFim || '9999-12-31')) &&
+                inseminacao.animal.brinco.includes(this.filtro.animal) &&
+                inseminacao.veterinario.nome.includes(this.filtro.veterinario);
+      });
     },
     limparFiltro() {
-      this.filtro.nome = '';
-      this.filtro.tipo = '';
-      this.filtro.categoria = '';
+      this.filtro.dataInseminacaoInicio = '';
+      this.filtro.dataInseminacaoFim = '';
+      this.filtro.animal = '';
+      this.filtro.veterinario = '';
+      this.inseminacoes = this.inseminacoesDaApi;
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

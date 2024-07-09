@@ -26,36 +26,23 @@
           <h2 class="me-3">Filtros</h2>
           <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataCompra" class="form-label me-2">Data da Compra</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra"
-            class="form-control" id="dataCompra" v-model="filtro.dataCompra">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Compra Inicio"
+            class="form-control" id="dataCompraInicio" v-model="filtro.dataCompraInicio">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Compra Fim"
+            class="form-control" id="dataCompraFim" v-model="filtro.dataCompraFim">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>
           <input type="text" class="form-control" id="produto" v-model="filtro.produto">
         </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="valorUnitario" class="form-label me-2">Valor Unitário</label>
-          <input type="number" class="form-control" id="valorUnitario" v-model="filtro.valorUnitario">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="quantidadeComprada" class="form-label me-2">Quantidade Comprada</label>
-          <input type="number" class="form-control" id="quantidadeComprada" v-model="filtro.quantidadeComprada">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="validade" class="form-label me-2">Validade</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra"
-            class="form-control" id="validade" v-model="filtro.validade">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="lote" class="form-label me-2">Lote</label>
-          <input type="text" class="form-control" id="lote" v-model="filtro.lote">
-        </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+          <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>
     </div>
@@ -128,6 +115,7 @@ export default {
     return {
       activeTab: 'compras',
       compras: [],
+      comprasDaApi: [],
       formData: {
         id: null,
         dataCompra: '',
@@ -140,12 +128,9 @@ export default {
       },
       mostrarFormulario: false,
       filtro: {
-        dataCompra: '',
+        dataCompraInicio: '',
+        dataCompraFim: '',
         produto: '',
-        valorUnitario: '',
-        quantidadeComprada: '',
-        validade: '',
-        lote: ''
       },
     }
   },
@@ -166,7 +151,8 @@ export default {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
         });
-        this.compras = response.data;
+        this.comprasDaApi = response.data;
+        this.compras = this.comprasDaApi;
       } catch (error) {
         console.error('Erro ao buscar compras de produtos da API:', error);
       }
@@ -224,12 +210,17 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.compras = this.comprasDaApi.filter(compra => {
+        return  (new Date(compra.dataCompra) >= new Date(this.filtro.dataCompraInicio || '1970-01-01')) &&
+                (new Date(compra.dataCompra) <= new Date(this.filtro.dataCompraFim || '9999-12-31')) &&
+                compra.produto.nome.includes(this.filtro.produto);
+      });
     },
     limparFiltro() {
-      this.filtro.nome = '';
-      this.filtro.tipo = '';
-      this.filtro.categoria = '';
+      this.filtro.dataCompraInicio = '';
+      this.filtro.dataCompraFim = '';
+      this.filtro.produto = '';
+      this.compras = this.comprasDaApi;
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

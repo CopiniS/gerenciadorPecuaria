@@ -62,6 +62,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery';
+import 'jquery-mask-plugin';
 
 export default {
   data() {
@@ -102,6 +104,8 @@ export default {
     }
     this.buscarAnimaisDaApi();
     this.buscarProdutosDaApi();
+
+    $('#brincoField').mask('000000');
   },
   methods: {
     async fetchAplicacao(id) {

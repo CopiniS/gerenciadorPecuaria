@@ -58,32 +58,42 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery'; // Importe o jQuery aqui
+import 'jquery-mask-plugin'; // Importe o plugin jQuery Mask Plugin
 
 export default {
-    data() {
-        return {
-            activeTab: 'edicao', // Começa na aba de edição
-            formData: {
-            id: null,
-            nome: '',
-            tipoCultivo: '',
-            area: '',
-            propriedade: localStorage.getItem('propriedadeSelecionada')
-            },
-            isNomeValido: true,
-            isTipoCultivoValido: true,
-            isAreaValida: true,
-            nomePlaceholder: 'Nome do Piquete',
-            tipoCultivoPlaceholder: 'Tipo do cultivo',
-            areaPlaceholder: 'Área do Piquete',
-        };
-    },
+  data() {
+    return {
+      activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      formData: {
+        id: null,
+        nome: '',
+        tipoCultivo: '',
+        area: '',
+        propriedade: localStorage.getItem('propriedadeSelecionada')
+      },
+      isNomeValido: true,
+      isTipoCultivoValido: true,
+      isAreaValida: true,
+      nomePlaceholder: 'Nome do Piquete',
+      tipoCultivoPlaceholder: 'Tipo do cultivo',
+      areaPlaceholder: 'Área do Piquete',
+    };
+  },
  
     mounted() {
         const piqueteId = this.$route.params.piqueteId;
         if (piqueteId) {
             this.fetchPiquete(piqueteId);
         }
+
+        $('#nome').mask('AAAAAAAAAAAAAAAAAAAAAAAAA', {
+    translation: {
+      'A': { pattern: /[a-zA-ZÀ-ÿ ]/, recursive: true }
+    }
+  });
+
+  $('#area').mask('000.000.000.000.000', { reverse: true });
     },
     methods: {
     async fetchPiquete(id) {

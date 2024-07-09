@@ -67,7 +67,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-mars"></i></span>
               <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
-                placeholder="Digite o brinco do Pai...">
+                id="brincoPai" placeholder="Digite o brinco do Pai...">
             </div>
             <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in machosFiltrados"
@@ -78,7 +78,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus"></i></span>
               <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
-                placeholder="Digite o brinco da Mãe...">
+                id="brincoMae" placeholder="Digite o brinco da Mãe...">
             </div>
             <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
@@ -121,6 +121,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery';
+import 'jquery-mask-plugin/dist/jquery.mask.min';
 
 export default {
   name: 'TelaAnimais',
@@ -178,6 +180,13 @@ export default {
     }
     this.buscarRacasDaApi();
     this.buscarPiquetesDaApi();
+
+
+    $(document).ready(() => {
+      $('#brinco').mask('00000000000000000000', { reverse: true });
+      $('#brincoPai').mask('00000000000000000000', { reverse: true });
+      $('#brincoMae').mask('00000000000000000000', { reverse: true });
+    });
   },
 
   methods: {
@@ -272,22 +281,22 @@ export default {
 
     async submitForm() {
       if (this.validarFormulario()) {
-      try {
-        const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
-        });
-        if (response.status === 200) {
-          alert('Alterações salvas com sucesso!');
-          this.resetForm();
-          this.buscarAnimaisDaApi();
-          this.fecharModal("edicaoModal");
-        } else {
-          alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+        try {
+          const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
+          });
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.resetForm();
+            this.buscarAnimaisDaApi();
+            this.fecharModal("edicaoModal");
+          } else {
+            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
-    }
     },
 
     async preencheListas() {

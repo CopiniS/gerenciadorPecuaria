@@ -26,8 +26,9 @@
                     class="form-control" id="dataMovimentacaoCadastro" v-model="formData.dataMovimentacao" required>
                 </div>
                 <div class="mb-3 input-group">
-                    <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
-                </div>
+              <input v-model="brinco" type="text" class="form-control" placeholder="Digite o brinco (apenas números)..."
+                id="brincoInput">
+            </div>
                 <div class="list-group" v-if="brinco && animaisFiltrados.length">
                     <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
                     {{ animal.brinco }}
@@ -74,6 +75,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery'; // Importe o jQuery aqui
+import 'jquery-mask-plugin'; // Importe o plugin jQuery Mask Plugin
 
 export default {
     data() {
@@ -121,6 +124,7 @@ export default {
         }
         this.buscarAnimaisDaApi();
         this.buscarPiquetesDaApi();
+        $('#brincoInput').mask('000000000000'); // Aplica a máscara para aceitar apenas números
     },
     methods: {
     async fetchMovimentacao(id) {
@@ -190,8 +194,21 @@ export default {
         this.formData.animal = animal.id;
         this.animaisFiltrados = [];
     },
+
     validarFormulario() {
-      return true;
+      this.isDataValida = !!this.formData.dataMovimentacao && !!this.formData.dataMovimentacao.trim();
+      if (!this.isDataValida) this.dataPlaceholder = 'Campo Data da Movimentação é obrigatório';
+
+      this.isPiqueteOrigemValido = !!this.formData.piqueteOrigem;
+      if (!this.isPiqueteOrigemValido) this.piqueteOrigemPlaceholder = 'Campo Piquete de Origem é obrigatório';
+
+      this.isPiqueteDestinoValido = !!this.formData.piqueteDestino;
+      if (!this.isPiqueteDestinoValido) this.piqueteDestinoPlaceholder = 'Campo Piquete de Destino é obrigatório';
+
+      this.isMotivoKgValido = !!this.formData.motivo && !!this.formData.motivo.trim();
+      if (!this.isMotivoKgValido) this.motivoPlaceholder = 'Campo Motivo da Movimentação é obrigatório';
+
+      return this.isDataValida && this.isPiqueteOrigemValido && this.isPiqueteDestinoValido && this.isMotivoKgValido;
     },
 
     selectTab(tab) {

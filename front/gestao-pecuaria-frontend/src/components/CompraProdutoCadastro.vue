@@ -126,6 +126,18 @@ export default {
     $(this.$refs.valor).mask("#.##0,00", { reverse: true });
     this.buscarProdutos();
     document.addEventListener('click', this.handleClickOutside);
+
+    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
+    $('#nome').mask('AAAAAAAAAAAAAAAAAAAAAAAAA', {
+      translation: {
+        'A': { pattern: /[a-zA-ZÀ-ÿ ]/, recursive: true }
+      }
+    });
+    $('#categoria').mask('AAA', {
+      translation: {
+        'A': { pattern: /[a-zA-ZÀ-ÿ]/, recursive: true }
+      }
+    });
   },
 
   methods: {

@@ -122,6 +122,18 @@ export default {
       this.fetchCompra(compraId);
     }
     this.buscarProdutos();
+
+    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
+    $('#nome').mask('AAAAAAAAAAAAAAAAAAAAAAAAA', {
+      translation: {
+        'A': { pattern: /[a-zA-ZÀ-ÿ ]/, recursive: true }
+      }
+    });
+    $('#categoria').mask('AAA', {
+      translation: {
+        'A': { pattern: /[a-zA-ZÀ-ÿ]/, recursive: true }
+      }
+    });
   },
 
   methods: {

@@ -28,7 +28,7 @@
               <input type="radio" v-model="radioEscolha" value="piquete"> Piquete
             </div>
             <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'">
-              <input v-model="brinco" @input="filterAnimais" type="text" class="form-control"
+              <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" id="brincoField"
                 placeholder="Digite o brinco...">
             </div>
             <div class="list-group" v-if="brinco && animaisFiltrados.length">
@@ -83,6 +83,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery';
+import 'jquery-mask-plugin';
 
 export default {
   data() {
@@ -124,6 +126,7 @@ export default {
     this.buscarAnimaisDaApi();
     this.buscarProdutosDaApi();
     this.buscarPiquetesDaApi();
+    $('#brincoField').mask('000000');
   },
 
   methods: {
@@ -207,7 +210,16 @@ export default {
     },
 
     validarFormulario() {
-      return true;
+      this.isDataValida = !!this.formData.dataAplicacao.trim();
+      this.dataPlaceholder = this.isDataValida ? 'Data da Aplicação' : 'Campo Data da Aplicação é obrigatório';
+      
+      this.isDosagemValida = !!this.formData.dosagem.trim();
+      this.dosagemPlaceholder = this.isDosagemValida ? 'Dosagem do Produto' : 'Campo Dosagem do Produto é obrigatório';
+
+      this.isBrincoValido = !!this.formData.animal.length;
+      this.brincoPlaceholder = this.isBrincoValido ? 'Brinco do Animal' : 'Campo Brinco do Animal é obrigatório';
+
+      return this.isDataValida && this.isDosagemValida && this.isBrincoValido;
     },
 
     selectTab(tab) {

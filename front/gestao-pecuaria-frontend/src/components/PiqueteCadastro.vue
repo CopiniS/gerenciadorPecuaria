@@ -59,6 +59,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery'; // Importe o jQuery aqui
+import 'jquery-mask-plugin'; // Importe o plugin jQuery Mask Plugin
 
 export default {
   data() {
@@ -79,6 +81,17 @@ export default {
       areaPlaceholder: 'Área do Piquete',
     };
   },
+
+  mounted() {
+    // Aplicando máscaras
+    $('#nome').mask('AAAAAAAAAAAAAAAAAAAAAAAAA', {
+      translation: {
+        'A': { pattern: /[a-zA-ZÀ-ÿ ]/, recursive: true }
+      }
+    });
+    $('#area').mask('000.000.000.000.000', { reverse: true });
+  },
+
   methods: {
 
     validarFormulario() {
@@ -107,8 +120,7 @@ export default {
     async submitForm() {
       if (this.validarFormulario()) {
         try {
-          const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData, {
-          });
+          const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData);
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
@@ -133,16 +145,17 @@ export default {
         propriedade: localStorage.getItem('propriedadeSelecionada')
       };
 
-      this.isNomeValido = true,
-        this.isTipoCultivoValido = true,
-        this.isAreaValida = true,
-        this.nomePlaceholder = 'Nome do Piquete',
-        this.tipoCultivoPlaceholder = 'Tipo do cultivo'
-      this.areaPlaceholder = 'Área do Piquete'
+      this.isNomeValido = true;
+      this.isTipoCultivoValido = true;
+      this.isAreaValida = true;
+      this.nomePlaceholder = 'Nome do Piquete';
+      this.tipoCultivoPlaceholder = 'Tipo do cultivo';
+      this.areaPlaceholder = 'Área do Piquete';
     },
   },
 };
 </script>
+
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');

@@ -55,7 +55,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-mars"></i></span>
-              <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control" placeholder="Digite o brinco do Pai..." pattern="\d*">
+              <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control" id="brincoPai" placeholder="Digite o brinco do Pai..." pattern="\d*">
             </div>
             <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in machosFiltrados" :key="animal.id" @click="selectPai(animal)">
@@ -64,7 +64,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus"></i></span>
-              <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control" placeholder="Digite o brinco da Mãe..." pattern="\d*">
+              <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"  id="brincoMae" placeholder="Digite o brinco da Mãe..." pattern="\d*">
             </div>
             <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas" :key="animal.id" @click="selectMae(animal)">
@@ -103,6 +103,8 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import $ from 'jquery';
+import 'jquery-mask-plugin/dist/jquery.mask.min';
 
 export default {
   name: 'TelaAnimais',
@@ -156,6 +158,12 @@ export default {
     this.buscarRacasDaApi();
     this.buscarPiquetesDaApi();
     this.preencheListas();
+
+    $(document).ready(() => {
+    $('#brinco').mask('00000000000000000000', { reverse: true });
+    $('#brincoPai').mask('00000000000000000000', { reverse: true });
+    $('#brincoMae').mask('00000000000000000000', { reverse: true });
+  });
   },
 
   methods: {

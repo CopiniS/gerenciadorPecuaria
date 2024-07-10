@@ -17,27 +17,35 @@
           <h2 class="me-3">Filtros</h2>
           <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
-          <div class="col-auto d-flex align-items-center">
-              <label for="nome" class="form-label me-2">Nome</label>
-              <input type="text" class="form-control" id="nome" v-model="filtro.nome">
-          </div>
-          <div class="col-auto d-flex align-items-center">
-              <label for="tipo" class="form-label me-2">Tipo</label>
-              <select class="form-select" id="tipo" v-model="filtro.tipo">
-                  <option value="">Selecione o tipo</option>
-                  <option value="alimenticio">Alimentício</option>
-                  <option value="sanitario">Sanitário</option>
-              </select>
-          </div>
-          <div class="col-auto d-flex align-items-center">
-              <label for="categoria" class="form-label me-2">Categoria</label>
-              <input type="text" class="form-control" id="categoria" v-model="filtro.categoria">
-          </div>
-          <div class="col-auto">
-              <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-              <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
-          </div>
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataPesagem" class="form-label me-2">Data da Pesagem</label>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Pesagem Inicio"
+            class="form-control" id="dataPesagemInicio" v-model="filtro.dataPesagemInicio">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Pesagem Fim"
+            class="form-control" id="dataPesagemFim" v-model="filtro.dataPesagemFim">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Animal</label>
+          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Peso </label>
+          <input type="text" class="form-control" id="pesoInicio" v-model="filtro.pesoInicio">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <input type="text" class="form-control" id="pesoFim" v-model="filtro.pesoFim">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Piquete</label>
+          <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+          <button type="submit" class="btn btn-success">Filtrar</button>
+        </div>
       </form>
     </div>
 
@@ -51,6 +59,7 @@
             <tr>
               <th scope="col">Data</th>
               <th scope="col">Brinco</th>
+              <th scope="col">Piquete</th>
               <th scope="col">Peso</th>
               <th scope="col">Ações</th>
             </tr>
@@ -59,6 +68,7 @@
             <tr v-for="(pesagem, index) in pesagens" :key="index">
               <td>{{ formatarData(pesagem.dataPesagem) }}</td>
               <td>{{ pesagem.animal.brinco}}</td>
+              <td>{{ pesagem.animal.piquete.nome}}</td>
               <td>{{ pesagem.peso}}</td>
               <td>
                 <button @click="acessarEdicao(pesagem)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
@@ -100,6 +110,7 @@ export default {
   data() {
     return {
       pesagens: [],
+      pesagensDaApi: [],
       formData: {
         id: null,
         dataPesagem: '',
@@ -109,9 +120,12 @@ export default {
       },
       mostrarFormulario: false,
       filtro: {
-        nome: '',
-        tipo: '',
-        categoria: ''
+        dataPesagemInicio: '',
+        dataPesagemFim: '',
+        animal: '',
+        pesoInicio: '',
+        pesoFim: '',
+        piquete: '',
       },
     }
   },
@@ -126,7 +140,8 @@ export default {
                 propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
         });
-        this.pesagens = response.data;
+        this.pesagensDaApi = response.data;
+        this.pesagens = this.pesagensDaApi;
 
       } catch (error) {
         console.error('Erro ao buscar pesagens da API:', error);
@@ -185,13 +200,27 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.pesagens = this.pesagensDaApi.filter(pesagem => {
+        return  (new Date(pesagem.dataPesagem) >= new Date(this.filtro.dataPesagemInicio || '1970-01-01')) &&
+                (new Date(pesagem.dataPesagem) <= new Date(this.filtro.dataPesagemFim || '9999-12-31')) &&
+                (pesagem.peso >= parseFloat(this.filtro.pesoInicio) || this.filtro.pesoInicio == '') &&
+                (pesagem.peso <= parseFloat(this.filtro.pesoFim) || this.filtro.pesoFim == '') &&
+                pesagem.animal.brinco.includes(this.filtro.animal) &&
+                pesagem.animal.piquete.nome.includes(this.filtro.piquete);
+      });
     },
+
     limparFiltro() {
-      this.filtro.nome = '';
-      this.filtro.tipo = '';
-      this.filtro.categoria = '';
+      this.filtro.dataPesagemInicio = '';
+      this.filtro.dataPesagemFim = '';
+      this.filtro.animal = '';
+      this.filtro.pesoInicio = '';
+      this.filtro.pesoFim = '';
+      this.filtro.piquete = '';
+      
+      this.pesagens = this.pesagensDaApi;
     },
+
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },

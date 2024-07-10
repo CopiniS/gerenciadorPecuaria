@@ -58,7 +58,7 @@ class PesagemSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class PesagemComAnimaisSerializer(serializers.ModelSerializer):
-    animal = AnimalSerializer(read_only=True)
+    animal = AnimalComPiqueteAndRacaSerializer(read_only=True)
 
     class Meta:
         model = models.Pesagem

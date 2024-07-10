@@ -4,29 +4,29 @@
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-vet-tab"
           @click="selectTab('produtos')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
-          Produtos</button>
-        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
-          de Produto</button>
+          Produto</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Produto</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'produtos' }" id="nav-vet" role="tabpanel"
         aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
-        aria-labelledby="nav-edicao-tab">
-        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="edicaoLabel">Edição de Produto</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
+        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Produto</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
+              <input v-model="formData.nome" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" required>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                placeholder="Selecione o tipo" required>
+                :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" required>
                 <option disabled value="">Tipo</option>
                 <option value="sanitario">Sanitário</option>
                 <option value="alimenticio">Alimentício</option>
@@ -35,7 +35,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-seedling"></i></span>
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
-                placeholder="Categoria" required>
+                :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" required>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
@@ -44,7 +44,7 @@
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
-              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
             </div>
           </form>
         </div>
@@ -106,6 +106,9 @@ export default {
       this.isCategoriaValida = !!this.formData.categoria.trim();
       if (!this.isCategoriaValida) this.categoriaPlaceholder = 'Campo Categoria do Produto é obrigatório';
 
+      if (this.formData.descricao === '') {
+        this.formData.descricao = null;
+      }
       return this.isNomeValido && this.isTipoValido && this.isCategoriaValida;
     },
 

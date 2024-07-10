@@ -15,11 +15,11 @@
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Aplicação</h1>
             <form @submit.prevent="submitForm">
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                placeholder="Data da aplicação" class="form-control" id="dataAplicacaoCadastro"
-                v-model="formData.dataAplicacao" required>
+                :placeholder="dataPlaceholder" class="form-control" id="dataAplicacaoCadastro"
+                v-model="formData.dataAplicacao" required :class="{ 'is-invalid': !isDataValida }">
             </div>
             <div class="mb-3 input-group">
               <input type="radio" v-model="radioEscolha" value="brinco"> Brinco
@@ -27,9 +27,9 @@
             <div class="mb-3 input-group">
               <input type="radio" v-model="radioEscolha" value="piquete"> Piquete
             </div>
-            <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'">
+            <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'" >
               <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" id="brincoField"
-                placeholder="Digite o brinco...">
+                :placeholder="brincoPlaceholder" :class="{ 'is-invalid': !isBrincoValido }">
             </div>
             <div class="list-group" v-if="brinco && animaisFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados"
@@ -37,10 +37,10 @@
                 {{ animal.brinco }}
               </button>
             </div>
-            <div class="mb-3 input-group" v-if="radioEscolha === 'piquete'">
+            <div class="mb-3 input-group" v-if="radioEscolha === 'piquete'" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
               <input v-model="nomePiquete" @input="filtrarPiquetes" type="text" class="form-control"
-                placeholder="Digite o nome do piquete...">
+                :placeholder="piquetePlaceholder" :class="{ 'is-invalid': !isPiqueteValido }">
             </div>
             <div class="list-group" v-if="nomePiquete && piquetesFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="piquete in piquetesFiltrados"
@@ -48,9 +48,9 @@
                 {{ piquete.nome }}
               </button>
             </div>
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group" >
               <input v-model="nomeProduto" @input="filterProdutos" type="text" class="form-control"
-                placeholder="Digite o produto...">
+                :placeholder="produtoPlaceholder" :class="{ 'is-invalid': !isProdutoValido }">
             </div>
             <div class="list-group" v-if="nomeProduto && produtosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -62,13 +62,13 @@
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.dosagem" type="text" class="form-control" id="dosagem"
                 :disabled="!((camposHabilitadosPiquete || camposHabilitadosAnimal) && camposHabilitadosProduto)"
-                placeholder="Dosagem" required>
+                :placeholder="dosagemPlaceholder" required :class="{ 'is-invalid': !isDosagemValido }">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.observacao" type="text" class="form-control" id="observacao"
                 :disabled="!((camposHabilitadosPiquete || camposHabilitadosAnimal) && camposHabilitadosProduto)"
-                placeholder="Observação">
+                :placeholder="observacaoPlaceholder">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
@@ -80,6 +80,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import api from '/src/interceptadorAxios';
@@ -109,16 +110,18 @@ export default {
         dataAplicacao: '',
         observacao: null,
       },
-      isAnimalValido: true,
+      isBrincoValido: true,
       isDataValida: true,
       isPiqueteValido: true,
       isDosagemValida: true,
       isObservacaoValida: true,
-      animalPlaceholder: 'Brinco do animal',
-      dataPlaceholder: 'Data da aplicacao',
-      piquetePlaceholder: 'Piquete',
-      dosagemPlaceholder: 'Dosagem do produto',
+      isProdutoValido: true,
+      brincoPlaceholder: 'Brinco do animal*',
+      dataPlaceholder: 'Data da aplicacao*',
+      piquetePlaceholder: 'Piquete*',
+      dosagemPlaceholder: 'Dosagem do produto*',
       observacaoPlaceholder: 'Observação',
+      produtoPlaceholder: 'Produto*'
     };
   },
 
@@ -210,16 +213,45 @@ export default {
     },
 
     validarFormulario() {
-      this.isDataValida = !!this.formData.dataAplicacao.trim();
-      this.dataPlaceholder = this.isDataValida ? 'Data da Aplicação' : 'Campo Data da Aplicação é obrigatório';
+      let valido = true;
+
+      this.formData.dataAplicacao = this.formData.dataAplicacao.trim();
+      this.isDataValida = !!this.formData.dataAplicacao;
+      this.dataPlaceholder = this.isDataValida ? 'Data da Aplicação' : 'Campo obrigatório';
+
+      this.formData.dosagem = this.formData.dosagem.trim();
+      this.isDosagemValida = !!this.formData.dosagem;
+      this.dosagemPlaceholder = this.isDosagemValida ? 'Dosagem do Produto' : 'Campo obrigatório';
+
+      if (this.formData.observacao === '') {
+        this.formData.observacao = null;
+      }
+
+      // Validar Brinco (apenas se for escolhido por brinco)
+      if (this.radioEscolha === 'brinco') {
+        this.isBrincoValido = !!this.formData.animal.length;
+        this.brincoPlaceholder = this.isBrincoValido ? 'Brinco do Animal' : 'Campo obrigatório';
+        if (!this.isBrincoValido) {
+          valido = false;
+        }
+      }
+
+      // Validar Piquete (apenas se for escolhido por piquete)
+      if (this.radioEscolha === 'piquete') {
+        this.isPiqueteValido = !!this.piqueteId;
+        this.piquetePlaceholder = this.isPiqueteValido ? 'Piquete' : 'Campo obrigatório';
+        if (!this.isPiqueteValido) {
+          valido = false;
+        }
+      }
       
-      this.isDosagemValida = !!this.formData.dosagem.trim();
-      this.dosagemPlaceholder = this.isDosagemValida ? 'Dosagem do Produto' : 'Campo Dosagem do Produto é obrigatório';
+      this.isProdutoValido = !!this.formData.produto;
+      this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo obrigatório';
+      if (!this.isProdutoValido) {
+        valido = false;
+      }
 
-      this.isBrincoValido = !!this.formData.animal.length;
-      this.brincoPlaceholder = this.isBrincoValido ? 'Brinco do Animal' : 'Campo Brinco do Animal é obrigatório';
-
-      return this.isDataValida && this.isDosagemValida && this.isBrincoValido;
+      return valido;
     },
 
     selectTab(tab) {

@@ -2,74 +2,65 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab"
-          @click="selectTab('vendas')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
-          Vendas</button>
-        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
-          de Venda</button>
+        <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab" @click="selectTab('vendas')" 
+        type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Venda</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
+        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Venda</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'vendas' }" id="nav-vet" role="tabpanel"
-        aria-labelledby="nav-vet-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'vendas' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
-        aria-labelledby="nav-edicao-tab">
-        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="edicaoLabel">Edição de Venda</h1>
-          <form @submit.prevent="submitForm">
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da venda"
-                class="form-control" id="dataVenda" v-model="formData.dataVenda" required>
-            </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input ref="valor" @input="atualizaValorTotalPeloPrecoKg()" v-model="formData.precoKg" type="text"
-                class="form-control" id="precoKg" placeholder="Preço por Kg" required>
-            </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
-                placeholder="Selecione o tipo" required>
-                <option disabled value="">Finalidade</option>
-                <option value="Cria">Cria</option>
-                <option value="Recria">Recria</option>
-                <option value="Engorda">Engorda</option>
-                <option value="Abate">Abate</option>
-              </select>
-            </div>
-            <div class="mb-3 input-group">
-              <input v-model="brinco" @input="filterAnimais" type="text" class="form-control"
-                placeholder="Digite o brinco...">
-            </div>
-            <div class="list-group" v-if="brinco && animaisFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados"
-                :key="animal.id" @click="selectAnimal(animal)">
-                {{ animal.brinco }}
-              </button>
-            </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input @input="atualizaValorTotalPeloPeso()" v-model="formData.peso" type="text" class="form-control"
-                id="peso" placeholder="Peso" required>
-            </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal"
-                placeholder="Valor Total" required>
-            </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-              <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                placeholder="Observação"></textarea>
-            </div>
-            <div class="button-group justify-content-end">
-              <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
-              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
-            </div>
-          </form>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
+        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Venda</h1>
+            <form @submit.prevent="submitForm">
+                <div class="mb-3 input-group">
+                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" 
+                    class="form-control" id="dataVenda" v-model="formData.dataVenda" :class="{'is-invalid': !isDataValida}">
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input ref="valor" @input="atualizaValorTotalPeloPrecoKg()" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder" :class="{'is-invalid': !isprecoKgValido}" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
+                    :placeholder="finalidadePlaceholder" :class="{'is-invalid': !isFinalidadeValida}" required>
+                    <option disabled value="">Finalidade</option>
+                    <option value="Cria">Cria</option>
+                    <option value="Recria">Recria</option>
+                    <option value="Engorda">Engorda</option>
+                    <option value="Abate">Abate</option>
+                </select>
+                </div>
+                <div class="mb-3 input-group">
+                    <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
+                </div>
+                <div class="list-group" v-if="brinco && animaisFiltrados.length">
+                    <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
+                    {{ animal.brinco }}
+                    </button>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input @input="atualizaValorTotalPeloPeso()" v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" required>
+                </div>
+                <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                  <textarea v-model="formData.observacao" class="form-control" id="observacao"
+                    placeholder="Observação"></textarea>
+                </div>
+                <div class="button-group justify-content-end">
+                    <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
+                    <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+                </div>
+              </form>
         </div>
       </div>
     </div>
@@ -179,45 +170,48 @@ export default {
     },
 
     validarFormulario() {
-      return true;
-      // this.isDataValida = !!this.formData.dataVenda.trim();
-      // if (!this.isDataValida) {
-      //   this.dataPlaceholder = 'Campo Data da Venda é obrigatório';
-      // }
+      this.isDataValida = !!this.formData.dataVenda.trim();
+      if (!this.isDataValida) {
+        this.dataPlaceholder = 'Campo Data da Venda é obrigatório';
+      }
 
-      // this.isAnimalValido = !!this.formData.animal.trim();
-      // if (!this.isAnimalValido) {
-      //   this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
-      // }
+      this.isAnimalValido = !!this.formData.animal.trim();
+      if (!this.isAnimalValido) {
+        this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
+      }
 
-      // this.isPesoValido = !!this.formData.peso.trim();
-      // if (!this.isPesoValido) {
-      //   this.pesoPlaceholder = 'Campo Peso é obrigatório';
-      // }
+      this.isPesoValido = !!this.formData.peso.trim();
+      if (!this.isPesoValido) {
+        this.pesoPlaceholder = 'Campo Peso é obrigatório';
+      }
 
-      // this.isprecoKgValido = !!this.formData.precoKg.trim();
-      // if (!this.isprecoKgValido) {
-      //   this.precoKgPlaceholder = 'Campo Preço por Kg é obrigatório';
-      // }
+      this.isprecoKgValido = !!this.formData.precoKg.trim();
+      if (!this.isprecoKgValido) {
+        this.precoKgPlaceholder = 'Campo Preço por Kg é obrigatório';
+      }
 
-      // this.isValorTotalValido = !!this.formData.valorTotal.trim();
-      // if (!this.isValorTotalValido) {
-      //   this.valorTotalPlaceholder = 'Campo Valor Total é obrigatório';
-      // }
+      this.isValorTotalValido = !!this.formData.valorTotal.trim();
+      if (!this.isValorTotalValido) {
+        this.valorTotalPlaceholder = 'Campo Valor Total é obrigatório';
+      }
 
-      // this.isFinalidadeValida = !!this.formData.finalidade.trim();
-      // if (!this.isFinalidadeValida) {
-      //   this.finalidadePlaceholder = 'Campo Finalidade é obrigatório';
-      // }
+      this.isFinalidadeValida = !!this.formData.finalidade.trim();
+      if (!this.isFinalidadeValida) {
+        this.finalidadePlaceholder = 'Campo Finalidade é obrigatório';
+      }
 
-      // return (
-      //   this.isDataValida &&
-      //   this.isAnimalValido &&
-      //   this.isPesoValido &&
-      //   this.isprecoKgValido &&
-      //   this.isValorTotalValido &&
-      //   this.isFinalidadeValida
-      // );
+      if (this.formData.observacao === '') {
+        this.formData.observacao = null;
+      }
+
+      return (
+        this.isDataValida &&
+        this.isAnimalValido &&
+        this.isPesoValido &&
+        this.isprecoKgValido &&
+        this.isValorTotalValido &&
+        this.isFinalidadeValida
+      );
     },
 
 

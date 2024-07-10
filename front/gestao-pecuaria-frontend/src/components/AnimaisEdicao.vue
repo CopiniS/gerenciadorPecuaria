@@ -5,69 +5,71 @@
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
           @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
           de Animais</button>
-        <button class="nav-link" :class="{ active: activeTab === 'viewAnimal' }" id="nav-view-tab"
-          @click="selectTab('viewAnimal')" type="button" role="tab" aria-controls="nav-view"
-          aria-selected="false">Visualização do Animal</button>
-        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
-          de Animais</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Animais</button>
       </div>
     </nav>
+
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais" role="tabpanel"
         aria-labelledby="nav-animais-tab">
-        <!-- Conteúdo da lista de animais -->
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'viewAnimal' }" id="nav-view" role="tabpanel"
-        aria-labelledby="nav-view-tab">
-        <!-- Conteúdo de visualização do animal -->
-      </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
-        aria-labelledby="nav-edicao-tab">
-        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="edicaoLabel">Edição de Animais</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
+        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Animais</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <input v-model="formData.brinco" type="text" class="form-control" id="brincoEditar"
-                placeholder="Número do Brinco" required>
+              <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
+              <select v-model="formData.piquete" :class="{ 'is-invalid': !isPiqueteValido }" class="form-select"
+                id="piquete" aria-label="Piquete" :placeholder="piquetePlaceholder" required>
+                <option disabled value="">Selecione o piquete</option>
+                <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
+              </select>
+            </div>
+            <hr>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-user-tag"></i>*</span>
+              <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text" class="form-control"
+                id="brinco" :placeholder="brincoPlaceholder" required pattern="\d+">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+              <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                placeholder="Data de nascimento" class="form-control" id="dataNascimentoEdicao"
-                v-model="formData.dataNascimento" required>
+                :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
+                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" required>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
-              <select v-model="formData.sexo" class="form-select" id="sexoEditar">
+              <span class="input-group-text"><i class="fas fa-venus-mars"></i>*</span>
+              <select v-model="formData.sexo" :class="{ 'is-invalid': !isSexoValido }" class="form-select" id="sexo"
+                aria-label="Sexo" :placeholder="sexoPlaceholder" required>
                 <option disabled value="">Selecione o sexo</option>
-                <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao">{{ opcao }}</option>
+                <option value="macho">Macho</option>
+                <option value="femea">Fêmea</option>
               </select>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-horse"></i></span>
-              <select v-model="formData.racaPredominante" class="form-select" id="racaPredominante"
-                aria-label="Raça Predominante" required>
+              <select v-model="formData.racaPredominante" :class="{ 'is-invalid': !isRacaPredominanteValido }"
+                class="form-select" id="racaPredominante" aria-label="Raça Predominante"
+                :placeholder="racaPredominantePlaceholder">
+                <option disabled value="">Selecione a raça predominante</option>
                 <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
               </select>
+              <button @click="() => { this.$router.push('/raca-cadastro'); }" type="button" class="btn btn-acoes"><i
+                  class="fas fa-plus"></i></button>
+
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-              <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacaoEditar"
+              <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
                 placeholder="Observações sobre a Raça"></textarea>
-            </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tag"></i></span>
-              <select v-model="formData.piquete" class="form-select" id="piquete" aria-label="Piquete" required>
-                <option disabled>Selecione o piquete</option>
-                <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
-              </select>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-mars"></i></span>
               <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
-                id="brincoPai" placeholder="Digite o brinco do Pai...">
+                id="brincoPai" placeholder="Digite o brinco do Pai..." pattern="\d*">
             </div>
             <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in machosFiltrados"
@@ -78,7 +80,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus"></i></span>
               <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
-                id="brincoMae" placeholder="Digite o brinco da Mãe...">
+                id="brincoMae" placeholder="Digite o brinco da Mãe..." pattern="\d*">
             </div>
             <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
@@ -88,29 +90,32 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <input v-model="formData.rfid" type="text" class="form-control" id="rfid" placeholder="RFID" required>
+              <input v-model="formData.rfid" :class="{ 'is-invalid': !isRfidValido }" type="text" class="form-control"
+                id="rfid" :placeholder="rfidPlaceholder" pattern="\d*">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <textarea v-model="formData.observacoes" class="form-control" id="observacoes" placeholder="Observações"
-                required></textarea>
+              <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
+                placeholder="Observações">
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
             </div>
             <div v-if="comprado" class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar">*</i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da compra"
-                class="form-control" id="dataDaCompra" v-model="formData.dataCompra" required>
+              <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
+              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                :class="{ 'is-invalid': !isDataCompraValido }" :placeholder="dataCompraPlaceholder" class="form-control"
+                id="dataDaCompra" v-model="formData.dataCompra" required>
             </div>
             <div v-if="comprado" class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
-              <input v-model="formData.valorCompra" type="text" class="form-control" id="valorCompra"
-                placeholder="Valor da compra" required>
+              <input v-model="formData.valorCompra" :class="{ 'is-invalid': !isValorCompraValido }" type="text"
+                class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder" required
+                pattern="^\d+(\.\d{1,2})?$">
             </div>
             <div class="button-group justify-content-end">
-              <button type="button" class="btn btn-secondary" @click="selectTab('viewAnimal')">Cancelar</button>
-              <button type="submit" class="btn btn-success" @click="submitForm">Salvar Alterações</button>
+              <button type="button" class="btn btn-secondary" @click="selectTab('animais')">Cancelar</button>
+              <button type="submit" class="btn btn-success">Enviar</button>
             </div>
           </form>
         </div>
@@ -192,11 +197,24 @@ export default {
   methods: {
     validarFormulario() {
       this.isPiqueteValido = !!this.formData.piquete;
-      this.isBrincoValido = /^\d+$/.test(this.formData.brinco.trim());
+      if (this.formData.brinco) {
+        this.isBrincoValido = /^\d+$/.test(this.formData.brinco.trim());
+      }
       this.isDataNascimentoValido = !!this.formData.dataNascimento;
       this.isSexoValido = !!this.formData.sexo;
       this.isRacaPredominanteValido = !!this.formData.racaPredominante;
-      this.isRfidValido = /^\d+$/.test(this.formData.rfid.trim());
+
+      if (this.formData.rfid !== null) {
+        this.isRfidValido = /^\d*$/.test(this.formData.rfid.trim());
+      }
+
+      if (this.formData.racaObservacao === '') {
+        this.formData.racaObservacao = null;
+      }
+
+      if (this.formData.observacao === '') {
+        this.formData.observacao = null;
+      }
 
       if (this.comprado) {
         this.isDataCompraValido = !!this.formData.dataCompra;

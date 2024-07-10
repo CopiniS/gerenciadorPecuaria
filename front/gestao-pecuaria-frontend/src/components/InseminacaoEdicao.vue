@@ -4,32 +4,29 @@
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'inseminacoes' }" id="nav-vet-tab"
           @click="selectTab('inseminacoes')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista
-          de
-          Inseminações</button>
-        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
-          de Inseminação</button>
+          de Inseminacao</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Inseminacao</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'inseminacoes' }" id="nav-vet" role="tabpanel"
         aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
-        aria-labelledby="nav-edicao-tab">
-        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="edicaoLabel">Edição de Inseminação</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
+        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Inseminacao</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                placeholder="Data da inseminação" class="form-control" id="dataInseminacaoCadastro"
-                v-model="formData.dataInseminacao">
+              <input v-model="formData.dataInseminacao" :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoCadastro">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="nomeVet" @input="filterVeterinario" type="text" class="form-control"
-                placeholder="Digite o Veterinario">
+              :placeholder="veterinarioPlaceholder" :class="{'is-invalid': !isVeterinarioValido}">
             </div>
             <div class="list-group" v-if="nomeVet && veterinariosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -41,13 +38,14 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
-                placeholder="Indentificador Touro" required>
+              :placeholder="identificadorTouroPlaceholder" required :class="{'is-invalid': !isIdentificadorTouroValido}">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus"></i></span>
               <input v-model="brinco" @input="filterFemeas()" type="text" class="form-control"
-                placeholder="Digite o animal">
+              :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
             </div>
+
             <div class="list-group" v-if="brinco && femeasFiltradas.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
                 :key="animal.id" @click="selectMae(animal)">
@@ -56,7 +54,7 @@
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('inseminacoes')">Cancelar</button>
-              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
             </div>
           </form>
         </div>

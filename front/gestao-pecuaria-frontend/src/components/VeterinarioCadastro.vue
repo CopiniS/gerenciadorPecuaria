@@ -68,10 +68,10 @@ export default {
       isTelefoneValido: true,
       isEmailValido: true,
       isCrmvValido: true,
-      nomePlaceholder: 'Nome',
-      telefonePlaceholder: 'Telefone',
-      emailPlaceholder: 'Email',
-      crmvPlaceholder: 'CRMV',
+      nomePlaceholder: 'Nome*',
+      telefonePlaceholder: 'Telefone*',
+      emailPlaceholder: 'Email*',
+      crmvPlaceholder: 'CRMV*',
     };
   },
   methods: {

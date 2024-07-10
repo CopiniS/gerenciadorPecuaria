@@ -27,8 +27,8 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor"
-                type="text" class="form-control" id="valor" :placeholder="valorPlaceholder">
+              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
+                class="form-control" id="valor" :placeholder="valorPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -64,15 +64,15 @@ export default {
       },
       isDataValida: true,
       isValorValido: true,
-      dataPlaceholder: 'Data da Despesa',
-      valorPlaceholder: 'Valor',
+      dataPlaceholder: 'Data da Despesa*',
+      valorPlaceholder: 'Valor*',
     };
   },
-  
+
   mounted() {
-      $(this.$refs.valor).mask("#.##0,00", { reverse: true });
+    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
   },
-  
+
   methods: {
 
     validarFormulario() {
@@ -82,8 +82,12 @@ export default {
       this.isValorValido = !!this.formData.valor;
       if (!this.isValorValido) this.formData.valor = '';
 
-      this.dataPlaceholder = this.isDataValida ? 'Data da Despesa' : 'Campo Data da Despesa é obrigatório';
-      this.valorPlaceholder = this.isValorValido ? 'Valor' : 'Campo Valor é obrigatório';
+      this.dataPlaceholder = this.isDataValida ? 'Data da Despesa*' : 'Campo Data da Despesa é obrigatório';
+      this.valorPlaceholder = this.isValorValido ? 'Valor*' : 'Campo Valor é obrigatório';
+
+      if (this.formData.descricao === '') {
+        this.formData.descricao = null;
+      }
 
       return this.isDataValida && this.isValorValido;
     },
@@ -125,8 +129,8 @@ export default {
 
       this.isDataValida = true,
         this.isValorValido = true,
-        this.dataPlaceholder = 'Data da Despesa',
-        this.valorPlaceholder = 'Valor'
+        this.dataPlaceholder = 'Data da Despesa*',
+        this.valorPlaceholder = 'Valor*'
     },
 
   },

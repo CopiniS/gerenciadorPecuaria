@@ -17,12 +17,12 @@
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de pesagem" 
-                class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem">
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"  
+                class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem" :class="{'is-invalid': !isDataValida}">
               </div>
               <hr>
               <div class="mb-3 input-group">
-                <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" placeholder="Digite o brinco...">
+                <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
               </div>
               <div class="list-group" v-if="brinco && animaisFiltrados.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
@@ -31,7 +31,7 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-weight"></i></span>
-                <input v-model="formData.peso" type="text" class="form-control" id="peso" :disabled="!camposHabilitados " placeholder="Peso" required>
+                <input v-model="formData.peso" type="text" class="form-control" id="peso" :disabled="!camposHabilitados " :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-comment"></i></span>
@@ -69,11 +69,9 @@ export default {
       isAnimalValido: true,
       isDataValida: true,
       isPesoValido: true,
-      isValorValido: true,
-      animalPlaceholder: 'Brinco do animal',
-      dataPlaceholder: 'Data da pesagem',
-      pesoPlaceholder: 'Peso do animal',
-      observacaoPlaceholder: 'Observação',
+      animalPlaceholder: 'Brinco do animal*',
+      dataPlaceholder: 'Data da pesagem*',
+      pesoPlaceholder: 'Peso do animal*',
     };
   },
 
@@ -110,7 +108,31 @@ export default {
     },
 
     validarFormulario() {
-      return true;
+      this.isDataValida = !!this.formData.dataPesagem.trim();
+
+      if (!this.isDataValida) {
+        this.dataPlaceholder = 'Campo Data da Pesagem é obrigatório';
+      }
+
+      this.isAnimalValido = !!this.formData.animal && !!this.formData.animal.toString().trim();
+      if (!this.isAnimalValido) {
+        this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
+      }
+
+      this.isPesoValido = !!this.formData.peso.trim();
+      if (!this.isPesoValido) {
+        this.pesoPlaceholder = 'Campo Peso é obrigatório';
+      }
+
+      if (this.formData.observacao === '') {
+        this.formData.observacao = null;
+      }
+
+      return (
+        this.isDataValida &&
+        this.isAnimalValido &&
+        this.isPesoValido
+      );
     },
 
     selectTab(tab) {

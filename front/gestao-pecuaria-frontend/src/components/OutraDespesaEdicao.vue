@@ -3,11 +3,11 @@
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'despesas' }" id="nav-vet-tab"
-          @click="selectTab('despesas')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Lista de Despesas</button>
+          @click="selectTab('despesas')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
+          Despesas</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
-          aria-selected="false">Edição de Despesa</button>
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
+          de Despesa</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -19,24 +19,27 @@
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Despesa</h1>
           <form @submit.prevent="submitForm">
-                <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                    <input :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
-                    class="form-control" id="dataDespesa" v-model="formData.dataDespesa" required>
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.valor" :class="{'is-invalid': !isValorValido}" @input="aplicaFormatacaoBRL" type="text" class="form-control" id="valor" :placeholder="valorPlaceholder">
-                </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input v-model="formData.descricao" type="text" class="form-control" id="descricao" placeholder="Descrição">
-                </div>
-                <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
-                </div>
-            </form>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+              <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
+                onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataDespesa"
+                v-model="formData.dataDespesa" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" @input="aplicaFormatacaoBRL"
+                type="text" class="form-control" id="valor" :placeholder="valorPlaceholder">
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
+                placeholder="Descrição">
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -47,30 +50,30 @@
 import api from '/src/interceptadorAxios';
 
 export default {
-    data() {
-        return {
-        activeTab: 'edicao', // Começa na aba de edição
-        formData: {
-            id: null,
-            dataDespesa: '',
-            valor: '',
-            descricao: null,
-            propriedade: localStorage.getItem('propriedadeSelecionada'),
-        },
-        isDataValida: true,
-        isValorValido: true,
-        dataPlaceholder: 'Data da Despesa',
-        valorPlaceholder: 'Valor',
-        };
-    },
- 
-    mounted() {
-        const despesaId = this.$route.params.despesaId;
-        if (despesaId) {
-            this.fetchDespesa(despesaId);
-        }
-    },
-    methods: {
+  data() {
+    return {
+      activeTab: 'edicao', // Começa na aba de edição
+      formData: {
+        id: null,
+        dataDespesa: '',
+        valor: '',
+        descricao: null,
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
+      },
+      isDataValida: true,
+      isValorValido: true,
+      dataPlaceholder: 'Data da Despesa',
+      valorPlaceholder: 'Valor',
+    };
+  },
+
+  mounted() {
+    const despesaId = this.$route.params.despesaId;
+    if (despesaId) {
+      this.fetchDespesa(despesaId);
+    }
+  },
+  methods: {
     async fetchDespesa(id) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/outras-despesas/${id}`);
@@ -92,6 +95,10 @@ export default {
 
       this.dataPlaceholder = this.isDataValida ? 'Data da Despesa' : 'Campo Data da Despesa é obrigatório';
       this.valorPlaceholder = this.isValorValido ? 'Valor' : 'Campo Valor é obrigatório';
+
+      if (this.formData.descricao === '') {
+        this.formData.descricao = null;
+      }
 
       return this.isDataValida && this.isValorValido;
     },
@@ -127,12 +134,12 @@ export default {
 
     resetForm() {
       this.formData = {
-            id: null,
-            dataDespesa: '',
-            valor: '',
-            descricao: null,
-            propriedade: localStorage.getItem('propriedadeSelecionada'),
-        },
+        id: null,
+        dataDespesa: '',
+        valor: '',
+        descricao: null,
+        propriedade: localStorage.getItem('propriedadeSelecionada'),
+      },
         this.isDataValida = true,
         this.isValorValido = true,
         this.dataPlaceholder = 'Data da Despesa',

@@ -19,11 +19,11 @@
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Movimentação</h1>
           <form @submit.prevent="submitForm">
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                placeholder="Data da movimentação" class="form-control" id="dataMovimentacaoCadastro"
-                v-model="formData.dataMovimentacao" required>
+                :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoCadastro"
+                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }">
             </div>
             <div class="mb-3 input-group">
               <input type="radio" v-model="radioEscolha" value="brinco"> Animal
@@ -31,9 +31,9 @@
             <div class="mb-3 input-group">
               <input type="radio" v-model="radioEscolha" value="piquete"> Todos animais do piquete
             </div>
-            <div class="mb-3 input-group">
-              <input v-model="brinco" type="text" class="form-control" placeholder="Digite o brinco (apenas números)..."
-                id="brincoInput">
+            <div class="mb-3 input-group" >
+              <input v-model="brinco" type="text" class="form-control" :placeholder="brincoPlaceholder"
+                id="brincoInput" :class="{ 'is-invalid': radioEscolha === 'brinco' && !isAnimalValido }">
             </div>
             <div class="list-group" v-if="brinco && animaisFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -41,10 +41,10 @@
                 {{ animal.brinco }}
               </button>
             </div>
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
               <input v-model="piqueteOrigemNome" @input="filtrarPiquetesOrigem()" type="text" class="form-control"
-                placeholder="Piquete de Origem..." :disabled="(radioEscolha === 'brinco')">
+                :placeholder="piqueteOrigemPlaceholder" :disabled="radioEscolha === 'brinco'" :class="{ 'is-invalid': !isPiqueteOrigemValido }">
             </div>
             <div class="list-group" v-if="piqueteOrigemNome && filteredPiquetesOrigem.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -53,10 +53,10 @@
               </button>
             </div>
 
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
               <input v-model="piqueteDestinoNome" @input="filtrarPiquetesDestino()" type="text" class="form-control"
-                placeholder="Piquete de Destino...">
+                :placeholder="piqueteDestinoPlaceholder" :class="{ 'is-invalid': !isPiqueteDestinoValido }">
             </div>
             <div class="list-group" v-if="piqueteDestinoNome && filteredPiquetesDestino.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -64,13 +64,16 @@
                 {{ piquete.nome }} - {{ piquete.propriedade.nome }}
               </button>
             </div>
+
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.motivo" type="text" class="form-control" id="motivo" placeholder="Motivo">
-            </div>
+                    <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                    <input v-model="formData.motivo" type="text" class="form-control" id="motivo" 
+                    placeholder="Motivo">
+                </div>
+
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('movimentacoes')">Cancelar</button>
-              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+              <button type="submit" class="btn btn-success">Enviar</button>
             </div>
           </form>
         </div>
@@ -106,16 +109,17 @@ export default {
         piqueteDestino: null,
         motivo: null,
       },
-      isAnimalValido: true,
+      isBrincoValido: true,
       isDataValida: true,
+      isPiqueteValido: true,
       isPiqueteOrigemValido: true,
       isPiqueteDestinoValido: true,
       isMotivoKgValido: true,
-      animalPlaceholder: 'Brinco do animal',
-      dataPlaceholder: 'Data da movimentacao',
-      piqueteOrigemPlaceholder: 'Piquete de Origem',
-      piqueteDestinoPlaceholder: 'Piquete de Destino',
-      motivoPlaceholder: 'Motivo da movimentação',
+      brincoPlaceholder: 'Brinco do animal*',
+      dataPlaceholder: 'Data da aplicacao*',
+      piquetePlaceholder: 'Piquete*',
+      piqueteOrigemPlaceholder: 'Piquete de Origem*',
+      piqueteDestinoPlaceholder: 'Piquete de Destino*'
     };
   },
 
@@ -222,14 +226,12 @@ export default {
       this.isPiqueteDestinoValido = !!this.formData.piqueteDestino;
       if (!this.isPiqueteDestinoValido) this.piqueteDestinoPlaceholder = 'Campo Piquete de Destino é obrigatório';
 
-      this.isMotivoKgValido = !!this.formData.motivo && !!this.formData.motivo.trim();
-      if (!this.isMotivoKgValido) this.motivoPlaceholder = 'Campo Motivo da Movimentação é obrigatório';
+      if (this.formData.motivo === '') {
+        this.formData.motivo = null;
+      }
 
       return this.isDataValida && this.isPiqueteOrigemValido && this.isPiqueteDestinoValido && this.isMotivoKgValido;
     },
-
-
-
 
     selectTab(tab) {
       this.activeTab = tab;

@@ -21,12 +21,12 @@
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.nome" type="text" class="form-control" id="nome" placeholder="Nome" required>
+              <input v-model="formData.nome" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" required>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                placeholder="Selecione o tipo" required>
+                :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" required>
                 <option disabled value="">Tipo</option>
                 <option value="sanitario">Sanitário</option>
                 <option value="alimenticio">Alimentício</option>
@@ -35,7 +35,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-seedling"></i></span>
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
-                placeholder="Categoria" required>
+                :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" required>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
@@ -70,9 +70,9 @@ export default {
       isNomeValido: true,
       isTipoValido: true,
       isCategoriaValida: true,
-      nomePlaceholder: 'Nome do Produto',
-      tipoPlaceholder: 'Tipo do produto',
-      categoriaPlaceholder: 'Categoria do Produto',
+      nomePlaceholder: 'Nome do Produto*',
+      tipoPlaceholder: 'Tipo do produto*',
+      categoriaPlaceholder: 'Categoria do Produto*',
     };
   },
   methods: {
@@ -86,6 +86,11 @@ export default {
 
       this.isCategoriaValida = !!this.formData.categoria.trim();
       if (!this.isCategoriaValida) this.categoriaPlaceholder = 'Campo Categoria do Produto é obrigatório';
+
+      
+      if (this.formData.descricao === '') {
+        this.formData.descricao = null;
+      }
 
       return this.isNomeValido && this.isTipoValido && this.isCategoriaValida;
     },

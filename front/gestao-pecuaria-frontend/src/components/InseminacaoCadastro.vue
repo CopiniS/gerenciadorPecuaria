@@ -21,14 +21,12 @@
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                placeholder="Data da inseminação" class="form-control" id="dataInseminacaoCadastro"
-                v-model="formData.dataInseminacao" required>
+              <input v-model="formData.dataInseminacao" :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoCadastro">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="nomeVet" @input="filterVeterinario" type="text" class="form-control"
-                placeholder="Digite o Veterinario">
+              :placeholder="veterinarioPlaceholder" :class="{'is-invalid': !isVeterinarioValido}">
             </div>
             <div class="list-group" v-if="nomeVet && veterinariosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -40,12 +38,12 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
-                placeholder="Indentificador Touro" required>
+              :placeholder="identificadorTouroPlaceholder" required :class="{'is-invalid': !isIdentificadorTouroValido}">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus"></i></span>
               <input v-model="brinco" @input="filterFemeas()" type="text" class="form-control"
-                placeholder="Digite o número do animal">
+              :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
             </div>
 
             <div class="list-group" v-if="brinco && femeasFiltradas.length">
@@ -91,10 +89,10 @@ export default {
       isDataValida: true,
       isVeterinarioValido: true,
       isIdentificadorTouroValido: true,
-      animalPlaceholder: 'Brinco do animal',
-      dataPlaceholder: 'Data da inseminacao',
-      veterinarioPlaceholder: 'Veterinário',
-      identificadorTouroPlaceholder: 'Identificador do Touro',
+      animalPlaceholder: 'Brinco do animal*',
+      dataPlaceholder: 'Data da inseminacao*',
+      veterinarioPlaceholder: 'Veterinário*',
+      identificadorTouroPlaceholder: 'Identificador do Touro*',
     };
   },
 

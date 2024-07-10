@@ -18,17 +18,17 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
                     <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" :placeholder="nomePlaceholder"
-                        id="nome">
+                        id="nome" required>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                     <input v-model="formData.endereco" :class="{'is-invalid': !isEnderecoValido}" type="text" class="form-control"
-                        :placeholder="enderecoPlaceholder" id="endereco">
+                        :placeholder="enderecoPlaceholder" id="endereco" required>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-flag"></i></span>
                     <select v-model="formData.estado" :class="{'is-invalid': !isCidadeValida}" class="form-select"
-                        @change="buscarCidadesPorEstado($event.target.value)">
+                        @change="buscarCidadesPorEstado($event.target.value)" required>
                         <option value="" disabled>{{ estadoPlaceholder }}</option>
                         <option v-for="estado in estados" :key="estado.id" :value="estado.nome">{{ estado.nome
                             }}</option>
@@ -45,17 +45,17 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.latitude" :class="{'is-invalid': !isLatitudeValida}" type="text" class="form-control"
-                        :placeholder="latitudePlaceholder" id="latitude">
+                        :placeholder="latitudePlaceholder" id="latitude" required>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.longitude" :class="{'is-invalid': !isLongitudeValida}" type="text" class="form-control"
-                        :placeholder="longitudePlaceholder" id="longitude">
+                        :placeholder="longitudePlaceholder" id="longitude" required>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control"
-                        :placeholder="areaPlaceholder" id="area">
+                        :placeholder="areaPlaceholder" id="area" required>
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('propriedades')">Cancelar</button>
@@ -95,13 +95,13 @@ export default {
         isLatitudeValida: true,
         isLongitudeValida: true,
         isAreaValida: true,
-        nomePlaceholder: 'Nome da propriedade',
-        cidadePlaceholder: 'Cidade',
-        estadoPlaceholder: 'Estado',
-        enderecoPlaceholder: 'Endereço',
-        latitudePlaceholder: 'Latitude',
-        longitudePlaceholder: 'Longitude',
-        areaPlaceholder: 'Área'
+        nomePlaceholder: 'Nome da propriedade*',
+        cidadePlaceholder: 'Cidade*',
+        estadoPlaceholder: 'Estado*',
+        enderecoPlaceholder: 'Endereço*',
+        latitudePlaceholder: 'Latitude*',
+        longitudePlaceholder: 'Longitude*',
+        areaPlaceholder: 'Área*'
     };
   },
     mounted() {
@@ -137,17 +137,33 @@ export default {
             }
         },
 
-    validarFormulario(){
-      this.isNomeValido = !!this.nome;
-      this.isCidadeValida = !!this.cidade;
-      this.isEstadoValido = !!this.estado;
-      this.isEnderecoValido = !!this.endereco;
-      this.isLatitudeValida = this.validarLatitude(this.latitude);
-      this.isLongitudeValida = this.validarLongitude(this.longitude);
-      this.isAreaValida = !!this.area;
+        validarFormulario() {
+    this.isNomeValido = !!this.formData.nome;
+    this.isCidadeValida = !!this.formData.cidade;
+    this.isEstadoValido = !!this.formData.estado;
+    this.isEnderecoValido = !!this.formData.endereco;
+    this.isLatitudeValida = this.validarLatitude(this.formData.latitude);
+    this.isLongitudeValida = this.validarLongitude(this.formData.longitude);
+    this.isAreaValida = !!this.formData.area;
 
-      return this.isNomeValido && this.isCidadeValida && this.isEstadoValido && this.isEnderecoValido && this.isLatitudeValida && this.isLongitudeValida && this.isAreaValida;
-    },
+    this.nomePlaceholder = this.isNomeValido ? 'Nome da propriedade' : 'Nome da propriedade é obrigatório';
+    this.cidadePlaceholder = this.isCidadeValida ? 'Cidade' : 'Cidade é obrigatória';
+    this.estadoPlaceholder = this.isEstadoValido ? 'Estado' : 'Estado é obrigatório';
+    this.enderecoPlaceholder = this.isEnderecoValido ? 'Endereço' : 'Endereço é obrigatório';
+    this.latitudePlaceholder = this.isLatitudeValida ? 'Latitude' : 'Latitude inválida';
+    this.longitudePlaceholder = this.isLongitudeValida ? 'Longitude' : 'Longitude inválida';
+    this.areaPlaceholder = this.isAreaValida ? 'Área' : 'Área é obrigatória';
+
+    return (
+      this.isNomeValido &&
+      this.isCidadeValida &&
+      this.isEstadoValido &&
+      this.isEnderecoValido &&
+      this.isLatitudeValida &&
+      this.isLongitudeValida &&
+      this.isAreaValida
+    );
+  },
     validarLatitude(latitude) {
       const lat = parseFloat(latitude);
       return !isNaN(lat) && lat >= -90 && lat <= 90;
@@ -165,6 +181,7 @@ export default {
     },
 
     async submitForm() {
+      if (!this.validarFormulario()) {
         try {
             const response = await api.post('http://127.0.0.1:8000/propriedades/', this.formData);
 
@@ -179,6 +196,7 @@ export default {
             alert('Erro ao enviar requisição. Verifique o console para mais detalhes');
         }
         this.$router.push('/propriedades');
+      }
     },
 
     resetForm() {
@@ -266,5 +284,4 @@ export default {
 .is-invalid {
   border-color: #dc3545;
 }
-
 </style>

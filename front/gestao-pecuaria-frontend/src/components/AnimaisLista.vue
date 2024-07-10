@@ -18,15 +18,19 @@
         <h2 class="me-3">Filtros</h2>
         <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="brinco" class="form-label me-2">Brinco</label>
           <input type="text" class="form-control" id="brinco" v-model="filtro.brinco">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data de nascimento"
-            class="form-control" id="dataNascimento" v-model="formData.dataNascimento" required>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Início"
+            class="form-control" id="dataNascimentoInicio" v-model="formData.dataNascimentoInicio">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim"
+            class="form-control" id="dataNascimentoFim" v-model="formData.dataNascimentoFim">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="sexo" class="form-label me-2">Sexo</label>
@@ -49,10 +53,6 @@
           <input type="text" class="form-control" id="brincoMae" v-model="filtro.brincoMae">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="observacoes" class="form-label me-2">Observações</label>
-          <input type="text" class="form-control" id="observacoes" v-model="filtro.observacoes">
-        </div>
-        <div class="col-auto d-flex align-items-center">
           <label for="piquete" class="form-label me-2">Piquete</label>
           <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
         </div>
@@ -60,15 +60,14 @@
           <label for="status" class="form-label me-2">Status</label>
           <select class="form-select" id="status" v-model="filtro.status">
             <option value="">Selecione o status</option>
-            <option value="morto">Morto</option>
-            <option value="Vivo">Vivo</option>
-            <option value="desaparecido">Desaparecido</option>
-            <option value="vendido">vendido</option>
+            <option >Morto</option>
+            <option >Vivo</option>
+            <option >Vendido</option>
           </select>
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+          <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>
     </div>
@@ -147,6 +146,7 @@ export default {
   data() {
     return {
       animais: [],
+      animaisDaApi: [],
       racas: [],
       piquetes: [],
       listaMachos: [],
@@ -228,7 +228,8 @@ export default {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
         });
-        this.animais = response.data;
+        this.animaisDaApi = response.data;
+        this.animais = this.animaisDaApi;
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
       }
@@ -388,7 +389,28 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.animais = this.animaisDaApi.filter(animal => {
+
+        //essas verificações é para o caso de o ususario nao ter cadastrado raça, brinco pai ou brinco mae
+        if(animal.raca == null){
+          animal.raca = {nome: ''};
+        }
+        if(animal.brincoPai == null){
+          animal.brincoPai = '';
+        }
+        if(animal.brincoMae == null){
+          animal.brincoMae = '';
+        }
+        return  (new Date(animal.dataNascimento) >= new Date(this.filtro.dataNascimentoInicio || '1970-01-01')) &&
+                (new Date(animal.dataNascimento) <= new Date(this.filtro.dataNascimentoFim || '9999-12-31')) &&
+                animal.brinco.includes(this.filtro.brinco) &&
+                animal.sexo.includes(this.filtro.sexo) &&
+                animal.piquete.nome.includes(this.filtro.piquete) &&
+                (animal.raca.nome.includes(this.filtro.raca)) &&
+                (animal.brincoPai.includes(this.filtro.brincoPai)) &&
+                (animal.brincoMae.includes(this.filtro.brincoMae)) &&
+                animal.status.includes(this.filtro.status);
+      });
     },
     limparFiltro() {
       this.filtro.brinco = '';
@@ -397,9 +419,10 @@ export default {
       this.filtro.raca = '';
       this.filtro.brincoPai = '';
       this.filtro.brincoMae = '';
-      this.filtro.observacoes = '';
       this.filtro.piquete = '';
       this.filtro.status = '';
+
+      this.animais = this.animaisDaApi;
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

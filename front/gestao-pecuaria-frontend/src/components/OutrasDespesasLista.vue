@@ -52,6 +52,7 @@
                 <th scope="col">Data</th>
                 <th scope="col">Valor</th>
                 <th scope="col">Descricao</th>
+                <th scope="col">Categoria</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,6 +60,7 @@
                 <td>{{ formatarData(despesa.dataDespesa) }}</td>
                 <td>{{ despesa.valor }}</td>
                 <td>{{ despesa.descricao }}</td>
+                <td>{{ despesa.categoria }}</td>
                 <td>
                     <button @click="acessarEdicao(despesa)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
                     <button @click="confirmarExclusao(despesa)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
@@ -105,6 +107,7 @@ export default {
         dataDespesa: '',
         valor: '',
         descricao: null,
+        categoria: null,
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
       mostrarFormulario: false,

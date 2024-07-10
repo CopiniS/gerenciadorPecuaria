@@ -35,6 +35,11 @@
               <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
                 placeholder="Descrição">
             </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
+                placeholder="Categoria">
+            </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>
               <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
@@ -58,6 +63,7 @@ export default {
         dataDespesa: '',
         valor: '',
         descricao: null,
+        categoria: null,
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
       isDataValida: true,
@@ -138,6 +144,7 @@ export default {
         dataDespesa: '',
         valor: '',
         descricao: null,
+        categoria: null,
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
         this.isDataValida = true,

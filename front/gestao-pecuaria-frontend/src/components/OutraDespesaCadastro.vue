@@ -35,6 +35,11 @@
               <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
                 placeholder="Descrição">
             </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
+                placeholder="Categoria">
+            </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>
               <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
@@ -60,6 +65,7 @@ export default {
         dataDespesa: '',
         valor: '',
         descricao: null,
+        categoria: null,
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
       isDataValida: true,
@@ -106,7 +112,6 @@ export default {
           const response = await api.post('http://127.0.0.1:8000/outras-despesas/', this.formData, {});
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
-            this.resetForm();
             this.$router.push('/outras-despesas');
           } else {
             alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');
@@ -117,22 +122,6 @@ export default {
         }
       }
     },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        nome: '',
-        telefone: '',
-        email: '',
-        crmv: '',
-      };
-
-      this.isDataValida = true,
-        this.isValorValido = true,
-        this.dataPlaceholder = 'Data da Despesa*',
-        this.valorPlaceholder = 'Valor*'
-    },
-
   },
 };
 </script>

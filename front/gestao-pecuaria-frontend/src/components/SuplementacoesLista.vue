@@ -17,7 +17,7 @@
           <h2 class="me-3">Filtros</h2>
           <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <!-- Outros filtros existentes -->
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>
@@ -28,30 +28,33 @@
           <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="quantidade" class="form-label me-2">Quantidade</label>
-          <input type="number" class="form-control" id="quantidade" v-model="filtro.quantidade">
-        </div>
-        <div class="col-auto d-flex align-items-center">
           <label for="dataInicial" class="form-label me-2">Data Inicial</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Inicial" 
-          class="form-control" id="dataInicial" v-model="filtro.dataInicial">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Início" 
+          class="form-control" id="dataInicialIncio" v-model="filtro.dataInicialInicio">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="dataFinal" class="form-label me-2">Data Final</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
-          class="form-control" id="dataFinal" v-model="filtro.dataFinal">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim" 
+          class="form-control" id="dataInicialFim" v-model="filtro.dataInicialFim">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataInicial" class="form-label me-2">Data Final</label>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Início" 
+          class="form-control" id="dataFinalIncio" v-model="filtro.dataFinalInicio">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim" 
+          class="form-control" id="datafinalFim" v-model="filtro.dataFinalFim">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="status" class="form-label me-2">Status</label>
           <select class="form-select" id="status" v-model="filtro.status">
-            <option value="">Todos</option>
-            <option value="Em andamento">Em andamento</option>
-            <option value="Finalizado">Finalizado</option>
+            <option value="andamento">Em andamento</option>
+            <option value="finalizado">Finalizado</option>
           </select>
         </div>
         <div class="col-auto">
             <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-            <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+            <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>
     </div>
@@ -127,6 +130,7 @@ export default {
   data() {
     return {
       suplementacoes: [],
+      suplementacoesDaApi: [],
       estaFinalizado: false,
       formData: {
         id: null,
@@ -140,9 +144,10 @@ export default {
       filtro: {
         produto: '',
         piquete: '',
-        quantidade: '',
-        dataInicial: '',
-        dataFinal: null,
+        dataInicialInicio: '',
+        dataInicialFim: '',
+        dataFinalInicio: '',
+        dataFinalFim: '',
         status: ''
       },
     }
@@ -152,12 +157,11 @@ export default {
   },
   methods: {
     async buscarSuplementacoesDaApi() {
-    console.log('aqui chega');
       try {
         const response = await api.get('http://127.0.0.1:8000/suplementacoes/' , {
         });
-        this.suplementacoes = response.data;
-        console.log('aqui nao chega');
+        this.suplementacoesDaApi = response.data;
+        this.suplementacoes = this.suplementacoesDaApi;
       } catch (error) {
         console.error('Erro ao buscar suplementacoes da API:', error);
       }
@@ -233,12 +237,29 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.suplementacoes = this.suplementacoesDaApi.filter(suplementacao => {
+        return  (new Date(suplementacao.dataInicial) >= new Date(this.filtro.dataInicialInicio || '1970-01-01')) &&
+                (new Date(suplementacao.dataInicial) <= new Date(this.filtro.dataInicialFim || '9999-12-31')) &&
+                (new Date(suplementacao.dataFinal) >= new Date(this.filtro.dataFinalInicio || '1970-01-01')) &&
+                (new Date(suplementacao.dataFinal) <= new Date(this.filtro.dataFinalFim || '9999-12-31')) &&
+                suplementacao.produto.nome.includes(this.filtro.produto) &&
+                suplementacao.piquete.nome.includes(this.filtro.piquete) &&
+                (
+                  ((this.filtro.status == 'andamento' && suplementacao.dataFinal == null) || this.filtro.status == '') ||
+                  ((this.filtro.status == 'finalizado' && suplementacao.dataFinal != null) || this.filtro.status == '')
+                );
+      });
     },
     limparFiltro() {
-      this.filtro.nome = '';
-      this.filtro.tipo = '';
-      this.filtro.categoria = '';
+      this.filtro.produto = '';
+      this.filtro.piquete = '';
+      this.filtro.dataInicialInicio = '';
+      this.filtro.dataInicialFim = '';
+      this.filtro.dataFinalInicio = '';
+      this.filtro.dataFinalFim = '';
+      this.filtro.status = '';
+
+      this.suplementacoes = this.suplementacoesDaApi;
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

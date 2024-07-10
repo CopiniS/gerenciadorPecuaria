@@ -118,7 +118,7 @@ class VendaAnimalSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class VendaAnimalComAnimalSerializer(serializers.ModelSerializer):
-    animal = AnimalSerializer(read_only=True)
+    animal = AnimalComPiqueteAndRacaSerializer(read_only=True)
 
     class Meta:
         model = models.VendaAnimal

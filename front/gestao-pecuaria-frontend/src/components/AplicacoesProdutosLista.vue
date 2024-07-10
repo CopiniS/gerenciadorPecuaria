@@ -16,23 +16,31 @@
         <h2 class="me-3">Filtros</h2>
         <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
-          <label for="nome" class="form-label me-2">Animal</label>
-          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+          <label for="dataAplicacao" class="form-label me-2">Data da Aplicação</label>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Aplicação Inicio"
+            class="form-control" id="dataAplicacaoInicio" v-model="filtro.dataAplicacaoInicio">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="nome" class="form-label me-2">Produto</label>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Aplicação Fim"
+            class="form-control" id="dataAplicacaoFim" v-model="filtro.dataAplicacaoFim">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Produto</label>
           <input type="text" class="form-control" id="produto" v-model="filtro.produto">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="dataCompra" class="form-label me-2">Data</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da aplicação" 
-          class="form-control" id="dataAplicacao" v-model="filtro.dataAplicacao" required>
+          <label for="produto" class="form-label me-2">Animal</label>
+          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Piquete</label>
+          <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+          <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>
     </div>
@@ -47,6 +55,7 @@
             <tr>
               <th scope="col">Data</th>
               <th scope="col">Animal</th>
+              <th scope="col">Piquete</th>
               <th scope="col">Produto</th>
               <th scope="col">Dosagem</th>
               <th scope="col">Ações</th>
@@ -56,6 +65,7 @@
             <tr v-for="(aplicacao, index) in aplicacoes" :key="index">
               <td>{{ formatarData(aplicacao.dataAplicacao) }}</td>
               <td>{{ aplicacao.animal.brinco}}</td>
+              <td>{{ aplicacao.animal.piquete.nome}}</td>
               <td>{{ aplicacao.produto.nome}}</td>
               <td>{{ aplicacao.dosagem}}</td>
               <td>
@@ -100,6 +110,7 @@ export default {
     return {
       activeTab: 'aplicacoes',
         aplicacoes: [],
+        aplicacoesDaApi: [],
         formData: {
             id: null,
             produto: '',
@@ -110,9 +121,11 @@ export default {
       },
       mostrarFormulario: false,
       filtro: {
-        produto: '',
-        animal: [],
-        dataAplicacao: '',
+        dataAplicacaoInicio: '',
+        dataAplicacaoFim: '',
+        animal: '',
+        piquete: '',
+        produto: ''
       },
       modalTitle: 'Cadastro de Aplicacao',
     }
@@ -130,7 +143,8 @@ export default {
                 propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
             });
-            this.aplicacoes = response.data;
+            this.aplicacoesDaApi = response.data;
+            this.aplicacoes = this.aplicacoesDaApi;
         } catch (error) {
         console.error('Erro ao buscar aplicações de produtos da API:', error);
         }
@@ -189,15 +203,23 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.aplicacoes = this.aplicacoesDaApi.filter(aplicacao => {
+        return  (new Date(aplicacao.dataAplicacao) >= new Date(this.filtro.dataAplicacaoInicio || '1970-01-01')) &&
+                (new Date(aplicacao.dataAplicacao) <= new Date(this.filtro.dataAplicacaoFim || '9999-12-31')) &&
+                aplicacao.animal.brinco.includes(this.filtro.animal) &&
+                aplicacao.animal.piquete.nome.includes(this.filtro.piquete) &&
+                aplicacao.produto.nome.includes(this.filtro.produto);
+      });
     },
+    
     limparFiltro() {
-      this.filtro = {
-        produto: '',
-        animal: '',
-        dataAplicacao: '',
-      };
+      this.filtro.dataAplicacaoInicio = '',
+      this.filtro.dataAplicacaoFim = '',
+      this.filtro.animal = '',
+      this.filtro.piquete = '',
+      this.filtro.produto = ''
     },
+
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },

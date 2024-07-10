@@ -130,7 +130,7 @@ class AplicacaoProdutoSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class AplicacaoProdutoComAnimalAndProdutoSerializer(serializers.ModelSerializer):
-    animal = AnimalSerializer(read_only=True)
+    animal = AnimalComPiqueteAndRacaSerializer(read_only=True)
     produto = ProdutoSerializer(read_only=True)
 
     class Meta:

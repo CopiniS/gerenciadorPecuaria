@@ -17,30 +17,22 @@
           <h2 class="me-3">Filtros</h2>
           <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="nome" class="form-label me-2">Nome</label>
           <input type="text" class="form-control" id="nome" v-model="filtro.nome">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="tipoCultivo" class="form-label me-2">Cidade</label>
-          <select class="form-select" id="cidade" v-model="filtro.tipoCultivo">
-            <option value="">Selecione a cidade</option>
-          </select>
+          <input type="text" class="form-control" id="cidade" v-model="filtro.cidade">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="tipoCultivo" class="form-label me-2">Cidade</label>
-          <select class="form-select" id="estado" v-model="filtro.tipoCultivo">
-            <option value="">Selecione o estado</option>
-          </select>
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="area" class="form-label me-2">Área</label>
-          <input type="number" class="form-control" id="area" v-model="filtro.area">
+          <label for="tipoCultivo" class="form-label me-2">Estado</label>
+          <input type="text" class="form-control" id="estado" v-model="filtro.estado">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-          <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
+          <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>
     </div>
@@ -119,6 +111,7 @@ export default {
   data() {
     return {
       propriedades: [],
+      propriedadesDaApi: [],
       propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
       formData: {
         id: null,
@@ -133,12 +126,8 @@ export default {
       mostrarFormulario: false,
       filtro: {
         nome: '',
-        endereco: '',
-        estado: '',
         cidade: '',
-        latitude: '',
-        longitude: '',
-        area: '',
+        estado: '',
       },
     }
   },
@@ -150,7 +139,8 @@ export default {
       try {
         const response = await api.get('http://127.0.0.1:8000/propriedades/' , {
         });
-        this.propriedades = response.data;
+        this.propriedadesDaApi = response.data;
+        this.propriedades = this.propriedadesDaApi;
       } catch (error) {
         console.error('Erro ao buscar propriedades da API:', error);
       }
@@ -206,19 +196,19 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.propriedades = this.propriedadesDaApi.filter(propriedade => {
+        return  propriedade.nome.toLowerCase().includes(this.filtro.nome) &&
+                propriedade.cidade.toLowerCase().includes(this.filtro.cidade.toLowerCase()) &&
+                propriedade.estado.toLowerCase().includes(this.filtro.estado.toLowerCase());
+        });
     },
+
     limparFiltro() {
-        this.filtro = {
-        nome: '',
-        endereco: '',
-        estado: '',
-        cidade: '',
-        latitude: '',
-        longitude: '',
-        area: '',
-      }
+        this.filtro.nome = '';
+        this.filtro.cidade = '';
+        this.filtro.estado = '';
     },
+
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },

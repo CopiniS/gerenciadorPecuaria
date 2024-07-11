@@ -17,27 +17,28 @@
           <h2 class="me-3">Filtros</h2>
           <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form class="row g-3 align-items-center" v-show="mostrarFormulario">
-          <div class="col-auto d-flex align-items-center">
-              <label for="nome" class="form-label me-2">Nome</label>
-              <input type="text" class="form-control filtro-nome" id="nome" v-model="filtro.nome">
-          </div>
-          <div class="col-auto d-flex align-items-center">
-              <label for="tipo" class="form-label me-2">Tipo</label>
-              <select class="form-select filtro-tipo" id="tipo" v-model="filtro.tipo">
-                  <option value="">Selecione o tipo</option>
-                  <option value="alimenticio">Alimentício</option>
-                  <option value="sanitario">Sanitário</option>
-              </select>
-          </div>
-          <div class="col-auto d-flex align-items-center">
-              <label for="categoria" class="form-label me-2">Categoria</label>
-              <input type="text" class="form-control filtro-categoria" id="categoria" v-model="filtro.categoria">
-          </div>
-          <div class="col-auto">
-              <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-              <button class="btn btn-success" @click="aplicarFiltro">Filtrar</button>
-          </div>
+      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataDespesa" class="form-label me-2">Data da Despesa</label>
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Inicio"
+            class="form-control" id="dataDespesaInicio" v-model="filtro.dataDespesaInicio">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim"
+            class="form-control" id="dataDespesaFim" v-model="filtro.dataDespesaFim">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Descrição</label>
+          <input type="text" class="form-control" id="descricao" v-model="filtro.descricao">
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Categoria</label>
+          <input type="text" class="form-control" id="categoria" v-model="filtro.categoria">
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+          <button type="submit" class="btn btn-success">Filtrar</button>
+        </div>
       </form>
     </div>
 
@@ -102,6 +103,7 @@ export default {
   data() {
     return {
       despesas: [],
+      despesasDaApi: [],
       formData: {
         id: null,
         dataDespesa: '',
@@ -112,9 +114,10 @@ export default {
       },
       mostrarFormulario: false,
       filtro: {
-        nome: '',
-        tipo: '',
-        categoria: ''
+        dataDespesaInicio: '',
+        dataDespesaFim: '',
+        descricao: '',
+        categoria: '',
       },
       modalTitle: 'Cadastro de Despesa',
     }
@@ -130,7 +133,8 @@ export default {
                 propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
         });
-        this.despesas = response.data;
+        this.despesasDaApi = response.data;
+        this.despesas = this.despesasDaApi;
       } catch (error) {
         console.error('Erro ao buscar outras despesas da API:', error);
       }
@@ -188,12 +192,26 @@ export default {
     },
 
     aplicarFiltro() {
-      // Implementar a lógica para aplicar o filtro
+      this.despesas = this.despesasDaApi.filter(despesa => {
+        if(despesa.descricao == null){
+          despesa.descricao = '';
+        }
+        if(despesa.categoria == null){
+          despesa.categoria = '';
+        }
+        return  (new Date(despesa.dataDespesa) >= new Date(this.filtro.dataDespesaInicio || '1970-01-01')) &&
+                (new Date(despesa.dataDespesa) <= new Date(this.filtro.dataDespesaFim || '9999-12-31')) &&
+                despesa.descricao.includes(this.filtro.descricao) &&
+                despesa.categoria.includes(this.filtro.categoria);
+      });
     },
     limparFiltro() {
-      this.filtro.nome = '';
-      this.filtro.tipo = '';
+      this.filtro.dataDespesaInicio = '';
+      this.filtro.dataDespesaFim = '';
+      this.filtro.descricao = '';
       this.filtro.categoria = '';
+
+      this.despesas = this.despesasDaApi;
     },
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

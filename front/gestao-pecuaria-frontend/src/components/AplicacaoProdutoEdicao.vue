@@ -4,30 +4,24 @@
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'aplicacoes' }" id="nav-vet-tab" @click="selectTab('aplicacoes')" 
         type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Aplicação</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Aplicação</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab" @click="selectTab('edicao')" 
+        type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição de Aplicação</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'aplicacoes' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Aplicação</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel" aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Aplicação</h1>
             <form @submit.prevent="submitForm">
             <div class="mb-3 input-group" :class="{ 'is-invalid': !isDataValida }">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                :placeholder="dataPlaceholder" class="form-control" id="dataAplicacaoCadastro"
-                v-model="formData.dataAplicacao" required>
+                :placeholder="dataPlaceholder" class="form-control" id="dataAplicacaoEdicao"
+                v-model="formData.dataAplicacao">
             </div>
-            <div class="mb-3 input-group">
-              <input type="radio" v-model="radioEscolha" value="brinco"> Brinco
-            </div>
-            <div class="mb-3 input-group">
-              <input type="radio" v-model="radioEscolha" value="piquete"> Piquete
-            </div>
-            <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'" :class="{ 'is-invalid': !isBrincoValido }">
+            <div class="mb-3 input-group" :class="{ 'is-invalid': !isBrincoValido }">
               <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" id="brincoField"
                 :placeholder="brincoPlaceholder">
             </div>
@@ -35,17 +29,6 @@
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados"
                 :key="animal.id" @click="selectAnimal(animal)">
                 {{ animal.brinco }}
-              </button>
-            </div>
-            <div class="mb-3 input-group" v-if="radioEscolha === 'piquete'" :class="{ 'is-invalid': !isPiqueteValido }">
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="nomePiquete" @input="filtrarPiquetes" type="text" class="form-control"
-                :placeholder="piquetePlaceholder">
-            </div>
-            <div class="list-group" v-if="nomePiquete && piquetesFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="piquete in piquetesFiltrados"
-                :key="piquete.id" @click="selectPiquete(piquete)">
-                {{ piquete.nome }}
               </button>
             </div>
             <div class="mb-3 input-group" :class="{ 'is-invalid': !isProdutoValido }">
@@ -60,15 +43,11 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.dosagem" type="text" class="form-control" id="dosagem"
-                :disabled="!((camposHabilitadosPiquete || camposHabilitadosAnimal) && camposHabilitadosProduto)"
-                :placeholder="dosagemPlaceholder" required>
+              <input v-model="formData.dosagem" type="text" class="form-control" id="dosagem" :placeholder="dosagemPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.observacao" type="text" class="form-control" id="observacao"
-                :disabled="!((camposHabilitadosPiquete || camposHabilitadosAnimal) && camposHabilitadosProduto)"
-                :placeholder="observacaoPlaceholder">
+              <input v-model="formData.observacao" type="text" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
@@ -170,7 +149,6 @@ export default {
       this.formData.animal = [];
       this.brinco = animal.brinco;
       this.formData.animal.push(animal.id);
-      this.camposHabilitadosAnimal = true;
       this.animaisFiltrados = [];
     },
 
@@ -190,7 +168,6 @@ export default {
     selectProduto(produto) {
       this.nomeProduto = produto.nome;
       this.formData.produto = produto.id;
-      this.camposHabilitadosProduto = true;
       this.produtosFiltrados = [];
     },
 

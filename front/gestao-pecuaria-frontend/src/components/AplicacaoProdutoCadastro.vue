@@ -61,13 +61,11 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.dosagem" type="text" class="form-control" id="dosagem"
-                :disabled="!((camposHabilitadosPiquete || camposHabilitadosAnimal) && camposHabilitadosProduto)"
-                :placeholder="dosagemPlaceholder" required :class="{ 'is-invalid': !isDosagemValido }">
+                :placeholder="dosagemPlaceholder" :class="{ 'is-invalid': !isDosagemValida }">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.observacao" type="text" class="form-control" id="observacao"
-                :disabled="!((camposHabilitadosPiquete || camposHabilitadosAnimal) && camposHabilitadosProduto)"
                 :placeholder="observacaoPlaceholder">
             </div>
             <div class="button-group justify-content-end">
@@ -154,7 +152,6 @@ export default {
       this.formData.animal = [];
       this.brinco = animal.brinco;
       this.formData.animal.push(animal.id);
-      this.camposHabilitadosAnimal = true;
       this.animaisFiltrados = [];
     },
 
@@ -176,7 +173,6 @@ export default {
     },
 
     selectPiquete(piquete) {
-      this.camposHabilitadosPiquete = true;
       this.piqueteId = piquete.id;
       this.nomePiquete = piquete.nome;
       this.piquetesFiltrados = [];
@@ -199,7 +195,6 @@ export default {
     selectProduto(produto) {
       this.nomeProduto = produto.nome;
       this.formData.produto = produto.id;
-      this.camposHabilitadosProduto = true;
       this.produtosFiltrados = [];
     },
 

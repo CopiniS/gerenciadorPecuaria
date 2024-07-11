@@ -397,8 +397,28 @@ export default {
                 this.animal = this.animais[0];
                 this.formDataFoto.animal = this.animal.id;
                 this.buscarOcorrenciasDoAnimal();
+                this.preencheFormAnimal();
             } catch (error) {
                 console.error('Erro ao buscar animal da API:', error);
+            }
+        },
+        
+        preencheFormAnimal(){
+            this.formDataAnimal.id = this.animal.id;
+            this.formDataAnimal.brinco = this.animal.brinco;
+            this.formDataAnimal.dataNascimento = this.animal.dataNascimento;
+            this.formDataAnimal.piquete = this.animal.piquete.nome;
+            this.formDataAnimal.sexo = this.animal.sexo;
+            this.formDataAnimal.racaObservacao = this.animal.racaObservacao;
+            this.formDataAnimal.brincoPai = this.animal.brincoPai;
+            this.formDataAnimal.brincoMae = this.animal.brincoMae;
+            this.formDataAnimal.status = this.animal.status;
+            this.formDataAnimal.rfid = this.animal.rfid;
+            this.formDataAnimal.observacoes = this.animal.observacoes;
+            this.formDataAnimal.dataCompra = this.animal.dataCompra;
+            this.formDataAnimal.valorCompra = this.animal.valorCompra;
+            if(this.animal.racaPredominante){
+                this.formDataAnimal.racaPredominante = this.animal.racaPredominante.nome;
             }
         },
 

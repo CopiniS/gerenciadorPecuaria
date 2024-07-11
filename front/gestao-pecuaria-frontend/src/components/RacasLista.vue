@@ -138,6 +138,7 @@ export default {
     acessarCadastro() {
       this.$router.push({
         name: 'RacaCadastro',
+        params: {animalJSON: 'racasLista'}
       })
     },
 

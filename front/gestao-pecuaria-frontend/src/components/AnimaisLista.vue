@@ -75,7 +75,7 @@
     <div>
       <div class="table-container">
         <div class="button-container">
-          <button @click="() => { this.$router.push('/animais-cadastro'); }" type="button"
+          <button @click="acessarCadastro()" type="button"
             class="btn btn-success">Cadastrar Animal</button>
 
           <button @click="() => { this.$router.push('/racas'); }" type="button" class="btn btn-success">Lista de
@@ -234,6 +234,14 @@ export default {
         console.error('Erro ao buscar animais da API:', error);
       }
     },
+
+    acessarCadastro(){
+      this.$router.push({
+          name: 'AnimaisCadastro',
+          params: {animalJSON: 'animaisLista'}
+        });
+    },
+
     editarAnimal(animal) {
       this.modalTitle = 'Editar Animal';
       this.formData = {

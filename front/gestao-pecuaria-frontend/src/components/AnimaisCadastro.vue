@@ -57,8 +57,7 @@
                 <option disabled value="">Selecione a raça predominante</option>
                 <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
               </select>
-              <button @click="() => { this.$router.push('/raca-cadastro'); }" type="button" class="btn btn-acoes"><i
-                  class="fas fa-plus"></i></button>
+              <button @click="acessarCadastroRaca()"><i class="fas fa-plus"></i></button>
 
             </div>
             <div class="mb-3 input-group">
@@ -178,6 +177,10 @@ export default {
     }
   },
   async mounted() {
+    const animalJSON = this.$route.params.animalJSON;
+    if(animalJSON != 'animaisLista'){
+      this.preencheForm(animalJSON);
+    }
     this.buscarRacasDaApi();
     this.buscarPiquetesDaApi();
     this.preencheListas();
@@ -240,6 +243,11 @@ export default {
       );
     },
 
+    preencheForm(animalJSON){
+      this.formData = JSON.parse(animalJSON);
+      console.log('animal: ', this.formData);
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'animais') {
@@ -289,6 +297,14 @@ export default {
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
       }
+    },
+
+    acessarCadastroRaca(){
+      let jsonAnimal = JSON.stringify(this.formData);
+      this.$router.push({
+        name: 'RacaCadastro',
+        params: {animalJSON: jsonAnimal}
+      })
     },
 
     async preencheListas() {

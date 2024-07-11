@@ -5,8 +5,10 @@
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
           @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
           de Animais</button>
-        <button class="nav-link" :class="{ active: activeTab === 'racas' }" id="nav-vet-tab" @click="selectTab('racas')" 
+        <button v-if="caminho == 'raca'" class="nav-link" :class="{ active: activeTab === 'racas' }" id="nav-vet-tab" @click="selectTab('racas')" 
         type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Raca</button>
+        <button v-if="caminho == 'animal'" class="nav-link" :class="{ active: activeTab === 'cadastro-animal' }" id="nav-cadastro-animal-tab" @click="selectTab('cadastro-animal')" 
+        type="button" role="tab" aria-controls="nav-cadastro-animal" aria-selected="false">Cadastro de Animal</button>
         <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
         type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Raca</button>
       </div>
@@ -44,6 +46,8 @@ export default {
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      caminho: '',
+      animalJSON: null,
       formData: {
         id: null,
         nome: ''
@@ -52,10 +56,25 @@ export default {
       nomePlaceholder: 'Nome da Raca',
     };
   },
+
+  mounted(){
+    this.animalJSON = this.$route.params.animalJSON;
+    if(this.animalJSON != 'racasLista'){
+      this.caminho = 'animal';
+    }
+    else{
+      this.caminho = 'raca';
+    }
+  },
+
   methods: {
 
     validarFormulario(){
-      this.isNomeValido = !!this.formData.racaPredominante && this.formData.racaPredominante.trim() !== '';
+      this.isNomeValido = !!this.formData.nome && this.formData.nome.trim() !== '';
+      if(!this.isNomeValido){
+        this.formData.nome = ''
+        this.nomePlaceholder = 'Digite um nome de raça válido'
+      }
       return this.isNomeValido;
     },
 
@@ -64,8 +83,14 @@ export default {
       if (tab === 'racas') {
         this.$router.push('/racas');
       }
-      if (tab === 'animais') {
+      else if (tab === 'animais') {
         this.$router.push('/animais');
+      }
+      else if(tab === 'cadastro-animal'){
+        this.$router.push({
+          name: 'AnimaisCadastro',
+          params: {animalJSON: this.animalJSON}
+        });
       }
     },
 
@@ -78,7 +103,7 @@ export default {
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
             this.resetForm();
-            this.$router.push('/racas');
+            this.verificaCaminho();
           } else {
             alert('Erro ao cadastrar raca. Tente novamente mais tarde.');
           }
@@ -87,6 +112,15 @@ export default {
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
       } 
+    },
+
+    verificaCaminho(){
+      if(this.caminho == 'animal'){
+        this.selectTab('cadastro-animal')
+      }
+      else{
+        this.selectTab('racas')
+      }
     },
 
     resetForm() {

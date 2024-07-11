@@ -102,9 +102,10 @@ const routes = [
     component: TelaRaca, 
   },
   {
-    path: '/raca-cadastro',
+    path: '/raca-cadastro/:animalJSON',
     name: 'RacaCadastro',
-    component: RacaCadastro, 
+    component: RacaCadastro,
+    props: true 
   },
   {
     path: '/raca-edicao/:racaId',
@@ -132,9 +133,10 @@ const routes = [
   },
 
   {
-    path: '/animais-cadastro',
+    path: '/animais-cadastro/:animalJSON',
     name: 'AnimaisCadastro',
     component: AnimaisCadastro, 
+    props: true
   },
 
   {

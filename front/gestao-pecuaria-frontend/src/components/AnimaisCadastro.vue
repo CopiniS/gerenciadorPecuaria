@@ -245,7 +245,6 @@ export default {
 
     preencheForm(animalJSON){
       this.formData = JSON.parse(animalJSON);
-      console.log('animal: ', this.formData);
     },
 
     selectTab(tab) {

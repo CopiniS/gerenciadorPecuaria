@@ -23,8 +23,8 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
               <select v-model="formData.piquete" :class="{ 'is-invalid': !isPiqueteValido }" class="form-select"
-                id="piquete" aria-label="Piquete" :placeholder="piquetePlaceholder" required>
-                <option disabled value="">Selecione o piquete</option>
+                id="piquete" aria-label="Piquete" :placeholder="piquetePlaceholder">
+                <option disabled :value="null">Selecione o piquete</option>
                 <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
               </select>
             </div>
@@ -32,19 +32,19 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i>*</span>
               <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text" class="form-control"
-                id="brinco" :placeholder="brincoPlaceholder" required pattern="\d+">
+                id="brinco" :placeholder="brincoPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
-                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" required>
+                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" >
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus-mars"></i>*</span>
               <select v-model="formData.sexo" :class="{ 'is-invalid': !isSexoValido }" class="form-select" id="sexo"
-                aria-label="Sexo" :placeholder="sexoPlaceholder" required>
-                <option disabled value="">Selecione o sexo</option>
+                aria-label="Sexo" :placeholder="sexoPlaceholder" >
+                <option disabled :value="null">Selecione o sexo</option>
                 <option value="macho">Macho</option>
                 <option value="femea">Fêmea</option>
               </select>
@@ -104,12 +104,12 @@
               <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataCompraValido }" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataDaCompra" v-model="formData.dataCompra" required>
+                id="dataDaCompra" v-model="formData.dataCompra" >
             </div>
             <div v-if="comprado" class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
               <input v-model="formData.valorCompra" :class="{ 'is-invalid': !isValorCompraValido }" type="text"
-                class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder" required
+                class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder" 
                 pattern="^\d+(\.\d{1,2})?$">
             </div>
             <div class="button-group justify-content-end">
@@ -243,6 +243,106 @@ export default {
       );
     },
 
+    verificaVazio(){
+      //PIQUETE
+      if(this.formData.piquete == null){
+        this.isPiqueteValido = false
+      }
+      else{
+        this.isPiqueteValido = true 
+      }
+
+      //BRINCO
+      if(this.formData.brinco != null){
+        if(this.formData.brinco.trim == ''){
+          this.isBrincoValido = false
+          this.brincoPlaceholder = 'Brinco é um Campo Obrigatório' 
+        } 
+        else{
+          this.isBrincoValido = true
+          this.brincoPlaceholder = 'Digite o Brinco' 
+        }
+      }
+      else{
+        this.isBrincoValido = false
+        this.brincoPlaceholder = 'Brinco é um Campo Obrigatório' 
+      }
+
+      //DATA DE NASCIMENTO
+      if(this.formData.dataNascimento != null){
+        if(this.formData.dataNascimento.trim == ''){
+          this.isDataNascimentoValido = false
+          this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório' 
+        } 
+        else{
+          this.isDataNascimentoValido = true
+          this.dataNascimentoPlaceholder = 'Digite Data de Nascimento' 
+        }
+      }
+      else{
+        this.isDataNascimentoValido = false
+        this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório'  
+      }
+      
+      //SEXO
+      if(this.formData.sexo == null){
+        this.isSexoValido = false
+        this.sexoPlaceholder = 'Sexo é um Campo Obrigatório' 
+      }
+      else{
+        this.isSexoValido = true
+        this.sexoPlaceholder = 'Digite o Sexo' 
+      }
+
+      //COMPRADO
+      if(this.comprado){
+        //DATA DA COMPRA
+        if(this.formData.dataCompra != null){
+          if(this.formData.dataCompra.trim == ''){
+            this.isDataCompraValido = false;
+            this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório'
+          }
+          else{
+            this.isDataCompraValido = true;
+            this.dataCompraPlaceholder = 'Digite a Data da Compra'
+          }
+        }
+        else{
+          this.isDataCompraValido = false;
+          this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório'
+        }
+        
+        //VALOR DA COMPRA
+        if(this.formData.valorCompra != null){
+          if(this.formData.valorCompra.trim == ''){
+            this.isValorCompraValido = false;
+            this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
+          }
+          else{
+            this.isValorCompraValido = true;
+            this.dataCompraPlaceholder = 'Digite o Valor da Compra'
+          }
+        }
+        else{
+          this.isValorCompraValido = false;
+          this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
+        }
+      }
+
+      return (
+        this.isPiqueteValido &&
+        this.isBrincoValido &&
+        this.isDataNascimentoValido &&
+        this.isSexoValido &&
+        this.isDataCompraValido &&
+        this.isValorCompraValido
+      );
+    },
+
+    verificaValores(){
+
+    },
+
     preencheForm(animalJSON){
       this.formData = JSON.parse(animalJSON);
     },
@@ -278,7 +378,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.post(`http://127.0.0.1:8000/animais/`, this.formData, {
           });

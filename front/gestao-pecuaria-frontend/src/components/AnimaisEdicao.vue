@@ -244,6 +244,103 @@ export default {
         this.isValorCompraValido
       );
     },
+
+    verificaVazio(){
+      //PIQUETE
+      if(this.formData.piquete == null){
+        this.isPiqueteValido = false
+      }
+      else{
+        this.isPiqueteValido = true 
+      }
+
+      //BRINCO
+      if(this.formData.brinco != null){
+        if(this.formData.brinco.trim == ''){
+          this.isBrincoValido = false
+          this.brincoPlaceholder = 'Brinco é um Campo Obrigatório' 
+        } 
+        else{
+          this.isBrincoValido = true
+          this.brincoPlaceholder = 'Digite o Brinco' 
+        }
+      }
+      else{
+        this.isBrincoValido = false
+        this.brincoPlaceholder = 'Brinco é um Campo Obrigatório' 
+      }
+
+      //DATA DE NASCIMENTO
+      if(this.formData.dataNascimento != null){
+        if(this.formData.dataNascimento.trim == ''){
+          this.isDataNascimentoValido = false
+          this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório' 
+        } 
+        else{
+          this.isDataNascimentoValido = true
+          this.dataNascimentoPlaceholder = 'Digite Data de Nascimento' 
+        }
+      }
+      else{
+        this.isDataNascimentoValido = false
+        this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório'  
+      }
+      
+      //SEXO
+      if(this.formData.sexo == null){
+        this.isSexoValido = false
+        this.sexoPlaceholder = 'Sexo é um Campo Obrigatório' 
+      }
+      else{
+        this.isSexoValido = true
+        this.sexoPlaceholder = 'Digite o Sexo' 
+      }
+
+      //COMPRADO
+      if(this.comprado){
+        //DATA DA COMPRA
+        if(this.formData.dataCompra != null){
+          if(this.formData.dataCompra.trim == ''){
+            this.isDataCompraValido = false;
+            this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório'
+          }
+          else{
+            this.isDataCompraValido = true;
+            this.dataCompraPlaceholder = 'Digite a Data da Compra'
+          }
+        }
+        else{
+          this.isDataCompraValido = false;
+          this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório'
+        }
+        
+        //VALOR DA COMPRA
+        if(this.formData.valorCompra != null){
+          if(this.formData.valorCompra.trim == ''){
+            this.isValorCompraValido = false;
+            this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
+          }
+          else{
+            this.isValorCompraValido = true;
+            this.dataCompraPlaceholder = 'Digite o Valor da Compra'
+          }
+        }
+        else{
+          this.isValorCompraValido = false;
+          this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
+        }
+      }
+
+      return (
+        this.isPiqueteValido &&
+        this.isBrincoValido &&
+        this.isDataNascimentoValido &&
+        this.isSexoValido &&
+        this.isDataCompraValido &&
+        this.isValorCompraValido
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'animais') {
@@ -298,7 +395,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
           });

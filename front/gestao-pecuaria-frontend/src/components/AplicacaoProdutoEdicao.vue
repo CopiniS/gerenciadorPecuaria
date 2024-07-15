@@ -224,8 +224,103 @@ export default {
       this.$router.push('/aplicacoes');
     },
 
+    verificaVazio(){
+      //DATA DA APLICAÇÃO
+      if(this.formData.dataAplicacao != null){
+        if(this.formData.dataAplicacao.trim() != ''){
+          this.isDataValida = true;
+          this.dataPlaceholder = 'Digite a Data da Aplicação';
+        }
+        else{
+          this.isDataValida = false;
+          this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataValida = false;
+        this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
+      }
+
+      //BRINCO || PIQUETE
+      if(this.radioEscolha == 'brinco'){
+        if(this.brinco != null){
+          if(this.brinco.trim() != ''){
+            this.isBrincoValido = true;
+            this.brincoPlaceholder = 'Digite o brinco do animal';
+          }
+          else{
+            this.isBrincoValido = false;
+            this.brincoPlaceholder = 'Brinco é um Campo Obrigatório';
+          }
+        }
+        else{
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Brinco é um Campo Obrigatório';
+        }
+      }
+      else{
+        if(this.nomePiquete != null){
+          if(this.nomePiquete.trim() != ''){
+            this.isPiqueteValido = true;
+            this.piquetePlaceholder = 'Digite o Piquete ';
+          }
+          else{
+            this.isPiqueteValido = false;
+          this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
+          }
+        }
+        else{
+          this.isPiqueteValido = false;
+          this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
+        }
+      }
+
+      //PRODUTO
+      if(this.nomeProduto != null){
+        if(this.nomeProduto.trim() != ''){
+          this.isProdutoValido = true;
+          this.produtoPlaceholder = 'Digite o nome do Produto';
+        }
+        else{
+          this.isProdutoValido = false;
+          this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isProdutoValido = false;
+        this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
+      }
+
+      //DOSAGEM
+      if(this.formData.dosagem != null){
+        if(this.formData.dosagem.trim() != ''){
+          this.isDosagemValida = true;
+          this.dosagemPlaceholder = 'Digite a Dosagem do produto'
+        }
+        else{
+          this.isDosagemValida = false;
+          this.dosagemPlaceholder = 'Dosagem é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDosagemValida = false;
+        this.dosagemPlaceholder = 'Dosagem é um Campo Obrigatório';
+      }
+
+     
+      
+
+      return (
+        this.isDataValida &&
+        this.isBrincoValido && 
+        this.isPiqueteValido && 
+        this.isProdutoValido && 
+        this.isDosagemValida
+      );
+    },
+
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
             console.log(this.formData);
           const response = await api.patch(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`, this.formData, {

@@ -80,6 +80,25 @@ export default {
       return this.isNomeValido;
     },
 
+    verificaVazio(){
+      if(this.formData.nome != null){
+        if(this.formData.nome.trim() != ''){
+          this.isNomeValido = true;
+          this.nomePlaceholder = 'Digite o nome da Raça';
+        }
+        else{
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Nome da Raça é um Campo Obrigatório'
+        }
+      }
+      else{
+        this.isNomeValido = false;
+        this.nomePlaceholder = 'Nome da Raça é um Campo Obrigatório'
+      }
+
+      return this.isNomeValido;
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'racas') {
@@ -95,7 +114,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
        try {
           const response = await api.patch(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData , {
         });

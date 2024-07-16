@@ -109,6 +109,45 @@ export default {
       return this.isDataValida && this.isValorValido;
     },
 
+    verificaVazio(){
+      //DATA DA DESPESA
+      if(this.formData.dataDespesa != null){
+        if(this.formData.dataDespesa.trim() != ''){
+          this.isDataValida = true;
+          this.dataPlaceholder = 'Data da Despesa';
+        }
+        else{
+          this.isDataValida = false;
+          this.dataPlaceholder = 'Data da Despesa é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataValida = false;
+        this.dataPlaceholder = 'Data da Despesa é um Campo Obrigatório';
+      }
+
+      //VALOR
+      if(this.formData.valor != null){
+        if(this.formData.valor.trim() != ''){
+          this.isValorValido = true;
+          this.valorPlaceholder = 'Valor da Despesa';
+        }
+        else{
+          this.isValorValido = false;
+          this.valorPlaceholder = 'Valor da Despesa é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isValorValido = false;
+        this.valorPlaceholder = 'Valor da Despesa é um Campo Obrigatório';
+      }
+
+      return (
+        this.isDataValida &&
+        this.isValorValido
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'despesas') {
@@ -121,7 +160,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, this.formData, {});
           if (response.status === 200) {

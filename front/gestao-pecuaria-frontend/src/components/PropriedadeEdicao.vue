@@ -23,17 +23,17 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
                     <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" :placeholder="nomePlaceholder"
-                        id="nome" required>
+                        id="nome" >
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                     <input v-model="formData.endereco" :class="{'is-invalid': !isEnderecoValido}" type="text" class="form-control"
-                        :placeholder="enderecoPlaceholder" id="endereco" required>
+                        :placeholder="enderecoPlaceholder" id="endereco">
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-flag"></i></span>
-                    <select v-model="formData.estado" :class="{'is-invalid': !isCidadeValida}" class="form-select"
-                        @change="buscarCidadesPorEstado($event.target.value)" required>
+                    <select v-model="formData.estado" :class="{'is-invalid': !isEstadoValido}" class="form-select"
+                        @change="buscarCidadesPorEstado($event.target.value)">
                         <option value="" disabled>{{ estadoPlaceholder }}</option>
                         <option v-for="estado in estados" :key="estado.id" :value="estado.nome">{{ estado.nome
                             }}</option>
@@ -41,7 +41,7 @@
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-city"></i></span>
-                    <select v-model="formData.cidade" :class="{'is-invalid': !isEstadoValido}" class="form-select" required>
+                    <select v-model="formData.cidade" :class="{'is-invalid': !isCidadeValida}" class="form-select" >
                         <option value="" disabled>{{ cidadePlaceholder }}</option>
                         <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{
                 cidade.nome }}</option>
@@ -50,17 +50,17 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.latitude" :class="{'is-invalid': !isLatitudeValida}" type="text" class="form-control"
-                        :placeholder="latitudePlaceholder" id="latitude" required>
+                        :placeholder="latitudePlaceholder" id="latitude">
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.longitude" :class="{'is-invalid': !isLongitudeValida}" type="text" class="form-control"
-                        :placeholder="longitudePlaceholder" id="longitude" required>
+                        :placeholder="longitudePlaceholder" id="longitude" >
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control"
-                        :placeholder="areaPlaceholder" id="area" required>
+                        :placeholder="areaPlaceholder" id="area" >
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('propriedades')">Cancelar</button>
@@ -203,8 +203,132 @@ export default {
       this.$router.push('/propriedades');
     },
 
+    verificaVazio(){
+      //NOME DA PROPRIEDADE
+      if(this.formData.nome != null){
+        if(this.formData.nome.trim() != ''){
+          this.isNomeValido = true;
+          this.nomePlaceholder = 'Nome da Propriedade*';
+        }
+        else{
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Nome da Propriedade é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isNomeValido = false;
+        this.nomePlaceholder = 'Nome da Propriedade é um Campo Obrigatório';
+      }
+
+      //ENDEREÇO
+      if(this.formData.endereco != null){
+        if(this.formData.endereco.trim() != ''){
+          this.isEnderecoValido = true;
+          this.enderecoPlaceholder = 'Endereço da Propriedade*'
+        }
+        else{
+          this.isEnderecoValido = false;
+          this.enderecoPlaceholder = 'Endereço da Propriedade é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isEnderecoValido = false;
+        this.enderecoPlaceholder = 'Endereço da Propriedade é um Campo Obrigatório';
+      }
+
+      //ESTADO
+      if(this.formData.estado != null){
+        if(this.formData.estado != ''){
+          this.isEstadoValido = true;
+          this.estadoPlaceholder = 'Estado*';
+        }
+        else{
+          this.isEstadoValido = false;
+          this.estadoPlaceholder = 'Estado é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isEstadoValido = false;
+        this.estadoPlaceholder = 'Estado é um Campo Obrigatório';
+      }
+
+      //CIDADE
+      if(this.formData.cidade != null){
+        if(this.formData.cidade != ''){
+          this.isCidadeValida = true;
+          this.cidadePlaceholder = 'Cidade*';
+        }
+        else{
+          this.isCidadeValida = false;
+          this.cidadePlaceholder = 'Cidade é um Campo Obrigatório'
+        }
+      }
+      else{
+        this.isCidadeValida = false;
+        this.cidadePlaceholder = 'Cidade é um Campo Obrigatório'
+      }
+
+      //LATITUDE
+      if(this.formData.latitude != null){
+        if(this.formData.latitude.trim() != ''){
+          this.isLatitudeValida = true;
+          this.latitudePlaceholder = 'Latitude da Propriedade*';
+        }
+        else{
+          this.isLatitudeValida = false;
+          this.latitudePlaceholder = 'Latitude é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isLatitudeValida = false;
+        this.latitudePlaceholder = 'Latitude é um Campo Obrigatório';
+      }
+      
+      //LONGITUDE
+      if(this.formData.longitude != null){
+        if(this.formData.longitude.trim() != ''){
+          this.isLongitudeValida = true;
+          this.longitudePlaceholder = 'Longitude da Propriedade*';
+        }
+        else{
+          this.isLongitudeValida = false;
+          this.longitudePlaceholder = 'Longitude é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isLongitudeValida = false;
+        this.longitudePlaceholder = 'Longitude é um Campo Obrigatório';
+      }
+
+      //ÁREA
+      if(this.formData.area != null){
+        if(this.formData.area.trim() != ''){
+          this.isAreaValida = true;
+          this.areaPlaceholder = 'Área da Propriedade*'
+        }
+        else{
+          this.isAreaValida = false;
+          this.areaPlaceholder = 'Área da Propriedade é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isAreaValida = false;
+        this.areaPlaceholder = 'Área da Propriedade é um Campo Obrigatório';
+      }
+
+      return(
+        this.isNomeValido &&
+        this.isEnderecoValido &&
+        this.isEstadoValido &&
+        this.isCidadeValida &&
+        this.isLatitudeValida &&
+        this.isLongitudeValida &&
+        this.isAreaValida
+      );
+    },
+
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
        try {
           const response = await api.patch(`http://127.0.0.1:8000/propriedades/${this.formData.id}/`, this.formData , {
         });

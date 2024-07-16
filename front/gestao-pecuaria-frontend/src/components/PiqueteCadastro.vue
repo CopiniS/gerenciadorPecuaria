@@ -76,9 +76,9 @@ export default {
       isNomeValido: true,
       isTipoCultivoValido: true,
       isAreaValida: true,
-      nomePlaceholder: 'Nome do Piquete',
-      tipoCultivoPlaceholder: 'Tipo do cultivo',
-      areaPlaceholder: 'Área do Piquete',
+      nomePlaceholder: 'Nome do Piquete*',
+      tipoCultivoPlaceholder: 'Tipo do cultivo*',
+      areaPlaceholder: 'Área do Piquete*',
     };
   },
 
@@ -107,6 +107,62 @@ export default {
       return this.isNomeValido && this.isTipoCultivoValido && this.isAreaValida;
     },
 
+    verificaVazio(){
+      //NOME DO PIQUETE
+      if(this.formData.nome != null){
+        if(this.formData.nome.trim() != ''){
+          this.isNomeValido = true;
+          this.nomePlaceholder = 'Nome do Piquete*';
+        }
+        else{
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Nome do Piquete é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isNomeValido = false;
+        this.nomePlaceholder = 'Nome do Piquete é um Campo Obrigatório';
+      }
+
+      //TIPO DO CULTIVO
+      if(this.formData.tipoCultivo != null){
+        if(this.formData.tipoCultivo.trim() != ''){
+          this.isTipoCultivoValido = true;
+          this.tipoCultivoPlaceholder = 'Tipo de Cultivo*';
+        }
+        else{
+          this.isTipoCultivoValido = false;
+          this.tipoCultivoPlaceholder = 'Tipo de Cultivo é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isTipoCultivoValido = false;
+        this.tipoCultivoPlaceholder = 'Tipo de Cultivo é um Campo Obrigatório';
+      }
+
+      //ÁREA DO PIQUETE
+      if(this.formData.area != null){
+        if(this.formData.area.trim() != ''){
+          this.isAreaValida = true;
+          this.areaPlaceholder = 'Área do Piquete*';
+        }
+        else{
+          this.isAreaValida = false;
+          this.areaPlaceholder = 'Área do Piquete é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isAreaValida = false;
+        this.areaPlaceholder = 'Área do Piquete é um Campo Obrigatório';
+      }
+
+      return(
+        this.isNomeValido &&
+        this.isTipoCultivoValido &&
+        this.isAreaValida
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'piquetes') {
@@ -118,7 +174,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData);
 

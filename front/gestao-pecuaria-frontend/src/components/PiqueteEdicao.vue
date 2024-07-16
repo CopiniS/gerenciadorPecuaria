@@ -64,7 +64,7 @@ import 'jquery-mask-plugin'; // Importe o plugin jQuery Mask Plugin
 export default {
   data() {
     return {
-      activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      activeTab: 'edicao',  // Aba inicial é 'edicao'
       formData: {
         id: null,
         nome: '',
@@ -121,6 +121,62 @@ export default {
       return this.isNomeValido && this.isTipoCultivoValido && this.isAreaValida;
     },
 
+    verificaVazio(){
+      //NOME DO PIQUETE
+      if(this.formData.nome != null){
+        if(this.formData.nome.trim() != ''){
+          this.isNomeValido = true;
+          this.nomePlaceholder = 'Nome do Piquete*';
+        }
+        else{
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Nome do Piquete é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isNomeValido = false;
+        this.nomePlaceholder = 'Nome do Piquete é um Campo Obrigatório';
+      }
+
+      //TIPO DO CULTIVO
+      if(this.formData.tipoCultivo != null){
+        if(this.formData.tipoCultivo.trim() != ''){
+          this.isTipoCultivoValido = true;
+          this.tipoCultivoPlaceholder = 'Tipo de Cultivo*';
+        }
+        else{
+          this.isTipoCultivoValido = false;
+          this.tipoCultivoPlaceholder = 'Tipo de Cultivo é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isTipoCultivoValido = false;
+        this.tipoCultivoPlaceholder = 'Tipo de Cultivo é um Campo Obrigatório';
+      }
+
+      //ÁREA DO PIQUETE
+      if(this.formData.area != null){
+        if(this.formData.area.trim() != ''){
+          this.isAreaValida = true;
+          this.areaPlaceholder = 'Área do Piquete*';
+        }
+        else{
+          this.isAreaValida = false;
+          this.areaPlaceholder = 'Área do Piquete é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isAreaValida = false;
+        this.areaPlaceholder = 'Área do Piquete é um Campo Obrigatório';
+      }
+
+      return(
+        this.isNomeValido &&
+        this.isTipoCultivoValido &&
+        this.isAreaValida
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'piquetes') {
@@ -136,7 +192,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
        try {
           const response = await api.patch(`http://127.0.0.1:8000/piquetes/${this.formData.id}/`, this.formData , {
         });

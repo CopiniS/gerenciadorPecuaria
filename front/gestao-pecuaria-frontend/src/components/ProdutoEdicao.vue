@@ -5,19 +5,19 @@
         <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-vet-tab"
           @click="selectTab('produtos')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
           Produto</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
-          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
-          aria-selected="false">Cadastro de Produto</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
+          aria-selected="false">Edição de Produto</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'produtos' }" id="nav-vet" role="tabpanel"
         aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
-        aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Produto</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
+        aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Produto</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -112,6 +112,62 @@ export default {
       return this.isNomeValido && this.isTipoValido && this.isCategoriaValida;
     },
 
+    verificaVazio(){
+      //NOME DO PRODUTO
+      if(this.formData.nome != null){
+        if(this.formData.nome.trim() != ''){
+          this.isNomeValido = true;
+          this.nomePlaceholder = 'Nome do Produto';
+        }
+        else{
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Nome do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isNomeValido = false;
+        this.nomePlaceholder = 'Nome do Produto é um Campo Obrigatório';
+      }
+
+      //TIPO DO PRODUTO
+      if(this.formData.tipo != null){
+        if(this.formData.tipo != ''){
+          this.isTipoValido = true;
+          this.tipoPlaceholder = 'Tipo do Produto';
+        }
+        else{
+          this.isTipoValido = false;
+          this.tipoPlaceholder = 'Tipo do Produto é um Campo Obrigatório'
+        }
+      }
+      else{
+        this.isTipoValido = false;
+        this.tipoPlaceholder = 'Tipo do Produto é um Campo Obrigatório'
+      }
+
+      //CATEGORIA DO PRODUTO
+      if(this.formData.categoria != null){
+        if(this.formData.categoria.trim() != ''){
+          this.isCategoriaValida = true;
+          this.categoriaPlaceholder = 'Categoria do Produto';
+        }
+        else{
+          this.isCategoriaValida = false;
+          this.categoriaPlaceholder = 'Categoria do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isCategoriaValida = false;
+        this.categoriaPlaceholder = 'Categoria do Produto é um Campo Obrigatório';
+      }
+
+      return(
+        this.isNomeValido &&
+        this.isTipoValido && 
+        this.isCategoriaValida
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'produtos') {
@@ -124,7 +180,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, this.formData, {
           });

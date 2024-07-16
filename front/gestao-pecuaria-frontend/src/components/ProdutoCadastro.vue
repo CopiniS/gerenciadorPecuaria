@@ -27,7 +27,7 @@
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
                 :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" required>
-                <option disabled value="">Tipo</option>
+                <option disabled value="">Tipo*</option>
                 <option value="sanitario">Sanitário</option>
                 <option value="alimenticio">Alimentício</option>
               </select>
@@ -95,6 +95,62 @@ export default {
       return this.isNomeValido && this.isTipoValido && this.isCategoriaValida;
     },
 
+    verificaVazio(){
+      //NOME DO PRODUTO
+      if(this.formData.nome != null){
+        if(this.formData.nome.trim() != ''){
+          this.isNomeValido = true;
+          this.nomePlaceholder = 'Nome do Produto';
+        }
+        else{
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Nome do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isNomeValido = false;
+        this.nomePlaceholder = 'Nome do Produto é um Campo Obrigatório';
+      }
+
+      //TIPO DO PRODUTO
+      if(this.formData.tipo != null){
+        if(this.formData.tipo != ''){
+          this.isTipoValido = true;
+          this.tipoPlaceholder = 'Tipo do Produto';
+        }
+        else{
+          this.isTipoValido = false;
+          this.tipoPlaceholder = 'Tipo do Produto é um Campo Obrigatório'
+        }
+      }
+      else{
+        this.isTipoValido = false;
+        this.tipoPlaceholder = 'Tipo do Produto é um Campo Obrigatório'
+      }
+
+      //CATEGORIA DO PRODUTO
+      if(this.formData.categoria != null){
+        if(this.formData.categoria.trim() != ''){
+          this.isCategoriaValida = true;
+          this.categoriaPlaceholder = 'Categoria do Produto';
+        }
+        else{
+          this.isCategoriaValida = false;
+          this.categoriaPlaceholder = 'Categoria do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isCategoriaValida = false;
+        this.categoriaPlaceholder = 'Categoria do Produto é um Campo Obrigatório';
+      }
+
+      return(
+        this.isNomeValido &&
+        this.isTipoValido && 
+        this.isCategoriaValida
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'produtos') {
@@ -103,7 +159,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {
           });
@@ -125,9 +181,9 @@ export default {
     resetForm() {
       this.formData = {
         id: null,
-        nome: '',
-        tipo: '',
-        categoria: '',
+        nome: null,
+        tipo: null,
+        categoria: null,
         descricao: null,
       };
 

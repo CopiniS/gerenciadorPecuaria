@@ -34,7 +34,7 @@
             <div class="select mb-3 input-group">
               <div class="select-option mb-3 input-group" @click="toggleDropdown">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="filterProdutos"
+                <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="filterProdutos()"
                   @click="filterProdutos()" type="text" class="form-control" :placeholder="produtoPlaceholder"
                   id="caixa-select">
               </div>
@@ -53,7 +53,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
-                type="number" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
+                type="text" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
@@ -139,17 +139,16 @@ export default {
   methods: {
     async fetchCompra(id) {
       try {
-        const response = await api.get(`http://127.0.0.1:8000/compras-produtos/${id}`);
+        const response = await api.get(`http://127.0.0.1:8000/compras-produtos/compra/${id}`);
         const compra = response.data;
-        this.formData.id = compra.id;
-        this.formData.dataCompra = compra.dataCompra;
-        this.formData.produto = compra.produto;
-        this.formData.valorUnitario = compra.valorUnitario;
-        this.formData.quantidadeComprada = compra.quantidadeComprada;
-        this.formData.validade = compra.validade;
-        this.formData.lote = compra.lote;
-        this.nomeDigitado = compra.produto.nome;
-        console.log('produto nome: ', compra)
+        this.formData.id = compra[0].id;
+        this.formData.dataCompra = compra[0].dataCompra;
+        this.formData.produto = compra[0].produto.id;
+        this.formData.valorUnitario = compra[0].valorUnitario;
+        this.formData.quantidadeComprada = compra[0].quantidadeComprada;
+        this.formData.validade = compra[0].validade;
+        this.formData.lote = compra[0].lote;
+        this.nomeDigitado = compra[0].produto.nome;
       } catch (error) {
         console.error('Erro ao carregar dados da compra:', error);
       }
@@ -178,34 +177,137 @@ export default {
       this.dropdownOpen = false;
     },
 
-    validarFormulario() {
+validarFormulario() {
 
-this.isDataCompraValida = !!this.formData.dataCompra.trim();
-if (!this.isDataCompraValida) this.formData.dataCompra = '';
+  this.isDataCompraValida = !!this.formData.dataCompra.trim();
+  if (!this.isDataCompraValida) this.formData.dataCompra = '';
 
-this.isProdutoValido = !!this.formData.produto.trim();
-if (!this.isProdutoValido) this.formData.produto = '';
+  this.isProdutoValido = !!this.formData.produto.trim();
+  if (!this.isProdutoValido) this.formData.produto = '';
 
-this.isValidadeValida = !!this.formData.validade.trim();
-if (!this.isValidadeValida) this.formData.validade = '';
+  this.isValidadeValida = !!this.formData.validade.trim();
+  if (!this.isValidadeValida) this.formData.validade = '';
 
-this.isLoteValido = !!this.formData.lote.trim();
-if (!this.isLoteValido) this.formData.lote = '';
+  this.isLoteValido = !!this.formData.lote.trim();
+  if (!this.isLoteValido) this.formData.lote = '';
 
-this.dataCompraPlaceholder = this.isDataCompraValida ? 'Data da Compra' : 'Campo Data da Compra obrigatório';
-this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo Produto obrigatório';
-this.validadePlaceholder = this.isValidadeValida ? 'Validade do Produto' : 'Campo Validade obrigatório';
-this.lotePlaceholder = this.isLoteValido ? 'Lote do Produto' : 'Campo Lote obrigatório';
-this.isValorUnitarioValido = !isNaN(parseFloat(this.formData.valorUnitario));
-if (!this.isValorUnitarioValido) this.formData.valorUnitario = '';
-this.valorUnitarioPlaceholder = this.isValorUnitarioValido ? 'Valor do Produto' : 'Valor do produto deve ser numérico';
+  this.dataCompraPlaceholder = this.isDataCompraValida ? 'Data da Compra' : 'Campo Data da Compra obrigatório';
+  this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo Produto obrigatório';
+  this.validadePlaceholder = this.isValidadeValida ? 'Validade do Produto' : 'Campo Validade obrigatório';
+  this.lotePlaceholder = this.isLoteValido ? 'Lote do Produto' : 'Campo Lote obrigatório';
+  this.isValorUnitarioValido = !isNaN(parseFloat(this.formData.valorUnitario));
+  if (!this.isValorUnitarioValido) this.formData.valorUnitario = '';
+  this.valorUnitarioPlaceholder = this.isValorUnitarioValido ? 'Valor do Produto' : 'Valor do produto deve ser numérico';
 
-this.isQuantidadeCompradaValida = !isNaN(parseInt(this.formData.quantidadeComprada));
-if (!this.isQuantidadeCompradaValida) this.formData.quantidadeComprada = '';
-this.quantidadeCompradaPlaceholder = this.isQuantidadeCompradaValida ? 'Quantidade Comprada' : 'Quantidade comprada deve ser um número inteiro';
+  this.isQuantidadeCompradaValida = !isNaN(parseInt(this.formData.quantidadeComprada));
+  if (!this.isQuantidadeCompradaValida) this.formData.quantidadeComprada = '';
+  this.quantidadeCompradaPlaceholder = this.isQuantidadeCompradaValida ? 'Quantidade Comprada' : 'Quantidade comprada deve ser um número inteiro';
 
-return this.isDataCompraValida && this.isProdutoValido && this.isValorUnitarioValido && this.isQuantidadeCompradaValida && this.isValidadeValida && this.isLoteValido;
+  return this.isDataCompraValida && this.isProdutoValido && this.isValorUnitarioValido && this.isQuantidadeCompradaValida && this.isValidadeValida && this.isLoteValido;
 },
+
+    verificaVazio(){
+      //DATA DA COMPRA
+      if(this.formData.dataCompra != null){
+        if(this.formData.dataCompra.trim() != ''){
+          this.isDataCompraValida = true;
+          this.dataCompraPlaceholder = 'Data da Compra*';
+        }
+        else{
+          this.isDataCompraValida = false;
+          this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataCompraValida = false;
+        this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório';
+      }
+
+      //PRODUTO DA COMPRADO
+      if(this.nomeDigitado != null){
+        if(this.nomeDigitado.trim() != ''){
+          this.isProdutoValido = true;
+          this.produtoPlaceholder = 'Produto*';
+        }
+        else{
+          this.isProdutoValido = false;
+          this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isProdutoValido = false;
+        this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
+      }
+
+      //VALOR DO PRODUTO
+      if(this.formData.valorUnitario != null){
+        if(this.formData.valorUnitario.trim() != ''){
+          this.isValorUnitarioValido = true;
+          this.valorUnitarioPlaceholder = 'Valor do Produto*';
+        }
+        else{
+          this.isValorUnitarioValido = false;
+          this.valorUnitarioPlaceholder = 'Valor do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isValorUnitarioValido = false;
+        this.valorUnitarioPlaceholder = 'Valor do Produto é um Campo Obrigatório';
+      }
+
+      //QUANTIDADE COMPRADA
+      if(this.formData.quantidadeComprada != null){
+        if(this.formData.quantidadeComprada.trim() != ''){
+          this.isQuantidadeCompradaValida = true;
+          this.quantidadeCompradaPlaceholder = 'Quantidade Comprada*';
+        }
+        else{
+          this.isQuantidadeCompradaValida = false;
+          this.quantidadeCompradaPlaceholder = 'Quantidade Comprada é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isQuantidadeCompradaValida = false;
+        this.quantidadeCompradaPlaceholder = 'Quantidade Comprada é um Campo Obrigatório';
+      }
+
+      //VALIDADE DO PRODUTO
+      if(this.formData.validade != null){
+        if(this.formData.validade.trim() != ''){
+          this.isValidadeValida = true;
+          this.validadePlaceholder = 'Validade do Produto*';
+        }
+        else{
+          this.isValidadeValida = false;
+          this.validadePlaceholder = 'Validade do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isValidadeValida = false;
+        this.validadePlaceholder = 'Validade do Produto é um Campo Obrigatório';
+      }
+
+      //LOTE DO PRODUTO
+      if(this.formData.lote != null){
+        if(this.formData.lote.trim() != ''){
+          this.isLoteValido = true;
+          this.lotePlaceholder = 'Lote do Produto*';
+        }
+        else{
+          this.isLoteValido = false;
+          this.lotePlaceholder = 'Lote do Produto é um Campo Obrigatório';
+        }
+      }
+
+      return(
+        this.isDataCompraValida &&
+        this.isProdutoValido &&
+        this.isValorUnitarioValido && 
+        this.isQuantidadeCompradaValida && 
+        this.isValidadeValida && 
+        this.isLoteValido
+      );
+    },
 
     selectTab(tab) {
       this.activeTab = tab;
@@ -222,7 +324,7 @@ return this.isDataCompraValida && this.isProdutoValido && this.isValorUnitarioVa
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/`, this.formData, {
           });

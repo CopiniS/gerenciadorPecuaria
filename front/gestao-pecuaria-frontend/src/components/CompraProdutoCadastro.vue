@@ -58,7 +58,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
-                type="number" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
+                type="text" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
@@ -113,12 +113,12 @@ export default {
       isQuantidadeCompradaValida: true,
       isValidadeValida: true,
       isLoteValido: true,
-      dataCompraPlaceholder: 'Data da Compra',
-      produtoPlaceholder: 'Produto',
-      valorUnitarioPlaceholder: 'Valor do Produto',
-      quantidadeCompradaPlaceholder: 'Quantidade Comprada',
-      validadePlaceholder: 'Validade do produto',
-      lotePlaceholder: 'Lote do Produto',
+      dataCompraPlaceholder: 'Data da Compra*',
+      produtoPlaceholder: 'Produto*',
+      valorUnitarioPlaceholder: 'Valor do Produto*',
+      quantidadeCompradaPlaceholder: 'Quantidade Comprada*',
+      validadePlaceholder: 'Validade do produto*',
+      lotePlaceholder: 'Lote do Produto*',
     };
   },
 
@@ -209,30 +209,123 @@ export default {
       return this.isDataCompraValida && this.isProdutoValido && this.isValorUnitarioValido && this.isQuantidadeCompradaValida && this.isValidadeValida && this.isLoteValido;
     },
 
+    verificaVazio(){
+      //DATA DA COMPRA
+      if(this.formData.dataCompra != null){
+        if(this.formData.dataCompra.trim() != ''){
+          this.isDataCompraValida = true;
+          this.dataCompraPlaceholder = 'Data da Compra*';
+        }
+        else{
+          this.isDataCompraValida = false;
+          this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataCompraValida = false;
+        this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório';
+      }
+
+      //PRODUTO DA COMPRADO
+      if(this.nomeDigitado != null){
+        if(this.nomeDigitado.trim() != ''){
+          this.isProdutoValido = true;
+          this.produtoPlaceholder = 'Produto*';
+        }
+        else{
+          this.isProdutoValido = false;
+          this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isProdutoValido = false;
+        this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
+      }
+
+      //VALOR DO PRODUTO
+      if(this.formData.valorUnitario != null){
+        if(this.formData.valorUnitario.trim() != ''){
+          this.isValorUnitarioValido = true;
+          this.valorUnitarioPlaceholder = 'Valor do Produto*';
+        }
+        else{
+          this.isValorUnitarioValido = false;
+          this.valorUnitarioPlaceholder = 'Valor do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isValorUnitarioValido = false;
+        this.valorUnitarioPlaceholder = 'Valor do Produto é um Campo Obrigatório';
+      }
+
+      //QUANTIDADE COMPRADA
+      if(this.formData.quantidadeComprada != null){
+        if(this.formData.quantidadeComprada.trim() != ''){
+          this.isQuantidadeCompradaValida = true;
+          this.quantidadeCompradaPlaceholder = 'Quantidade Comprada*';
+        }
+        else{
+          this.isQuantidadeCompradaValida = false;
+          this.quantidadeCompradaPlaceholder = 'Quantidade Comprada é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isQuantidadeCompradaValida = false;
+        this.quantidadeCompradaPlaceholder = 'Quantidade Comprada é um Campo Obrigatório';
+      }
+
+      //VALIDADE DO PRODUTO
+      if(this.formData.validade != null){
+        if(this.formData.validade.trim() != ''){
+          this.isValidadeValida = true;
+          this.validadePlaceholder = 'Validade do Produto*';
+        }
+        else{
+          this.isValidadeValida = false;
+          this.validadePlaceholder = 'Validade do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isValidadeValida = false;
+        this.validadePlaceholder = 'Validade do Produto é um Campo Obrigatório';
+      }
+
+      //LOTE DO PRODUTO
+      if(this.formData.lote != null){
+        if(this.formData.lote.trim() != ''){
+          this.isLoteValido = true;
+          this.lotePlaceholder = 'Lote do Produto*';
+        }
+        else{
+          this.isLoteValido = false;
+          this.lotePlaceholder = 'Lote do Produto é um Campo Obrigatório';
+        }
+      }
+
+      return(
+        this.isDataCompraValida &&
+        this.isProdutoValido &&
+        this.isValorUnitarioValido && 
+        this.isQuantidadeCompradaValida && 
+        this.isValidadeValida && 
+        this.isLoteValido
+      );
+    },
+
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
-          await api.post('http://127.0.0.1:8000/compras/', this.formData);
-          this.resetForm();
+          const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData);
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.selectTab('compras');
+          } else {
+            alert('Erro ao cadastrar Compra. Tente novamente mais tarde.');
+          }
         } catch (error) {
           console.error('Erro ao enviar dados para a API:', error);
         }
-      } else {
-        console.log('Formulário inválido');
-      }
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        dataCompra: '',
-        produto: '',
-        valorUnitario: '',
-        quantidadeComprada: '',
-        validade: '',
-        lote: '',
-        propriedade: localStorage.getItem('propriedadeSelecionada'),
-      };
+      } 
     },
 
     navigateOptions(direction) {

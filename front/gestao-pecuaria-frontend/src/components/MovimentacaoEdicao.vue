@@ -5,35 +5,29 @@
         <button class="nav-link" :class="{ active: activeTab === 'movimentacoes' }" id="nav-vet-tab"
           @click="selectTab('movimentacoes')" type="button" role="tab" aria-controls="nav-vet"
           aria-selected="true">Lista de Movimentação</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
-          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
-          aria-selected="false">Cadastro de Movimentação</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
+          aria-selected="false">Edição de Movimentação</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'movimentacoes' }" id="nav-vet" role="tabpanel"
         aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
-        aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Movimentação</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
+        aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Movimentação</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoCadastro"
+                :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoEdicao"
                 v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }">
             </div>
-            <div class="mb-3 input-group">
-              <input type="radio" v-model="radioEscolha" value="brinco"> Animal
-            </div>
-            <div class="mb-3 input-group">
-              <input type="radio" v-model="radioEscolha" value="piquete"> Todos animais do piquete
-            </div>
             <div class="mb-3 input-group" >
-              <input v-model="brinco" type="text" class="form-control" :placeholder="brincoPlaceholder"
-                id="brincoInput" :class="{ 'is-invalid': radioEscolha === 'brinco' && !isAnimalValido }">
+              <input v-model="brinco" @input="filterAnimais()" type="text" class="form-control" :placeholder="brincoPlaceholder"
+                id="brincoInput" :class="{ 'is-invalid': !isBrincoValido }">
             </div>
             <div class="list-group" v-if="brinco && animaisFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -43,14 +37,7 @@
             </div>
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="piqueteOrigemNome" @input="filtrarPiquetesOrigem()" type="text" class="form-control"
-                :placeholder="piqueteOrigemPlaceholder" :disabled="radioEscolha === 'brinco'" :class="{ 'is-invalid': !isPiqueteOrigemValido }">
-            </div>
-            <div class="list-group" v-if="piqueteOrigemNome && filteredPiquetesOrigem.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="piquete in filteredPiquetesOrigem" :key="piquete.id" @click="selecionarPiqueteOrigem(piquete)">
-                {{ piquete.nome }}
-              </button>
+              <input v-model="piqueteOrigemNome" type="text" class="form-control" :placeholder="piqueteOrigemPlaceholder" :disabled="true">
             </div>
 
             <div class="mb-3 input-group" >
@@ -197,7 +184,6 @@ export default {
     },
 
     selectAnimal(animal) {
-      console.log();
         this.brinco = animal.brinco;
         this.formData.piqueteOrigem = animal.piquete.id;
         this.piqueteOrigemNome = animal.piquete.nome
@@ -222,6 +208,83 @@ export default {
       return this.isDataValida && this.isPiqueteOrigemValido && this.isPiqueteDestinoValido && this.isMotivoKgValido;
     },
 
+    verificaVazio(){
+      //DATA DA MOVIMENTAÇÃO
+      if(this.formData.dataMovimentacao != null){
+        if(this.formData.dataMovimentacao.trim() != ''){
+          this.isDataValida = true;
+          this.dataPlaceholder = 'Data da Movimentação';
+        }
+        else{
+          this.isDataValida = false;
+          this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataValida = false;
+        this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+      }
+      
+      //BRINCO OU TODOS DO PIQUETE
+      if(this.radioEscolha == 'brinco'){
+        //BRINCO 
+        if(this.brinco != null){
+          if(this.brinco.trim() != ''){
+            this.isBrincoValido = true;
+            this.brincoPlaceholder = 'Brinco do Animal'
+          }
+          else{
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+          }
+        }
+        else{
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+        }
+      }
+      else{
+        //PIQUETE ORIGEM
+        if(this.piqueteOrigemNome != null){
+          if(this.piqueteOrigemNome.trim() != ''){
+            this.isPiqueteOrigemValido = true;
+            this.piqueteOrigemPlaceholder = 'Piquete de Origem';
+          }
+          else{
+            this.isPiqueteOrigemValido = false;
+            this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
+          }
+        }
+        else{
+          this.isPiqueteOrigemValido = false;
+          this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
+        }
+      }
+
+      //PIQUETE DE DESTINO
+      if(this.piqueteDestinoNome != null){
+          if(this.piqueteDestinoNome.trim() != ''){
+            this.isPiqueteDestinoValido = true;
+            this.piqueteDestinoPlaceholder = 'Piquete de Destino';
+          }
+          else{
+            this.isPiqueteDestinoValido = false;
+            this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
+          }
+      }
+      else{
+        this.isPiqueteDestinoValido = false;
+        this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
+      }
+
+      return (
+        this.isDataValida &&
+        this.isBrincoValido &&
+        this.isPiqueteOrigemValido &&
+        this.isPiqueteDestinoValido
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'movimentacoes') {
@@ -234,8 +297,7 @@ export default {
     },
 
     async submitForm() {
-      console.log(this.formData);
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
        try {
           const response = await api.patch(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, this.formData , {
         });
@@ -263,12 +325,12 @@ export default {
           piqueteDestino: null,
           motivo: null,
       },
-      this.isAnimalValido = true,
+      this.isBrincoValido = true,
       this.isDataValida = true,
       this.isPiqueteOrigemValido = true,
       this.isPiqueteDestinoValido = true,
       this.isMotivoKgValido = true,
-      this.animalPlaceholder = 'Brinco do animal',
+      this.brincoPlaceholder = 'Brinco do animal',
       this.dataPlaceholder = 'Data da movimentacao',
       this.piqueteOrigemPlaceholder = 'Piquete de Origem',
       this.piqueteDestinoPlaceholder = 'Piquete de Destino',

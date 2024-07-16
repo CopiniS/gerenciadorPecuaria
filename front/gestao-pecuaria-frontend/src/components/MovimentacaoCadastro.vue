@@ -31,9 +31,9 @@
             <div class="mb-3 input-group">
               <input type="radio" v-model="radioEscolha" value="piquete"> Todos animais do piquete
             </div>
-            <div class="mb-3 input-group" >
-              <input v-model="brinco" type="text" class="form-control" :placeholder="brincoPlaceholder"
-                id="brincoInput" :class="{ 'is-invalid': radioEscolha === 'brinco' && !isAnimalValido }">
+            <div v-if="radioEscolha === 'brinco'" class="mb-3 input-group" >
+              <input v-model="brinco" @input="filterAnimais()" type="text" class="form-control" :placeholder="brincoPlaceholder"
+                id="brincoInput" :class="{ 'is-invalid': radioEscolha === 'brinco' && !isBrincoValido }">
             </div>
             <div class="list-group" v-if="brinco && animaisFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -44,7 +44,7 @@
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
               <input v-model="piqueteOrigemNome" @input="filtrarPiquetesOrigem()" type="text" class="form-control"
-                :placeholder="piqueteOrigemPlaceholder" :disabled="radioEscolha === 'brinco'" :class="{ 'is-invalid': !isPiqueteOrigemValido }">
+                :placeholder="piqueteOrigemPlaceholder" :disabled="radioEscolha === 'brinco'" :class="{ 'is-invalid': radioEscolha === 'piquete' && !isPiqueteOrigemValido }">
             </div>
             <div class="list-group" v-if="piqueteOrigemNome && filteredPiquetesOrigem.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -115,8 +115,8 @@ export default {
       isPiqueteOrigemValido: true,
       isPiqueteDestinoValido: true,
       isMotivoKgValido: true,
-      brincoPlaceholder: 'Brinco do animal*',
-      dataPlaceholder: 'Data da aplicacao*',
+      brincoPlaceholder: 'Brinco do Animal*',
+      dataPlaceholder: 'Data da Movimentação*',
       piquetePlaceholder: 'Piquete*',
       piqueteOrigemPlaceholder: 'Piquete de Origem*',
       piqueteDestinoPlaceholder: 'Piquete de Destino*'
@@ -198,7 +198,6 @@ export default {
     },
 
     selectAnimal(animal) {
-      console.log();
       this.formData.animal = [];
       this.brinco = animal.brinco;
       this.formData.piqueteOrigem = animal.piquete.id;
@@ -233,6 +232,83 @@ export default {
       return this.isDataValida && this.isPiqueteOrigemValido && this.isPiqueteDestinoValido && this.isMotivoKgValido;
     },
 
+    verificaVazio(){
+      //DATA DA MOVIMENTAÇÃO
+      if(this.formData.dataMovimentacao != null){
+        if(this.formData.dataMovimentacao.trim() != ''){
+          this.isDataValida = true;
+          this.dataPlaceholder = 'Data da Movimentação';
+        }
+        else{
+          this.isDataValida = false;
+          this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataValida = false;
+        this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+      }
+      
+      //BRINCO OU TODOS DO PIQUETE
+      if(this.radioEscolha == 'brinco'){
+        //BRINCO 
+        if(this.brinco != null){
+          if(this.brinco.trim() != ''){
+            this.isBrincoValido = true;
+            this.brincoPlaceholder = 'Brinco do Animal'
+          }
+          else{
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+          }
+        }
+        else{
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+        }
+      }
+      else{
+        //PIQUETE ORIGEM
+        if(this.piqueteOrigemNome != null){
+          if(this.piqueteOrigemNome.trim() != ''){
+            this.isPiqueteOrigemValido = true;
+            this.piqueteOrigemPlaceholder = 'Piquete de Origem';
+          }
+          else{
+            this.isPiqueteOrigemValido = false;
+            this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
+          }
+        }
+        else{
+          this.isPiqueteOrigemValido = false;
+          this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
+        }
+      }
+
+      //PIQUETE DE DESTINO
+      if(this.piqueteDestinoNome != null){
+          if(this.piqueteDestinoNome.trim() != ''){
+            this.isPiqueteDestinoValido = true;
+            this.piqueteDestinoPlaceholder = 'Piquete de Destino';
+          }
+          else{
+            this.isPiqueteDestinoValido = false;
+            this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
+          }
+      }
+      else{
+        this.isPiqueteDestinoValido = false;
+        this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
+      }
+
+      return (
+        this.isDataValida &&
+        this.isBrincoValido &&
+        this.isPiqueteOrigemValido &&
+        this.isPiqueteDestinoValido
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'movimentacoes') {
@@ -241,8 +317,7 @@ export default {
     },
 
     async submitForm() {
-      console.log(this.formData);
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.post('http://127.0.0.1:8000/movimentacoes/', this.formData, {
           });
@@ -269,12 +344,12 @@ export default {
         piqueteDestino: null,
         motivo: null,
       },
-        this.isAnimalValido = true,
+        this.isBrincoValido = true,
         this.isDataValida = true,
         this.isPiqueteOrigemValido = true,
         this.isPiqueteDestinoValido = true,
         this.isMotivoKgValido = true,
-        this.animalPlaceholder = 'Brinco do animal',
+        this.brincoPlaceholder = 'Brinco do animal',
         this.dataPlaceholder = 'Data da movimentacao',
         this.piqueteOrigemPlaceholder = 'Piquete de Origem',
         this.piqueteDestinoPlaceholder = 'Piquete de Destino',

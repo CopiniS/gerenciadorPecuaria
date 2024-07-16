@@ -22,7 +22,7 @@
               </div>
               <hr>
               <div class="mb-3 input-group">
-                <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
+                <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
               </div>
               <div class="list-group" v-if="brinco && animaisFiltrados.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
@@ -31,11 +31,11 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-weight"></i></span>
-                <input v-model="formData.peso" type="text" class="form-control" id="peso" :disabled="!camposHabilitados " :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
+                <input v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-comment"></i></span>
-                <input v-model="formData.observacao" type="text" class="form-control" id="observacao" :disabled="!camposHabilitados" placeholder="Observação" required>
+                <input v-model="formData.observacao" type="text" class="form-control" id="observacao" placeholder="Observação" required>
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('pesagens')">Cancelar</button>
@@ -58,7 +58,6 @@ export default {
       animais: [],
       animaisFiltrados: [],
       brinco: '',
-      camposHabilitados: false,
       formData: {
         id: null,
         dataPesagem: '',
@@ -66,10 +65,10 @@ export default {
         observacao: null,
         animal: null
       },
-      isAnimalValido: true,
+      isBrincoValido: true,
       isDataValida: true,
       isPesoValido: true,
-      animalPlaceholder: 'Brinco do animal*',
+      brincoPlaceholder: 'Brinco do animal*',
       dataPlaceholder: 'Data da pesagem*',
       pesoPlaceholder: 'Peso do animal*',
     };
@@ -95,16 +94,12 @@ export default {
 
     filterAnimais() {
         this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
-        if(this.brinco === ''){
-            this.camposHabilitados = false;
-        }
     },
 
     selectAnimal(animal) {
         this.brinco = animal.brinco;
         this.formData.animal = animal.id;
         this.animaisFiltrados = [];
-        this.camposHabilitados = true;
     },
 
     validarFormulario() {
@@ -114,9 +109,9 @@ export default {
         this.dataPlaceholder = 'Campo Data da Pesagem é obrigatório';
       }
 
-      this.isAnimalValido = !!this.formData.animal && !!this.formData.animal.toString().trim();
-      if (!this.isAnimalValido) {
-        this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
+      this.isBrincoValido = !!this.formData.animal && !!this.formData.animal.toString().trim();
+      if (!this.isBrincoValido) {
+        this.brincoPlaceholder = 'Campo Brinco do Animal é obrigatório';
       }
 
       this.isPesoValido = !!this.formData.peso.trim();
@@ -130,7 +125,7 @@ export default {
 
       return (
         this.isDataValida &&
-        this.isAnimalValido &&
+        this.isBrincoValido &&
         this.isPesoValido
       );
     },
@@ -142,8 +137,59 @@ export default {
       }
     },
 
+    verificaVazio(){
+      //DATA DA PESAGEM
+      if(this.formData.dataPesagem != null){
+        if(this.formData.dataPesagem.trim() != ''){
+          this.isDataValida = true;
+          this.dataPlaceholder = 'Data da Pesagem';
+        }
+        else{
+          this.isDataValida = false;
+          this.dataPlaceholder = 'Data da Pesagem é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataValida = false;
+        this.dataPlaceholder = 'Data da Pesagem é um Campo Obrigatório';
+      }
+
+      //BRINCO
+      if(this.brinco != null){
+        if(this.brinco.trim() != ''){
+          this.isBrincoValido = true;
+          this.brincoPlaceholder = 'Brinco do Animal';
+        }
+        else{
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isBrincoValido = false;
+        this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+      }
+
+      //PESO DO ANIMAL
+      if(this.formData.peso != null){
+        if(this.formData.peso.trim() != ''){
+          this.isPesoValido = true;
+          this.pesoPlaceholder = 'Peso do Animal';
+        }
+        else{
+          this.isPesoValido = false;
+          this.pesoPlaceholder = 'Peso do Animal é um Campo Obrigatório';
+        }
+      }
+      return (
+        this.isDataValida &&
+        this.isBrincoValido &&
+        this.isPesoValido
+      );
+    },
+
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.post('http://127.0.0.1:8000/pesagens/', this.formData , {
         });
@@ -170,11 +216,11 @@ export default {
         observacao: '',
         animal: null
       },
-      this.isAnimalValido = true,
+      this.isBrincoValido = true,
       this.isDataValida = true,
       this.isPesoValido = true,
       this.isValorValido = true,
-      this.animalPlaceholder = 'Brinco do animal',
+      this.brincoPlaceholder = 'Brinco do animal',
       this.dataPlaceholder = 'Data da pesagem',
       this.pesoPlaceholder = 'Peso do animal',
       this.observacaoPlaceholder = 'Observação'

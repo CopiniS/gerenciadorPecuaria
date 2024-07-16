@@ -4,25 +4,25 @@
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'pesagens' }" id="nav-vet-tab" @click="selectTab('pesagens')" 
         type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Pesagem</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Pesagem</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab" @click="selectTab('edicao')" 
+        type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição de Pesagem</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'pesagens' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Pesagem</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel" aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Pesagem</h1>
             <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                 <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"  
-                class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem" :class="{'is-invalid': !isDataValida}">
+                class="form-control" id="dataPesagemEdicao" v-model="formData.dataPesagem" :class="{'is-invalid': !isDataValida}">
               </div>
               <hr>
               <div class="mb-3 input-group">
-                <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
+                <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
               </div>
               <div class="list-group" v-if="brinco && animaisFiltrados.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
@@ -31,11 +31,11 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-weight"></i></span>
-                <input v-model="formData.peso" type="text" class="form-control" id="peso" :disabled="!camposHabilitados " :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
+                <input v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-comment"></i></span>
-                <input v-model="formData.observacao" type="text" class="form-control" id="observacao" :disabled="!camposHabilitados" placeholder="Observação" required>
+                <input v-model="formData.observacao" type="text" class="form-control" id="observacao" placeholder="Observação" required>
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('pesagens')">Cancelar</button>
@@ -55,10 +55,9 @@ export default {
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
-       animais: [],
+      animais: [],
       animaisFiltrados: [],
       brinco: '',
-      camposHabilitados: false,
       formData: {
         id: null,
         dataPesagem: '',
@@ -66,11 +65,11 @@ export default {
         observacao: null,
         animal: null
       },
-      isAnimalValido: true,
+      isBrincoValido: true,
       isDataValida: true,
       isPesoValido: true,
       isValorValido: true,
-      animalPlaceholder: 'Brinco do animal',
+      brincoPlaceholder: 'Brinco do animal',
       dataPlaceholder: 'Data da pesagem',
       pesoPlaceholder: 'Peso do animal',
       observacaoPlaceholder: 'Observação',
@@ -98,7 +97,6 @@ export default {
 
         this.brinco = pesagem[0].animal.brinco;
         this.dataSelecionada = pesagem[0].dataPesagem
-        this.camposHabilitados = true;
       } catch (error) {
         console.error('Erro ao carregar dados da pesagem:', error);
       }
@@ -119,16 +117,12 @@ export default {
 
     filterAnimais() {
         this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
-        if(this.brinco === ''){
-            this.camposHabilitados = false;
-        }
     },
 
     selectAnimal(animal) {
       this.brinco = animal.brinco;
       this.formData.animal = animal.id;
       this.animaisFiltrados = [];
-      this.camposHabilitados = true;
     },
 
     validarFormulario() {
@@ -138,9 +132,9 @@ export default {
         this.dataPlaceholder = 'Campo Data da Pesagem é obrigatório';
       }
 
-      this.isAnimalValido = !!this.formData.animal && !!this.formData.animal.toString().trim();
-      if (!this.isAnimalValido) {
-        this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
+      this.isBrincoValido = !!this.formData.animal && !!this.formData.animal.toString().trim();
+      if (!this.isBrincoValido) {
+        this.brincoPlaceholder = 'Campo Brinco do Animal é obrigatório';
       }
 
       this.isPesoValido = !!this.formData.peso.trim();
@@ -154,7 +148,58 @@ export default {
 
       return (
         this.isDataValida &&
-        this.isAnimalValido &&
+        this.isBrincoValido &&
+        this.isPesoValido
+      );
+    },
+
+    verificaVazio(){
+      //DATA DA PESAGEM
+      if(this.formData.dataPesagem != null){
+        if(this.formData.dataPesagem.trim() != ''){
+          this.isDataValida = true;
+          this.dataPlaceholder = 'Data da Pesagem';
+        }
+        else{
+          this.isDataValida = false;
+          this.dataPlaceholder = 'Data da Pesagem é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataValida = false;
+        this.dataPlaceholder = 'Data da Pesagem é um Campo Obrigatório';
+      }
+
+      //BRINCO
+      if(this.brinco != null){
+        if(this.brinco.trim() != ''){
+          this.isBrincoValido = true;
+          this.brincoPlaceholder = 'Brinco do Animal';
+        }
+        else{
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isBrincoValido = false;
+        this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+      }
+
+      //PESO DO ANIMAL
+      if(this.formData.peso != null){
+        if(this.formData.peso.trim() != ''){
+          this.isPesoValido = true;
+          this.pesoPlaceholder = 'Peso do Animal';
+        }
+        else{
+          this.isPesoValido = false;
+          this.pesoPlaceholder = 'Peso do Animal é um Campo Obrigatório';
+        }
+      }
+      return (
+        this.isDataValida &&
+        this.isBrincoValido &&
         this.isPesoValido
       );
     },
@@ -171,7 +216,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/pesagens/${this.formData.id}/`, this.formData, {
           });
@@ -198,11 +243,11 @@ export default {
         observacao: '',
         animal: null
       },
-      this.isAnimalValido = true,
+      this.isBrincoValido = true,
       this.isDataValida = true,
       this.isPesoValido = true,
       this.isValorValido = true,
-      this.animalPlaceholder = 'Brinco do animal',
+      this.brincoPlaceholder = 'Brinco do animal',
       this.dataPlaceholder = 'Data da pesagem',
       this.pesoPlaceholder = 'Peso do animal',
       this.observacaoPlaceholder = 'Observação'

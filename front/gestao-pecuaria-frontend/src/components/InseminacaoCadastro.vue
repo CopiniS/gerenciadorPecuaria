@@ -80,10 +80,10 @@ export default {
       nomeVet: '',
       formData: {
         id: null,
-        dataInseminacao: '',
-        veterinario: '',
-        animal: '',
-        identificadorTouro: '',
+        dataInseminacao: null,
+        veterinario: null,
+        animal: null,
+        identificadorTouro: null,
       },
       isAnimalValido: true,
       isDataValida: true,
@@ -179,8 +179,78 @@ export default {
       return this.isDataValida && this.isVeterinarioValido && this.isAnimalValido && this.isIdentificadorTouroValido;
     },
 
+    verificaVazio(){
+      //DATA DA INSEMINAÇÃO
+      if(this.formData.dataInseminacao != null){
+        if(this.formData.dataInseminacao.trim() != ''){
+          this.isDataValida = true;
+          this.dataPlaceholder = 'Digite a Data da Inseminação';
+        }
+        else{
+          this.isDataValida = false;
+          this.dataPlaceholder = 'Data da Inseminação é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataValida = false;
+        this.dataPlaceholder = 'Data da Inseminação é um Campo Obrigatório';
+      }
 
+      //BRINCO
+      if(this.brinco != null){
+        if(this.brinco.trim() != ''){
+          this.isAnimalValido = true;
+          this.animalPlaceholder = 'Digite o brinco do Animal';
+        }
+        else{
+          this.isAnimalValido = false;
+          this.animalPlaceholder = 'Brinco do animal é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isAnimalValido = false;
+        this.animalPlaceholder = 'Brinco do animal é um Campo Obrigatório';
+      }
 
+      //VETERINÁRIO
+      if(this.nomeVet != null){
+        if(this.nomeVet.trim() != ''){
+          this.isVeterinarioValido = true;
+          this.veterinarioPlaceholder = 'Digite o Veterinário';
+        }
+        else{
+          this.isVeterinarioValido = false;
+          this.veterinarioPlaceholder = 'Veterinário é um Campo Obrigatório'
+        }
+      }
+      else{
+        this.isVeterinarioValido = false;
+        this.veterinarioPlaceholder = 'Veterinário é um Campo Obrigatório'
+      }
+
+      //IDENTIFICADOR TOURO
+      if(this.formData.identificadorTouro != null){
+        if(this.formData.identificadorTouro.trim() != ''){
+          this.isIdentificadorTouroValido = true;
+          this.identificadorTouroPlaceholder = 'Digite o Identificador do Touro';
+        }
+        else{
+          this.isIdentificadorTouroValido = false;
+          this.identificadorTouroPlaceholder = 'Identificador Touro é um Campo Obrigatório';
+        }
+      }
+      else{
+          this.isIdentificadorTouroValido = false;
+          this.identificadorTouroPlaceholder = 'Identificador Touro é um Campo Obrigatório';
+      }
+
+      return (
+        this.isDataValida &&
+        this.isAnimalValido && 
+        this.isVeterinarioValido && 
+        this.isIdentificadorTouroValido
+      );
+    },
 
     selectTab(tab) {
       // Seleciona a aba do formulário
@@ -192,7 +262,7 @@ export default {
 
     async submitForm() {
       // Submete o formulário
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.post('http://127.0.0.1:8000/inseminacoes/', this.formData);
           if (response.status === 201) {

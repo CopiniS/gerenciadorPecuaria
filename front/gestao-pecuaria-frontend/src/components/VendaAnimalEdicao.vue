@@ -4,16 +4,16 @@
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab" @click="selectTab('vendas')" 
         type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Venda</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Venda</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab" @click="selectTab('edicao')" 
+        type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição de Venda</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'vendas' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Venda</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel" aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Venda</h1>
             <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-calendar"></i></span>
@@ -36,7 +36,7 @@
                 </select>
                 </div>
                 <div class="mb-3 input-group">
-                    <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
+                    <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
                 </div>
                 <div class="list-group" v-if="brinco && animaisFiltrados.length">
                     <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
@@ -90,13 +90,13 @@ export default {
         finalidade: '',
         observacao: null,
       },
-      isAnimalValido: true,
+      isBrincoValido: true,
       isDataValida: true,
       isPesoValido: true,
       isprecoKgValido: true,
       isValorTotalValido: true,
       isFinalidadeValida: true,
-      animalPlaceholder: 'Brinco do animal',
+      brincoPlaceholder: 'Brinco do animal',
       dataPlaceholder: 'Data da venda',
       pesoPlaceholder: 'Peso do animal',
       precoKgPlaceholder: 'Preço por KG',
@@ -175,9 +175,9 @@ export default {
         this.dataPlaceholder = 'Campo Data da Venda é obrigatório';
       }
 
-      this.isAnimalValido = !!this.formData.animal.trim();
-      if (!this.isAnimalValido) {
-        this.animalPlaceholder = 'Campo Brinco do Animal é obrigatório';
+      this.isBrincoValido = !!this.formData.animal.trim();
+      if (!this.isBrincoValido) {
+        this.brincoPlaceholder = 'Campo Brinco do Animal é obrigatório';
       }
 
       this.isPesoValido = !!this.formData.peso.trim();
@@ -206,7 +206,7 @@ export default {
 
       return (
         this.isDataValida &&
-        this.isAnimalValido &&
+        this.isBrincoValido &&
         this.isPesoValido &&
         this.isprecoKgValido &&
         this.isValorTotalValido &&
@@ -214,6 +214,76 @@ export default {
       );
     },
 
+    verificaVazio(){
+      //DATA DA VENDA
+      if(this.formData.dataVenda != null && this.formData.dataVenda.trim() != ''){
+          this.isDataValida = true;
+          this.dataPlaceholder = 'Data da Venda*';
+      }
+      else{
+        this.isDataValida = false;
+        this.dataPlaceholder = 'Data da Venda é um Campo Obrigatório';
+      }
+      
+      //PREÇO POR KG
+      if(this.formData.precoKg != null && this.formData.precoKg.trim() != ''){
+          this.isprecoKgValido = true;
+          this.precoKgPlaceholder = 'Preço por Kg*';
+      }
+      else{
+        this.isprecoKgValido = false;
+        this.precoKgPlaceholder = 'Preço por kg é um Campo Obrigatório';
+      }
+
+      //FINALIDADE
+      if(this.formData.finalidade != null && this.formData.finalidade.trim() != ''){
+          this.isFinalidadeValida = true;
+          this.finalidadePlaceholder = 'Finalidade*';
+      }
+      else{
+        this.isFinalidadeValida = false;
+        this.finalidadePlaceholder = 'Finalidade é um Campo Obrigatório';
+      }
+
+      //BRINCO DO ANIMAL
+      if(this.brinco != null && this.brinco.trim() != ''){
+          this.isBrincoValido = true;
+          this.brincoPlaceholder = 'Brinco do Animal*';
+      }
+      else{
+        this.isBrincoValido = false;
+        this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+      }
+
+      //PESO DO ANIMAL
+      if(this.formData.peso != null && this.formData.peso.trim() != ''){
+          this.isPesoValido= true;
+          this.pesoPlaceholder = 'Peso do Animal*';
+      }
+      else{
+        this.isPesoValido = false;
+        this.pesoPlaceholder = 'Peso do Animal é um Campo Obrigatório';
+      }
+
+      //VALOR TOTAL
+      if(this.formData.valorTotal != null && this.formData.valorTotal != ''){
+          this.isValorTotalValido = true;
+          this.valorTotalPlaceholder = 'Valor Total*';
+      }
+      else{
+        this.isValorTotalValido = false;
+        this.valorTotalPlaceholder = 'Valor Total é um Campo Obrigatório';
+      }
+
+      return (
+        this.isDataValida &&
+        this.isprecoKgValido &&
+        this.isFinalidadeValida &&
+        this.isBrincoValido && 
+        this.isPesoValido &&
+        this.isValorTotalValido
+      );
+    },
 
     selectTab(tab) {
       this.activeTab = tab;
@@ -227,7 +297,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/vendas-animais/${this.formData.id}/`, this.formData, {
           });
@@ -257,13 +327,13 @@ export default {
         finalidade: '',
         observacao: null,
       },
-        this.isAnimalValido = true,
+        this.isBrincoValido = true,
         this.isDataValida = true,
         this.isPesoValido = true,
         this.isprecoKgValido = true,
         this.isValorTotalValido = true,
         this.isFinalidadeValida = true,
-        this.animalPlaceholder = 'Brinco do animal',
+        this.brincoPlaceholder = 'Brinco do animal',
         this.dataPlaceholder = 'Data da venda',
         this.pesoPlaceholder = 'Peso do animal',
         this.precoKgPlaceholder = 'Preço por KG',

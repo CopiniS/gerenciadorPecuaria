@@ -118,6 +118,54 @@ export default {
       return this.isNomeValido && this.isTelefoneValido && this.isEmailValido && this.isCrmvValido;
     },
 
+    verificaVazio(){
+      //NOME
+      if(this.formData.nome != null && this.formData.nome.trim() != ''){
+        this.isNomeValido = true;
+        this.nomePlaceholder = 'Nome do Veterinário*';
+      }
+      else{
+        this.isNomeValido = false;
+        this.nomePlaceholder = 'Nome do Veterinário é um Campo Obrigatório';
+      }
+      
+      //TELEFONE
+      if(this.formData.telefone != null && this.formData.telefone.trim() != ''){
+        this.isTelefoneValido = true;
+        this.telefonePlaceholder = 'Telefone do Veterinário*';
+      }
+      else{
+        this.isTelefoneValido = false;
+        this.telefonePlaceholder = 'Telefone do Veterinário é um Campo Obrigatório';
+      }
+      //EMAIL
+      if(this.formData.email != null && this.formData.email.trim() != ''){
+        this.isEmailValido = true;
+        this.emailPlaceholder = 'Email do Veterinário*';
+      }
+      else{
+        this.isEmailValido = false;
+        this.emailPlaceholder = 'Email do Veterinário é um Campo Obrigatório';
+      }
+      //CRMV
+      if(this.formData.crmv != null && this.formData.crmv.trim() != ''){
+        this.isCrmvValido = true;
+        this.crmvPlaceholder = 'CRMV do Veterinário*';
+      }
+      else{
+        this.isCrmvValido = false;
+        this.crmvPlaceholder = 'CRMV do Veterinário é um Campo Obrigatório';
+      }
+
+      return(
+        this.isNomeValido &&
+        this.isTelefoneValido &&
+        this.isEmailValido &&
+        this.isCrmvValido
+      );
+
+    },
+
     applyPhoneMask(event) {
       let value = event.target.value.replace(/\D/g, '');  // Remove todos os caracteres não numéricos
       
@@ -152,7 +200,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/`, this.formData, {});
           if (response.status === 200) {

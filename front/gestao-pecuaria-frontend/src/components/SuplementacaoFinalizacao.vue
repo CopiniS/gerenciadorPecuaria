@@ -22,8 +22,8 @@
           <form @submit.prevent="finalizarSuplementoSubmit">
               <div class="mb-3 input-group">
                 <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data Final" 
-                class="form-control" id="dataFinalFi" v-model="formData.dataFinal">
+                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataFinalPlaceholder" 
+                class="form-control" id="dataFinalFi" v-model="formData.dataFinal" :class="{'is-invalid': !isDataFinalValida}">
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('suplementacoes')">Cancelar</button>
@@ -47,7 +47,7 @@ export default {
                 id: null,
                 dataFinal: null,
             },
-            isdataFinalValida: true,
+            isDataFinalValida: true,
             dataFinalPlaceholder: 'Data Final da Suplementação',
         };
     },
@@ -64,6 +64,26 @@ export default {
       return true;
     },
 
+    verificaVazio(){
+      //DATA FINAL
+      if(this.formData.dataFinal != null){
+        if(this.formData.dataFinal.trim() != ''){
+          this.isDataFinalValida = true;
+          this.dataFinalPlaceholder = 'Data Final da Suplementação*'
+        }
+        else{
+          this.isDataFinalValida = false;
+          this.dataFinalPlaceholder = 'Data Final é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataFinalValida = false;
+        this.dataFinalPlaceholder = 'Data Final é um Campo Obrigatório';
+      }
+
+      return this.isDataFinalValida;
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'suplementacoes') {
@@ -76,7 +96,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
        try {
           const response = await api.patch(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/`, this.formData , {
         });

@@ -54,7 +54,7 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                <input v-model="formData.quantidade" type="number" :class="{'is-invalid': !isQuantidadeValida}" class="form-control" id="quantidade"
+                <input v-model="formData.quantidade" type="text" :class="{'is-invalid': !isQuantidadeValida}" class="form-control" id="quantidade"
                   :placeholder="quantidadePlaceholder">
               </div>
               <div class="button-group justify-content-end">
@@ -115,17 +115,17 @@ export default {
 
     async fetchSuplementacao(id) {
       try {
-        const response = await api.get(`http://127.0.0.1:8000/suplementacoes/${id}`);
+        const response = await api.get(`http://127.0.0.1:8000/suplementacoes/suplementacao/${id}`);
         const suplementacao = response.data;
-        this.formData.id = suplementacao.id;
-        this.formData.produto = suplementacao.produto;
-        this.formData.piquete = suplementacao.piquete;
-        this.formData.quantidade = suplementacao.quantidade;
-        this.formData.dataInicial = suplementacao.dataInicial;
-        this.formData.dataFinal = suplementacao.dataFinal;
-        this.nomeProduto = suplementacao.produto.nome;
-        this.nomePiquete = suplementacao.piquete.nome;
-        this.verificaFinalizado(suplementacao);
+        this.formData.id = suplementacao[0].id;
+        this.formData.produto = suplementacao[0].produto.id;
+        this.formData.piquete = suplementacao[0].piquete.id;
+        this.formData.quantidade = suplementacao[0].quantidade;
+        this.formData.dataInicial = suplementacao[0].dataInicial;
+        this.formData.dataFinal = suplementacao[0].dataFinal;
+        this.nomeProduto = suplementacao[0].produto.nome;
+        this.nomePiquete = suplementacao[0].piquete.nome;
+        this.verificaFinalizado(suplementacao[0]);
       } catch (error) {
         console.error('Erro ao carregar dados da suplementacao:', error);
       }
@@ -201,6 +201,79 @@ export default {
       return this.isDataInicialValida && this.isProdutoValido && this.isPiqueteValido && this.isQuantidadeValida;
     },
 
+    verificaVazio(){
+      //DATA INICIAL
+      if(this.formData.dataInicial != null){
+        if(this.formData.dataInicial.trim() != ''){
+          this.isDataInicialValida = true;
+          this.dataInicialPlaceholder = 'Data Inicial da Suplementação*';
+        }
+        else{
+          this.isDataInicialValida = false;
+          this.dataInicialPlaceholder = 'Data Inicial é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDataInicialValida = false;
+        this.dataInicialPlaceholder = 'Data Inicial é um Campo Obrigatório';
+      }
+
+      //PRODUTO
+      if(this.nomeProduto != null){
+        if(this.nomeProduto.trim() != ''){
+          this.isProdutoValido = true;
+          this.produtoPlaceholder = 'Produto usado na Suplementação*';
+        }
+        else{
+          this.isProdutoValido = false;
+          this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isProdutoValido = false;
+        this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
+      }
+
+      //PIQUETE
+      if(this.nomePiquete != null){
+        if(this.nomePiquete != ''){
+          this.isPiqueteValido = true;
+          this.piquetePlaceholder = 'Piquete da Suplementação*';
+        }
+        else{
+          this.isPiqueteValido = false;
+          this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isPiqueteValido = false;
+        this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
+      }
+
+      //QUANTIDADE DO PRODUTO
+      if(this.formData.quantidade != null){
+        if(this.formData.quantidade.trim() != ''){
+          this.isQuantidadeValida = true;
+          this.quantidadePlaceholder = 'Quantidade do Produto*';
+        }
+        else{
+          this.isQuantidadeValida = false;
+          this.quantidadePlaceholder = 'Quantidade do Produto é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isQuantidadeValida = false;
+        this.quantidadePlaceholder = 'Quantidade do Produto é um Campo Obrigatório';
+      }
+
+      return (
+        this.isDataInicialValida &&
+        this.isProdutoValido &&
+        this.isPiqueteValido &&
+        this.isQuantidadeValida
+      );
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'suplementacoes') {
@@ -213,7 +286,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.validarFormulario()) {
+      if (this.verificaVazio()) {
        try {
           const response = await api.patch(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/`, this.formData , {
         });

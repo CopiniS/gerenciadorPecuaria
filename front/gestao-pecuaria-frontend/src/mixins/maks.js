@@ -12,8 +12,8 @@ export const masksMixin = {
                 value = value.replace(/(\d{11})(\d{2})/, '$1,$2');
             //Para o caso de apagar algum valor (Os próximos 5 else if)
             } else if(value.length == 0){
-                value = '00,00';
-                this.contador = -2;
+                value = '';
+                this.contador = -1;
             } else if(value.length == 1){
                 value = value.replace(/(\d)/ , '00,0$1');
                 this.contador = 0;
@@ -39,10 +39,6 @@ export const masksMixin = {
                 value = value.replace(/(00)(\d{2})/, '$1,$2');
             } else if(this.contador == 0){
                 value = value.replace(/(\d)/, '00,0$1');
-            } else if(this.contador == -1){
-                //Para o caso de ter sido apagado tudo
-                value = value.replace(/0000(\d)/, '00,0$1');
-                this.contador += 1;
             } 
             this.contador += 1;
             return value;
@@ -54,6 +50,13 @@ export const masksMixin = {
                 value = value.slice(0, 6);
             }  
             return value;
+        },
+
+        observacoesMask(string){
+            if (string.length > 255) {
+                string = string.slice(0, 255);
+            }
+            return string; 
         },
     }
   };

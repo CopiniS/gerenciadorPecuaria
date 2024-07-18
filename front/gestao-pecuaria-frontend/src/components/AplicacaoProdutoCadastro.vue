@@ -65,8 +65,9 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.observacao" type="text" class="form-control" id="observacao"
+              <input v-model="formData.observacao" @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao"
                 :placeholder="observacaoPlaceholder">
+              <div>({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
@@ -101,7 +102,7 @@ export default {
       piqueteId: null,
       piquetesFiltrados: [],
       radioEscolha: 'brinco',
-      contadorDosagem: 0,
+      contadorObservacoes: 0,
       formData: {
         id: null,
         produto: null,
@@ -138,6 +139,12 @@ export default {
 
     aplicarBrincoMask(value){
       this.brinco =  this.brincoMask(value);
+    },
+
+    aplicarObservacaoMask(event){
+      const value = event.target.value;
+      this.formData.observacao = this.observacoesMask(value);
+      this.contadorObservacoes = this.formData.observacao.length;
     },
 
     inputBrinco(event){

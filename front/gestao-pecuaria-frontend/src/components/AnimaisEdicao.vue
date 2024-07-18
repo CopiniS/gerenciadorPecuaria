@@ -5,9 +5,9 @@
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
           @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
           de Animais</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
-          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
-          aria-selected="false">Cadastro de Animais</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
+          aria-selected="false">Edição de Animais</button>
       </div>
     </nav>
 
@@ -15,10 +15,10 @@
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais" role="tabpanel"
         aria-labelledby="nav-animais-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
-        aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Animais</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
+        aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Animais</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
@@ -38,7 +38,7 @@
               <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
-                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" required>
+                class="form-control" id="dataNascimentoEdicao" v-model="formData.dataNascimento" required>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus-mars"></i>*</span>
@@ -57,7 +57,7 @@
                 <option disabled value="">Selecione a raça predominante</option>
                 <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
               </select>
-              <button @click="() => { this.$router.push('/raca-cadastro'); }" type="button" class="btn btn-acoes"><i
+              <button @click="() => { this.$router.push('/raca-edicao'); }" type="button" class="btn btn-acoes"><i
                   class="fas fa-plus"></i></button>
 
             </div>

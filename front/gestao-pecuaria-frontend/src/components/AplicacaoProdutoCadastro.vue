@@ -28,7 +28,7 @@
               <input type="radio" v-model="radioEscolha" value="piquete"> Piquete
             </div>
             <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'" >
-              <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" id="brincoField"
+              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" id="brincoField"
                 :placeholder="brincoPlaceholder" :class="{ 'is-invalid': !isBrincoValido }">
             </div>
             <div class="list-group" v-if="brinco && animaisFiltrados.length">
@@ -134,6 +134,16 @@ export default {
     aplicarDosagemMask(event) {
       const value = event.target.value;
       this.formData.dosagem =  this.valorMask(value);
+    },
+
+    aplicarBrincoMask(value){
+      this.brinco =  this.brincoMask(value);
+    },
+
+    inputBrinco(event){
+      this.filterAnimais();
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
     },
 
     async buscarAnimaisDaApi() {

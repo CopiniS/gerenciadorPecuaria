@@ -46,6 +46,14 @@ export const masksMixin = {
             } 
             this.contador += 1;
             return value;
-        }
+        },
+
+        brincoMask(string){
+            let value = string.replace(/\D/g, '');
+            if (value.length > 6) {
+                value = value.slice(0, 6);
+            }  
+            return value;
+        },
     }
   };

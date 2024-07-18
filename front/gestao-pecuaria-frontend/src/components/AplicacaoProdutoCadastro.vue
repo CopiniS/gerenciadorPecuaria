@@ -60,7 +60,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.dosagem"  @input="applyDosagemMask" type="text" class="form-control" id="dosagem"
+              <input v-model="formData.dosagem" @input="applyDosagemMask" type="text" class="form-control" id="dosagem"
                 :placeholder="dosagemPlaceholder" :class="{ 'is-invalid': !isDosagemValida }">
             </div>
             <div class="mb-3 input-group">
@@ -98,7 +98,7 @@ export default {
       piqueteId: null,
       piquetesFiltrados: [],
       radioEscolha: 'brinco',
-      contadorDosagemMask: 0,
+      contadorDosagem: 0,
       formData: {
         id: null,
         produto: null,
@@ -131,34 +131,50 @@ export default {
 
     applyDosagemMask(event) {
       let value = event.target.value.replace(/\D/g, '');  // Remove todos os caracteres não numéricos
-      
-      //reseta o contador a cada novo numero
-      if(value.length == 1){
-        this.contadorDosagemMask = 0;
-      }
+
       // Limita o número de dígitos a 11
       if (value.length > 13) {
           value = value.slice(0, 13);
       }                   
       // Aplica a máscara conforme o comprimento do número
       if (value.length > 12) {
-          value = value.replace(/(\d{11})(\d{2})/, '$1,$2 mL');
-      } else if (this.contadorDosagemMask > 3){
-          value = value.replace(/(\d+)(\d{2})/, '$1,$2 mL');
-      } else if (this.contadorDosagemMask > 2) {
+          value = value.replace(/(\d{11})(\d{2})/, '$1,$2');
+      //Para o caso de apagar algum valor (Os próximos 5 else if)
+      } else if(value.length == 0){
+          value = '00,00';
+          this.contadorDosagem = -2;
+      } else if(value.length == 1){
+          value = value.replace(/(\d)/ , '00,0$1');
+          this.contadorDosagem = 0;
+      } else if(value.length == 2){
+          value = value.replace(/(\d{2})/ , '00,$1');
+          this.contadorDosagem = 1;
+      } else if(value.length == 3){
+          value = value.replace(/(\d{1})(\d{2})/ , '0$1,$2');
+          this.contadorDosagem = 2;
+      } else if(value.length == 4){
+          value = value.replace(/(\d+)(\d{2})/ , '$1,$2');
+          this.contadorDosagem = 3;
+      } else if (this.contadorDosagem > 3){
+          value = value.replace(/(\d+)(\d{2})/, '$1,$2');
+      } else if (this.contadorDosagem == 3) {
           value = value.substring(1);
-          value = value.replace(/(\d{2})(\d{2})/, '$1,$2 mL');
-      } else if (this.contadorDosagemMask > 1) {
+          value = value.replace(/(\d{2})(\d{2})/, '$1,$2');
+      } else if (this.contadorDosagem == 2) {
           value = value.slice(0,1) + value.substring(2);
-          value = value.replace(/(0\d)(\d{2})/, '$1,$2 mL');
-      } else if (this.contadorDosagemMask > 0){
+          value = value.replace(/(0\d)(\d{2})/, '$1,$2');
+      } else if (this.contadorDosagem == 1){
           value = value.slice(0,2) + value.substring(3);
-          value = value.replace(/(00)(\d{2})/, '$1,$2 mL');
-      } else{
-          value = value.replace(/(\d)/, '00,0$1 mL');
-      }
+          value = value.replace(/(00)(\d{2})/, '$1,$2');
+      } else if(this.contadorDosagem == 0){
+          value = value.replace(/(\d)/, '00,0$1');
+      } else if(this.contadorDosagem == -1){
+        //Para o caso de ter sido apagado tudo
+        value = value.replace(/0000(\d)/, '00,0$1');
+        this.contadorDosagem += 1;
+      } 
+      this.contadorDosagem += 1;
       this.formData.dosagem = value;
-      this.contadorDosagemMask += 1;
   },
 
     async buscarAnimaisDaApi() {

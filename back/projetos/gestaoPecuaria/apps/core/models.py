@@ -89,6 +89,7 @@ class Inseminacao(models.Model):
     identificadorTouro = models.CharField('Identificador do touro')
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
     veterinario = models.ForeignKey(Veterinario, on_delete=models.CASCADE)
+    observacao = models.CharField('Observação', max_length=255, null=True)
 
 class OutraDespesa(models.Model):
     propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)

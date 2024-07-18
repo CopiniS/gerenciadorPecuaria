@@ -52,6 +52,11 @@
                 {{ animal.brinco }}
               </button>
             </div>
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                <input v-model="formData.observacao" type="text" class="form-control" id="observacao" placeholder="Observação">
+              </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('inseminacoes')">Cancelar</button>
               <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
@@ -84,6 +89,7 @@ export default {
         veterinario: null,
         animal: null,
         identificadorTouro: null,
+        observacao: null,
       },
       isAnimalValido: true,
       isDataValida: true,
@@ -267,7 +273,6 @@ export default {
           const response = await api.post('http://127.0.0.1:8000/inseminacoes/', this.formData);
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
-            this.resetForm();
             this.$router.push('/inseminacoes');
           } else {
             alert('Erro ao cadastrar inseminação. Tente novamente mais tarde.');
@@ -277,25 +282,6 @@ export default {
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
       }
-    },
-
-    resetForm() {
-      // Reseta o formulário
-      this.formData = {
-        id: null,
-        dataInseminacao: '',
-        veterinario: '',
-        animal: '',
-        identificadorTouro: '',
-      };
-      this.isAnimalValido = true;
-      this.isDataValida = true;
-      this.isVeterinarioValido = true;
-      this.isIdentificadorTouroValido = true;
-      this.animalPlaceholder = 'Brinco do animal';
-      this.dataPlaceholder = 'Data da inseminação';
-      this.veterinarioPlaceholder = 'Veterinário';
-      this.identificadorTouroPlaceholder = 'Identificador do Touro';
     },
   },
 };

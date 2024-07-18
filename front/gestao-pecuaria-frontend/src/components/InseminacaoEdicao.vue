@@ -52,6 +52,10 @@
                 {{ animal.brinco }}
               </button>
             </div>
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                <input v-model="formData.observacao" type="text" class="form-control" id="observacao" placeholder="Observação">
+            </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('inseminacoes')">Cancelar</button>
               <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
@@ -80,10 +84,11 @@ export default {
       nomeVet: '',
       formData: {
         id: null,
-        dataInseminacao: '',
-        veterinario: '',
-        animal: '',
-        identificadorTouro: '',
+        dataInseminacao: null,
+        veterinario: null,
+        animal: null,
+        identificadorTouro: null,
+        observacao: null,
       },
       isAnimalValido: true,
       isDataValida: true,
@@ -97,6 +102,10 @@ export default {
   },
 
   mounted() {
+    const inseminacaoId = this.$route.params.inseminacaoId;
+    if (inseminacaoId) {
+      this.fetchInseminacao(inseminacaoId);
+    }
     this.buscarFemeasVivasDaApi();
     this.buscarVeterinariosDaApi();
     // Aplicando máscaras e validações
@@ -107,6 +116,25 @@ export default {
   },
 
   methods: {
+
+    async fetchInseminacao(id) {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/inseminacoes/inseminacao/${id}`);
+        const inseminacao = response.data;
+        this.formData.id = inseminacao[0].id;
+        this.formData.dataInseminacao = inseminacao[0].dataInseminacao;
+        this.formData.veterinario = inseminacao[0].veterinario;
+        this.formData.animal = inseminacao[0].animal.id;
+        this.formData.identificadorTouro = inseminacao[0].identificadorTouro;
+        this.formData.observacao = inseminacao[0].observacao;
+        
+        this.brinco = inseminacao[0].animal.brinco;
+        this.nomeVet = inseminacao[0].veterinario.nome;
+      } catch (error) {
+        console.error('Erro ao carregar dados da inseminacao:', error);
+      }
+    },
+
     async buscarFemeasVivasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/femeas/vivas', {

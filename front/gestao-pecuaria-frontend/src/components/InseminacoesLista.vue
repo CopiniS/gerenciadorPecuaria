@@ -35,8 +35,12 @@
           <label for="produto" class="form-label me-2">Veterinário</label>
           <input type="text" class="form-control" id="veterinario" v-model="filtro.veterinario">
         </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Touro</label>
+          <input type="text" class="form-control" id="identificadorTouro" v-model="filtro.identificadorTouro">
+        </div>
         <div class="col-auto">
-          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+          <button class="btn btn-secondary me-2" @click="limparFiltro()">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>
@@ -116,7 +120,8 @@ export default {
         dataInseminacaoInicio: '',
         dataInseminacaoFim: '',
         animal: '',
-        veterinario: ''
+        veterinario: '',
+        identificadorTouro: '',
       },
     }
   },
@@ -195,7 +200,9 @@ export default {
         return  (new Date(inseminacao.dataInseminacao) >= new Date(this.filtro.dataInseminacaoInicio || '1970-01-01')) &&
                 (new Date(inseminacao.dataInseminacao) <= new Date(this.filtro.dataInseminacaoFim || '9999-12-31')) &&
                 inseminacao.animal.brinco.includes(this.filtro.animal) &&
-                inseminacao.veterinario.nome.includes(this.filtro.veterinario);
+                inseminacao.veterinario.nome.includes(this.filtro.veterinario) &&
+                inseminacao.identificadorTouro.includes(this.filtro.identificadorTouro);
+                
       });
     },
     limparFiltro() {
@@ -203,6 +210,7 @@ export default {
       this.filtro.dataInseminacaoFim = '';
       this.filtro.animal = '';
       this.filtro.veterinario = '';
+      this.filtro.identificadorTouro = '';
       this.inseminacoes = this.inseminacoesDaApi;
     },
     toggleFormulario() {

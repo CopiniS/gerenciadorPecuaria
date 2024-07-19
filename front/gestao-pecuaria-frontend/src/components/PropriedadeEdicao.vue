@@ -60,7 +60,7 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control"
-                        :placeholder="areaPlaceholder" id="area" >
+                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" >
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('propriedades')">Cancelar</button>
@@ -75,8 +75,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+  
     data() {
         return {
             activeTab: 'edicao', // Começa na aba de edição
@@ -135,6 +138,11 @@ export default {
       } catch (error) {
         console.error('Erro ao carregar dados da propriedade:', error);
       }
+    },
+
+    aplicarAreaMask(event){
+      const value = event.target.value;
+      this.formData.area = this.valorMask(value);
     },
 
     async buscarCidadesPorEstado(estadoNome) {

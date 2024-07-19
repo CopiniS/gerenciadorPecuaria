@@ -45,7 +45,7 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.latitude" :class="{'is-invalid': !isLatitudeValida}" type="text" class="form-control"
-                        :placeholder="latitudePlaceholder" id="latitude" required>
+                         :placeholder="latitudePlaceholder" id="latitude" required>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
@@ -55,7 +55,7 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control"
-                        :placeholder="areaPlaceholder" id="area" required>
+                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" required>
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('propriedades')">Cancelar</button>
@@ -70,8 +70,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
         activeTab: 'cadastro',  // Aba inicial é 'cadastro'
@@ -109,6 +112,10 @@ export default {
     },
     
     methods: {
+        aplicarAreaMask(event){
+          const value = event.target.value;
+          this.formData.area = this.valorMask(value);
+        },
 
         async buscarCidadesPorEstado(estadoNome) {
             let estadoId;

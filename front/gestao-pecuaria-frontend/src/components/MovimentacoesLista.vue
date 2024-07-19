@@ -46,7 +46,7 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
-          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+          <input type="text" @input="aplicarBrincoMask" class="form-control" id="animal" v-model="filtro.animal">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -112,9 +112,12 @@
 </template>
 
 <script>
-import api from '/src/interceptadorAxios'
+import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       movimentacoes: [],
@@ -154,6 +157,11 @@ export default {
       } catch (error) {
         console.error('Erro ao buscar movimentacoes da API:', error);
       }
+    },
+
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.filtro.animal =  this.brincoMask(value);
     },
 
     achaTipo(movimentacao){ 

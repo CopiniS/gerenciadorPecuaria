@@ -26,7 +26,7 @@
                 v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }">
             </div>
             <div class="mb-3 input-group" >
-              <input v-model="brinco" @input="filterAnimais()" type="text" class="form-control" :placeholder="brincoPlaceholder"
+              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder"
                 id="brincoInput" :class="{ 'is-invalid': !isBrincoValido }">
             </div>
             <div class="list-group" v-if="brinco && animaisFiltrados.length">
@@ -54,8 +54,9 @@
 
             <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                    <input v-model="formData.motivo" type="text" class="form-control" id="motivo" 
+                    <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
                     placeholder="Motivo">
+                    <div>({{ contadorMotivo }} / 255)</div>
                 </div>
 
             <div class="button-group justify-content-end">
@@ -71,10 +72,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery'; // Importe o jQuery aqui
-import 'jquery-mask-plugin'; // Importe o plugin jQuery Mask Plugin
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
     data() {
         return {
             activeTab: 'edicao', // Começa na aba de edição
@@ -92,6 +94,7 @@ export default {
       dataSelecionada: null,
       piqueteOrigemSelecionado: null,
       piqueteDestinoSelecionado: null,
+      contadorMotivo: null,
       formData: {
           id: null,
           animal: null,
@@ -121,7 +124,6 @@ export default {
         }
         this.buscarAnimaisDaApi();
         this.buscarPiquetesDaApi();
-        $('#brincoInput').mask('000000000000'); // Aplica a máscara para aceitar apenas números
     },
     methods: {
     async fetchMovimentacao(id) {
@@ -141,10 +143,27 @@ export default {
         this.dataSelecionada = movimentacao[0].dataMovimentacao
         this.piqueteOrigemSelecionado = movimentacao[0].piqueteOrigem.id
         this.piqueteDestinoSelecionado = movimentacao[0].piqueteDestino.id
+        this.contadorMotivo = this.formData.motivo.length;
         
       } catch (error) {
         console.error('Erro ao carregar dados da movimentacao:', error);
       }
+    },
+
+    aplicarMotivoMask(event){
+      const value = event.target.value;
+      this.formData.motivo = this.observacoesMask(value);
+      this.contadorMotivo = this.formData.motivo.length;
+    },
+
+    aplicarBrincoMask(value){
+      this.brinco =  this.brincoMask(value);
+    },
+
+    inputBrinco(event){
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterAnimais();
     },
 
     async buscarAnimaisDaApi() {

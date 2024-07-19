@@ -86,7 +86,7 @@ class Ocorrencia(models.Model):
 
 class Inseminacao(models.Model):
     dataInseminacao = models.DateField('Data')
-    identificadorTouro = models.CharField('Identificador do touro')
+    identificadorTouro = models.CharField('Identificador do touro', max_length=50)
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
     veterinario = models.ForeignKey(Veterinario, on_delete=models.CASCADE)
     observacao = models.CharField('Observação', max_length=255, null=True)

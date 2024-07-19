@@ -22,7 +22,7 @@
                 v-model="formData.dataAplicacao">
             </div>
             <div class="mb-3 input-group" :class="{ 'is-invalid': !isBrincoValido }">
-              <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" id="brincoField"
+              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" id="brincoField"
                 :placeholder="brincoPlaceholder">
             </div>
             <div class="list-group" v-if="brinco && animaisFiltrados.length">
@@ -43,11 +43,12 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.dosagem" type="text" class="form-control" id="dosagem" :placeholder="dosagemPlaceholder">
+              <input v-model="formData.dosagem" type="text" @input="aplicarDosagemMask" class="form-control" id="dosagem" :placeholder="dosagemPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.observacao" type="text" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
+              <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
+              <div>({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
@@ -62,10 +63,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery';
-import 'jquery-mask-plugin';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
@@ -107,7 +109,6 @@ export default {
     this.buscarAnimaisDaApi();
     this.buscarProdutosDaApi();
 
-    $('#brincoField').mask('000000');
   },
   methods: {
     async fetchAplicacao(id) {
@@ -126,6 +127,27 @@ export default {
       } catch (error) {
         console.error('Erro ao carregar dados da aplicacao:', error);
       }
+    },
+
+    aplicarDosagemMask(event) {
+      const value = event.target.value;
+      this.formData.dosagem =  this.valorMask(value);
+    },
+
+    aplicarBrincoMask(value){
+      this.brinco =  this.brincoMask(value);
+    },
+
+    aplicarObservacaoMask(event){
+      const value = event.target.value;
+      this.formData.observacao = this.observacoesMask(value);
+      this.contadorObservacoes = this.formData.observacao.length;
+    },
+
+    inputBrinco(event){
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterAnimais();
     },
 
     async buscarAnimaisDaApi() {
@@ -306,10 +328,6 @@ export default {
         this.isDosagemValida = false;
         this.dosagemPlaceholder = 'Dosagem é um Campo Obrigatório';
       }
-
-     
-      
-
       return (
         this.isDataValida &&
         this.isBrincoValido && 

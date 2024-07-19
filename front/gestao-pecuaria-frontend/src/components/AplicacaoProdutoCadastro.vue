@@ -148,9 +148,9 @@ export default {
     },
 
     inputBrinco(event){
-      this.filterAnimais();
       const value = event.target.value;
       this.aplicarBrincoMask(value);
+      this.filterAnimais();
     },
 
     async buscarAnimaisDaApi() {

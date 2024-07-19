@@ -42,7 +42,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus"></i></span>
-              <input v-model="brinco" @input="filterFemeas()" type="text" class="form-control"
+              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control"
               :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
             </div>
 
@@ -54,7 +54,8 @@
             </div>
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-comment"></i></span>
-                <input v-model="formData.observacao" type="text" class="form-control" id="observacao" placeholder="Observação">
+                <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" placeholder="Observação">
+                <div>({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('inseminacoes')">Cancelar</button>
@@ -69,10 +70,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery'; // Importe o jQuery aqui
-import 'jquery-mask-plugin'; // Importe o plugin jQuery Mask Plugin
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'cadastro',
@@ -108,11 +110,6 @@ export default {
     }
     this.buscarFemeasVivasDaApi();
     this.buscarVeterinariosDaApi();
-    // Aplicando máscaras e validações
-    $('#dataInseminacaoCadastro').mask('00/00/0000');
-    $('#identificadorTouro').mask('000000000'); // Máscara para aceitar apenas números
-    $('#vetInput').on('input', this.filterVeterinario); // Adicionando validação para aceitar apenas letras
-    $('#animalInput').on('input', this.filterFemeas); // Adicionando validação para aceitar apenas letras
   },
 
   methods: {
@@ -133,6 +130,22 @@ export default {
       } catch (error) {
         console.error('Erro ao carregar dados da inseminacao:', error);
       }
+    },
+
+    aplicarBrincoMask(value){
+      this.brinco =  this.brincoMask(value);
+    },
+
+    inputBrinco(event){
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterFemeas();
+    },
+
+    aplicarObservacaoMask(event){
+      const value = event.target.value;
+      this.formData.observacao = this.observacoesMask(value);
+      this.contadorObservacoes = this.formData.observacao.length;
     },
 
     async buscarFemeasVivasDaApi() {

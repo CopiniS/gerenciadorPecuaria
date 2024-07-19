@@ -29,7 +29,7 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
-          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+          <input type="text" @input="aplicarBrincoMask" class="form-control" id="animal" v-model="filtro.animal">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Veterinário</label>
@@ -102,8 +102,11 @@
 
 <script>
 import api from '/src/interceptadorAxios'
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       inseminacoes: [],
@@ -129,6 +132,7 @@ export default {
     this.buscarInseminacoesDaApi();
   },
   methods: {
+    
     async buscarInseminacoesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/inseminacoes/' , {
@@ -142,6 +146,11 @@ export default {
       } catch (error) {
         console.error('Erro ao buscar inseminacoes da API:', error);
       }
+    },
+
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.filtro.animal =  this.brincoMask(value);
     },
     
     acessarEdicao(inseminacao) {

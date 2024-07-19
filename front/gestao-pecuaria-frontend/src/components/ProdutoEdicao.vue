@@ -39,8 +39,9 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-              <textarea v-model="formData.descricao" class="form-control" id="descricao"
+              <textarea v-model="formData.descricao" @input="aplicarDescricaoMask" class="form-control" id="descricao"
                 placeholder="Descrição"></textarea>
+              <div>({{ contadorDescricao }} / 255)</div> 
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
@@ -55,11 +56,15 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
+      contadorDescricao: 0,
       formData: {
         id: null,
         nome: '',
@@ -92,10 +97,19 @@ export default {
         this.formData.tipo = produto.tipo;
         this.formData.categoria = produto.categoria;
         this.formData.descricao = produto.descricao;
+
+        this.contadorDescricao = this.formData.descricao.length;
       } catch (error) {
         console.error('Erro ao carregar dados da produto:', error);
       }
     },
+
+    aplicarDescricaoMask(event){
+      const value = event.target.value;
+      this.formData.descricao = this.observacoesMask(value);
+      this.contadorDescricao = this.formData.descricao.length;
+    },
+
     validarFormulario() {
       this.isNomeValido = !!this.formData.nome.trim();
       if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Produto é obrigatório';

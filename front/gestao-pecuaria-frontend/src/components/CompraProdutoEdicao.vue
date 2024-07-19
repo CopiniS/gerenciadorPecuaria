@@ -48,12 +48,12 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
               <input ref="valor" v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="text"
-                class="form-control" id="valorUnitario" :placeholder="valorUnitarioPlaceholder">
+                @input="aplicarValorMask" class="form-control" id="valorUnitario" :placeholder="valorUnitarioPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
-                type="text" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
+                type="text" @input="aplicarQuantidadeMask" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
@@ -79,10 +79,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery';
-import 'jquery-mask-plugin';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
@@ -116,24 +117,11 @@ export default {
   },
 
   mounted() {
-    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
     const compraId = this.$route.params.compraId;
     if (compraId) {
       this.fetchCompra(compraId);
     }
     this.buscarProdutos();
-
-    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
-    $('#nome').mask('AAAAAAAAAAAAAAAAAAAAAAAAA', {
-      translation: {
-        'A': { pattern: /[a-zA-ZÀ-ÿ ]/, recursive: true }
-      }
-    });
-    $('#categoria').mask('AAA', {
-      translation: {
-        'A': { pattern: /[a-zA-ZÀ-ÿ]/, recursive: true }
-      }
-    });
   },
 
   methods: {
@@ -152,6 +140,16 @@ export default {
       } catch (error) {
         console.error('Erro ao carregar dados da compra:', error);
       }
+    },
+
+    aplicarValorMask(event) {
+      const value = event.target.value;
+      this.formData.valorUnitario =  this.valorMask(value);
+    },
+    
+    aplicarQuantidadeMask(event) {
+      const value = event.target.value;
+      this.formData.quantidadeComprada =  this.valorMask(value);
     },
 
     async buscarProdutos() {

@@ -53,12 +53,12 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
               <input ref="valor" v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="text"
-                class="form-control" id="valorUnitario" :placeholder="valorUnitarioPlaceholder">
+                @input="aplicarValorMask" class="form-control" id="valorUnitario" :placeholder="valorUnitarioPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
-                type="text" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
+                type="text" @input="aplicarQuantidadeMask" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
@@ -85,10 +85,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery';
-import 'jquery-mask-plugin';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
@@ -123,24 +124,30 @@ export default {
   },
 
   mounted() {
-    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
     this.buscarProdutos();
     document.addEventListener('click', this.handleClickOutside);
-
-    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
-    $('#nome').mask('AAAAAAAAAAAAAAAAAAAAAAAAA', {
-      translation: {
-        'A': { pattern: /[a-zA-ZÀ-ÿ ]/, recursive: true }
-      }
-    });
-    $('#categoria').mask('AAA', {
-      translation: {
-        'A': { pattern: /[a-zA-ZÀ-ÿ]/, recursive: true }
-      }
-    });
   },
 
   methods: {
+    aplicarValorMask(event) {
+      const value = event.target.value;
+      this.formData.valorUnitario =  this.valorMask(value);
+    },
+    
+    aplicarQuantidadeMask(event) {
+      const value = event.target.value;
+      this.formData.quantidadeComprada =  this.valorMask(value);
+    },
+    
+    async buscarProdutos() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/produtos/');
+        this.produtos = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar produtos da API:', error);
+      }
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'compras') {
@@ -148,14 +155,6 @@ export default {
       }
       if (tab === 'produtos') {
         this.$router.push('/produtos');
-      }
-    },
-    async buscarProdutos() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/produtos/');
-        this.produtos = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar produtos da API:', error);
       }
     },
 

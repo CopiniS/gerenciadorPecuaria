@@ -22,7 +22,7 @@
               </div>
               <hr>
               <div class="mb-3 input-group">
-                <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
+                <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
               </div>
               <div class="list-group" v-if="brinco && animaisFiltrados.length">
                 <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
@@ -31,11 +31,12 @@
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-weight"></i></span>
-                <input v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
+                <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-comment"></i></span>
-                <input v-model="formData.observacao" type="text" class="form-control" id="observacao" placeholder="Observação" required>
+                <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" placeholder="Observação">
+                <div>({{ contadorObservacao }} / 255)</div>
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('pesagens')">Cancelar</button>
@@ -50,14 +51,18 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
       animais: [],
       animaisFiltrados: [],
       brinco: '',
+      contadorObservacao: 0,
       formData: {
         id: null,
         dataPesagem: '',
@@ -79,6 +84,27 @@ export default {
   },
 
   methods: {
+    aplicarObservacaoMask(event){
+      const value = event.target.value;
+      this.formData.observacao = this.observacoesMask(value);
+      this.contadorObservacao = this.formData.observacao.length;
+    },
+
+    aplicarPesoMask(event){
+      const value = event.target.value;
+      this.formData.peso = this.valorMask(value);
+    },
+
+    aplicarBrincoMask(value){
+      this.brinco =  this.brincoMask(value);
+    },
+
+    inputBrinco(event){
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterAnimais();
+    },
+
     async buscarAnimaisDaApi() {
         try {
             const response = await api.get('http://127.0.0.1:8000/animais/vivos' , {

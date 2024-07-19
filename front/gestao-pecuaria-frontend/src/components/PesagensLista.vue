@@ -29,14 +29,14 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
-          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+          <input type="text" @input="aplicarBrincoMask" class="form-control" id="animal" v-model="filtro.animal">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Peso </label>
-          <input type="text" class="form-control" id="pesoInicio" v-model="filtro.pesoInicio">
+          <input type="text" @input="aplicarPesoInicioMask" class="form-control" id="pesoInicio" v-model="filtro.pesoInicio">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <input type="text" class="form-control" id="pesoFim" v-model="filtro.pesoFim">
+          <input type="text" @input="aplicarPesoFimMask" class="form-control" id="pesoFim" v-model="filtro.pesoFim">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Piquete</label>
@@ -104,9 +104,12 @@
 </template>
 
 <script>
-import api from '/src/interceptadorAxios'
+import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       pesagens: [],
@@ -133,6 +136,21 @@ export default {
     this.buscarPesagensDaApi();
   },
   methods: {
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.filtro.animal =  this.brincoMask(value);
+    },
+
+    aplicarPesoInicioMask(event){
+      const value = event.target.value;
+      this.filtro.pesoInicio = this.valorMask(value);
+    },
+
+    aplicarPesoFimMask(event){
+      const value = event.target.value;
+      this.filtro.pesoFim = this.valorMask(value);
+    },
+
     async buscarPesagensDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/pesagens/' , {

@@ -27,13 +27,14 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" @input="aplicaFormatacaoBRL"
-                type="text" class="form-control" id="valor" :placeholder="valorPlaceholder">
+              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }"
+                type="text" @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
+              <input v-model="formData.descricao" type="text" @input="aplicarDescricaoMask" class="form-control" id="descricao"
                 placeholder="Descrição">
+                <div>({{ contadorDescricao }} / 255)</div>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -53,11 +54,15 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
+      contadorDescricao: 0,
       formData: {
         id: null,
         dataDespesa: '',
@@ -92,6 +97,18 @@ export default {
         console.error('Erro ao carregar dados da despesa:', error);
       }
     },
+
+    aplicarValorMask(event){
+      const value = event.target.value;
+      this.formData.valor = this.valorMask(value);
+    },
+
+    aplicarDescricaoMask(event){
+      const value = event.target.value;
+      this.formData.descricao = this.observacoesMask(value);
+      this.contadorDescricao = this.formData.descricao.length;
+    },
+
     validarFormulario() {
       this.isDataValida = !!this.formData.dataDespesa.trim();
       if (!this.isDataValida) this.formData.dataDespesa = '';

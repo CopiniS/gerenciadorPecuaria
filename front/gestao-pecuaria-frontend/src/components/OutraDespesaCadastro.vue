@@ -28,12 +28,13 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
-                class="form-control" id="valor" :placeholder="valorPlaceholder">
+                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
+              <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
                 placeholder="Descrição">
+              <div>({{ contadorDescricao }} / 255)</div>   
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -53,13 +54,15 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery';
-import 'jquery-mask-plugin';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      contadorDescricao: 0,
       formData: {
         id: null,
         dataDespesa: null,
@@ -75,11 +78,17 @@ export default {
     };
   },
 
-  mounted() {
-    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
-  },
-
   methods: {
+    aplicarValorMask(event){
+      const value = event.target.value;
+      this.formData.valor = this.valorMask(value);
+    },
+
+    aplicarDescricaoMask(event){
+      const value = event.target.value;
+      this.formData.descricao = this.observacoesMask(value);
+      this.contadorDescricao = this.formData.descricao.length;
+    },
 
     validarFormulario() {
       this.isDataValida = !!this.formData.dataDespesa;

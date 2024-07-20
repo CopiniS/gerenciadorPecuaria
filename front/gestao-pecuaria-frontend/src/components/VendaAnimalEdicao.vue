@@ -22,7 +22,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input ref="valor" @input="atualizaValorTotalPeloPrecoKg()" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder" :class="{'is-invalid': !isprecoKgValido}" required>
+                  <input ref="valor" @input="inputPrecoKg" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder" :class="{'is-invalid': !isprecoKgValido}" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -36,7 +36,7 @@
                 </select>
                 </div>
                 <div class="mb-3 input-group">
-                    <input v-model="brinco" @input="filterAnimais" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
+                    <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
                 </div>
                 <div class="list-group" v-if="brinco && animaisFiltrados.length">
                     <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
@@ -45,16 +45,18 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input @input="atualizaValorTotalPeloPeso()" v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
+                  <input @input="inputPeso" v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control" id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" required>
+                  <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control" @input="aplicarValorTotalMask"
+                  id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" required>
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
                   <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                    placeholder="Observação"></textarea>
+                    @input="aplicarObservacaoMask" placeholder="Observação"></textarea>
+                  <div>({{ contadorObservacao }} / 255)</div>
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
@@ -69,10 +71,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery';
-import 'jquery-mask-plugin';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
@@ -106,7 +109,6 @@ export default {
   },
 
   mounted() {
-    $(this.$refs.valor).mask("#.##0,00", { reverse: true });
     const vendaId = this.$route.params.vendaId;
     if (vendaId) {
       this.fetchVenda(vendaId);
@@ -128,10 +130,52 @@ export default {
         this.formData.observacao = venda[0].observacao;
 
         this.brinco = venda[0].animal.brinco;
-        this.dataSelecionada = venda[0].dataVenda
+        this.dataSelecionada = venda[0].dataVenda;
+        this.contadorObservacao = this.formData.observacao.length;
       } catch (error) {
         console.error('Erro ao carregar dados da venda:', error);
       }
+    },
+
+    aplicarValorTotalMask(event) {
+      const value = event.target.value;
+      this.formData.valorTotal =  this.valorMask(value);
+    },
+
+    aplicarObservacaoMask(event){
+      const value = event.target.value;
+      this.formData.observacao = this.observacoesMask(value);
+      this.contadorObservacao = this.formData.observacao.length;
+    },
+
+    aplicarPesoMask(value) {
+      this.formData.peso =  this.valorMask(value);
+    },
+
+    aplicarPrecoKgMask(value) {
+      this.formData.precoKg =  this.valorMask(value);
+    },
+
+    aplicarBrincoMask(value){
+      this.brinco =  this.brincoMask(value);
+    },
+
+    inputBrinco(event){
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterAnimais();
+    },
+
+    inputPeso(event){
+      const value = event.target.value;
+      this.aplicarPesoMask(value);
+      this.atualizaValorTotalPeloPeso();
+    },
+
+    inputPrecoKg(event){
+      const value = event.target.value;
+      this.aplicarPrecoKgMask(value);
+      this.atualizaValorTotalPeloPrecoKg();
     },
 
     async buscarAnimaisDaApi() {

@@ -44,7 +44,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.area" :class="{ 'is-invalid': !isAreaValida }" type="text" class="form-control"
-                id="area" :placeholder="areaPlaceholder">
+                @input="aplicarAreaMask" id="area" :placeholder="areaPlaceholder">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('piquetes')">Cancelar</button>
@@ -59,10 +59,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery'; // Importe o jQuery aqui
-import 'jquery-mask-plugin'; // Importe o plugin jQuery Mask Plugin
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
@@ -82,17 +83,11 @@ export default {
     };
   },
 
-  mounted() {
-    // Aplicando máscaras
-    $('#nome').mask('AAAAAAAAAAAAAAAAAAAAAAAAA', {
-      translation: {
-        'A': { pattern: /[a-zA-ZÀ-ÿ ]/, recursive: true }
-      }
-    });
-    $('#area').mask('000.000.000.000.000', { reverse: true });
-  },
-
   methods: {
+    aplicarAreaMask(event){
+      const value = event.target.value;
+      this.formData.area = this.valorMask(value);
+    },
 
     validarFormulario() {
       this.isNomeValido = !!this.formData.nome.trim();

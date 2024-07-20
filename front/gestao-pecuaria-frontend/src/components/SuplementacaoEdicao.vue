@@ -55,7 +55,7 @@
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                 <input v-model="formData.quantidade" type="text" :class="{'is-invalid': !isQuantidadeValida}" class="form-control" id="quantidade"
-                  :placeholder="quantidadePlaceholder">
+                  @input="aplicarQuantidadeMask" :placeholder="quantidadePlaceholder">
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('suplementacoes')">Cancelar</button>
@@ -70,8 +70,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
     data() {
         return {
             activeTab: 'edicao', // Começa na aba de edição
@@ -129,6 +132,11 @@ export default {
       } catch (error) {
         console.error('Erro ao carregar dados da suplementacao:', error);
       }
+    },
+
+    aplicarQuantidadeMask(event){
+      const value = event.target.value;
+      this.formData.quantidade = this.valorMask(value);
     },
 
     verificaFinalizado(suplementacao){

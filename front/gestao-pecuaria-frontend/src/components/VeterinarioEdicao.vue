@@ -26,7 +26,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-phone"></i></span>
-              <input v-model="formData.telefone" @input="applyPhoneMask" :class="{ 'is-invalid': !isTelefoneValido }"
+              <input v-model="formData.telefone" @input="aplicarTelefoneMask" :class="{ 'is-invalid': !isTelefoneValido }"
                 type="text" class="form-control" id="telefone" :placeholder="telefonePlaceholder">
             </div>
             <div class="mb-3 input-group">
@@ -52,8 +52,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   name: 'TelaVeterinarios',
   data() {
     return {
@@ -97,6 +100,12 @@ export default {
         console.error('Erro ao carregar dados do veterinário:', error);
       }
     },
+
+    aplicarTelefoneMask(event) {
+      const value = event.target.value;
+      this.formData.telefone = this.telefoneMask(value);
+    },
+
     validarFormulario() {
       this.isNomeValido = !!this.formData.nome.trim();
       if (!this.isNomeValido) this.formData.nome = '';
@@ -165,29 +174,6 @@ export default {
       );
 
     },
-
-    applyPhoneMask(event) {
-      let value = event.target.value.replace(/\D/g, '');  // Remove todos os caracteres não numéricos
-      
-      // Limita o número de dígitos a 11
-      if (value.length > 11) {
-          value = value.slice(0, 11);
-      }
-      
-      // Aplica a máscara conforme o comprimento do número
-      if (value.length > 10) {
-          value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-      } else if (value.length > 5) {
-          value = value.replace(/(\d{2})(\d{4})(\d+)/, '($1) $2-$3');
-      } else if (value.length > 2) {
-          value = value.replace(/(\d{2})(\d+)/, '($1) $2');
-      } else {
-          value = value.replace(/(\d+)/, '($1');
-      }
-      this.formData.telefone = value;
-  },
-
-
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'veterinarios') {

@@ -137,14 +137,14 @@ export default {
       this.formData.dosagem =  this.valorMask(value);
     },
 
-    aplicarBrincoMask(value){
-      this.brinco =  this.brincoMask(value);
-    },
-
     aplicarObservacaoMask(event){
       const value = event.target.value;
       this.formData.observacao = this.observacoesMask(value);
       this.contadorObservacoes = this.formData.observacao.length;
+    },
+
+    aplicarBrincoMask(value){
+      this.brinco =  this.brincoMask(value);
     },
 
     inputBrinco(event){

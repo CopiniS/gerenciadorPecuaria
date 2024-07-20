@@ -32,7 +32,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i>*</span>
               <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text" class="form-control"
-                id="brinco" :placeholder="brincoPlaceholder">
+                @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
@@ -52,9 +52,8 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-horse"></i></span>
               <select v-model="formData.racaPredominante" :class="{ 'is-invalid': !isRacaPredominanteValido }"
-                class="form-select" id="racaPredominante" aria-label="Raça Predominante"
-                :placeholder="racaPredominantePlaceholder">
-                <option disabled value="">Selecione a raça predominante</option>
+                class="form-select" id="racaPredominante" aria-label="Raça Predominante">
+                <option disabled :value="null">Selecione a raça predominante</option>
                 <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
               </select>
               <button @click="acessarCadastroRaca()"><i class="fas fa-plus"></i></button>
@@ -67,7 +66,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-mars"></i></span>
-              <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
+              <input v-model="formData.brincoPai" @input="inputBrincoPai" type="text" class="form-control"
                 id="brincoPai" placeholder="Digite o brinco do Pai..." pattern="\d*">
             </div>
             <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
@@ -78,8 +77,8 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus"></i></span>
-              <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
-                id="brincoMae" placeholder="Digite o brinco da Mãe..." pattern="\d*">
+              <input v-model="formData.brincoMae" @input="inputBrincoMae" type="text" class="form-control"
+               id="brincoMae" placeholder="Digite o brinco da Mãe..." pattern="\d*">
             </div>
             <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
@@ -95,7 +94,8 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-                placeholder="Observações">
+                @input="aplicarObservacaoMask" placeholder="Observações">
+              <div>({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
@@ -109,8 +109,7 @@
             <div v-if="comprado" class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
               <input v-model="formData.valorCompra" :class="{ 'is-invalid': !isValorCompraValido }" type="text"
-                class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder" 
-                pattern="^\d+(\.\d{1,2})?$">
+                @input="aplicarValorCompraMask" class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('animais')">Cancelar</button>
@@ -125,10 +124,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery';
-import 'jquery-mask-plugin/dist/jquery.mask.min';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   name: 'TelaAnimais',
   data() {
     return {
@@ -141,6 +141,7 @@ export default {
       femeasFiltradas: [],
       machosFiltrados: [],
       comprado: false,
+      contadorObservacoes: 0,
       formData: {
         id: null,
         brinco: null,
@@ -177,6 +178,7 @@ export default {
     }
   },
   async mounted() {
+    
     const animalJSON = this.$route.params.animalJSON;
     if(animalJSON != 'animaisLista'){
       this.preencheForm(animalJSON);
@@ -184,15 +186,45 @@ export default {
     this.buscarRacasDaApi();
     this.buscarPiquetesDaApi();
     this.preencheListas();
-
-    $(document).ready(() => {
-      $('#brinco').mask('00000000000000000000', { reverse: true });
-      $('#brincoPai').mask('00000000000000000000', { reverse: true });
-      $('#brincoMae').mask('00000000000000000000', { reverse: true });
-    });
   },
 
   methods: {
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.formData.brinco =  this.brincoMask(value);
+    },
+
+    aplicarObservacaoMask(event){
+      const value = event.target.value;
+      this.formData.observacoes = this.observacoesMask(value);
+      this.contadorObservacoes = this.formData.observacoes.length;
+    },
+
+    aplicarValorCompraMask(event) {
+      const value = event.target.value;
+      this.formData.valorCompra =  this.valorMask(value);
+    },
+
+    aplicarBrincoPaiMask(value){
+      this.formData.brincoPai =  this.brincoMask(value);
+    },
+
+    inputBrincoPai(event){
+      const value = event.target.value;
+      this.aplicarBrincoPaiMask(value);
+      this.filterMachos();
+    },
+
+    aplicarBrincoMaeMask(value){
+      this.formData.brincoMae =  this.brincoMask(value);
+    },
+
+    inputBrincoMae(event){
+      const value = event.target.value;
+      this.aplicarBrincoMaeMask(value);
+      this.filterFemeas();
+    },
+
     validarFormulario() {
       this.isPiqueteValido = !!this.formData.piquete;
       if (this.formData.brinco) {

@@ -21,7 +21,7 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="brinco" class="form-label me-2">Brinco</label>
-          <input type="text" class="form-control" id="brinco" v-model="filtro.brinco">
+          <input type="text" @input="aplicarBrincoMask" class="form-control" id="brinco" v-model="filtro.brinco">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
@@ -45,12 +45,12 @@
           <input type="text" class="form-control" id="raca" v-model="filtro.raca">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="brincoPai" class="form-label me-2">Brinco Pai</label>
-          <input type="text" class="form-control" id="brincoPai" v-model="filtro.brincoPai">
+          <label for="brincoPai" class="form-label me-2">Brinco Pai</label> 
+          <input type="text" @input="aplicarBrincoPaiMask" class="form-control" id="brincoPai" v-model="filtro.brincoPai">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="brincoMae" class="form-label me-2">Brinco Mãe</label>
-          <input type="text" class="form-control" id="brincoMae" v-model="filtro.brincoMae">
+          <input type="text" @input="aplicarBrincoMaeMask" class="form-control" id="brincoMae" v-model="filtro.brincoMae">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="piquete" class="form-label me-2">Piquete</label>
@@ -140,8 +140,11 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   name: 'TelaAnimais',
   data() {
     return {
@@ -198,6 +201,21 @@ export default {
   },
 
   methods: {
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.filtro.brinco =  this.brincoMask(value);
+    },
+    
+    aplicarBrincoPaiMask(event){
+      const value = event.target.value;
+      this.filtro.brincoPai =  this.brincoMask(value);
+    },
+
+    aplicarBrincoMaeMask(event){
+      const value = event.target.value;
+      this.filtro.brincoMae =  this.brincoMask(value);
+    },
+
 
     async buscarPiquetesDaApi() {
       try {

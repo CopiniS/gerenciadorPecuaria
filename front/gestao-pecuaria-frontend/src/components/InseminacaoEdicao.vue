@@ -5,23 +5,23 @@
         <button class="nav-link" :class="{ active: activeTab === 'inseminacoes' }" id="nav-vet-tab"
           @click="selectTab('inseminacoes')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista
           de Inseminacao</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
-          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
-          aria-selected="false">Cadastro de Inseminacao</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
+          aria-selected="false">Edição de Inseminacao</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'inseminacoes' }" id="nav-vet" role="tabpanel"
         aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
-        aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Inseminacao</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
+        aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Inseminacao</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-              <input v-model="formData.dataInseminacao" :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoCadastro">
+              <input v-model="formData.dataInseminacao" :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoEdicao">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
@@ -77,13 +77,14 @@ export default {
 
   data() {
     return {
-      activeTab: 'cadastro',
+      activeTab: 'edicao',
       femeas: [],
       femeasFiltradas: [],
       brinco: '',
       veterinarios: [],
       veterinariosFiltrados: [],
       nomeVet: '',
+      contadorObservacoes: 0,
       formData: {
         id: null,
         dataInseminacao: null,
@@ -113,25 +114,7 @@ export default {
   },
 
   methods: {
-
-    async fetchInseminacao(id) {
-      try {
-        const response = await api.get(`http://127.0.0.1:8000/inseminacoes/inseminacao/${id}`);
-        const inseminacao = response.data;
-        this.formData.id = inseminacao[0].id;
-        this.formData.dataInseminacao = inseminacao[0].dataInseminacao;
-        this.formData.veterinario = inseminacao[0].veterinario;
-        this.formData.animal = inseminacao[0].animal.id;
-        this.formData.identificadorTouro = inseminacao[0].identificadorTouro;
-        this.formData.observacao = inseminacao[0].observacao;
-        
-        this.brinco = inseminacao[0].animal.brinco;
-        this.nomeVet = inseminacao[0].veterinario.nome;
-      } catch (error) {
-        console.error('Erro ao carregar dados da inseminacao:', error);
-      }
-    },
-
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(value){
       this.brinco =  this.brincoMask(value);
     },
@@ -148,6 +131,26 @@ export default {
       this.contadorObservacoes = this.formData.observacao.length;
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async fetchInseminacao(id) {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/inseminacoes/inseminacao/${id}`);
+        const inseminacao = response.data;
+        this.formData.id = inseminacao[0].id;
+        this.formData.dataInseminacao = inseminacao[0].dataInseminacao;
+        this.formData.veterinario = inseminacao[0].veterinario.id;
+        this.formData.animal = inseminacao[0].animal.id;
+        this.formData.identificadorTouro = inseminacao[0].identificadorTouro;
+        this.formData.observacao = inseminacao[0].observacao;
+        
+        this.brinco = inseminacao[0].animal.brinco;
+        this.nomeVet = inseminacao[0].veterinario.nome;
+      } catch (error) {
+        console.error('Erro ao carregar dados da inseminacao:', error);
+      }
+    },
+
     async buscarFemeasVivasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/femeas/vivas', {
@@ -161,18 +164,6 @@ export default {
       }
     },
 
-    filterFemeas() {
-      this.femeasFiltradas = this.femeas.filter(animal => /^\d+$/.test(animal.brinco) && animal.brinco.includes(this.brinco));
-    },
-
-
-    selectMae(animal) {
-      // Seleciona a fêmea e limpa o campo de busca
-      this.formData.animal = animal.id;
-      this.brinco = animal.brinco;
-      this.femeasFiltradas = [];
-    },
-
     async buscarVeterinariosDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/veterinarios/');
@@ -180,6 +171,37 @@ export default {
       } catch (error) {
         console.error('Erro ao buscar veterinários da API:', error);
       }
+    },
+
+    async submitForm() {
+      // Submete o formulário
+      if (this.verificaVazio()) {
+        try {
+          const response = await api.patch(`http://127.0.0.1:8000/inseminacoes/${this.formData.id}/`, this.formData);
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.$router.push('/inseminacoes');
+          } else {
+            alert('Erro ao alterar inseminação. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterFemeas() {
+      this.femeasFiltradas = this.femeas.filter(animal => /^\d+$/.test(animal.brinco) && animal.brinco.includes(this.brinco));
+    },
+
+    selectMae(animal) {
+      // Seleciona a fêmea e limpa o campo de busca
+      this.formData.animal = animal.id;
+      this.brinco = animal.brinco;
+      this.femeasFiltradas = [];
     },
 
     filterVeterinario(event) {
@@ -199,27 +221,8 @@ export default {
       this.veterinariosFiltrados = [];
     },
 
-    validarFormulario() {
-      this.isDataValida = !!this.formData.dataInseminacao.trim();
-      if (!this.isDataValida) this.formData.dataInseminacao = '';
 
-      this.isVeterinarioValido = !!this.formData.veterinario;
-      if (!this.isVeterinarioValido) this.formData.veterinario = '';
-
-      this.isAnimalValido = !!this.formData.animal;
-      if (!this.isAnimalValido) this.formData.animal = '';
-
-      this.isIdentificadorTouroValido = !!this.formData.identificadorTouro;
-      if (!this.isIdentificadorTouroValido) this.formData.identificadorTouro = '';
-
-      this.dataPlaceholder = this.isDataValida ? 'Data da Inseminação' : 'Campo Data da Inseminação é obrigatório';
-      this.veterinarioPlaceholder = this.isVeterinarioValido ? 'Veterinário' : 'Campo Veterinário é obrigatório';
-      this.animalPlaceholder = this.isAnimalValido ? 'Animal' : 'Campo Animal é obrigatório';
-      this.identificadorTouroPlaceholder = this.isIdentificadorTouroValido ? 'Identificador do Touro' : 'Campo Identificador do Touro é obrigatório';
-
-      return this.isDataValida && this.isVeterinarioValido && this.isAnimalValido && this.isIdentificadorTouroValido;
-    },
-
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA INSEMINAÇÃO
       if(this.formData.dataInseminacao != null){
@@ -285,6 +288,11 @@ export default {
           this.identificadorTouroPlaceholder = 'Identificador Touro é um Campo Obrigatório';
       }
 
+      //OBSERVAÇÃO
+      if(this.formData.observacao != null && this.formData.observacao.trim() == ''){
+        this.formData.observacao = null;
+      }
+
       return (
         this.isDataValida &&
         this.isAnimalValido && 
@@ -293,50 +301,14 @@ export default {
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       // Seleciona a aba do formulário
       this.activeTab = tab;
       if (tab === 'inseminacoes') {
         this.$router.push('/inseminacoes');
       }
-    },
-
-    async submitForm() {
-      // Submete o formulário
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/inseminacoes/', this.formData);
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/inseminacoes');
-          } else {
-            alert('Erro ao cadastrar inseminação. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    resetForm() {
-      // Reseta o formulário
-      this.formData = {
-        id: null,
-        dataInseminacao: '',
-        veterinario: '',
-        animal: '',
-        identificadorTouro: '',
-      };
-      this.isAnimalValido = true;
-      this.isDataValida = true;
-      this.isVeterinarioValido = true;
-      this.isIdentificadorTouroValido = true;
-      this.animalPlaceholder = 'Brinco do animal';
-      this.dataPlaceholder = 'Data da inseminação';
-      this.veterinarioPlaceholder = 'Veterinário';
-      this.identificadorTouroPlaceholder = 'Identificador do Touro';
     },
   },
 };

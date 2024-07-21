@@ -132,7 +132,14 @@ export default {
     this.buscarInseminacoesDaApi();
   },
   methods: {
-    
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.filtro.animal =  this.brincoMask(value);
+    },
+
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarInseminacoesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/inseminacoes/' , {
@@ -147,12 +154,53 @@ export default {
         console.error('Erro ao buscar inseminacoes da API:', error);
       }
     },
+    
+    async apagarInseminacao() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/${this.formData.id}/`, {
+        });
 
-    aplicarBrincoMask(event){
-      const value = event.target.value;
-      this.filtro.animal =  this.brincoMask(value);
+        if (response.status === 204) {
+          alert('Inseminação excluída com sucesso!');
+          this.buscarInseminacoesDaApi();
+        } else {
+          alert('Erro ao excluir inseminacoes. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoModal');
     },
     
+
+//FILTROS---------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.inseminacoes = this.inseminacoesDaApi.filter(inseminacao => {
+        return  (new Date(inseminacao.dataInseminacao) >= new Date(this.filtro.dataInseminacaoInicio || '1970-01-01')) &&
+                (new Date(inseminacao.dataInseminacao) <= new Date(this.filtro.dataInseminacaoFim || '9999-12-31')) &&
+                inseminacao.animal.brinco.includes(this.filtro.animal) &&
+                inseminacao.veterinario.nome.includes(this.filtro.veterinario) &&
+                inseminacao.identificadorTouro.includes(this.filtro.identificadorTouro);
+                
+      });
+    },
+
+    limparFiltro() {
+      this.filtro.dataInseminacaoInicio = '';
+      this.filtro.dataInseminacaoFim = '';
+      this.filtro.animal = '';
+      this.filtro.veterinario = '';
+      this.filtro.identificadorTouro = '';
+      this.inseminacoes = this.inseminacoesDaApi;
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES---------------------------------------------------------------------------------------------------------------------
     acessarEdicao(inseminacao) {
       this.$router.push({
         name: 'InseminacaoEdicao', 
@@ -184,46 +232,6 @@ export default {
 
     confirmarExclusaoInseminacao(inseminacao) {
       this.formData.id = inseminacao.id;
-    },
-
-    async apagarInseminacao() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/inseminacoes/${this.formData.id}/`, {
-        });
-
-        if (response.status === 204) {
-          alert('Inseminação excluída com sucesso!');
-          this.buscarInseminacoesDaApi();
-        } else {
-          alert('Erro ao excluir inseminacoes. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal('confirmacaoExclusaoModal');
-    },
-
-    aplicarFiltro() {
-      this.inseminacoes = this.inseminacoesDaApi.filter(inseminacao => {
-        return  (new Date(inseminacao.dataInseminacao) >= new Date(this.filtro.dataInseminacaoInicio || '1970-01-01')) &&
-                (new Date(inseminacao.dataInseminacao) <= new Date(this.filtro.dataInseminacaoFim || '9999-12-31')) &&
-                inseminacao.animal.brinco.includes(this.filtro.animal) &&
-                inseminacao.veterinario.nome.includes(this.filtro.veterinario) &&
-                inseminacao.identificadorTouro.includes(this.filtro.identificadorTouro);
-                
-      });
-    },
-    limparFiltro() {
-      this.filtro.dataInseminacaoInicio = '';
-      this.filtro.dataInseminacaoFim = '';
-      this.filtro.animal = '';
-      this.filtro.veterinario = '';
-      this.filtro.identificadorTouro = '';
-      this.inseminacoes = this.inseminacoesDaApi;
-    },
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
     },
   }
 };

@@ -111,6 +111,7 @@ export default {
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(value){
       this.brinco =  this.brincoMask(value);
     },
@@ -127,6 +128,8 @@ export default {
       this.contadorObservacoes = this.formData.observacao.length;
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarFemeasVivasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/femeas/vivas', {
@@ -140,18 +143,6 @@ export default {
       }
     },
 
-    filterFemeas() {
-      this.femeasFiltradas = this.femeas.filter(animal => /^\d+$/.test(animal.brinco) && animal.brinco.includes(this.brinco));
-    },
-
-
-    selectMae(animal) {
-      // Seleciona a fêmea e limpa o campo de busca
-      this.formData.animal = animal.id;
-      this.brinco = animal.brinco;
-      this.femeasFiltradas = [];
-    },
-
     async buscarVeterinariosDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/veterinarios/');
@@ -159,6 +150,37 @@ export default {
       } catch (error) {
         console.error('Erro ao buscar veterinários da API:', error);
       }
+    },
+
+    async submitForm() {
+      // Submete o formulário
+      if (this.verificaVazio()) {
+        try {
+          const response = await api.post('http://127.0.0.1:8000/inseminacoes/', this.formData);
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/inseminacoes');
+          } else {
+            alert('Erro ao cadastrar inseminação. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterFemeas() {
+      this.femeasFiltradas = this.femeas.filter(animal => /^\d+$/.test(animal.brinco) && animal.brinco.includes(this.brinco));
+    },
+
+    selectMae(animal) {
+      // Seleciona a fêmea e limpa o campo de busca
+      this.formData.animal = animal.id;
+      this.brinco = animal.brinco;
+      this.femeasFiltradas = [];
     },
 
     filterVeterinario(event) {
@@ -178,27 +200,8 @@ export default {
       this.veterinariosFiltrados = [];
     },
 
-    validarFormulario() {
-      this.isDataValida = !!this.formData.dataInseminacao.trim();
-      if (!this.isDataValida) this.formData.dataInseminacao = '';
 
-      this.isVeterinarioValido = !!this.formData.veterinario;
-      if (!this.isVeterinarioValido) this.formData.veterinario = '';
-
-      this.isAnimalValido = !!this.formData.animal;
-      if (!this.isAnimalValido) this.formData.animal = '';
-
-      this.isIdentificadorTouroValido = !!this.formData.identificadorTouro;
-      if (!this.isIdentificadorTouroValido) this.formData.identificadorTouro = '';
-
-      this.dataPlaceholder = this.isDataValida ? 'Data da Inseminação' : 'Campo Data da Inseminação é obrigatório';
-      this.veterinarioPlaceholder = this.isVeterinarioValido ? 'Veterinário' : 'Campo Veterinário é obrigatório';
-      this.animalPlaceholder = this.isAnimalValido ? 'Animal' : 'Campo Animal é obrigatório';
-      this.identificadorTouroPlaceholder = this.isIdentificadorTouroValido ? 'Identificador do Touro' : 'Campo Identificador do Touro é obrigatório';
-
-      return this.isDataValida && this.isVeterinarioValido && this.isAnimalValido && this.isIdentificadorTouroValido;
-    },
-
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA INSEMINAÇÃO
       if(this.formData.dataInseminacao != null){
@@ -264,6 +267,11 @@ export default {
           this.identificadorTouroPlaceholder = 'Identificador Touro é um Campo Obrigatório';
       }
 
+      //OBSERVAÇÃO
+      if(this.formData.observacao != null && this.formData.observacao.trim() == ''){
+        this.formData.observacao = null;
+      }
+
       return (
         this.isDataValida &&
         this.isAnimalValido && 
@@ -272,29 +280,13 @@ export default {
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       // Seleciona a aba do formulário
       this.activeTab = tab;
       if (tab === 'inseminacoes') {
         this.$router.push('/inseminacoes');
-      }
-    },
-
-    async submitForm() {
-      // Submete o formulário
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/inseminacoes/', this.formData);
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/inseminacoes');
-          } else {
-            alert('Erro ao cadastrar inseminação. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
       }
     },
   },

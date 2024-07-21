@@ -64,10 +64,9 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
-import { validadoresMixin } from '../mixins/validadores.js';
 
 export default {
-  mixins: [masksMixin, validadoresMixin],
+  mixins: [masksMixin],
 
   data() {
     return {

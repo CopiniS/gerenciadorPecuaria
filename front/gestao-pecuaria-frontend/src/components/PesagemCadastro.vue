@@ -84,6 +84,7 @@ export default {
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarObservacaoMask(event){
       const value = event.target.value;
       this.formData.observacao = this.observacoesMask(value);
@@ -105,6 +106,8 @@ export default {
       this.filterAnimais();
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarAnimaisDaApi() {
         try {
             const response = await api.get('http://127.0.0.1:8000/animais/vivos' , {
@@ -118,6 +121,30 @@ export default {
         }
     },
 
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+          //FORMATA PESO
+          this.formData.peso = this.replaceVirgulaPonto(this.formData.peso);
+
+          const response = await api.post('http://127.0.0.1:8000/pesagens/', this.formData , {
+        });
+
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/pesagens');
+          } else {
+            alert('Erro ao cadastrar pesagem. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      } 
+    },
+
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterAnimais() {
         this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
     },
@@ -128,41 +155,8 @@ export default {
         this.animaisFiltrados = [];
     },
 
-    validarFormulario() {
-      this.isDataValida = !!this.formData.dataPesagem.trim();
 
-      if (!this.isDataValida) {
-        this.dataPlaceholder = 'Campo Data da Pesagem é obrigatório';
-      }
-
-      this.isBrincoValido = !!this.formData.animal && !!this.formData.animal.toString().trim();
-      if (!this.isBrincoValido) {
-        this.brincoPlaceholder = 'Campo Brinco do Animal é obrigatório';
-      }
-
-      this.isPesoValido = !!this.formData.peso.trim();
-      if (!this.isPesoValido) {
-        this.pesoPlaceholder = 'Campo Peso é obrigatório';
-      }
-
-      if (this.formData.observacao === '') {
-        this.formData.observacao = null;
-      }
-
-      return (
-        this.isDataValida &&
-        this.isBrincoValido &&
-        this.isPesoValido
-      );
-    },
-
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'pesagens') {
-        this.$router.push('/pesagens');
-      }
-    },
-
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA PESAGEM
       if(this.formData.dataPesagem != null){
@@ -207,6 +201,12 @@ export default {
           this.pesoPlaceholder = 'Peso do Animal é um Campo Obrigatório';
         }
       }
+
+      //OBSERVAÇÕES
+      if(this.formData.observacao != null && this.formData.observacao.trim() == ''){
+        this.formData.observacao = null;
+      }
+
       return (
         this.isDataValida &&
         this.isBrincoValido &&
@@ -214,42 +214,19 @@ export default {
       );
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/pesagens/', this.formData , {
-        });
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/pesagens');
-          } else {
-            alert('Erro ao cadastrar pesagem. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      } 
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'pesagens') {
+        this.$router.push('/pesagens');
+      }
     },
 
-    resetForm() {
-      this.formData = {
-        id: null,
-        dataPesagem: '',
-        peso: '',
-        observacao: '',
-        animal: null
-      },
-      this.isBrincoValido = true,
-      this.isDataValida = true,
-      this.isPesoValido = true,
-      this.isValorValido = true,
-      this.brincoPlaceholder = 'Brinco do animal',
-      this.dataPlaceholder = 'Data da pesagem',
-      this.pesoPlaceholder = 'Peso do animal',
-      this.observacaoPlaceholder = 'Observação'
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
+
+      return valorString;
     },
   },
 };

@@ -69,7 +69,7 @@
               <td>{{ formatarData(pesagem.dataPesagem) }}</td>
               <td>{{ pesagem.animal.brinco}}</td>
               <td>{{ pesagem.animal.piquete.nome}}</td>
-              <td>{{ pesagem.peso}}</td>
+              <td>{{ replacePontoVirgula(pesagem.peso)}}</td>
               <td>
                 <button @click="acessarEdicao(pesagem)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
                 <button @click="confirmarExclusaoPesagem(pesagem)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
@@ -136,6 +136,7 @@ export default {
     this.buscarPesagensDaApi();
   },
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(event){
       const value = event.target.value;
       this.filtro.animal =  this.brincoMask(value);
@@ -151,6 +152,8 @@ export default {
       this.filtro.pesoFim = this.valorMask(value);
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarPesagensDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/pesagens/' , {
@@ -165,7 +168,7 @@ export default {
         console.error('Erro ao buscar pesagens da API:', error);
       }
     },
-
+    
     async apagarPesagem() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/pesagens/${this.formData.id}/`);
@@ -183,40 +186,8 @@ export default {
       this.fecharModal('confirmacaoExclusaoModal');
     },
 
-    confirmarExclusaoPesagem(pesagem) {
-      this.formData.id = pesagem.id;
-    },
-    
-    acessarEdicao(pesagem) {
-      this.$router.push({
-        name: 'PesagemEdicao', 
-        params: { pesagemId: pesagem.id } 
-      })
-    },
 
-    acessarCadastro(){
-        this.$router.push({
-        name: 'PesagemCadastro', 
-      })
-    },
-
-    
-    formatarData(data) {
-        const date = new Date(data);
-        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
-        return utcDate.toLocaleDateString('pt-BR', options);
-    },
-
-    fecharModal(modalId) {
-      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
-      if (closeButton) {
-        closeButton.click();
-      } else {
-        console.error('Botão de fechar não encontrado no modal:', modalId);
-      }
-    },
-
+//FILTROS---------------------------------------------------------------------------------------------------------------------
     aplicarFiltro() {
       this.pesagens = this.pesagensDaApi.filter(pesagem => {
         return  (new Date(pesagem.dataPesagem) >= new Date(this.filtro.dataPesagemInicio || '1970-01-01')) &&
@@ -241,6 +212,47 @@ export default {
 
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    confirmarExclusaoPesagem(pesagem) {
+      this.formData.id = pesagem.id;
+    },
+    
+    acessarEdicao(pesagem) {
+      this.$router.push({
+        name: 'PesagemEdicao', 
+        params: { pesagemId: pesagem.id } 
+      })
+    },
+
+    acessarCadastro(){
+        this.$router.push({
+        name: 'PesagemCadastro', 
+      })
+    },
+
+    formatarData(data) {
+        const date = new Date(data);
+        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+        return utcDate.toLocaleDateString('pt-BR', options);
+    },
+
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
+
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
+
+      return valorString;
     },
   }
 };

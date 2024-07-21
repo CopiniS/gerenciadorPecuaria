@@ -144,6 +144,14 @@ export default {
     this.buscarMovimentacoesDaApi();
   },
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.filtro.animal =  this.brincoMask(value);
+    },
+
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarMovimentacoesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/movimentacoes/' , {
@@ -159,11 +167,63 @@ export default {
       }
     },
 
-    aplicarBrincoMask(event){
-      const value = event.target.value;
-      this.filtro.animal =  this.brincoMask(value);
+    async apagarMovimentacao() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, {
+        });
+
+        if (response.status === 204) {
+          alert('Movimentacão excluída com sucesso!');
+          this.buscarMovimentacoesDaApi();
+        } else {
+          alert('Erro ao excluir movimentacoes. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoModal');
     },
 
+
+//FILTROS----------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      const propriedadeAtual = localStorage.getItem('propriedadeSelecionada');
+      this.movimentacoes = this.movimentacoesDaApi.filter(movimentacao => {
+        return  (new Date(movimentacao.dataMovimentacao) >= new Date(this.filtro.dataMovimentacaoInicio || '1970-01-01')) &&
+                (new Date(movimentacao.dataMovimentacao) <= new Date(this.filtro.dataMovimentacaoFim || '9999-12-31')) &&
+                movimentacao.animal.brinco.includes(this.filtro.animal) &&
+                movimentacao.piqueteOrigem.nome.includes(this.filtro.piqueteOrigem) &&
+                movimentacao.piqueteDestino.nome.includes(this.filtro.piqueteDestino) &&
+                (
+                  (this.filtro.tipo == 'entrada' && movimentacao.piqueteOrigem.propriedade.id != propriedadeAtual && 
+                  movimentacao.piqueteDestino.propriedade.id == propriedadeAtual) || 
+                  (this.filtro.tipo == 'saida' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
+                  movimentacao.piqueteDestino.propriedade.id != propriedadeAtual) || 
+                  (this.filtro.tipo == 'interna' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
+                  movimentacao.piqueteDestino.propriedade.id == propriedadeAtual ||
+                  this.filtro.tipo == '')
+                );
+      });
+    },
+
+    limparFiltro() {
+        this.filtro.dataMovimentacaoInicio = '';
+        this.filtro.dataMovimentacaoFim = '',
+        this.filtro.animal = '',
+        this.filtro.piqueteOrigem = '',
+        this.filtro.piqueteDestino = '',
+        this.filtro.tipo = '',
+
+        this.movimentacoes = this.movimentacoesDaApi;
+    },
+    
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------
     achaTipo(movimentacao){ 
       if(movimentacao.piqueteOrigem.propriedade.id == localStorage.getItem('propriedadeSelecionada')
       && movimentacao.piqueteDestino.propriedade.id == localStorage.getItem('propriedadeSelecionada')){
@@ -190,7 +250,6 @@ export default {
       })
     },
 
-    
     formatarData(data) {
         const date = new Date(data);
         const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
@@ -209,57 +268,6 @@ export default {
 
     confirmarExclusaoMovimentacao(movimentacao) {
       this.formData.id = movimentacao.id;
-    },
-
-    async apagarMovimentacao() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, {
-        });
-
-        if (response.status === 204) {
-          alert('Movimentacão excluída com sucesso!');
-          this.buscarMovimentacoesDaApi();
-        } else {
-          alert('Erro ao excluir movimentacoes. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal('confirmacaoExclusaoModal');
-    },
-
-    aplicarFiltro() {
-      const propriedadeAtual = localStorage.getItem('propriedadeSelecionada');
-      this.movimentacoes = this.movimentacoesDaApi.filter(movimentacao => {
-        return  (new Date(movimentacao.dataMovimentacao) >= new Date(this.filtro.dataMovimentacaoInicio || '1970-01-01')) &&
-                (new Date(movimentacao.dataMovimentacao) <= new Date(this.filtro.dataMovimentacaoFim || '9999-12-31')) &&
-                movimentacao.animal.brinco.includes(this.filtro.animal) &&
-                movimentacao.piqueteOrigem.nome.includes(this.filtro.piqueteOrigem) &&
-                movimentacao.piqueteDestino.nome.includes(this.filtro.piqueteDestino) &&
-                (
-                  (this.filtro.tipo == 'entrada' && movimentacao.piqueteOrigem.propriedade.id != propriedadeAtual && 
-                  movimentacao.piqueteDestino.propriedade.id == propriedadeAtual) || 
-                  (this.filtro.tipo == 'saida' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
-                  movimentacao.piqueteDestino.propriedade.id != propriedadeAtual) || 
-                  (this.filtro.tipo == 'interna' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
-                  movimentacao.piqueteDestino.propriedade.id == propriedadeAtual ||
-                  this.filtro.tipo == '')
-                );
-      });
-    },
-    limparFiltro() {
-        this.filtro.dataMovimentacaoInicio = '';
-        this.filtro.dataMovimentacaoFim = '',
-        this.filtro.animal = '',
-        this.filtro.piqueteOrigem = '',
-        this.filtro.piqueteDestino = '',
-        this.filtro.tipo = '',
-
-        this.movimentacoes = this.movimentacoesDaApi;
-    },
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
     },
   }
 };

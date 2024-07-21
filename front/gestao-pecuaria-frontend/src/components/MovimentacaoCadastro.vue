@@ -133,6 +133,7 @@ export default {
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarMotivoMask(event){
       const value = event.target.value;
       this.formData.motivo = this.observacoesMask(value);
@@ -149,6 +150,8 @@ export default {
       this.filterAnimais();
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarAnimaisDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/vivos-piquetes', {
@@ -171,8 +174,6 @@ export default {
       }
     },
 
-
-
     async buscarPiquetesDaPropriedade() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes', {
@@ -186,6 +187,27 @@ export default {
       }
     },
 
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+          const response = await api.post('http://127.0.0.1:8000/movimentacoes/', this.formData, {
+          });
+
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/movimentacoes');
+          } else {
+            alert('Erro ao cadastrar movimentacao. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filtrarPiquetesOrigem() {
       this.filteredPiquetesOrigem = this.piquetesDaPropriedade.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteOrigemNome));
     },
@@ -197,7 +219,6 @@ export default {
       this.filteredPiquetesOrigem = [];
       this.preencheListaAnimais()
     },
-
 
     filtrarPiquetesDestino() {
       this.filteredPiquetesDestino = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteDestinoNome));
@@ -222,32 +243,8 @@ export default {
       this.animaisFiltrados = [];
     },
 
-    preencheListaAnimais() {
-      this.formData.animal = [];
-      let listaAnimais;
-      listaAnimais = this.animais.filter(animal => animal.piquete.id == this.piqueteId);
-      listaAnimais.forEach(animal => {
-        this.formData.animal.push(animal.id);
-      });
-    },
 
-    validarFormulario() {
-      this.isDataValida = !!this.formData.dataMovimentacao && !!this.formData.dataMovimentacao.trim();
-      if (!this.isDataValida) this.dataPlaceholder = 'Campo Data da Movimentação é obrigatório';
-
-      this.isPiqueteOrigemValido = !!this.formData.piqueteOrigem;
-      if (!this.isPiqueteOrigemValido) this.piqueteOrigemPlaceholder = 'Campo Piquete de Origem é obrigatório';
-
-      this.isPiqueteDestinoValido = !!this.formData.piqueteDestino;
-      if (!this.isPiqueteDestinoValido) this.piqueteDestinoPlaceholder = 'Campo Piquete de Destino é obrigatório';
-
-      if (this.formData.motivo === '') {
-        this.formData.motivo = null;
-      }
-
-      return this.isDataValida && this.isPiqueteOrigemValido && this.isPiqueteDestinoValido && this.isMotivoKgValido;
-    },
-
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA MOVIMENTAÇÃO
       if(this.formData.dataMovimentacao != null){
@@ -317,6 +314,11 @@ export default {
         this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
       }
 
+      //MOTIVO
+      if(this.formData.motivo != null && this.formData.motivo.trim() == ''){
+        this.formData.motivo = null;
+      }
+
       return (
         this.isDataValida &&
         this.isBrincoValido &&
@@ -325,51 +327,22 @@ export default {
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    preencheListaAnimais() {
+      this.formData.animal = [];
+      let listaAnimais;
+      listaAnimais = this.animais.filter(animal => animal.piquete.id == this.piqueteId);
+      listaAnimais.forEach(animal => {
+        this.formData.animal.push(animal.id);
+      });
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'movimentacoes') {
         this.$router.push('/movimentacoes');
       }
-    },
-
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/movimentacoes/', this.formData, {
-          });
-
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/movimentacoes');
-          } else {
-            alert('Erro ao cadastrar movimentacao. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    resetForm() {
-      this.formData = {
-        animal: [],
-        dataMovimentacao: null,
-        piqueteOrigem: null,
-        piqueteDestino: null,
-        motivo: null,
-      },
-        this.isBrincoValido = true,
-        this.isDataValida = true,
-        this.isPiqueteOrigemValido = true,
-        this.isPiqueteDestinoValido = true,
-        this.isMotivoKgValido = true,
-        this.brincoPlaceholder = 'Brinco do animal',
-        this.dataPlaceholder = 'Data da movimentacao',
-        this.piqueteOrigemPlaceholder = 'Piquete de Origem',
-        this.piqueteDestinoPlaceholder = 'Piquete de Destino',
-        this.motivoPlaceholder = 'Motivo da movimentação'
     },
   },
 };

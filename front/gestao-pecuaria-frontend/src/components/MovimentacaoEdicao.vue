@@ -126,235 +126,210 @@ export default {
         this.buscarPiquetesDaApi();
     },
     methods: {
-    async fetchMovimentacao(id) {
-      try {
-        const response = await api.get(`http://127.0.0.1:8000/movimentacoes/movimentacao/${id}`);
-        const movimentacao = response.data;
-        this.formData.id = movimentacao[0].id;
-        this.formData.animal = movimentacao[0].animal.id;
-        this.formData.dataMovimentacao = movimentacao[0].dataMovimentacao;
-        this.formData.piqueteOrigem = movimentacao[0].piqueteOrigem.id;
-        this.formData.piqueteDestino = movimentacao[0].piqueteDestino.id;
-        this.formData.motivo = movimentacao[0].motivo;
-
-        this.brinco = movimentacao[0].animal.brinco;
-        this.piqueteOrigemNome = movimentacao[0].piqueteOrigem.nome
-        this.piqueteDestinoNome = movimentacao[0].piqueteDestino.nome
-        this.dataSelecionada = movimentacao[0].dataMovimentacao
-        this.piqueteOrigemSelecionado = movimentacao[0].piqueteOrigem.id
-        this.piqueteDestinoSelecionado = movimentacao[0].piqueteDestino.id
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+      aplicarMotivoMask(event){
+        const value = event.target.value;
+        this.formData.motivo = this.observacoesMask(value);
         this.contadorMotivo = this.formData.motivo.length;
-        
-      } catch (error) {
-        console.error('Erro ao carregar dados da movimentacao:', error);
-      }
-    },
+      },
 
-    aplicarMotivoMask(event){
-      const value = event.target.value;
-      this.formData.motivo = this.observacoesMask(value);
-      this.contadorMotivo = this.formData.motivo.length;
-    },
+      aplicarBrincoMask(value){
+        this.brinco =  this.brincoMask(value);
+      },
 
-    aplicarBrincoMask(value){
-      this.brinco =  this.brincoMask(value);
-    },
+      inputBrinco(event){
+        const value = event.target.value;
+        this.aplicarBrincoMask(value);
+        this.filterAnimais();
+      },
 
-    inputBrinco(event){
-      const value = event.target.value;
-      this.aplicarBrincoMask(value);
-      this.filterAnimais();
-    },
 
-    async buscarAnimaisDaApi() {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+      async fetchMovimentacao(id) {
         try {
-            const response = await api.get('http://127.0.0.1:8000/animais/vivos-piquetes' , {
-            params: {
-                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-            },
-            });
-            this.animais = response.data;
+          const response = await api.get(`http://127.0.0.1:8000/movimentacoes/movimentacao/${id}`);
+          const movimentacao = response.data;
+          this.formData.id = movimentacao[0].id;
+          this.formData.animal = movimentacao[0].animal.id;
+          this.formData.dataMovimentacao = movimentacao[0].dataMovimentacao;
+          this.formData.piqueteOrigem = movimentacao[0].piqueteOrigem.id;
+          this.formData.piqueteDestino = movimentacao[0].piqueteDestino.id;
+          this.formData.motivo = movimentacao[0].motivo;
+
+          this.brinco = movimentacao[0].animal.brinco;
+          this.piqueteOrigemNome = movimentacao[0].piqueteOrigem.nome
+          this.piqueteDestinoNome = movimentacao[0].piqueteDestino.nome
+          this.dataSelecionada = movimentacao[0].dataMovimentacao
+          this.piqueteOrigemSelecionado = movimentacao[0].piqueteOrigem.id
+          this.piqueteDestinoSelecionado = movimentacao[0].piqueteDestino.id
+          this.contadorMotivo = this.formData.motivo.length;
+          
         } catch (error) {
-            console.error('Erro ao buscar animais da API:', error);
+          console.error('Erro ao carregar dados da movimentacao:', error);
         }
-    },
+      },
 
-    async buscarPiquetesDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/piquetes/piquetes-propriedades');
-        this.piquetes = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar piquetes da API:', error);
-      }
-    },
+      async buscarAnimaisDaApi() {
+          try {
+              const response = await api.get('http://127.0.0.1:8000/animais/vivos-piquetes' , {
+              params: {
+                  propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+              },
+              });
+              this.animais = response.data;
+          } catch (error) {
+              console.error('Erro ao buscar animais da API:', error);
+          }
+      },
 
-    filtrarPiquetesDestino() {
-      this.filteredPiquetesDestino = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteDestinoNome));
-    },
+      async buscarPiquetesDaApi() {
+        try {
+          const response = await api.get('http://127.0.0.1:8000/piquetes/piquetes-propriedades');
+          this.piquetes = response.data;
+        } catch (error) {
+          console.error('Erro ao buscar piquetes da API:', error);
+        }
+      },
 
-    selecionarPiqueteDestino(piquete) {
-      this.piqueteDestinoNome = piquete.nome + " - " + piquete.propriedade.nome;
-      this.formData.piqueteDestino = piquete.id;
-      this.filteredPiquetesDestino = [];
-    },
-    
-    filterAnimais() {
-        this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
-    },
+      async submitForm() {
+        if (this.verificaVazio()) {
+        try {
+            const response = await api.patch(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, this.formData , {
+          });
 
-    selectAnimal(animal) {
-        this.brinco = animal.brinco;
-        this.formData.piqueteOrigem = animal.piquete.id;
-        this.piqueteOrigemNome = animal.piquete.nome
-        this.formData.animal = animal.id;
-        this.animaisFiltrados = [];
-    },
+            if (response.status === 200) {
+              alert('Alterações salvas com sucesso!');
+              this.selectTab('movimentacoes');
+            } else {
+              alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+            }
+          } catch (error) {
+            console.error('Erro ao enviar requisição:', error);
+            alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+          }
+        }
+      },
 
-    validarFormulario() {
-      this.isDataValida = !!this.formData.dataMovimentacao && !!this.formData.dataMovimentacao.trim();
-      if (!this.isDataValida) this.dataPlaceholder = 'Campo Data da Movimentação é obrigatório';
 
-      this.isPiqueteOrigemValido = !!this.formData.piqueteOrigem;
-      if (!this.isPiqueteOrigemValido) this.piqueteOrigemPlaceholder = 'Campo Piquete de Origem é obrigatório';
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+      filtrarPiquetesDestino() {
+        this.filteredPiquetesDestino = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteDestinoNome));
+      },
 
-      this.isPiqueteDestinoValido = !!this.formData.piqueteDestino;
-      if (!this.isPiqueteDestinoValido) this.piqueteDestinoPlaceholder = 'Campo Piquete de Destino é obrigatório';
+      selecionarPiqueteDestino(piquete) {
+        this.piqueteDestinoNome = piquete.nome + " - " + piquete.propriedade.nome;
+        this.formData.piqueteDestino = piquete.id;
+        this.filteredPiquetesDestino = [];
+      },
+      
+      filterAnimais() {
+          this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
+      },
 
-      if (this.formData.motivo === '') {
-        this.formData.motivo = null;
-      }
+      selectAnimal(animal) {
+          this.brinco = animal.brinco;
+          this.formData.piqueteOrigem = animal.piquete.id;
+          this.piqueteOrigemNome = animal.piquete.nome
+          this.formData.animal = animal.id;
+          this.animaisFiltrados = [];
+      },
 
-      return this.isDataValida && this.isPiqueteOrigemValido && this.isPiqueteDestinoValido && this.isMotivoKgValido;
-    },
 
-    verificaVazio(){
-      //DATA DA MOVIMENTAÇÃO
-      if(this.formData.dataMovimentacao != null){
-        if(this.formData.dataMovimentacao.trim() != ''){
-          this.isDataValida = true;
-          this.dataPlaceholder = 'Data da Movimentação';
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+      verificaVazio(){
+        //DATA DA MOVIMENTAÇÃO
+        if(this.formData.dataMovimentacao != null){
+          if(this.formData.dataMovimentacao.trim() != ''){
+            this.isDataValida = true;
+            this.dataPlaceholder = 'Data da Movimentação';
+          }
+          else{
+            this.isDataValida = false;
+            this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+          }
         }
         else{
           this.isDataValida = false;
           this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
         }
-      }
-      else{
-        this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
-      }
-      
-      //BRINCO OU TODOS DO PIQUETE
-      if(this.radioEscolha == 'brinco'){
-        //BRINCO 
-        if(this.brinco != null){
-          if(this.brinco.trim() != ''){
-            this.isBrincoValido = true;
-            this.brincoPlaceholder = 'Brinco do Animal'
+        
+        //BRINCO OU TODOS DO PIQUETE
+        if(this.radioEscolha == 'brinco'){
+          //BRINCO 
+          if(this.brinco != null){
+            if(this.brinco.trim() != ''){
+              this.isBrincoValido = true;
+              this.brincoPlaceholder = 'Brinco do Animal'
+            }
+            else{
+            this.isBrincoValido = false;
+            this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+            }
           }
           else{
-          this.isBrincoValido = false;
-          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+            this.isBrincoValido = false;
+            this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
           }
         }
         else{
-          this.isBrincoValido = false;
-          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
-        }
-      }
-      else{
-        //PIQUETE ORIGEM
-        if(this.piqueteOrigemNome != null){
-          if(this.piqueteOrigemNome.trim() != ''){
-            this.isPiqueteOrigemValido = true;
-            this.piqueteOrigemPlaceholder = 'Piquete de Origem';
+          //PIQUETE ORIGEM
+          if(this.piqueteOrigemNome != null){
+            if(this.piqueteOrigemNome.trim() != ''){
+              this.isPiqueteOrigemValido = true;
+              this.piqueteOrigemPlaceholder = 'Piquete de Origem';
+            }
+            else{
+              this.isPiqueteOrigemValido = false;
+              this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
+            }
           }
           else{
             this.isPiqueteOrigemValido = false;
             this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
           }
         }
+
+        //PIQUETE DE DESTINO
+        if(this.piqueteDestinoNome != null){
+            if(this.piqueteDestinoNome.trim() != ''){
+              this.isPiqueteDestinoValido = true;
+              this.piqueteDestinoPlaceholder = 'Piquete de Destino';
+            }
+            else{
+              this.isPiqueteDestinoValido = false;
+              this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
+            }
+        }
         else{
-          this.isPiqueteOrigemValido = false;
-          this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
+          this.isPiqueteDestinoValido = false;
+          this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
         }
-      }
 
-      //PIQUETE DE DESTINO
-      if(this.piqueteDestinoNome != null){
-          if(this.piqueteDestinoNome.trim() != ''){
-            this.isPiqueteDestinoValido = true;
-            this.piqueteDestinoPlaceholder = 'Piquete de Destino';
-          }
-          else{
-            this.isPiqueteDestinoValido = false;
-            this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
-          }
-      }
-      else{
-        this.isPiqueteDestinoValido = false;
-        this.piqueteDestinoPlaceholder = 'Piquete de Destino é um Campo Obrigatório'
-      }
-
-      return (
-        this.isDataValida &&
-        this.isBrincoValido &&
-        this.isPiqueteOrigemValido &&
-        this.isPiqueteDestinoValido
-      );
-    },
-
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'movimentacoes') {
-        this.$router.push('/movimentacoes');
-      }
-    },
-
-    cancelarEdicao() {
-      this.$router.push('/movimentacoes');
-    },
-
-    async submitForm() {
-      if (this.verificaVazio()) {
-       try {
-          const response = await api.patch(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, this.formData , {
-        });
-
-          if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.selectTab('movimentacoes');
-            this.resetForm();
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        //MOTIVO
+        if(this.formData.motivo != null && this.formData.motivo.trim() == ''){
+          this.formData.motivo = null;
         }
-      }
-    },
 
-    resetForm() {
-      this.formData = {
-          id: null,
-          animal: [],
-          dataMovimentacao: null,
-          piqueteOrigem: null,
-          piqueteDestino: null,
-          motivo: null,
+        return (
+          this.isDataValida &&
+          this.isBrincoValido &&
+          this.isPiqueteOrigemValido &&
+          this.isPiqueteDestinoValido
+        );
       },
-      this.isBrincoValido = true,
-      this.isDataValida = true,
-      this.isPiqueteOrigemValido = true,
-      this.isPiqueteDestinoValido = true,
-      this.isMotivoKgValido = true,
-      this.brincoPlaceholder = 'Brinco do animal',
-      this.dataPlaceholder = 'Data da movimentacao',
-      this.piqueteOrigemPlaceholder = 'Piquete de Origem',
-      this.piqueteDestinoPlaceholder = 'Piquete de Destino',
-      this.motivoPlaceholder = 'Motivo da movimentação'
-    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+      selectTab(tab) {
+        this.activeTab = tab;
+        if (tab === 'movimentacoes') {
+          this.$router.push('/movimentacoes');
+        }
+      },
+
+      cancelarEdicao() {
+        this.$router.push('/movimentacoes');
+      },
   },
 };
 </script>

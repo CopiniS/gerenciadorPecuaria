@@ -79,6 +79,7 @@ export default {
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarValorMask(event){
       const value = event.target.value;
       this.formData.valor = this.valorMask(value);
@@ -90,23 +91,29 @@ export default {
       this.contadorDescricao = this.formData.descricao.length;
     },
 
-    validarFormulario() {
-      this.isDataValida = !!this.formData.dataDespesa;
-      if (!this.isDataValida) this.formData.dataDespesa = '';
-
-      this.isValorValido = !!this.formData.valor;
-      if (!this.isValorValido) this.formData.valor = '';
-
-      this.dataPlaceholder = this.isDataValida ? 'Data da Despesa*' : 'Campo Data da Despesa é obrigatório';
-      this.valorPlaceholder = this.isValorValido ? 'Valor*' : 'Campo Valor é obrigatório';
-
-      if (this.formData.descricao === '') {
-        this.formData.descricao = null;
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+          //FORMATA VALOR
+          this.formData.valor = this.replaceVirgulaPonto(this.formData.valor);
+          
+          const response = await api.post('http://127.0.0.1:8000/outras-despesas/', this.formData, {});
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/outras-despesas');
+          } else {
+            alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
       }
-
-      return this.isDataValida && this.isValorValido;
     },
 
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA DESPESA
       if(this.formData.dataDespesa != null){
@@ -140,12 +147,24 @@ export default {
         this.valorPlaceholder = 'Valor da Despesa é um Campo Obrigatório';
       }
 
+      //DESCRIÇÃO
+      if(this.formData.descricao != null && this.formData.descricao.trim() == ''){
+        this.formData.descricao = null;
+      }
+
+      //CATEGORIA
+      if(this.formData.categoria != null && this.formData.categoria.trim() == ''){
+        this.formData.categoria = null;
+      }
+
       return (
         this.isDataValida &&
         this.isValorValido
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'despesas') {
@@ -153,22 +172,10 @@ export default {
       }
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          console.log(this.formData);
-          const response = await api.post('http://127.0.0.1:8000/outras-despesas/', this.formData, {});
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/outras-despesas');
-          } else {
-            alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
+
+      return valorString;
     },
   },
 };

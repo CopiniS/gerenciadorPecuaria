@@ -59,7 +59,7 @@
             <tbody>
                 <tr v-for="(despesa, index) in despesas" :key="index">
                 <td>{{ formatarData(despesa.dataDespesa) }}</td>
-                <td>{{ despesa.valor }}</td>
+                <td>{{ replacePontoVirgula(despesa.valor) }}</td>
                 <td>{{ despesa.descricao }}</td>
                 <td>{{ despesa.categoria }}</td>
                 <td>
@@ -126,6 +126,7 @@ export default {
     this.buscarDespesasDaApi();
   },
   methods: {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarDespesasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/outras-despesas/' , {
@@ -140,6 +141,56 @@ export default {
       }
     },
 
+    async apagarDespesa() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, {
+        });
+
+        if (response.status === 204) {
+          alert('Despesa apagada com sucesso!');
+          this.buscarDespesasDaApi();
+        } else {
+          alert('Erro ao apagar despesa. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal("confirmacaoExclusaoModal");
+    },
+
+
+//FILTROS---------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.despesas = this.despesasDaApi.filter(despesa => {
+        if(despesa.descricao == null){
+          despesa.descricao = '';
+        }
+        if(despesa.categoria == null){
+          despesa.categoria = '';
+        }
+        return  (new Date(despesa.dataDespesa) >= new Date(this.filtro.dataDespesaInicio || '1970-01-01')) &&
+                (new Date(despesa.dataDespesa) <= new Date(this.filtro.dataDespesaFim || '9999-12-31')) &&
+                despesa.descricao.includes(this.filtro.descricao) &&
+                despesa.categoria.includes(this.filtro.categoria);
+      });
+    },
+
+    limparFiltro() {
+      this.filtro.dataDespesaInicio = '';
+      this.filtro.dataDespesaFim = '';
+      this.filtro.descricao = '';
+      this.filtro.categoria = '';
+
+      this.despesas = this.despesasDaApi;
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES---------------------------------------------------------------------------------------------------------------------
     acessarEdicao(despesa) {
       this.$router.push({
         name: 'EdicaoDespesa', 
@@ -161,27 +212,11 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
     confirmarExclusao(despesa) {
       this.formData = {
         id: despesa.id,
       };
-    },
-    async apagarDespesa() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, {
-        });
-
-        if (response.status === 204) {
-          alert('Despesa apagada com sucesso!');
-          this.buscarDespesasDaApi();
-        } else {
-          alert('Erro ao apagar despesa. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
     },
 
     formatarData(data) {
@@ -191,30 +226,10 @@ export default {
       return utcDate.toLocaleDateString('pt-BR', options);
     },
 
-    aplicarFiltro() {
-      this.despesas = this.despesasDaApi.filter(despesa => {
-        if(despesa.descricao == null){
-          despesa.descricao = '';
-        }
-        if(despesa.categoria == null){
-          despesa.categoria = '';
-        }
-        return  (new Date(despesa.dataDespesa) >= new Date(this.filtro.dataDespesaInicio || '1970-01-01')) &&
-                (new Date(despesa.dataDespesa) <= new Date(this.filtro.dataDespesaFim || '9999-12-31')) &&
-                despesa.descricao.includes(this.filtro.descricao) &&
-                despesa.categoria.includes(this.filtro.categoria);
-      });
-    },
-    limparFiltro() {
-      this.filtro.dataDespesaInicio = '';
-      this.filtro.dataDespesaFim = '';
-      this.filtro.descricao = '';
-      this.filtro.categoria = '';
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
 
-      this.despesas = this.despesasDaApi;
-    },
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
+      return valorString;
     },
   }
 };

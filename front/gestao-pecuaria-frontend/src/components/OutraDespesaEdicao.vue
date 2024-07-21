@@ -85,19 +85,7 @@ export default {
     }
   },
   methods: {
-    async fetchDespesa(id) {
-      try {
-        const response = await api.get(`http://127.0.0.1:8000/outras-despesas/${id}`);
-        const despesa = response.data;
-        this.formData.id = despesa.id;
-        this.formData.dataDespesa = despesa.dataDespesa;
-        this.formData.valor = despesa.valor;
-        this.formData.descricao = despesa.descricao;
-      } catch (error) {
-        console.error('Erro ao carregar dados da despesa:', error);
-      }
-    },
-
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarValorMask(event){
       const value = event.target.value;
       this.formData.valor = this.valorMask(value);
@@ -108,24 +96,44 @@ export default {
       this.formData.descricao = this.observacoesMask(value);
       this.contadorDescricao = this.formData.descricao.length;
     },
-
-    validarFormulario() {
-      this.isDataValida = !!this.formData.dataDespesa.trim();
-      if (!this.isDataValida) this.formData.dataDespesa = '';
-
-      this.isValorValido = !!this.formData.valor.trim();
-      if (!this.isValorValido) this.formData.valor = '';
-
-      this.dataPlaceholder = this.isDataValida ? 'Data da Despesa' : 'Campo Data da Despesa é obrigatório';
-      this.valorPlaceholder = this.isValorValido ? 'Valor' : 'Campo Valor é obrigatório';
-
-      if (this.formData.descricao === '') {
-        this.formData.descricao = null;
+    
+    
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+   async fetchDespesa(id) {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/outras-despesas/${id}`);
+        const despesa = response.data;
+        this.formData.id = despesa.id;
+        this.formData.dataDespesa = despesa.dataDespesa;
+        this.formData.valor = this.replacePontoVirgula(despesa.valor);
+        this.formData.descricao = despesa.descricao;
+      } catch (error) {
+        console.error('Erro ao carregar dados da despesa:', error);
       }
-
-      return this.isDataValida && this.isValorValido;
     },
+    
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+          //FORMATA VALOR
+          this.formData.valor = this.replaceVirgulaPonto(this.formData.valor);
 
+          const response = await api.patch(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, this.formData, {});
+          if (response.status === 200) {
+            alert('Despesa atualizada com sucesso!');
+            this.$router.push('/outras-despesas');
+          } else {
+            alert('Erro ao atualizar Despesa. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+    
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA DESPESA
       if(this.formData.dataDespesa != null){
@@ -159,12 +167,24 @@ export default {
         this.valorPlaceholder = 'Valor da Despesa é um Campo Obrigatório';
       }
 
+      //DESCRIÇÃO
+      if(this.formData.descricao != null && this.formData.descricao.trim() == ''){
+        this.formData.descricao = null;
+      }
+
+      //CATEGORIA
+      if(this.formData.categoria != null && this.formData.categoria.trim() == ''){
+        this.formData.categoria = null;
+      }
+
       return (
         this.isDataValida &&
         this.isValorValido
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'despesas') {
@@ -176,37 +196,16 @@ export default {
       this.$router.push('/outras-despesas');
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.patch(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, this.formData, {});
-          if (response.status === 200) {
-            alert('Despesa atualizada com sucesso!');
-            this.resetForm();
-            this.$router.push('/outras-despesas');
-          } else {
-            alert('Erro ao atualizar Despesa. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
+
+      return valorString;
     },
 
-    resetForm() {
-      this.formData = {
-        id: null,
-        dataDespesa: '',
-        valor: '',
-        descricao: null,
-        categoria: null,
-        propriedade: localStorage.getItem('propriedadeSelecionada'),
-      },
-        this.isDataValida = true,
-        this.isValorValido = true,
-        this.dataPlaceholder = 'Data da Despesa',
-        this.valorPlaceholder = 'Valor'
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
+
+      return valorString;
     },
   },
 };

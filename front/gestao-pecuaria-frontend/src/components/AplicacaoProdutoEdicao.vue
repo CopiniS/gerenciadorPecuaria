@@ -64,9 +64,10 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import { validadoresMixin } from '../mixins/validadores.js';
 
 export default {
-  mixins: [masksMixin],
+  mixins: [masksMixin, validadoresMixin],
 
   data() {
     return {
@@ -78,6 +79,7 @@ export default {
       produtosFiltrados: [],
       nomeProduto: '',
       radioEscolha: 'brinco',
+      contadorObservacoes: 0,
       formData: {
         id: null,
         produto: '',
@@ -111,24 +113,7 @@ export default {
 
   },
   methods: {
-    async fetchAplicacao(id) {
-      try {
-        const response = await api.get(`http://127.0.0.1:8000/aplicacoes-produtos/aplicacao/${id}`);
-        const aplicacao = response.data;
-        this.formData.id = aplicacao[0].id;
-        this.formData.animal = aplicacao[0].animal.id;
-        this.formData.dataAplicacao = aplicacao[0].dataAplicacao;
-        this.formData.produto = aplicacao[0].produto.id;
-        this.formData.dosagem = aplicacao[0].dosagem;
-        this.formData.observacao = aplicacao[0].observacao;
-
-        this.brinco = aplicacao[0].animal.brinco;
-        this.nomeProduto = aplicacao[0].produto.nome;
-      } catch (error) {
-        console.error('Erro ao carregar dados da aplicacao:', error);
-      }
-    },
-
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarDosagemMask(event) {
       const value = event.target.value;
       this.formData.dosagem =  this.valorMask(value);
@@ -150,6 +135,26 @@ export default {
       this.filterAnimais();
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async fetchAplicacao(id) {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/aplicacoes-produtos/aplicacao/${id}`);
+        const aplicacao = response.data;
+        this.formData.id = aplicacao[0].id;
+        this.formData.animal = aplicacao[0].animal.id;
+        this.formData.dataAplicacao = aplicacao[0].dataAplicacao;
+        this.formData.produto = aplicacao[0].produto.id;
+        this.formData.dosagem = this.replacePontoVirgula(aplicacao[0].dosagem);
+        this.formData.observacao = aplicacao[0].observacao;
+
+        this.brinco = aplicacao[0].animal.brinco;
+        this.nomeProduto = aplicacao[0].produto.nome;
+      } catch (error) {
+        console.error('Erro ao carregar dados da aplicacao:', error);
+      }
+    },
+
     async buscarAnimaisDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/vivos', {
@@ -163,6 +168,38 @@ export default {
       }
     },
 
+    async buscarProdutosDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/produtos/sanitarios', {});
+        this.produtos = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar produtos da API:', error);
+      }
+    },
+
+    async submitForm() {
+      if (this.verificaVazio()) {
+        //FORMATA DOSAGEM
+        this.formData.dosagem = this.replaceVirgulaPonto(this.formData.dosagem);
+
+        try {
+          const response = await api.patch(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`, this.formData, {
+          });
+
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.$router.push('/aplicacoes-produtos');
+          } else {
+            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterAnimais() {
       this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
     },
@@ -172,15 +209,6 @@ export default {
       this.brinco = animal.brinco;
       this.formData.animal.push(animal.id);
       this.animaisFiltrados = [];
-    },
-
-    async buscarProdutosDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/produtos/sanitarios', {});
-        this.produtos = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar produtos da API:', error);
-      }
     },
 
     filterProdutos() {
@@ -193,59 +221,8 @@ export default {
       this.produtosFiltrados = [];
     },
 
-    validarFormulario() {
-      let valido = true;
-
-      this.formData.dataAplicacao = this.formData.dataAplicacao.trim();
-      this.isDataValida = !!this.formData.dataAplicacao;
-      this.dataPlaceholder = this.isDataValida ? 'Data da Aplicação' : 'Campo obrigatório';
-
-      this.formData.dosagem = this.formData.dosagem.trim();
-      this.isDosagemValida = !!this.formData.dosagem;
-      this.dosagemPlaceholder = this.isDosagemValida ? 'Dosagem do Produto' : 'Campo obrigatório';
-
-      if (this.formData.observacao === '') {
-        this.formData.observacao = null;
-      }
-      // Validar Brinco (apenas se for escolhido por brinco)
-      if (this.radioEscolha === 'brinco') {
-        this.isBrincoValido = !!this.formData.animal.length;
-        this.brincoPlaceholder = this.isBrincoValido ? 'Brinco do Animal' : 'Campo obrigatório';
-        if (!this.isBrincoValido) {
-          valido = false;
-        }
-      }
-
-      // Validar Piquete (apenas se for escolhido por piquete)
-      if (this.radioEscolha === 'piquete') {
-        this.isPiqueteValido = !!this.piqueteId;
-        this.piquetePlaceholder = this.isPiqueteValido ? 'Piquete' : 'Campo obrigatório';
-        if (!this.isPiqueteValido) {
-          valido = false;
-        }
-      }
-      
-      this.isProdutoValido = !!this.formData.produto;
-      this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo obrigatório';
-      if (!this.isProdutoValido) {
-        valido = false;
-      }
-
-      return valido;
-    },
-
-
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'aplicacoes') {
-        this.$router.push('/aplicacoes-produtos');
-      }
-    },
-
-    cancelarEdicao() {
-      this.$router.push('/aplicacoes');
-    },
-
+    
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA APLICAÇÃO
       if(this.formData.dataAplicacao != null){
@@ -328,6 +305,12 @@ export default {
         this.isDosagemValida = false;
         this.dosagemPlaceholder = 'Dosagem é um Campo Obrigatório';
       }
+
+      //OBSERVAÇÕES
+      if(this.formData.observacao != null && this.formData.observacao.trim() == ''){
+        this.formData.observacao = null;
+      }
+
       return (
         this.isDataValida &&
         this.isBrincoValido && 
@@ -337,24 +320,29 @@ export default {
       );
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-            console.log(this.formData);
-          const response = await api.patch(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`, this.formData, {
-          });
 
-          if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.$router.push('/aplicacoes-produtos');
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
+
+      return valorString;
+    },
+
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
+
+      return valorString;
+    },
+
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'aplicacoes') {
+        this.$router.push('/aplicacoes-produtos');
       }
+    },
+
+    cancelarEdicao() {
+      this.$router.push('/aplicacoes');
     },
   },
 };

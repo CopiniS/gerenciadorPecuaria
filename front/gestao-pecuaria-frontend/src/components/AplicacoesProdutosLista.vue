@@ -32,7 +32,7 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
-          <input type="text" class="form-control" id="animal" v-model="filtro.animal">
+          <input type="text" @input="aplicarBrincoMask" class="form-control" id="animal" v-model="filtro.animal">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Piquete</label>
@@ -67,7 +67,7 @@
               <td>{{ aplicacao.animal.brinco}}</td>
               <td>{{ aplicacao.animal.piquete.nome}}</td>
               <td>{{ aplicacao.produto.nome}}</td>
-              <td>{{ aplicacao.dosagem}}</td>
+              <td>{{ replacePontoVirgula(aplicacao.dosagem)}}</td>
               <td>
                 <button @click="acessarEdicao(aplicacao)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
                 <button @click="confirmarExclusaoAplicacao(aplicacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
@@ -102,9 +102,12 @@
 </template>
 
 <script>
-import api from '/src/interceptadorAxios'
+import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   name: 'TelaAplicacoesProdutos',
   data() {
     return {
@@ -135,7 +138,14 @@ export default {
     this.buscarAplicacoesDaApi();
   },
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.filtro.animal =  this.brincoMask(value);
+    },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarAplicacoesDaApi(){
         try {
             const response = await api.get('http://127.0.0.1:8000/aplicacoes-produtos/' , {
@@ -150,6 +160,49 @@ export default {
         }
     },
 
+    async apagarAplicacao() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`);
+
+        if (response.status === 204) {
+          alert('Aplicação excluída com sucesso!');
+          this.buscarAplicacoesDaApi();
+        } else {
+          alert('Erro ao excluir a aplicação. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoAnimalModal');
+    },
+
+
+//FILTROS-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.aplicacoes = this.aplicacoesDaApi.filter(aplicacao => {
+        return  (new Date(aplicacao.dataAplicacao) >= new Date(this.filtro.dataAplicacaoInicio || '1970-01-01')) &&
+                (new Date(aplicacao.dataAplicacao) <= new Date(this.filtro.dataAplicacaoFim || '9999-12-31')) &&
+                aplicacao.animal.brinco.includes(this.filtro.animal) &&
+                aplicacao.animal.piquete.nome.includes(this.filtro.piquete) &&
+                aplicacao.produto.nome.includes(this.filtro.produto);
+      });
+    },
+    
+    limparFiltro() {
+      this.filtro.dataAplicacaoInicio = '',
+      this.filtro.dataAplicacaoFim = '',
+      this.filtro.animal = '',
+      this.filtro.piquete = '',
+      this.filtro.produto = ''
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     fecharModal(modalId) {
       var closeButton = document.getElementById(modalId).querySelector('.btn-close');
       if (closeButton) {
@@ -176,25 +229,6 @@ export default {
       this.formData.id = aplicacao.id;
     },
 
-
-    
-    async apagarAplicacao() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`);
-
-        if (response.status === 204) {
-          alert('Aplicação excluída com sucesso!');
-          this.buscarAplicacoesDaApi();
-        } else {
-          alert('Erro ao excluir a aplicação. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal('confirmacaoExclusaoAnimalModal');
-    },
-
     formatarData(data) {
     const date = new Date(data);
     const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
@@ -202,26 +236,10 @@ export default {
     return utcDate.toLocaleDateString('pt-BR', options);
     },
 
-    aplicarFiltro() {
-      this.aplicacoes = this.aplicacoesDaApi.filter(aplicacao => {
-        return  (new Date(aplicacao.dataAplicacao) >= new Date(this.filtro.dataAplicacaoInicio || '1970-01-01')) &&
-                (new Date(aplicacao.dataAplicacao) <= new Date(this.filtro.dataAplicacaoFim || '9999-12-31')) &&
-                aplicacao.animal.brinco.includes(this.filtro.animal) &&
-                aplicacao.animal.piquete.nome.includes(this.filtro.piquete) &&
-                aplicacao.produto.nome.includes(this.filtro.produto);
-      });
-    },
-    
-    limparFiltro() {
-      this.filtro.dataAplicacaoInicio = '',
-      this.filtro.dataAplicacaoFim = '',
-      this.filtro.animal = '',
-      this.filtro.piquete = '',
-      this.filtro.produto = ''
-    },
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
 
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
+      return valorString;
     },
   }
 };

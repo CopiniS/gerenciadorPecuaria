@@ -103,11 +103,14 @@ export default {
     this.buscarPiquetesDaApi();
   },
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarQuantidadeMask(event){
       const value = event.target.value;
       this.formData.quantidade = this.valorMask(value);
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarProdutosDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/alimenticios');
@@ -116,6 +119,7 @@ export default {
         console.error('Erro ao buscar produtos da API:', error);
       }
     },
+
     async buscarPiquetesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/');
@@ -124,6 +128,31 @@ export default {
         console.error('Erro ao buscar piquetes da API:', error);
       }
     },
+    
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+           //FORMATA VALOR E QUANTIDADE
+          this.formData.quantidade = this.replaceVirgulaPonto(this.formData.quantidade);
+
+          const response = await api.post('http://127.0.0.1:8000/suplementacoes/', this.formData, {
+          });
+
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/suplementacoes');
+          } else {
+            alert('Erro ao cadastrar suplementacao. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filtrarProdutos(entrada) {
       if (!entrada) {
         this.filteredProdutos = this.produtos;
@@ -151,22 +180,9 @@ export default {
       this.nomePiquete = piquete.nome;
       this.filteredPiquetes = [];
     },
-    validarFormulario() {
-      this.isDataInicialValida = !!this.formData.dataInicial.trim();
-      if (!this.isDataInicialValida) this.dataInicialPlaceholder = 'Campo Data Inicial da Suplementação é obrigatório';
 
-      this.isProdutoValido = !!this.formData.produto;
-      if (!this.isProdutoValido) this.produtoPlaceholder = 'Campo Produto usado na Suplementação é obrigatório';
 
-      this.isPiqueteValido = !!this.formData.piquete;
-      if (!this.isPiqueteValido) this.piquetePlaceholder = 'Campo Piquete da Suplementação é obrigatório';
-
-      this.isQuantidadeValida = !!this.formData.quantidade;
-      if (!this.isQuantidadeValida) this.quantidadePlaceholder = 'Campo Quantidade de produto é obrigatório';
-
-      return this.isDataInicialValida && this.isProdutoValido && this.isPiqueteValido && this.isQuantidadeValida;
-    },
-
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA INICIAL
       if(this.formData.dataInicial != null){
@@ -240,6 +256,8 @@ export default {
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'suplementacoes') {
@@ -247,45 +265,10 @@ export default {
       }
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/suplementacoes/', this.formData, {
-          });
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/suplementacoes');
-          } else {
-            alert('Erro ao cadastrar suplementacao. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    resetForm() {
-      this.nomeProduto = '',
-        this.nomePiquete = '',
-        this.formData = {
-          id: null,
-          produto: '',
-          piquete: '',
-          quantidade: '',
-          dataInicial: '',
-          dataFinal: null,
-        },
-        this.isProdutoValido = true,
-        this.isPiqueteValido = true,
-        this.isQuantidadeValida = true,
-        this.isDataInicialValida = true,
-        this.produtoPlaceholder = 'Produto usado na Suplementação',
-        this.piquetePlaceholder = 'Piquete da Suplementação',
-        this.quantidadePlaceholder = 'Quantidade de produto',
-        this.dataInicialPlaceholder = 'Data Inicial da Suplementação'
+      return valorString;
     },
   },
 };

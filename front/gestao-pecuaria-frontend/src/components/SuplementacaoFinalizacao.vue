@@ -40,30 +40,47 @@
 import api from '/src/interceptadorAxios';
 
 export default {
-    data() {
-        return {
-            activeTab: 'finalizacao', // Começa na aba de edição
-            formData: {
-                id: null,
-                dataFinal: null,
-            },
-            isDataFinalValida: true,
-            dataFinalPlaceholder: 'Data Final da Suplementação',
-        };
-    },
- 
-    mounted() {
-        const suplementacaoId = this.$route.params.suplementacaoId;
-        if (suplementacaoId) {
-            this.formData.id = suplementacaoId;
+  data() {
+      return {
+          activeTab: 'finalizacao', // Começa na aba de edição
+          formData: {
+              id: null,
+              dataFinal: null,
+          },
+          isDataFinalValida: true,
+          dataFinalPlaceholder: 'Data Final da Suplementação',
+      };
+  },
+
+  mounted() {
+      const suplementacaoId = this.$route.params.suplementacaoId;
+      if (suplementacaoId) {
+          this.formData.id = suplementacaoId;
+      }
+  },
+  methods: {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async submitForm() {
+      if (this.verificaVazio()) {
+       try {
+          const response = await api.patch(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/`, this.formData , {
+        });
+
+          if (response.status === 200) {
+            alert('Finalização salvas com sucesso!');
+            this.$router.push('/suplementacoes');
+          } else {
+            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-    },
-    methods: {
-
-    validarFormulario() {
-      return true;
+      }
     },
 
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA FINAL
       if(this.formData.dataFinal != null){
@@ -84,6 +101,8 @@ export default {
       return this.isDataFinalValida;
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'suplementacoes') {
@@ -93,35 +112,6 @@ export default {
 
     cancelarEdicao() {
       this.$router.push('/suplementacoes');
-    },
-
-    async submitForm() {
-      if (this.verificaVazio()) {
-       try {
-          const response = await api.patch(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/`, this.formData , {
-        });
-
-          if (response.status === 200) {
-            alert('Finalização salvas com sucesso!');
-            this.resetForm();
-            this.$router.push('/suplementacoes');
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        dataFinal: null,
-      },
-      this.isDataFinalValida = true,
-      this.dataFinalPlaceholder = 'Data Final da Suplementação'
     },
   },
 };

@@ -80,7 +80,7 @@
           <tr v-for="(suplementacao, index) in suplementacoes" :key="index">
             <td>{{ suplementacao.produto.nome }}</td>
             <td>{{ suplementacao.piquete.nome }}</td>
-            <td>{{ suplementacao.quantidade }}</td>
+            <td>{{ replacePontoVirgula(suplementacao.quantidade) }}</td>
             <td>{{ formatarData(suplementacao.dataInicial) }}</td>
             <td>{{ formatarData(suplementacao.dataFinal) || '-' }}</td>
             <td :class="{ 'status-andamento': !suplementacao.dataFinal, 'status-finalizada': suplementacao.dataFinal }">{{
@@ -156,6 +156,7 @@ export default {
     this.buscarSuplementacoesDaApi();
   },
   methods: {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarSuplementacoesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/suplementacoes/' , {
@@ -167,6 +168,59 @@ export default {
       }
     },
 
+    async apagarSuplementacao() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/` , {
+        });
+
+        if (response.status === 204) {
+          alert('Suplementação apagado com sucesso!');
+          this.buscarSuplementacoesDaApi();
+        } else {
+          alert('Erro ao apagar suplementacao. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal("confirmacaoExclusaoModal");
+    },
+
+
+//FILTROS---------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.suplementacoes = this.suplementacoesDaApi.filter(suplementacao => {
+        return  (new Date(suplementacao.dataInicial) >= new Date(this.filtro.dataInicialInicio || '1970-01-01')) &&
+                (new Date(suplementacao.dataInicial) <= new Date(this.filtro.dataInicialFim || '9999-12-31')) &&
+                (new Date(suplementacao.dataFinal) >= new Date(this.filtro.dataFinalInicio || '1970-01-01')) &&
+                (new Date(suplementacao.dataFinal) <= new Date(this.filtro.dataFinalFim || '9999-12-31')) &&
+                suplementacao.produto.nome.includes(this.filtro.produto) &&
+                suplementacao.piquete.nome.includes(this.filtro.piquete) &&
+                (
+                  ((this.filtro.status == 'andamento' && suplementacao.dataFinal == null) || this.filtro.status == '') ||
+                  ((this.filtro.status == 'finalizado' && suplementacao.dataFinal != null) || this.filtro.status == '')
+                );
+      });
+    },
+
+    limparFiltro() {
+      this.filtro.produto = '';
+      this.filtro.piquete = '';
+      this.filtro.dataInicialInicio = '';
+      this.filtro.dataInicialFim = '';
+      this.filtro.dataFinalInicio = '';
+      this.filtro.dataFinalFim = '';
+      this.filtro.status = '';
+
+      this.suplementacoes = this.suplementacoesDaApi;
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaFinalizado(suplementacao){
       if(suplementacao.dataFinal != null){
         this.estaFinalizado = true;
@@ -204,28 +258,12 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
     confirmarExclusao(suplementacao) {
       this.formData = {
         id: suplementacao.id,
       };
-    },
-    async apagarSuplementacao() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/suplementacoes/${this.formData.id}/` , {
-        });
-
-        if (response.status === 204) {
-          alert('Suplementação apagado com sucesso!');
-          this.buscarSuplementacoesDaApi();
-        } else {
-          alert('Erro ao apagar suplementacao. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
-    },
+    }, 
 
     formatarData(data) {
       if(data){
@@ -236,33 +274,10 @@ export default {
       }
     },
 
-    aplicarFiltro() {
-      this.suplementacoes = this.suplementacoesDaApi.filter(suplementacao => {
-        return  (new Date(suplementacao.dataInicial) >= new Date(this.filtro.dataInicialInicio || '1970-01-01')) &&
-                (new Date(suplementacao.dataInicial) <= new Date(this.filtro.dataInicialFim || '9999-12-31')) &&
-                (new Date(suplementacao.dataFinal) >= new Date(this.filtro.dataFinalInicio || '1970-01-01')) &&
-                (new Date(suplementacao.dataFinal) <= new Date(this.filtro.dataFinalFim || '9999-12-31')) &&
-                suplementacao.produto.nome.includes(this.filtro.produto) &&
-                suplementacao.piquete.nome.includes(this.filtro.piquete) &&
-                (
-                  ((this.filtro.status == 'andamento' && suplementacao.dataFinal == null) || this.filtro.status == '') ||
-                  ((this.filtro.status == 'finalizado' && suplementacao.dataFinal != null) || this.filtro.status == '')
-                );
-      });
-    },
-    limparFiltro() {
-      this.filtro.produto = '';
-      this.filtro.piquete = '';
-      this.filtro.dataInicialInicio = '';
-      this.filtro.dataInicialFim = '';
-      this.filtro.dataFinalInicio = '';
-      this.filtro.dataFinalFim = '';
-      this.filtro.status = '';
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
 
-      this.suplementacoes = this.suplementacoesDaApi;
-    },
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
+      return valorString;
     },
   }
 };

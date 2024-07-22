@@ -198,28 +198,6 @@ export default {
       );
     },
 
-    // validarFormulario(){
-    //   let valido = true;
-    //   this.isNomeValido = true;
-    //   this.nomePlaceholder = 'Nome do Produto';
-      
-    //   let produtosComExclusao = this.produtosDaApi;
-    //   for (let i = 0; i < this.produtosDaApi.length; i++) {
-    //     if(this.produtosDaApi[i].id === this.formData.id){
-    //       // Remove o item da lista
-    //       this.produtosComExclusao.splice(i, 1);
-    //     }
-    //     if(produtosComExclusao[i].nome === this.formData.nome) {
-    //       this.isNomeValido = false;
-    //       this.nomePlaceholder = 'Este Produto já está cadastrado';
-    //       this.formData.nome = null;
-    //       valido = false;
-    //       break;
-    //     }
-    //   }
-    //   return valido;
-    // },
-
     validarFormulario() {
       let valido = true;
       this.isNomeValido = true;

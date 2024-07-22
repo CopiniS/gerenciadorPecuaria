@@ -109,6 +109,7 @@ export default {
     this.buscarVeterinariosDaApi();
   },
   methods: {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarVeterinariosDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/veterinarios/' , {
@@ -120,7 +121,42 @@ export default {
         console.error('Erro ao buscar veterinários da API:', error);
       }
     },
+
+    async apagarVeterinario() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/` , {
+        });
+
+        if (response.status === 204) {
+          alert('Veterinário apagado com sucesso!');
+          this.buscarVeterinariosDaApi();
+        } else {
+          alert('Erro ao apagar veterinário. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal('confirmacaoExclusaoModal');
+    },
     
+
+//FILTROS-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.veterinarios = this.veterinariosDaApi.filter(veterinario => veterinario.nome.toLowerCase().includes(this.filtro.nome));
+    },
+
+    limparFiltro() {
+      this.filtro.nome = '';
+      this.veterinarios = this.veterinariosDaApi;
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },  
+    
+    
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     acessarEdicao(veterinario) {
       this.$router.push({
         name: 'VeterinarioEdicao', 
@@ -147,35 +183,6 @@ export default {
       } else {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
-    },
-
-    async apagarVeterinario() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/` , {
-        });
-
-        if (response.status === 204) {
-          alert('Veterinário apagado com sucesso!');
-          this.buscarVeterinariosDaApi();
-        } else {
-          alert('Erro ao apagar veterinário. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal('confirmacaoExclusaoModal');
-    },
-
-    aplicarFiltro() {
-      this.veterinarios = this.veterinariosDaApi.filter(veterinario => veterinario.nome.toLowerCase().includes(this.filtro.nome));
-    },
-    limparFiltro() {
-      this.filtro.nome = '';
-      this.veterinarios = this.veterinariosDaApi;
-    },
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
     },
   }
 };

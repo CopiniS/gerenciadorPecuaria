@@ -79,14 +79,20 @@ export default {
     };
   },
   mounted() {
-    // Verifica se há um veterinário selecionado no localStorage para edição
-    const veterinarioId = localStorage.getItem('veterinarioSelecionado');
+    const veterinarioId = this.$route.params.veterinarioId;
     if (veterinarioId) {
-      // Requisição para obter os dados do veterinário
       this.fetchVeterinario(veterinarioId);
     }
   },
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarTelefoneMask(event) {
+      const value = event.target.value;
+      this.formData.telefone = this.telefoneMask(value);
+    },
+
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async fetchVeterinario(id) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/veterinarios/${id}`);
@@ -101,30 +107,45 @@ export default {
       }
     },
 
-    aplicarTelefoneMask(event) {
-      const value = event.target.value;
-      this.formData.telefone = this.telefoneMask(value);
+    async submitForm() {
+      if (this.verificaVazio() && this.validarFormulario()) {
+        try {
+          const response = await api.patch(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/`, this.formData, {});
+          if (response.status === 200) {
+            alert('Veterinário atualizado com sucesso!');
+            this.$router.push('/veterinarios');
+          } else {
+            alert('Erro ao atualizar veterinário. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
     },
 
-    validarFormulario() {
-      this.isNomeValido = !!this.formData.nome.trim();
-      if (!this.isNomeValido) this.formData.nome = '';
 
-      this.isTelefoneValido = /^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(this.formData.telefone.trim());
-      if (!this.isTelefoneValido) this.formData.telefone = '';
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario() {
+      this.isTelefoneValido = /^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(this.formData.telefone);
+      if (this.isTelefoneValido){
+        this.telefonePlaceholder = 'Telefone do Veterinário';
+      }
+      else{
+        this.formData.telefone = '';
+        this.telefonePlaceholder = 'Telefone Inválido';
+      }
 
       this.isEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email.trim());
-      if (!this.isEmailValido) this.formData.email = '';
-
-      this.isCrmvValido = /^[0-9]+$/.test(this.formData.crmv.trim());
-      if (!this.isCrmvValido) this.formData.crmv = '';
-
-      this.nomePlaceholder = this.isNomeValido ? 'Nome' : 'Campo Nome é obrigatório';
-      this.telefonePlaceholder = this.isTelefoneValido ? 'Telefone' : 'Campo Telefone é obrigatório (somente números)';
-      this.emailPlaceholder = this.isEmailValido ? 'Email' : 'Campo Email é obrigatório e deve ser válido';
-      this.crmvPlaceholder = this.isCrmvValido ? 'CRMV' : 'Campo CRMV é obrigatório (somente números)';
-
-      return this.isNomeValido && this.isTelefoneValido && this.isEmailValido && this.isCrmvValido;
+      if (this.isEmailValido){
+         this.emailPlaceholder = 'Email do Veterinário';
+      }
+      else{
+         this.formData.email = '';
+         this.emailPlaceholder = 'Email Inválido';
+      }
+      return (this.isTelefoneValido && this.isEmailValido);
     },
 
     verificaVazio(){
@@ -174,6 +195,9 @@ export default {
       );
 
     },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'veterinarios') {
@@ -183,43 +207,6 @@ export default {
 
     cancelarEdicao() {
       this.$router.push('/veterinarios');
-    },
-
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.patch(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/`, this.formData, {});
-          if (response.status === 200) {
-            alert('Veterinário atualizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/veterinarios');
-          } else {
-            alert('Erro ao atualizar veterinário. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        nome: '',
-        telefone: '',
-        email: '',
-        crmv: '',
-      };
-
-      this.isNomeValido = true;
-      this.isTelefoneValido = true;
-      this.isEmailValido = true;
-      this.isCrmvValido = true;
-      this.nomePlaceholder = 'Nome';
-      this.telefonePlaceholder = 'Telefone';
-      this.emailPlaceholder = 'Email';
-      this.crmvPlaceholder = 'CRMV';
     },
   },
 };

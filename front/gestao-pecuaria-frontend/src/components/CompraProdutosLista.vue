@@ -68,8 +68,8 @@
           <tr v-for="(compra, index) in compras" :key="index">
             <td>{{ formatarData(compra.dataCompra) }}</td>
             <td>{{ compra.produto.nome }}</td>
-            <td>{{ compra.valorUnitario }}</td>
-            <td>{{ compra.quantidadeComprada }}</td>
+            <td>{{ replacePontoVirgula(compra.valorUnitario) }}</td>
+            <td>{{ replacePontoVirgula(compra.quantidadeComprada) }}</td>
             <td>{{ formatarData(compra.validade) }}</td>
             <td>{{ compra.lote }}</td>
             <td>
@@ -138,12 +138,7 @@ export default {
     this.buscarComprasDaApi();
   },
   methods: {
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'produtos') {
-        this.$router.push('/produtos');
-      }
-    },
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarComprasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/compras-produtos/', {
@@ -157,7 +152,48 @@ export default {
         console.error('Erro ao buscar compras de produtos da API:', error);
       }
     },
-    
+
+    async apagarCompra() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/` , {
+        });
+
+        if (response.status === 204) {
+          alert('Compra apagado com sucesso!');
+          this.buscarComprasDaApi();
+        } else {
+          alert('Erro ao apagar compra. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal("confirmacaoExclusaoModal");
+    },
+
+
+//FILTROS---------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.compras = this.comprasDaApi.filter(compra => {
+        return  (new Date(compra.dataCompra) >= new Date(this.filtro.dataCompraInicio || '1970-01-01')) &&
+                (new Date(compra.dataCompra) <= new Date(this.filtro.dataCompraFim || '9999-12-31')) &&
+                compra.produto.nome.includes(this.filtro.produto);
+      });
+    },
+
+    limparFiltro() {
+      this.filtro.dataCompraInicio = '';
+      this.filtro.dataCompraFim = '';
+      this.filtro.produto = '';
+      this.compras = this.comprasDaApi;
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },  
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     acessarEdicao(compra) {
       this.$router.push({
         name: 'CompraProdutoEdicao', 
@@ -179,27 +215,11 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
     confirmarExclusao(compra) {
       this.formData = {
         id: compra.id,
       };
-    },
-    async apagarCompra() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/` , {
-        });
-
-        if (response.status === 204) {
-          alert('Compra apagado com sucesso!');
-          this.buscarComprasDaApi();
-        } else {
-          alert('Erro ao apagar compra. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
     },
 
     formatarData(data) {
@@ -209,21 +229,17 @@ export default {
       return utcDate.toLocaleDateString('pt-BR', options);
     },
 
-    aplicarFiltro() {
-      this.compras = this.comprasDaApi.filter(compra => {
-        return  (new Date(compra.dataCompra) >= new Date(this.filtro.dataCompraInicio || '1970-01-01')) &&
-                (new Date(compra.dataCompra) <= new Date(this.filtro.dataCompraFim || '9999-12-31')) &&
-                compra.produto.nome.includes(this.filtro.produto);
-      });
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'produtos') {
+        this.$router.push('/produtos');
+      }
     },
-    limparFiltro() {
-      this.filtro.dataCompraInicio = '';
-      this.filtro.dataCompraFim = '';
-      this.filtro.produto = '';
-      this.compras = this.comprasDaApi;
-    },
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
+
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
+
+      return valorString;
     },
   }
 };

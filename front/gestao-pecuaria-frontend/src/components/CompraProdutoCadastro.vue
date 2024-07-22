@@ -129,6 +129,7 @@ export default {
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarValorMask(event) {
       const value = event.target.value;
       this.formData.valorUnitario =  this.valorMask(value);
@@ -138,7 +139,9 @@ export default {
       const value = event.target.value;
       this.formData.quantidadeComprada =  this.valorMask(value);
     },
-    
+
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarProdutos() {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/');
@@ -148,14 +151,37 @@ export default {
       }
     },
 
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'compras') {
-        this.$router.push('/compraprodutos');
-      }
-      if (tab === 'produtos') {
-        this.$router.push('/produtos');
-      }
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+          //FORMATA VALOR E QUANTIDADE
+          this.formData.valorUnitario = this.replaceVirgulaPonto(this.formData.valorUnitario);
+          this.formData.quantidadeComprada = this.replaceVirgulaPonto(this.formData.quantidadeComprada);
+
+          const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData);
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.selectTab('compras');
+          } else {
+            alert('Erro ao cadastrar Compra. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar dados para a API:', error);
+        }
+      } 
+    },
+
+    
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterProdutos() {
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));
+    },
+
+    selectProduto(produto) {
+      this.nomeDigitado = produto.nome;
+      this.formData.produto = produto.id;
+      this.produtosFiltrados = [];
+      this.dropdownOpen = false;
     },
 
     toggleDropdown() {
@@ -169,45 +195,22 @@ export default {
       }
     },
 
-    filterProdutos() {
-      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));
-    },
-    selectProduto(produto) {
-      this.nomeDigitado = produto.nome;
-      this.formData.produto = produto.id;
-      this.produtosFiltrados = [];
-      this.dropdownOpen = false;
+    navigateOptions(direction) {
+      if (direction === 'up' && this.highlightedIndex > 0) {
+        this.highlightedIndex--;
+      } else if (direction === 'down' && this.highlightedIndex < this.produtosFiltrados.length - 1) {
+        this.highlightedIndex++;
+      }
     },
 
-    validarFormulario() {
-
-      this.isDataCompraValida = !!this.formData.dataCompra.trim();
-      if (!this.isDataCompraValida) this.formData.dataCompra = '';
-
-      this.isProdutoValido = !!this.formData.produto.trim();
-      if (!this.isProdutoValido) this.formData.produto = '';
-
-      this.isValidadeValida = !!this.formData.validade.trim();
-      if (!this.isValidadeValida) this.formData.validade = '';
-
-      this.isLoteValido = !!this.formData.lote.trim();
-      if (!this.isLoteValido) this.formData.lote = '';
-
-      this.dataCompraPlaceholder = this.isDataCompraValida ? 'Data da Compra' : 'Campo Data da Compra obrigatório';
-      this.produtoPlaceholder = this.isProdutoValido ? 'Produto' : 'Campo Produto obrigatório';
-      this.validadePlaceholder = this.isValidadeValida ? 'Validade do Produto' : 'Campo Validade obrigatório';
-      this.lotePlaceholder = this.isLoteValido ? 'Lote do Produto' : 'Campo Lote obrigatório';
-      this.isValorUnitarioValido = !isNaN(parseFloat(this.formData.valorUnitario));
-      if (!this.isValorUnitarioValido) this.formData.valorUnitario = '';
-      this.valorUnitarioPlaceholder = this.isValorUnitarioValido ? 'Valor do Produto' : 'Valor do produto deve ser numérico';
-
-      this.isQuantidadeCompradaValida = !isNaN(parseInt(this.formData.quantidadeComprada));
-      if (!this.isQuantidadeCompradaValida) this.formData.quantidadeComprada = '';
-      this.quantidadeCompradaPlaceholder = this.isQuantidadeCompradaValida ? 'Quantidade Comprada' : 'Quantidade comprada deve ser um número inteiro';
-
-      return this.isDataCompraValida && this.isProdutoValido && this.isValorUnitarioValido && this.isQuantidadeCompradaValida && this.isValidadeValida && this.isLoteValido;
+    selectHighlightedProduto() {
+      if (this.highlightedIndex >= 0 && this.highlightedIndex < this.produtosFiltrados.length) {
+        this.selectProduto(this.produtosFiltrados[this.highlightedIndex]);
+      }
     },
+    
 
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA COMPRA
       if(this.formData.dataCompra != null){
@@ -311,34 +314,22 @@ export default {
       );
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData);
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.selectTab('compras');
-          } else {
-            alert('Erro ao cadastrar Compra. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar dados para a API:', error);
-        }
-      } 
-    },
 
-    navigateOptions(direction) {
-      if (direction === 'up' && this.highlightedIndex > 0) {
-        this.highlightedIndex--;
-      } else if (direction === 'down' && this.highlightedIndex < this.produtosFiltrados.length - 1) {
-        this.highlightedIndex++;
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'compras') {
+        this.$router.push('/compraprodutos');
+      }
+      if (tab === 'produtos') {
+        this.$router.push('/produtos');
       }
     },
 
-    selectHighlightedProduto() {
-      if (this.highlightedIndex >= 0 && this.highlightedIndex < this.produtosFiltrados.length) {
-        this.selectProduto(this.produtosFiltrados[this.highlightedIndex]);
-      }
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
+
+      return valorString;
     },
   },
 

@@ -83,9 +83,9 @@
               <td>{{ venda.animal.brinco}}</td>
               <td>{{ venda.animal.piquete.nome}}</td>
               <td>{{ venda.finalidade}}</td>
-              <td>{{ venda.peso}}</td>
-              <td>{{ venda.precoKg}}</td>
-              <td>{{ venda.valorTotal}}</td>
+              <td>{{ replacePontoVirgula(venda.peso)}}</td>
+              <td>{{ replacePontoVirgula(venda.precoKg)}}</td>
+              <td>{{ replacePontoVirgula(venda.valorTotal)}}</td>
               <td>
                 <button @click="acessarEdicao(venda)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
                 <button @click="confirmarExclusaoVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
@@ -156,6 +156,7 @@ export default {
     this.buscarVendasDaApi();
   },
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(event) {
       const value = event.target.value;
       this.filtro.animal =  this.brincoMask(value);
@@ -171,6 +172,8 @@ export default {
       this.filtro.pesoFim =  this.valorMask(value);
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarVendasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/vendas-animais/' , {
@@ -184,40 +187,6 @@ export default {
       } catch (error) {
         console.error('Erro ao buscar vendas da API:', error);
       }
-    },
-    
-    acessarEdicao(venda) {
-      this.$router.push({
-        name: 'VendaAnimalEdicao', 
-        params: { vendaId: venda.id } 
-      })
-    },
-
-    acessarCadastro(){
-        this.$router.push({
-        name: 'VendaAnimalCadastro', 
-      })
-    },
-
-    
-    formatarData(data) {
-        const date = new Date(data);
-        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
-        return utcDate.toLocaleDateString('pt-BR', options);
-    },
-
-    fecharModal(modalId) {
-      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
-      if (closeButton) {
-        closeButton.click();
-      } else {
-        console.error('Botão de fechar não encontrado no modal:', modalId);
-      }
-    },
-
-    confirmarExclusaoVenda(venda) {
-      this.formData.id = venda.id;
     },
 
     async apagarVenda() {
@@ -238,6 +207,8 @@ export default {
       this.fecharModal('confirmacaoExclusaoModal');
     },
 
+
+//FILTROS---------------------------------------------------------------------------------------------------------------------
     aplicarFiltro() {
       this.vendas = this.vendasDaApi.filter(venda => {
         return  (new Date(venda.dataVenda) >= new Date(this.filtro.dataVendaInicio || '1970-01-01')) &&
@@ -264,6 +235,47 @@ export default {
 
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    acessarEdicao(venda) {
+      this.$router.push({
+        name: 'VendaAnimalEdicao', 
+        params: { vendaId: venda.id } 
+      })
+    },
+
+    acessarCadastro(){
+        this.$router.push({
+        name: 'VendaAnimalCadastro', 
+      })
+    },
+
+    formatarData(data) {
+        const date = new Date(data);
+        const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+        return utcDate.toLocaleDateString('pt-BR', options);
+    },
+
+    fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
+
+    confirmarExclusaoVenda(venda) {
+      this.formData.id = venda.id;
+    },
+
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
+
+      return valorString;
     },
   }
 };

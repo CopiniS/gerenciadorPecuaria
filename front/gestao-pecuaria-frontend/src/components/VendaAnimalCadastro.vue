@@ -114,6 +114,7 @@ export default {
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarValorTotalMask(event) {
       const value = event.target.value;
       this.formData.valorTotal =  this.valorMask(value);
@@ -155,6 +156,8 @@ export default {
       this.atualizaValorTotalPeloPrecoKg();
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarAnimaisDaApi() {
         try {
             const response = await api.get('http://127.0.0.1:8000/animais/vivos' , {
@@ -168,6 +171,32 @@ export default {
         }
     },
 
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+          //FORMATA PESO, PRECOKG E VALORTOTAL
+          this.formData.peso = this.replaceVirgulaPonto(this.formData.peso);
+          this.formData.precoKg = this.replaceVirgulaPonto(this.formData.precoKg);
+          this.formData.valorTotal = this.replaceVirgulaPonto(this.formData.valorTotal);
+
+          const response = await api.post('http://127.0.0.1:8000/vendas-animais/', this.formData , {
+        });
+
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/vendas-animais');
+          } else {
+            alert('Erro ao cadastrar venda. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      } 
+    },
+
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterAnimais() {
         this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
     },
@@ -178,64 +207,8 @@ export default {
         this.animaisFiltrados = [];
     },
 
-    atualizaValorTotalPeloPeso(){
-      if(this.formData.precoKg != ''){
-        this.formData.valorTotal = this.formData.precoKg * this.formData.peso
-      }
-    },
 
-    atualizaValorTotalPeloPrecoKg(){
-      if(this.formData.peso != ''){
-        this.formData.valorTotal = this.formData.precoKg * this.formData.peso
-      }
-    },
-
-    validarFormulario() {
-      this.isDataValida = !!this.formData.dataVenda.trim();
-      if (!this.isDataValida) {
-        this.dataPlaceholder = 'Campo Data da Venda é obrigatório';
-      }
-
-      this.isBrincoValido = !!this.formData.animal.trim();
-      if (!this.isBrincoValido) {
-        this.brincoPlaceholder = 'Campo Brinco do Animal é obrigatório';
-      }
-
-      this.isPesoValido = !!this.formData.peso.trim();
-      if (!this.isPesoValido) {
-        this.pesoPlaceholder = 'Campo Peso é obrigatório';
-      }
-
-      this.isprecoKgValido = !!this.formData.precoKg.trim();
-      if (!this.isprecoKgValido) {
-        this.precoKgPlaceholder = 'Campo Preço por Kg é obrigatório';
-      }
-
-      this.isValorTotalValido = !!this.formData.valorTotal.trim();
-      if (!this.isValorTotalValido) {
-        this.valorTotalPlaceholder = 'Campo Valor Total é obrigatório';
-      }
-
-      this.isFinalidadeValida = !!this.formData.finalidade.trim();
-      if (!this.isFinalidadeValida) {
-        this.finalidadePlaceholder = 'Campo Finalidade é obrigatório';
-      }
-
-      
-      if (this.formData.observacao === '') {
-        this.formData.observacao = null;
-      }
-
-      return (
-        this.isDataValida &&
-        this.isBrincoValido &&
-        this.isPesoValido &&
-        this.isprecoKgValido &&
-        this.isValorTotalValido &&
-        this.isFinalidadeValida
-      );
-    },
-
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //DATA DA VENDA
       if(this.formData.dataVenda != null && this.formData.dataVenda.trim() != ''){
@@ -297,6 +270,11 @@ export default {
         this.valorTotalPlaceholder = 'Valor Total é um Campo Obrigatório';
       }
 
+      //OBSERVAÇÕES
+      if(this.formData.observacao != null && this.formData.observacao.trim() === ''){
+        this.formData.observacao = null;
+      } 
+
       return (
         this.isDataValida &&
         this.isprecoKgValido &&
@@ -307,6 +285,22 @@ export default {
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    atualizaValorTotalPeloPeso(){
+      if(this.formData.precoKg != null && this.formData.precoKg != ''){
+        this.formData.valorTotal = this.replaceVirgulaPonto(this.formData.precoKg) * this.replaceVirgulaPonto(this.formData.peso);
+        this.formData.valorTotal = this.replacePontoVirgula(this.formData.valorTotal.toString());
+      }
+    },
+
+    atualizaValorTotalPeloPrecoKg(){
+      if(this.formData.peso != null && this.formData.peso != ''){
+        this.formData.valorTotal = this.replaceVirgulaPonto(this.formData.precoKg.toString) * this.replaceVirgulaPonto(this.formData.peso);
+        this.formData.valorTotal = this.replacePontoVirgula(this.formData.valorTotal.toString());
+      }
+    },
+
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'vendas') {
@@ -314,49 +308,16 @@ export default {
       }
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/vendas-animais/', this.formData , {
-        });
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/vendas-animais');
-          } else {
-            alert('Erro ao cadastrar venda. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      } 
+      return valorString;
     },
 
-    resetForm() {
-      this.formData = {
-        id: null,
-        animal: '',
-        dataVenda: '',
-        peso: '',
-        precoKg: '',
-        valorTotal: '',
-        finalidade: '',
-        observacao: null,
-      },
-      this.isBrincoValido = true,
-      this.isDataValida = true,
-      this.isPesoValido =  true,
-      this.isprecoKgValido = true,
-      this.isValorTotalValido = true,
-      this.isFinalidadeValida = true,
-      this.brincoPlaceholder = 'Brinco do animal',
-      this.dataPlaceholder = 'Data da venda',
-      this.pesoPlaceholder = 'Peso do animal',
-      this.precoKgPlaceholder = 'Preço por KG',
-      this.valorTotalPlaceholder = 'Valor Total',
-      this.finalidadePlaceholder = 'Finalidade'
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
+
+      return valorString;
     },
   },
 };

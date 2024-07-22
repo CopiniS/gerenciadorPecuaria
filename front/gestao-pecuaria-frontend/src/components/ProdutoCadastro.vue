@@ -65,6 +65,7 @@ export default {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
       contadorDescricao: 0,
+      produtosDaApi: [],
       formData: {
         id: null,
         nome: '',
@@ -80,31 +81,50 @@ export default {
       categoriaPlaceholder: 'Categoria do Produto*',
     };
   },
+  mounted() {
+      this.buscarProdutosDaApi();
+  },
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarDescricaoMask(event){
       const value = event.target.value;
       this.formData.descricao = this.observacoesMask(value);
       this.contadorDescricao = this.formData.descricao.length;
     },
 
-    validarFormulario() {
-      this.isNomeValido = !!this.formData.nome.trim();
-      if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Produto é obrigatório';
+    
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async submitForm() {
+      if (this.verificaVazio() && this.validarFormulario()) {
+        try {
+          const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {
+          });
 
-      this.isTipoValido = !!this.formData.tipo.trim();
-      if (!this.isTipoValido) this.tipoPlaceholder = 'Campo Tipo do produto é obrigatório';
-
-      this.isCategoriaValida = !!this.formData.categoria.trim();
-      if (!this.isCategoriaValida) this.categoriaPlaceholder = 'Campo Categoria do Produto é obrigatório';
-
-      
-      if (this.formData.descricao === '') {
-        this.formData.descricao = null;
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/produtos');
+          } else {
+            alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
       }
-
-      return this.isNomeValido && this.isTipoValido && this.isCategoriaValida;
+    },  
+    
+    async buscarProdutosDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/produtos/' , {
+        });
+        this.produtosDaApi = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar produtos da API:', error);
+      }
     },
 
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //NOME DO PRODUTO
       if(this.formData.nome != null){
@@ -138,20 +158,14 @@ export default {
         this.tipoPlaceholder = 'Tipo do Produto é um Campo Obrigatório'
       }
 
-      //CATEGORIA DO PRODUTO
-      if(this.formData.categoria != null){
-        if(this.formData.categoria.trim() != ''){
-          this.isCategoriaValida = true;
-          this.categoriaPlaceholder = 'Categoria do Produto';
-        }
-        else{
-          this.isCategoriaValida = false;
-          this.categoriaPlaceholder = 'Categoria do Produto é um Campo Obrigatório';
-        }
+      //DESCRIÇÃO
+      if(this.formData.descricao != null && this.formData.descricao.trim() == ''){
+        this.formData.descricao = null;
       }
-      else{
-        this.isCategoriaValida = false;
-        this.categoriaPlaceholder = 'Categoria do Produto é um Campo Obrigatório';
+
+      //CATEGORIA
+      if(this.formData.categoria != null && this.formData.categoria.trim() == ''){
+        this.formData.categoria = null;
       }
 
       return(
@@ -161,48 +175,30 @@ export default {
       );
     },
 
+    validarFormulario(){
+      let valido = true;
+      this.isNomeValido = true;
+      this.nomePlaceholder = 'Nome do Produto';
+
+      for (let produto of this.produtosDaApi) {
+        if (produto.nome === this.formData.nome) {
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Este Produto já está cadastrado';
+          this.formData.nome = null;
+          valido = false;
+          break;
+        }
+      }
+      return valido;
+    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'produtos') {
         this.$router.push('/produtos');
       }
-    },
-
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {
-          });
-
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/produtos');
-          } else {
-            alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        nome: null,
-        tipo: null,
-        categoria: null,
-        descricao: null,
-      };
-
-      this.isNomeValido = true,
-        this.isTipoValido = true,
-        this.isCategoriaValida = true,
-        this.nomePlaceholder = 'Nome do Produto',
-        this.tipoPlaceholder = 'Tipo do produto'
-      this.categoriaPlaceholder = 'Categoria do Produto'
     },
   },
 };

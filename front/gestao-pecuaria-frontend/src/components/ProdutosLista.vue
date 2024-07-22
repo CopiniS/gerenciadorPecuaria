@@ -63,7 +63,7 @@
               <td>{{ produto.nome }}</td>
               <td>{{ produto.tipo }}</td>
               <td>{{ produto.categoria }}</td>
-              <td :class="{ 'is-invalid': achaEstoque(produto.id) <= 0 }">{{ achaEstoque(produto.id) }}</td>
+              <td :class="{ 'is-invalid': achaEstoque(produto.id) <= 0 }">{{ replacePontoVirgula(achaEstoque(produto.id).toString()) }}</td>
               <td>
                 <button @click="acessarEdicao(produto)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
                 <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
@@ -128,6 +128,7 @@ export default {
     this.buscarEstoqueDaApi();
   },
   methods: {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarProdutosDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/' , {
@@ -153,6 +154,52 @@ export default {
       }
     },
 
+    async apagarProduto() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, {
+        });
+
+        if (response.status === 204) {
+          alert('Produto apagado com sucesso!');
+          this.buscarProdutosDaApi();
+        } else {
+          alert('Erro ao apagar produto. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal("confirmacaoExclusaoModal");
+    },
+
+
+//FILTROS---------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.produtos = this.produtosDaApi.filter(produto => {
+        if(produto.categoria == null){
+          produto.categoria = '';
+        }
+
+        return  produto.nome.toLowerCase().includes(this.filtro.nome) &&
+                produto.tipo.includes(this.filtro.tipo) &&
+                produto.categoria.toLowerCase().includes(this.filtro.categoria);
+        });
+    },
+
+    limparFiltro() {
+      this.filtro.nome = '';
+      this.filtro.tipo = '';
+      this.filtro.categoria = '';
+      this.produtos = this.produtosDaApi;
+
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES---------------------------------------------------------------------------------------------------------------------
     achaEstoque(produtoId){
       let quantidade;
       this.estoque.forEach(e => {
@@ -187,46 +234,17 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
     confirmarExclusao(produto) {
       this.formData = {
         id: produto.id,
       };
     },
-    
-    async apagarProduto() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, {
-        });
 
-        if (response.status === 204) {
-          alert('Produto apagado com sucesso!');
-          this.buscarProdutosDaApi();
-        } else {
-          alert('Erro ao apagar produto. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
-    },
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
 
-    aplicarFiltro() {
-      this.produtos = this.produtosDaApi.filter(produto => {
-        return  produto.nome.toLowerCase().includes(this.filtro.nome) &&
-                produto.tipo.includes(this.filtro.tipo) &&
-                produto.categoria.toLowerCase().includes(this.filtro.categoria);
-        });
-    },
-    limparFiltro() {
-      this.filtro.nome = '';
-      this.filtro.tipo = '';
-      this.filtro.categoria = '';
-      this.produtos = this.produtosDaApi;
-
-    },
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
+      return valorString;
     },
   }
 };

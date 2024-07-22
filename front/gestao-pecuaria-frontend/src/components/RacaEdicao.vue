@@ -49,6 +49,7 @@ export default {
     data() {
         return {
             activeTab: 'edicao', // Começa na aba de edição
+            racasDaApi: null,
             formData: {
                 id: null,
                 nome: ''
@@ -63,8 +64,11 @@ export default {
         if (racaId) {
             this.fetchRaca(racaId);
         }
+
+        this.buscarRacasDaApi();
     },
     methods: {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async fetchRaca(id) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/racas/${id}`);
@@ -75,11 +79,59 @@ export default {
         console.error('Erro ao carregar dados da raca:', error);
       }
     },
-    validarFormulario() {
-      this.isNomeValido = !!this.formData.racaPredominante && this.formData.racaPredominante.trim() !== '';
-      return this.isNomeValido;
+
+    async submitForm() {
+      if (this.verificaVazio() && this.validarFormulario()) {
+       try {
+          const response = await api.patch(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData , {
+        });
+
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.$router.push('/racas');
+          } else {
+            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
     },
 
+    async buscarRacasDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/racas/');
+        this.racasDaApi = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar raças da API:', error);
+      }
+    },
+
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario() {
+      let valido = true;
+      this.isNomeValido = true;
+      this.nomePlaceholder = 'Nome do raca';
+      
+      // Cria uma nova lista sem o item com o id atual
+      let racasComExclusao = this.racasDaApi.filter(raca => raca.id !== this.formData.id);
+
+      // Verifica se o nome do raca já existe na lista
+      for (let i = 0; i < racasComExclusao.length; i++) {
+        if (racasComExclusao[i].nome === this.formData.nome) {
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Esta Raça já está cadastrada';
+          this.formData.nome = null;
+          valido = false;
+          break;
+        }
+      }
+      
+      return valido;
+    },
+    
     verificaVazio(){
       if(this.formData.nome != null){
         if(this.formData.nome.trim() != ''){
@@ -99,6 +151,8 @@ export default {
       return this.isNomeValido;
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'racas') {
@@ -111,35 +165,6 @@ export default {
 
     cancelarEdicao() {
       this.$router.push('/racas');
-    },
-
-    async submitForm() {
-      if (this.verificaVazio()) {
-       try {
-          const response = await api.patch(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData , {
-        });
-
-          if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.resetForm();
-            this.$router.push('/racas');
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    resetForm() {
-        this.formData = {
-            id: null,
-            nome: ''
-            },
-        this.isNomeValido = true,
-        this.nomePlaceholder = 'Nome da Raca'
     },
   },
 };

@@ -47,6 +47,7 @@ export default {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
       caminho: '',
+      racasDaApi: null,
       animalJSON: null,
       formData: {
         id: null,
@@ -65,19 +66,58 @@ export default {
     else{
       this.caminho = 'raca';
     }
+
+    this.buscarRacasDaApi();
   },
 
   methods: {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async submitForm() {
+      if (this.verificaVazio() && this.validarFormulario()) {
+        try {
+          const response = await api.post('http://127.0.0.1:8000/racas/', this.formData , {
+        });
 
-    validarFormulario(){
-      this.isNomeValido = !!this.formData.nome && this.formData.nome.trim() !== '';
-      if(!this.isNomeValido){
-        this.formData.nome = ''
-        this.nomePlaceholder = 'Digite um nome de raça válido'
-      }
-      return this.isNomeValido;
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.verificaCaminho();
+          } else {
+            alert('Erro ao cadastrar raca. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      } 
     },
 
+    async buscarRacasDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/racas/');
+        this.racasDaApi = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar raças da API:', error);
+      }
+    },
+
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario(){
+      let valido = true;
+      this.isNomeValido = true;
+      this.nomePlaceholder = 'Nome da Raça';
+      for (let raca of this.racasDaApi) {
+        if (raca.nome === this.formData.nome) {
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Esta Raça já está cadastrada';
+          this.formData.nome = null;
+          valido = false;
+          break;
+        }
+      }
+      return valido;
+    },
+    
     verificaVazio(){
       if(this.formData.nome != null){
         if(this.formData.nome.trim() != ''){
@@ -113,26 +153,8 @@ export default {
       }
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/racas/', this.formData , {
-        });
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.verificaCaminho();
-          } else {
-            alert('Erro ao cadastrar raca. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      } 
-    },
-
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaCaminho(){
       if(this.caminho == 'animal'){
         this.selectTab('cadastro-animal')
@@ -140,15 +162,6 @@ export default {
       else{
         this.selectTab('racas')
       }
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        nome: ''
-      },
-      this.isNomeValido = true,
-      this.nomePlaceholder = 'Nome da Raca'
     },
   },
 };

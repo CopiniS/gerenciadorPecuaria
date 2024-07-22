@@ -112,12 +112,7 @@ export default {
     this.buscarRacasDaApi();
   },
   methods: {
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'animais') {
-        this.$router.push('/animais');
-      }
-    },
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarRacasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/racas/');
@@ -125,6 +120,50 @@ export default {
         this.racas = this.racasDaApi;
       } catch (error) {
         console.error('Erro ao buscar raças da API:', error);
+      }
+    },
+
+    async apagarRaca() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/racas/${this.formData.id}/`, {
+        });
+
+        if (response.status === 204) {
+          alert('Raca apagada com sucesso!');
+          this.buscarRacasDaApi();
+        } else {
+          alert('Erro ao apagar raca. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal("confirmacaoExclusaoModal");
+    },
+
+
+//FILTROS---------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.racas = this.racasDaApi.filter(raca => {
+        return  raca.nome.toLowerCase().includes(this.filtro.nome);
+        });
+    },
+    
+    limparFiltro() {
+      this.filtro.nome = '';
+      this.racas = this.racasDaApi;
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'animais') {
+        this.$router.push('/animais');
       }
     },
 
@@ -150,41 +189,11 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
     confirmarExclusao(raca) {
       this.formData = {
         id: raca.id,
       };
-    },
-    async apagarRaca() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/racas/${this.formData.id}/`, {
-        });
-
-        if (response.status === 204) {
-          alert('Raca apagada com sucesso!');
-          this.buscarRacasDaApi();
-        } else {
-          alert('Erro ao apagar raca. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
-    },
-
-    aplicarFiltro() {
-      this.racas = this.racasDaApi.filter(raca => {
-        return  raca.nome.toLowerCase().includes(this.filtro.nome);
-        });
-    },
-    limparFiltro() {
-      this.filtro.nome = '';
-      this.racas = this.racasDaApi;
-    },
-
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
     },
   }
 };

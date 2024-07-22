@@ -107,85 +107,96 @@ export default {
         areaPlaceholder: 'Área*'
     };
   },
-    mounted() {
-        this.buscarEstadosDaApi();
+  
+  mounted() {
+    this.buscarEstadosDaApi();
+  },
+    
+  methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarAreaMask(event){
+      const value = event.target.value;
+      this.formData.area = this.valorMask(value);
+    },
+
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async buscarCidadesPorEstado(estadoNome) {
+        let estadoId;
+
+        this.estados.forEach(estado => {
+            if(estadoNome === estado.nome){
+                estadoId = estado.id;
+            }
+        });
+
+        try {
+            const response = await api.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`);
+            this.cidades = response.data;
+        } catch (error) {
+            console.error('Erro ao buscar cidades da API:', error);
+        }
+    },
+
+    async buscarEstadosDaApi() {
+        try {
+            const response = await api.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+            this.estados = response.data;
+        } catch (error) {
+            console.error('Erro ao buscar cidades da API:', error);
+        }
     },
     
-    methods: {
-        aplicarAreaMask(event){
-          const value = event.target.value;
-          this.formData.area = this.valorMask(value);
-        },
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+          //FORMATA AREA
+          this.formData.area = this.replaceVirgulaPonto(this.formData.area);
 
-        async buscarCidadesPorEstado(estadoNome) {
-            let estadoId;
+          const response = await api.post('http://127.0.0.1:8000/propriedades/', this.formData);
 
-            this.estados.forEach(estado => {
-                if(estadoNome === estado.nome){
-                    estadoId = estado.id;
-                }
-            });
-
-            try {
-                const response = await api.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`);
-                this.cidades = response.data;
-            } catch (error) {
-                console.error('Erro ao buscar cidades da API:', error);
-            }
-        },
-
-
-        async buscarEstadosDaApi() {
-            try {
-                const response = await api.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
-                this.estados = response.data;
-            } catch (error) {
-                console.error('Erro ao buscar cidades da API:', error);
-            }
-        },
-
-      validarFormulario() {
-        this.isNomeValido = !!this.formData.nome;
-        this.isCidadeValida = !!this.formData.cidade;
-        this.isEstadoValido = !!this.formData.estado;
-        this.isEnderecoValido = !!this.formData.endereco;
-        this.isLatitudeValida = this.validarLatitude(this.formData.latitude);
-        this.isLongitudeValida = this.validarLongitude(this.formData.longitude);
-        this.isAreaValida = !!this.formData.area;
-
-        this.nomePlaceholder = this.isNomeValido ? 'Nome da propriedade' : 'Nome da propriedade é obrigatório';
-        this.cidadePlaceholder = this.isCidadeValida ? 'Cidade' : 'Cidade é obrigatória';
-        this.estadoPlaceholder = this.isEstadoValido ? 'Estado' : 'Estado é obrigatório';
-        this.enderecoPlaceholder = this.isEnderecoValido ? 'Endereço' : 'Endereço é obrigatório';
-        this.latitudePlaceholder = this.isLatitudeValida ? 'Latitude' : 'Latitude inválida';
-        this.longitudePlaceholder = this.isLongitudeValida ? 'Longitude' : 'Longitude inválida';
-        this.areaPlaceholder = this.isAreaValida ? 'Área' : 'Área é obrigatória';
-
-        return (
-          this.isNomeValido &&
-          this.isCidadeValida &&
-          this.isEstadoValido &&
-          this.isEnderecoValido &&
-          this.isLatitudeValida &&
-          this.isLongitudeValida &&
-          this.isAreaValida
-        );
-      },
-
-    validarLatitude(latitude) {
-      const lat = parseFloat(latitude);
-      return !isNaN(lat) && lat >= -90 && lat <= 90;
-    },
-    validarLongitude(longitude) {
-      const lon = parseFloat(longitude);
-      return !isNaN(lon) && lon >= -180 && lon <= 180;
-    },
-
-    selectTab(tab) {
-      this.activeTab = tab;
-      if (tab === 'propriedades') {
+          if (response.status === 201) {
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/propriedades');
+          } else {
+              alert('Erro ao cadastrar propriedade. Tente novamente mais tarde');
+          }
+        } catch (error) {
+            console.error('Erro ao enviar requisição:', error);
+            alert('Erro ao enviar requisição. Verifique o console para mais detalhes');
+        }
         this.$router.push('/propriedades');
       }
+    },
+
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario() {
+      this.isNomeValido = !!this.formData.nome;
+      this.isCidadeValida = !!this.formData.cidade;
+      this.isEstadoValido = !!this.formData.estado;
+      this.isEnderecoValido = !!this.formData.endereco;
+      this.isLatitudeValida = this.validarLatitude(this.formData.latitude);
+      this.isLongitudeValida = this.validarLongitude(this.formData.longitude);
+      this.isAreaValida = !!this.formData.area;
+
+      this.nomePlaceholder = this.isNomeValido ? 'Nome da propriedade' : 'Nome da propriedade é obrigatório';
+      this.cidadePlaceholder = this.isCidadeValida ? 'Cidade' : 'Cidade é obrigatória';
+      this.estadoPlaceholder = this.isEstadoValido ? 'Estado' : 'Estado é obrigatório';
+      this.enderecoPlaceholder = this.isEnderecoValido ? 'Endereço' : 'Endereço é obrigatório';
+      this.latitudePlaceholder = this.isLatitudeValida ? 'Latitude' : 'Latitude inválida';
+      this.longitudePlaceholder = this.isLongitudeValida ? 'Longitude' : 'Longitude inválida';
+      this.areaPlaceholder = this.isAreaValida ? 'Área' : 'Área é obrigatória';
+
+      return (
+        this.isNomeValido &&
+        this.isCidadeValida &&
+        this.isEstadoValido &&
+        this.isEnderecoValido &&
+        this.isLatitudeValida &&
+        this.isLongitudeValida &&
+        this.isAreaValida
+      );
     },
 
     verificaVazio(){
@@ -312,51 +323,29 @@ export default {
       );
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-            const response = await api.post('http://127.0.0.1:8000/propriedades/', this.formData);
+    validarLatitude(latitude) {
+      const lat = parseFloat(latitude);
+      return !isNaN(lat) && lat >= -90 && lat <= 90;
+    },
+    
+    validarLongitude(longitude) {
+      const lon = parseFloat(longitude);
+      return !isNaN(lon) && lon >= -180 && lon <= 180;
+    },
 
-            if (response.status === 201) {
-                alert('Cadastro realizado com sucesso!');
-                this.$router.push('/propriedades');
-            } else {
-                alert('Erro ao cadastrar propriedade. Tente novamente mais tarde');
-            }
-        } catch (error) {
-            console.error('Erro ao enviar requisição:', error);
-            alert('Erro ao enviar requisição. Verifique o console para mais detalhes');
-        }
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    selectTab(tab) {
+      this.activeTab = tab;
+      if (tab === 'propriedades') {
         this.$router.push('/propriedades');
       }
     },
 
-    resetForm() {
-      this.formData = {
-            id: null,
-            nome: '',
-            endereco: '',
-            estado: '',
-            cidade: '',
-            latitude: '',
-            longitude: '',
-            area: '',
-            produtor: [],
-        },
-        this.isNomeValido = true,
-        this.isCidadeValida = true,
-        this.isEstadoValido = true,
-        this.isEnderecoValido = true,
-        this.isLatitudeValida = true,
-        this.isLongitudeValida = true,
-        this.isAreaValida = true,
-        this.nomePlaceholder = 'Nome da propriedade',
-        this.cidadePlaceholder = 'Cidade',
-        this.estadoPlaceholder = 'Estado',
-        this.enderecoPlaceholder = 'Endereço',
-        this.latitudePlaceholder = 'Latitude',
-        this.longitudePlaceholder = 'Longitude',
-        this.areaPlaceholder = 'Área'
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
+
+      return valorString;
     },
   },
 };

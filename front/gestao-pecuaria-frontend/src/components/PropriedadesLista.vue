@@ -63,9 +63,9 @@
             <td>{{ propriedade.cidade }}</td>
             <td>{{ propriedade.estado }}</td>
             <td>{{ propriedade.endereco }}</td>
-            <td>{{ propriedade.latitude }}</td>
-            <td>{{ propriedade.longitude }}</td>
-            <td>{{ propriedade.area }}</td>
+            <td>{{ replacePontoVirgula(propriedade.latitude) }}</td>
+            <td>{{ replacePontoVirgula(propriedade.longitude) }}</td>
+            <td>{{ replacePontoVirgula(propriedade.area) }}</td>
             <td>
                 <button v-if="propriedadeAtual == propriedade.id" @click="acessarEdicao(propriedade)" class="btn-acoes btn-sm">
                     <i class="fas fa-edit"></i>
@@ -135,6 +135,7 @@ export default {
     this.buscarPropriedadesDaApi();
   },
   methods: {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarPropriedadesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/propriedades/' , {
@@ -145,7 +146,47 @@ export default {
         console.error('Erro ao buscar propriedades da API:', error);
       }
     },
-    
+
+    async apagarPropriedade() {
+      try {
+        const response = await api.delete(`http://127.0.0.1:8000/propriedades/${this.formData.id}/` , {
+        });
+
+        if (response.status === 204) {
+          alert('Propriedade apagada com sucesso!');
+          this.buscarPropriedadesDaApi();
+        } else {
+          alert('Erro ao apagar propriedade. Tente novamente mais tarde.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar requisição:', error);
+        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+      }
+      this.fecharModal("confirmacaoExclusaoModal");
+    },
+
+
+//FILTROS---------------------------------------------------------------------------------------------------------------------
+    aplicarFiltro() {
+      this.propriedades = this.propriedadesDaApi.filter(propriedade => {
+        return  propriedade.nome.toLowerCase().includes(this.filtro.nome) &&
+                propriedade.cidade.toLowerCase().includes(this.filtro.cidade.toLowerCase()) &&
+                propriedade.estado.toLowerCase().includes(this.filtro.estado.toLowerCase());
+        });
+    },
+
+    limparFiltro() {
+        this.filtro.nome = '';
+        this.filtro.cidade = '';
+        this.filtro.estado = '';
+    },
+
+    toggleFormulario() {
+      this.mostrarFormulario = !this.mostrarFormulario;
+    },
+
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     acessarEdicao(propriedade) {
       this.$router.push({
         name: 'PropriedadeEdicao', 
@@ -172,45 +213,17 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
     confirmarExclusao(propriedade) {
       this.formData = {
         id: propriedade.id,
       };
     },
-    async apagarPropriedade() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/propriedades/${this.formData.id}/` , {
-        });
 
-        if (response.status === 204) {
-          alert('Propriedade apagada com sucesso!');
-          this.buscarPropriedadesDaApi();
-        } else {
-          alert('Erro ao apagar propriedade. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
-    },
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
 
-    aplicarFiltro() {
-      this.propriedades = this.propriedadesDaApi.filter(propriedade => {
-        return  propriedade.nome.toLowerCase().includes(this.filtro.nome) &&
-                propriedade.cidade.toLowerCase().includes(this.filtro.cidade.toLowerCase()) &&
-                propriedade.estado.toLowerCase().includes(this.filtro.estado.toLowerCase());
-        });
-    },
-
-    limparFiltro() {
-        this.filtro.nome = '';
-        this.filtro.cidade = '';
-        this.filtro.estado = '';
-    },
-
-    toggleFormulario() {
-      this.mostrarFormulario = !this.mostrarFormulario;
+      return valorString;
     },
   }
 };

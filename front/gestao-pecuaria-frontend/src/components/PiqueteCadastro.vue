@@ -67,6 +67,7 @@ export default {
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      piquetesDaApi: null,
       formData: {
         id: null,
         nome: '',
@@ -83,6 +84,10 @@ export default {
     };
   },
 
+  mounted(){
+    this.buscarPiquetesDaApi();
+  },
+
   methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarAreaMask(event){
@@ -93,7 +98,7 @@ export default {
 
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
-      if (this.verificaVazio()) {
+      if (this.verificaVazio() && this.validarFormulario()) {
         try {
           //FORMATA AREA
           this.formData.area = this.replaceVirgulaPonto(this.formData.area);
@@ -113,19 +118,36 @@ export default {
       }
     },
 
+    async buscarPiquetesDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/' , {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.piquetesDaApi = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar piquetes da API:', error);
+      }
+    },
+
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    validarFormulario() {
-      this.isNomeValido = !!this.formData.nome.trim();
-      if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Piquete é obrigatório';
+    validarFormulario(){
+      let valido = true;
+      this.isNomeValido = true;
+      this.nomePlaceholder = 'Nome do Piquete';
 
-      this.isTipoCultivoValido = !!this.formData.tipoCultivo.trim();
-      if (!this.isTipoCultivoValido) this.tipoCultivoPlaceholder = 'Campo Tipo do cultivo é obrigatório';
-
-      this.isAreaValida = !!this.formData.area.trim();
-      if (!this.isAreaValida) this.areaPlaceholder = 'Campo Área do Piquete é obrigatório';
-
-      return this.isNomeValido && this.isTipoCultivoValido && this.isAreaValida;
+      for (let piquete of this.piquetesDaApi) {
+        if (piquete.nome === this.formData.nome) {
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Este Piquete já está cadastrado';
+          this.formData.nome = null;
+          valido = false;
+          break;
+        }
+      }
+      return valido;
     },
 
     verificaVazio(){

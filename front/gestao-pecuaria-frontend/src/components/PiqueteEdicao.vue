@@ -67,6 +67,7 @@ export default {
   data() {
     return {
       activeTab: 'edicao',  // Aba inicial é 'edicao'
+      piquetesDaApi: null,
       formData: {
         id: null,
         nome: '',
@@ -84,10 +85,12 @@ export default {
   },
  
   mounted() {
-      const piqueteId = this.$route.params.piqueteId;
-      if (piqueteId) {
-          this.fetchPiquete(piqueteId);
-      }
+    const piqueteId = this.$route.params.piqueteId;
+    if (piqueteId) {
+        this.fetchPiquete(piqueteId);
+    }
+    
+    this.buscarPiquetesDaApi();
   },
   methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -112,7 +115,7 @@ export default {
     },
 
     async submitForm() {
-      if (this.verificaVazio()) {
+      if (this.verificaVazio() && this.validarFormulario()) {
        try {
           //FORMATA AREA
           this.formData.area = this.replaceVirgulaPonto(this.formData.area);
@@ -133,8 +136,43 @@ export default {
       }
     },
 
+    async buscarPiquetesDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/' , {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.piquetesDaApi = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar piquetes da API:', error);
+      }
+    },
+
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario() {
+      let valido = true;
+      this.isNomeValido = true;
+      this.nomePlaceholder = 'Nome do Piquete';
+      
+      // Cria uma nova lista sem o item com o id atual
+      let piquetesComExclusao = this.piquetesDaApi.filter(piquete => piquete.id !== this.formData.id);
+
+      // Verifica se o nome do piquete já existe na lista
+      for (let i = 0; i < piquetesComExclusao.length; i++) {
+        if (piquetesComExclusao[i].nome === this.formData.nome) {
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Este Piquete já está cadastrado';
+          this.formData.nome = null;
+          valido = false;
+          break;
+        }
+      }
+      
+      return valido;
+    },
+    
     verificaVazio(){
       //NOME DO PIQUETE
       if(this.formData.nome != null){

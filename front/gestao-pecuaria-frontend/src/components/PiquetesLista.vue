@@ -133,6 +133,7 @@ export default {
         this.$router.push('/propriedades');
       }
     },
+
     async buscarPiquetesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/' , {
@@ -168,11 +169,13 @@ export default {
         console.error('Botão de fechar não encontrado no modal:', modalId);
       }
     },
+
     confirmarExclusao(piquete) {
       this.formData = {
         id: piquete.id,
       };
     },
+
     async apagarPiquete() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/piquetes/${this.formData.id}/` , {
@@ -197,10 +200,12 @@ export default {
                 piquete.tipoCultivo.includes(this.filtro.tipoCultivo);
         });
     },
+    
     limparFiltro() {
       this.filtro.nome = '';
       this.filtro.tipoCultivo = '';
     },
+    
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },

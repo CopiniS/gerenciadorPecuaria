@@ -83,13 +83,21 @@ export default {
     };
   },
  
-    mounted() {
-        const piqueteId = this.$route.params.piqueteId;
-        if (piqueteId) {
-            this.fetchPiquete(piqueteId);
-        }
+  mounted() {
+      const piqueteId = this.$route.params.piqueteId;
+      if (piqueteId) {
+          this.fetchPiquete(piqueteId);
+      }
+  },
+  methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarAreaMask(event){
+      const value = event.target.value;
+      this.formData.area = this.valorMask(value);
     },
-    methods: {
+
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async fetchPiquete(id) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/piquetes/${id}`);
@@ -97,30 +105,36 @@ export default {
         this.formData.id = piquete.id;
         this.formData.nome = piquete.nome;
         this.formData.tipoCultivo = piquete.tipoCultivo;
-        this.formData.area = piquete.area;
+        this.formData.area = this.replacePontoVirgula(piquete.area);
       } catch (error) {
         console.error('Erro ao carregar dados da piquete:', error);
       }
     },
 
-    aplicarAreaMask(event){
-      const value = event.target.value;
-      this.formData.area = this.valorMask(value);
+    async submitForm() {
+      if (this.verificaVazio()) {
+       try {
+          //FORMATA AREA
+          this.formData.area = this.replaceVirgulaPonto(this.formData.area);
+
+          const response = await api.patch(`http://127.0.0.1:8000/piquetes/${this.formData.id}/`, this.formData , {
+        });
+
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.$router.push('/piquetes');
+          } else {
+            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
     },
 
-    validarFormulario() {
-      this.isNomeValido = !!this.formData.nome.trim();
-      if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Piquete é obrigatório';
 
-      this.isTipoCultivoValido = !!this.formData.tipoCultivo.trim();
-      if (!this.isTipoCultivoValido) this.tipoCultivoPlaceholder = 'Campo Tipo do cultivo é obrigatório';
-
-      this.isAreaValida = !!this.formData.area.trim();
-      if (!this.isAreaValida) this.areaPlaceholder = 'Campo Área do Piquete é obrigatório';
-
-      return this.isNomeValido && this.isTipoCultivoValido && this.isAreaValida;
-    },
-
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
       //NOME DO PIQUETE
       if(this.formData.nome != null){
@@ -177,6 +191,8 @@ export default {
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'piquetes') {
@@ -191,41 +207,16 @@ export default {
       this.$router.push('/piquetes');
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-       try {
-          const response = await api.patch(`http://127.0.0.1:8000/piquetes/${this.formData.id}/`, this.formData , {
-        });
+    replacePontoVirgula(valorString){
+      valorString = valorString.replace(".", ",");
 
-          if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.resetForm();
-            this.$router.push('/piquetes');
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
+      return valorString;
     },
 
-    resetForm() {
-      this.formData = {
-        id: null,
-        nome: '',
-        tipoCultivo: '',
-        area: '',
-        propriedade: localStorage.getItem('propriedadeSelecionada')
-      };
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
 
-      this.isNomeValido = true,
-      this.isTipoCultivoValido = true,
-      this.isAreaValida = true,
-      this.nomePlaceholder = 'Nome do Piquete',
-      this.tipoCultivoPlaceholder = 'Tipo do cultivo'
-      this.areaPlaceholder = 'Área do Piquete'
+      return valorString;
     },
   },
 };

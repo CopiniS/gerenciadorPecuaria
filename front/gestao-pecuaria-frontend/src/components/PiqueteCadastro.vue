@@ -84,11 +84,37 @@ export default {
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarAreaMask(event){
       const value = event.target.value;
       this.formData.area = this.valorMask(value);
     },
 
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async submitForm() {
+      if (this.verificaVazio()) {
+        try {
+          //FORMATA AREA
+          this.formData.area = this.replaceVirgulaPonto(this.formData.area);
+
+          const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData);
+
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/piquetes');
+          } else {
+            alert('Erro ao cadastrar piquete. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     validarFormulario() {
       this.isNomeValido = !!this.formData.nome.trim();
       if (!this.isNomeValido) this.nomePlaceholder = 'Campo Nome do Piquete é obrigatório';
@@ -158,6 +184,8 @@ export default {
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'piquetes') {
@@ -168,40 +196,10 @@ export default {
       }
     },
 
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData);
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.$router.push('/piquetes');
-          } else {
-            alert('Erro ao cadastrar piquete. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        nome: '',
-        tipoCultivo: '',
-        area: '',
-        propriedade: localStorage.getItem('propriedadeSelecionada')
-      };
-
-      this.isNomeValido = true;
-      this.isTipoCultivoValido = true;
-      this.isAreaValida = true;
-      this.nomePlaceholder = 'Nome do Piquete';
-      this.tipoCultivoPlaceholder = 'Tipo do cultivo';
-      this.areaPlaceholder = 'Área do Piquete';
+      return valorString;
     },
   },
 };

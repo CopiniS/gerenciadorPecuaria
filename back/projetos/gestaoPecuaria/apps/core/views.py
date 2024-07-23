@@ -263,6 +263,13 @@ class OcorrenciaViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(animal=animal_selecionado)
         serializer = serializers.OcorrenciaSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path=r'ocorrencia/(?P<id>\d+)')
+    def retornaOcorrenciaSelecionada(self, request, *args, **kwargs):
+        id_ocorrencia = kwargs.get('id')
+        ocorrencia = self.get_queryset().filter(id=id_ocorrencia)
+        serializer = serializers.OcorrenciaComAnimalSerializer(ocorrencia, many=True)
+        return Response(serializer.data)
 
 
 class InseminacaoViewSet(viewsets.ModelViewSet):

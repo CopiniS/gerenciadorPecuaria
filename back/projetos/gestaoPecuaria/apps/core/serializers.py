@@ -94,6 +94,13 @@ class OcorrenciaSerializer(serializers.ModelSerializer):
         model = models.Ocorrencia
         fields = "__all__"
 
+class OcorrenciaComAnimalSerializer(serializers.ModelSerializer):
+    animal = AnimalSerializer(read_only=True)
+    class Meta:
+        model = models.Ocorrencia
+        fields = "__all__"
+
+
 class InseminacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Inseminacao

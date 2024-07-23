@@ -46,8 +46,10 @@ import OutraDespesaEdicao from '@/components/OutraDespesaEdicao.vue';
 import OutraDespesaCadastro from '@/components/OutraDespesaCadastro.vue';
 import PiqueteCadastro from '@/components/PiqueteCadastro.vue';
 import PiqueteEdicao from '@/components/PiqueteEdicao.vue';
-import AnimaisCadastro from '@/components/AnimaisCadastro.vue';
+import AnimaisCadastro from '@/components/AnimaisCadastro.vue'; 
 import AnimaisEdicao from '@/components/AnimaisEdicao.vue';
+import OcorrenciaCadastro from '@/components/OcorrenciaCadastro.vue';
+import OcorrenciaEdicao from '@/components/OcorrenciaEdicao.vue';
 
 const routes = [
   
@@ -333,6 +335,21 @@ const routes = [
     name: 'CadastroDespesa',
     component: OutraDespesaCadastro
   },
+
+  {
+    path: '/ocorrencia-cadastro/:animalId',
+    name: 'OcorrenciaCadastro',
+    component: OcorrenciaCadastro,
+    props: true,
+  },
+
+  {
+    path: '/ocorrencia-edicao/:ocorrenciaId',
+    name: 'OcorrenciaEdicao',
+    component: OcorrenciaEdicao,
+    props: true,
+  },
+
 ];
 
 const router = createRouter({

@@ -470,7 +470,7 @@ export default {
       if (tab === 'animais') {
         this.$router.push('/animais');
       }
-      if (tab === 'visualizacao') {
+      else if (tab === 'visualizacao') {
         this.$router.push({
             name: 'VizualizarAnimal', 
             params: { animalId: this.formData.id } 

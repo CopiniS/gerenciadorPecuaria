@@ -5,6 +5,9 @@
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
           @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
           de Animais</button>
+        <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-visualizacao-tab"
+          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-visualizacao" 
+          aria-selected="true">Visualização de Animais</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
           @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
           aria-selected="false">Edição de Animais</button>
@@ -23,7 +26,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
               <select v-model="formData.piquete" :class="{ 'is-invalid': !isPiqueteValido }" class="form-select"
-                id="piquete" aria-label="Piquete" :placeholder="piquetePlaceholder" required>
+                id="piquete" aria-label="Piquete" :placeholder="piquetePlaceholder" >
                 <option disabled value="">Selecione o piquete</option>
                 <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
               </select>
@@ -32,18 +35,18 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i>*</span>
               <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text" class="form-control"
-                id="brinco" :placeholder="brincoPlaceholder" required pattern="\d+">
+                @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
-                class="form-control" id="dataNascimentoEdicao" v-model="formData.dataNascimento" required>
+                class="form-control" id="dataNascimentoEdicao" v-model="formData.dataNascimento" >
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus-mars"></i>*</span>
               <select v-model="formData.sexo" :class="{ 'is-invalid': !isSexoValido }" class="form-select" id="sexo"
-                aria-label="Sexo" :placeholder="sexoPlaceholder" required>
+                aria-label="Sexo" :placeholder="sexoPlaceholder" >
                 <option disabled value="">Selecione o sexo</option>
                 <option value="macho">Macho</option>
                 <option value="femea">Fêmea</option>
@@ -54,7 +57,7 @@
               <select v-model="formData.racaPredominante" :class="{ 'is-invalid': !isRacaPredominanteValido }"
                 class="form-select" id="racaPredominante" aria-label="Raça Predominante"
                 :placeholder="racaPredominantePlaceholder">
-                <option disabled value="">Selecione a raça predominante</option>
+                <option disabled :value="null">Selecione a raça predominante</option>
                 <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
               </select>
               <button @click="() => { this.$router.push('/raca-edicao'); }" type="button" class="btn btn-acoes"><i
@@ -68,7 +71,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-mars"></i></span>
-              <input v-model="formData.brincoPai" @input="filterMachos()" type="text" class="form-control"
+              <input v-model="formData.brincoPai" @input="inputBrincoPai" type="text" class="form-control"
                 id="brincoPai" placeholder="Digite o brinco do Pai..." pattern="\d*">
             </div>
             <div class="list-group" v-if="formData.brincoPai && machosFiltrados.length">
@@ -79,7 +82,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-venus"></i></span>
-              <input v-model="formData.brincoMae" @input="filterFemeas()" type="text" class="form-control"
+              <input v-model="formData.brincoMae" @input="inputBrincoMae" type="text" class="form-control"
                 id="brincoMae" placeholder="Digite o brinco da Mãe..." pattern="\d*">
             </div>
             <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
@@ -96,7 +99,8 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-                placeholder="Observações">
+                @input="aplicarObservacaoMask" placeholder="Observações">
+              <div>({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
@@ -105,13 +109,12 @@
               <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataCompraValido }" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataDaCompra" v-model="formData.dataCompra" required>
+                id="dataDaCompra" v-model="formData.dataCompra" >
             </div>
             <div v-if="comprado" class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-weight"></i>*</span>
               <input v-model="formData.valorCompra" :class="{ 'is-invalid': !isValorCompraValido }" type="text"
-                class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder" required
-                pattern="^\d+(\.\d{1,2})?$">
+                @input="aplicarValorCompraMask" class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('animais')">Cancelar</button>
@@ -126,15 +129,16 @@
 
 <script>
 import api from '/src/interceptadorAxios';
-import $ from 'jquery';
-import 'jquery-mask-plugin/dist/jquery.mask.min';
+import { masksMixin } from '../mixins/maks';
 
 export default {
+  mixins: [masksMixin],
+
   name: 'TelaAnimais',
   data() {
     return {
       activeTab: 'edicao',
-      animais: [],
+      animaisDaApi: [],
       racas: [],
       piquetes: [],
       listaMachos: [],
@@ -142,6 +146,7 @@ export default {
       femeasFiltradas: [],
       machosFiltrados: [],
       comprado: false,
+      contadorObservacoes: 0,
       formData: {
         id: null,
         brinco: '',
@@ -178,71 +183,188 @@ export default {
     }
   },
   async mounted() {
-    const animalId = localStorage.getItem('animalSelecionado');
+    const animalId = this.$route.params.animalId;
     if (animalId) {
-      this.animalId = animalId;
-      await this.buscarAnimalDaApi(animalId);
+      this.fetchAnimal(animalId);
     }
     this.buscarRacasDaApi();
     this.buscarPiquetesDaApi();
-
-
-    $(document).ready(() => {
-      $('#brinco').mask('00000000000000000000', { reverse: true });
-      $('#brincoPai').mask('00000000000000000000', { reverse: true });
-      $('#brincoMae').mask('00000000000000000000', { reverse: true });
-    });
+    this.buscarAnimaisDaApi();
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarBrincoMask(event){
+      const value = event.target.value;
+      this.formData.brinco =  this.brincoMask(value);
+    },
+
+    aplicarObservacaoMask(event){
+      const value = event.target.value;
+      this.formData.observacoes = this.observacoesMask(value);
+      this.contadorObservacoes = this.formData.observacoes.length;
+    },
+
+    aplicarValorCompraMask(event) {
+      const value = event.target.value;
+      this.formData.valorCompra =  this.valorMask(value);
+    },
+
+    aplicarBrincoPaiMask(value){
+      this.formData.brincoPai =  this.brincoMask(value);
+    },
+
+    inputBrincoPai(event){
+      const value = event.target.value;
+      this.aplicarBrincoPaiMask(value);
+      this.filterMachos();
+    },
+
+    aplicarBrincoMaeMask(value){
+      this.formData.brincoMae =  this.brincoMask(value);
+    },
+
+    inputBrincoMae(event){
+      const value = event.target.value;
+      this.aplicarBrincoMaeMask(value);
+      this.filterFemeas();
+    },
+
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async fetchAnimal(animalId) {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/animais/animal/${animalId}/`);
+        const animais = response.data;
+        this.formData.id = animais[0].id;
+        this.formData.brinco = animais[0].brinco;
+        this.formData.piquete = animais[0].piquete.id;
+        this.formData.dataNascimento = animais[0].dataNascimento;
+        this.formData.sexo = animais[0].sexo;
+        if(this.formData.racaPredominante != null){
+          this.formData.racaPredominante = animais[0].racaPredominante.id;
+        }
+        this.formData.racaObservacao = animais[0].racaObservacao;
+        this.formData.brincoPai = animais[0].brincoPai;
+        this.formData.brincoMae = animais[0].brincoMae;
+        this.formData.rfid = animais[0].rfid;
+        this.formData.observacoes = animais[0].observacoes;
+        this.formData.dataCompra = animais[0].dataCompra;
+        this.formData.valorCompra = this.replacePontoVirgula(animais[0].valorCompra);
+
+        if(this.formData.dataCompra){
+          this.comprado = true;
+        }
+
+        if(this.formData.observacoes){
+          this.contadorObservacoes = this.formData.observacoes;
+        }
+
+      } catch (error) {
+        console.error('Erro ao buscar animal da API:', error);
+      }
+    },
+
+    async buscarPiquetesDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.piquetes = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar piquetes da API:', error);
+      }
+    },
+
+    async buscarRacasDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/racas/', {
+        });
+        this.racas = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar raças da API:', error);
+      }
+    },
+
+    async buscarAnimaisDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/animais/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.animaisDaApi = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar animais da API:', error);
+      }
+    },
+
+    async submitForm() {
+      if (this.verificaVazio() && this.validarFormulario()) {
+        try {
+          //FORMATA VALOR COMPRA
+          this.formData.valorCompra = this.replaceVirgulaPonto(this.formData.valorCompra);
+
+          const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
+          });
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.selectTab('visualizacao');
+          } else {
+            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterFemeas() {
+      this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoMae));
+    },
+
+    selectMae(animal) {
+      this.formData.brincoMae = animal.brinco;
+      this.femeasFiltradas = [];
+    },
+
+    filterMachos() {
+      this.machosFiltrados = this.listaMachos.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoPai));
+    },
+
+    selectPai(animal) {
+      this.formData.brincoPai = animal.brinco;
+      this.machosFiltrados = [];
+    },
+
+
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     validarFormulario() {
-      this.isPiqueteValido = !!this.formData.piquete;
-      if (this.formData.brinco) {
-        this.isBrincoValido = /^\d+$/.test(this.formData.brinco.trim());
+      let valido = true;
+      this.isBrincoValido = true;
+      this.brincoPlaceholder = 'Brinco do Animal';
+      
+      // Cria uma nova lista sem o item com o id atual
+      let brincosComExclusao = this.animaisDaApi.filter(animal => animal.id !== this.formData.id);
+
+      // Verifica se o nome do produto já existe na lista
+      for (let i = 0; i < brincosComExclusao.length; i++) {
+        if (brincosComExclusao[i].brinco === this.formData.brinco) {
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Este Brinco já foi cadastrado';
+          this.formData.brinco = null;
+          valido = false;
+          break;
+        }
       }
-      this.isDataNascimentoValido = !!this.formData.dataNascimento;
-      this.isSexoValido = !!this.formData.sexo;
-      this.isRacaPredominanteValido = !!this.formData.racaPredominante;
-
-      if (this.formData.rfid !== null) {
-        this.isRfidValido = /^\d*$/.test(this.formData.rfid.trim());
-      }
-
-      if (this.formData.racaObservacao === '') {
-        this.formData.racaObservacao = null;
-      }
-
-      if (this.formData.observacao === '') {
-        this.formData.observacao = null;
-      }
-
-      if (this.comprado) {
-        this.isDataCompraValido = !!this.formData.dataCompra;
-        this.isValorCompraValido = /^\d+(\.\d{1,2})?$/.test(this.formData.valorCompra);
-      } else {
-        this.isDataCompraValido = true;
-        this.isValorCompraValido = true;
-      }
-
-      this.piquetePlaceholder = this.isPiqueteValido ? 'Selecione o piquete' : 'Selecione um piquete válido';
-      this.brincoPlaceholder = this.isBrincoValido ? 'Digite o brinco' : 'Campo Brinco é obrigatório (somente números)';
-      this.dataNascimentoPlaceholder = this.isDataNascimentoValido ? 'Selecione a data de nascimento' : 'Campo Data de Nascimento é obrigatório';
-      this.sexoPlaceholder = this.isSexoValido ? 'Selecione o sexo' : 'Selecione o sexo';
-      this.racaPredominantePlaceholder = this.isRacaPredominanteValido ? 'Selecione a raça predominante' : 'Selecione a raça predominante';
-      this.rfidPlaceholder = this.isRfidValido ? 'Digite o RFID' : 'Campo RFID é obrigatório (somente números)';
-      this.dataCompraPlaceholder = this.isDataCompraValido ? 'Selecione a data de compra' : 'Campo Data de Compra é obrigatório';
-      this.valorCompraPlaceholder = this.isValorCompraValido ? 'Digite o valor da compra' : 'Campo Valor da Compra é obrigatório';
-
-      return (
-        this.isPiqueteValido &&
-        this.isBrincoValido &&
-        this.isDataNascimentoValido &&
-        this.isSexoValido &&
-        this.isRacaPredominanteValido &&
-        this.isRfidValido &&
-        this.isDataCompraValido &&
-        this.isValorCompraValido
-      );
+      
+      return valido;
     },
 
     verificaVazio(){
@@ -341,76 +463,18 @@ export default {
       );
     },
 
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'animais') {
         this.$router.push('/animais');
       }
-      if (tab === 'viewAnimal') {
-        this.$router.push('/vizualizarAnimal');
-      }
-    },
-
-    async buscarAnimalDaApi() {
-      try {
-        const response = await api.get(`http://127.0.0.1:8000/animais/animal/${this.animalId}/`);
-        this.animais = response.data;
-        this.animal = this.animais[0];
-        this.formDataFoto.animal = this.animal.id;
-        this.buscarOcorrenciasDoAnimal();
-
-        this.formData = {
-          ...this.animal,
-          dataNascimento: this.animal.dataNascimento ? this.animal.dataNascimento.split('T')[0] : '',
-          dataCompra: this.animal.dataCompra ? this.animal.dataCompra.split('T')[0] : '',
-        };
-        this.comprado = !!this.animal.dataCompra;
-
-      } catch (error) {
-        console.error('Erro ao buscar animal da API:', error);
-      }
-    },
-
-    async buscarPiquetesDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
-          params: {
-            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-          },
-        });
-        this.piquetes = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar piquetes da API:', error);
-      }
-    },
-
-    async buscarRacasDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/racas/', {
-        });
-        this.racas = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar raças da API:', error);
-      }
-    },
-
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
-          });
-          if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.resetForm();
-            this.buscarAnimaisDaApi();
-            this.fecharModal("edicaoModal");
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
+      if (tab === 'visualizacao') {
+        this.$router.push({
+            name: 'VizualizarAnimal', 
+            params: { animalId: this.formData.id } 
+        })
       }
     },
 
@@ -437,29 +501,19 @@ export default {
       this.listaMachos = response.data;
     },
 
-    filterFemeas() {
-      this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoMae));
+    replacePontoVirgula(valorString){
+      if(valorString){
+        valorString = valorString.replace(".", ",");
+      }
+      return valorString;
     },
 
-    filterMachos() {
-      this.machosFiltrados = this.listaMachos.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoPai));
+    replaceVirgulaPonto(valorString){
+      if(valorString){
+        valorString = valorString.replace(",", ".");
+      }
+      return valorString;
     },
-
-    selectPai(animal) {
-      this.formData.brincoPai = animal.brinco;
-      this.machosFiltrados = [];
-    },
-
-    selectMae(animal) {
-      this.formData.brincoMae = animal.brinco;
-      this.femeasFiltradas = [];
-    },
-
-    vizualizarAnimal(animal) {
-      localStorage.setItem('animalSelecionado', animal.id);
-      this.$router.push('/vizualizarAnimal');
-    }
-
   }
 }
 </script>

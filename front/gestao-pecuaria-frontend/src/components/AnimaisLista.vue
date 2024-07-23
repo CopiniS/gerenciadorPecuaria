@@ -239,6 +239,7 @@ export default {
         console.error('Erro ao buscar raças da API:', error);
       }
     },
+
     async buscarAnimaisDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/', {
@@ -326,6 +327,7 @@ export default {
       }
       this.fecharModal("confirmacaoExclusaoModal");
     },
+
     async submitForm() {
       if (this.modalTitle === 'Cadastro de Animal') {
         try {
@@ -438,6 +440,7 @@ export default {
                 animal.status.includes(this.filtro.status);
       });
     },
+
     limparFiltro() {
       this.filtro.brinco = '';
       this.filtro.dataNascimento = '';
@@ -450,13 +453,16 @@ export default {
 
       this.animais = this.animaisDaApi;
     },
+    
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
 
     vizualizarAnimal(animal) {
-      localStorage.setItem('animalSelecionado', animal.id);
-      this.$router.push('/vizualizarAnimal');
+      this.$router.push({
+        name: 'VizualizarAnimal', 
+        params: { animalId: animal.id } 
+      })
     }
 
   }

@@ -34,11 +34,11 @@ import AplicacaoProdutoEdicao from '@/components/AplicacaoProdutoEdicao.vue';
 import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue';
 import VendaAnimalCadastro from '@/components/VendaAnimalCadastro.vue';
 import VendaAnimalEdicao from '@/components/VendaAnimalEdicao.vue';
+import AnimalVisualizacao from '@/components/AnimalVizualizacao.vue';
 import TelaInseminacoes from '@/views/TelaInseminacoes.vue';
 import InseminacaoCadastro from '@/components/InseminacaoCadastro.vue';
 import InseminacaoEdicao from '@/components/InseminacaoEdicao.vue';
 import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
-import ViewAnimal from '@/views/ViewAnimal.vue';
 import TelaMovimentacoes from '@/views/TelaMovimentacoes.vue';
 import MovimentacaoCadastro from '@/components/MovimentacaoCadastro.vue';
 import MovimentacaoEdicao from '@/components/MovimentacaoEdicao.vue';
@@ -140,9 +140,18 @@ const routes = [
   },
 
   {
-    path: '/animal-edicao',
+    path: '/animal-edicao/:animalId',
     name: 'AnimalEdicao',
     component: AnimaisEdicao,
+    props: true
+  },
+
+  
+  {
+    path: '/vizualizarAnimal/:animalId',
+    name: 'VizualizarAnimal',
+    component: AnimalVisualizacao,
+    props: true
   },
 
   {
@@ -288,11 +297,6 @@ const routes = [
     name: 'InseminacaoEdicao',
     component: InseminacaoEdicao,
     props: true
-  },
-  {
-    path: '/vizualizarAnimal',
-    name: 'VizualizarAnimal',
-    component: ViewAnimal
   },
   {
     path: '/movimentacoes',

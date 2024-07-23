@@ -25,7 +25,7 @@
         <div class="animal-view">
             <h1>Detalhes do Animal</h1>
             <div class="actions d-flex flex-wrap">
-                <button @click="editarAnimal(animal)" class="btn btn-success mx-1">Editar</button>
+                <button @click="acessarEdicao(animal)" class="btn btn-success mx-1">Editar</button>
                 <button class="btn btn-success mx-1" data-bs-toggle="modal"
                     data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
                 <button class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#cadastroModal">Cadastrar
@@ -375,7 +375,7 @@ export default {
         };
     },
     mounted() {
-        this.animalId = localStorage.getItem('animalSelecionado');
+        this.animalId = this.$route.params.animalId;
         this.buscarAnimalDaApi();
         this.buscarPiquetesDaApi();
         this.buscarRacasDaApi();
@@ -462,9 +462,12 @@ export default {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             return new Date(date).toLocaleDateString(undefined, options);
         },
-        editarAnimal(animal) {
-            localStorage.setItem('animalSelecionado', animal.id);
-            this.$router.push('/animal-edicao');
+
+        acessarEdicao(animal) {
+            this.$router.push({
+            name: 'AnimalEdicao', 
+            params: { animalId: animal.id } 
+            })
         },
 
         editarOcorrencia(ocorrencia) {
@@ -484,6 +487,7 @@ export default {
                 console.error('Botão de fechar não encontrado no modal:', modalId);
             }
         },
+        
         async apagarAnimal() {
             try {
                 const response = await api.delete(`http://127.0.0.1:8000/animais/${this.formDataAnimal.id}/`, {
@@ -525,7 +529,6 @@ export default {
                 descricao: null,
             };
         },
-
 
         async registrarOcorrencia() {
             try {

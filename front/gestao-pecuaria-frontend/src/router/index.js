@@ -50,6 +50,7 @@ import AnimaisCadastro from '@/components/AnimaisCadastro.vue';
 import AnimaisEdicao from '@/components/AnimaisEdicao.vue';
 import OcorrenciaCadastro from '@/components/OcorrenciaCadastro.vue';
 import OcorrenciaEdicao from '@/components/OcorrenciaEdicao.vue';
+import FotoAnimalCadastro from '@/components/FotoAnimalCadastro.vue'
 
 const routes = [
   
@@ -347,6 +348,13 @@ const routes = [
     path: '/ocorrencia-edicao/:ocorrenciaId',
     name: 'OcorrenciaEdicao',
     component: OcorrenciaEdicao,
+    props: true,
+  },
+  
+  {
+    path: '/foto-cadastro/:animalId',
+    name: 'FotoCadastro',
+    component: FotoAnimalCadastro,
     props: true,
   },
 

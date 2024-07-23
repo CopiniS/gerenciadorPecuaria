@@ -1,14 +1,13 @@
 <template>
     <div class="background">
-
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
                     @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais"
                     aria-selected="true">Lista
                     de Animais</button>
-                <button class="nav-link" :class="{ active: activeTab === 'viewAnimal' }" id="nav-view-tab"
-                    @click="selectTab('viewAnimal')" type="button" role="tab" aria-controls="nav-view"
+                <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-view-tab"
+                    @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-view"
                     aria-selected="true">Vizualização
                     do Animal</button>
             </div>
@@ -17,7 +16,7 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais"
                 role="tabpanel" aria-labelledby="nav-animais-tab">
             </div>
-            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'viewAnimal' }" id="nav-view"
+            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'visualizacao' }" id="nav-view"
                 role="tabpanel" aria-labelledby="nav-view-tab">
             </div>
         </div>
@@ -26,11 +25,9 @@
             <h1>Detalhes do Animal</h1>
             <div class="actions d-flex flex-wrap">
                 <button @click="acessarEdicao(animal)" class="btn btn-success mx-1">Editar</button>
-                <button class="btn btn-success mx-1" data-bs-toggle="modal"
-                    data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
+                <button class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
                 <button class="btn btn-success mx-1" @click="acessarFotoCadastro">Cadastrar Foto</button>
-                <button @click="buscarFotos()" class="btn btn-success mx-1" data-bs-toggle="modal"
-                    data-bs-target="#visuModal">Visualizar Fotos</button>
+                <button @click="acessarFotoVisualizacao(animal)" class="btn btn-success mx-1">Visualizar Fotos</button>
                 <button @click="acessarOcorrenciaCadastro(animal)" class="btn btn-success mx-1" >Incluir Ocorrência</button>
             </div>
 
@@ -122,7 +119,8 @@
                     </div>
                 </form>
             </div>
-
+            
+            <!-- Ocorrências -->
             <div class="d-flex align-items-start table-container flex-column">
                 <h2>Ocorrências</h2>
                 <table class="table table-bordered">
@@ -149,92 +147,6 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-
-        <!-- Modal de Cadastro de foto -->
-        <div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="cadastroModalLabel">Cadastro de Fotos</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body-cadastro">
-                        <form class="form-foto">
-                            <div class="mb-3 input-group mb-3-foto">
-                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                                    placeholder="Data da foto" class="form-control" id="dataFoto"
-                                    v-model="formDataFoto.dataFoto" required>
-                            </div>
-                            <div class="mb-3 input-group mb-3-foto">
-                                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                                <textarea v-model="formDataFoto.observacao" class="form-control" id="observacao"
-                                    placeholder="Observação"></textarea>
-                            </div>
-                            <div class="mb-3 input-group mb-3-foto">
-                                <input type="file" @change="apresentarImagem" accept="image/*" />
-                            </div>
-                        </form>
-                        <div class="input-imagem">
-                            <div class="boxSelect">
-                                <img v-if="resizedImage" :src="resizedImage" alt="Resized Image" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button v-if="resizedImage" @click="salvarImagem" class="btn btn-primary">Salvar Imagem</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal de Visualização de foto -->
-        <div class="modal fade" id="visuModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="cadastroModalLabel">Animal: yyyy</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body-visu">
-                        <div id="carouselExampleCaptions" class="carousel slide">
-                            <div class="carousel-indicators">
-                                <button v-for="(foto, index) in fotos" :key="index"
-                                    :data-bs-target="'#carouselExampleCaptions'" :data-bs-slide-to="index"
-                                    :class="{ 'active': index === 0 }" :aria-label="'Slide ' + (index + 1)"
-                                    :aria-current="index === 0 ? 'true' : ''"></button>
-                            </div>
-                            <div class="carousel-inner">
-                                <div v-for="(foto, index) in fotos" :key="index"
-                                    :class="['carousel-item', { active: index === 0 }]">
-                                    <img :src="getImagePath(foto.foto)" class="d-block w-100"
-                                        :alt="'Foto ' + (index + 1)">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <h5>{{ foto.dataFoto }}</h5>
-                                        <h6>Observação:</h6>
-                                        <p>{{ foto.observacao }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="carousel-control-prev" type="button"
-                                data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Anterior</span>
-                            </button>
-                            <button class="carousel-control-next" type="button"
-                                data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Próximo</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -289,10 +201,9 @@ import api from '/src/interceptadorAxios';
 export default {
     data() {
         return {
-            activeTab: 'viewAnimal',
-            animalId: null,
+            activeTab: 'visualizacao',
+            ocorrenciaId: null,
             animal: null,
-            animais: null,
             listaFemeas: [],
             listaMachos: [],
             femeasFiltradas: [],
@@ -300,18 +211,7 @@ export default {
             racas: [],
             ocorrencias: [],
             piquetes: [],
-            slider: null,
-            width: 0,
-            resizedImage: null,
-            fotos: [],
             comprado: false,
-            formDataFoto: {
-                id: null,
-                foto: null,
-                dataFoto: '',
-                observacao: '',
-                animal: null,
-            },
             formDataAnimal: {
                 id: null,
                 brinco: null,
@@ -328,35 +228,23 @@ export default {
                 dataCompra: null,
                 valorCompra: null,
             },
-            ocorrencia: {
-                dataOcorrencia: '',
-                tipo: '',
-                descricao: null,
-            },
         };
     },
     mounted() {
-        this.animalId = this.$route.params.animalId;
-        this.buscarAnimalDaApi();
+        const animalId = this.$route.params.animalId;
+        this.fetchAnimal(animalId);
         this.buscarPiquetesDaApi();
         this.buscarRacasDaApi();
     },
 
     methods: {
-
-        selectTab(tab) {
-            this.activeTab = tab;
-            if (tab === 'animais') {
-                this.$router.push('/animais');
-            }
-        },
-
-        async buscarAnimalDaApi() {
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+        async fetchAnimal(animalId) {
             try {
-                const response = await api.get(`http://127.0.0.1:8000/animais/animal/${this.animalId}/`);
-                this.animais = response.data;
-                this.animal = this.animais[0];
-                this.formDataFoto.animal = this.animal.id;
+                const response = await api.get(`http://127.0.0.1:8000/animais/animal/${animalId}/`);
+                const animais = response.data;
+                this.animal = animais[0];
+
                 this.buscarOcorrenciasDoAnimal();
                 this.preencheFormAnimal();
             } catch (error) {
@@ -364,25 +252,6 @@ export default {
             }
         },
         
-        preencheFormAnimal(){
-            this.formDataAnimal.id = this.animal.id;
-            this.formDataAnimal.brinco = this.animal.brinco;
-            this.formDataAnimal.dataNascimento = this.animal.dataNascimento;
-            this.formDataAnimal.piquete = this.animal.piquete.nome;
-            this.formDataAnimal.sexo = this.animal.sexo;
-            this.formDataAnimal.racaObservacao = this.animal.racaObservacao;
-            this.formDataAnimal.brincoPai = this.animal.brincoPai;
-            this.formDataAnimal.brincoMae = this.animal.brincoMae;
-            this.formDataAnimal.status = this.animal.status;
-            this.formDataAnimal.rfid = this.animal.rfid;
-            this.formDataAnimal.observacoes = this.animal.observacoes;
-            this.formDataAnimal.dataCompra = this.animal.dataCompra;
-            this.formDataAnimal.valorCompra = this.animal.valorCompra;
-            if(this.animal.racaPredominante){
-                this.formDataAnimal.racaPredominante = this.animal.racaPredominante.nome;
-            }
-        },
-
         async buscarOcorrenciasDoAnimal() {
             try {
                 const response = await api.get(`http://127.0.0.1:8000/ocorrencias/`, {
@@ -419,27 +288,6 @@ export default {
             }
         },
 
-        formatDate(date) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(date).toLocaleDateString(undefined, options);
-        },
-
-        acessarEdicao(animal) {
-            this.$router.push({
-            name: 'AnimalEdicao', 
-            params: { animalId: animal.id } 
-            })
-        },
-
-        fecharModal(modalId) {
-            var closeButton = document.getElementById(modalId).querySelector('.btn-close');
-            if (closeButton) {
-                closeButton.click();
-            } else {
-                console.error('Botão de fechar não encontrado no modal:', modalId);
-            }
-        },
-        
         async apagarAnimal() {
             try {
                 const response = await api.delete(`http://127.0.0.1:8000/animais/${this.formDataAnimal.id}/`, {
@@ -458,19 +306,31 @@ export default {
             this.fecharModal("confirmacaoExclusaoModal");
         },
 
-        resetFormOcorrecia() {
-            this.ocorrencia = {
-                id: null,
-                dataOcorrencia: '',
-                tipo: '',
-                descricao: null,
-            };
+        async apagarOcorrencia() {
+            try {
+                const response = await api.delete(`http://127.0.0.1:8000/ocorrencias/${this.ocorrenciaId}/`, {
+                });
+
+                if (response.status === 204) {
+                    alert('Ocorrência apagada com sucesso!');
+                    this.buscarOcorrenciasDoAnimal();
+                } else {
+                    alert('Erro ao apagar ocorrencia. Tente novamente mais tarde.');
+                }
+            } catch (error) {
+                console.error('Erro ao enviar requisição:', error);
+                alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+            }
+            this.fecharModal("confirmacaoExclusaoOcorrenciaModal");
         },
 
-        excluirOcorrencia(ocorrenciaId) {
-            this.ocorrencia = {
-                id: ocorrenciaId,
-            }
+
+//ACESSAR OUTRAS PÁGINAS----------------------------------------------------------------------------------------------------------------------------------------------------------
+        acessarEdicao(animal) {
+            this.$router.push({
+            name: 'AnimalEdicao', 
+            params: { animalId: animal.id } 
+            })
         },
 
         acessarOcorrenciaCadastro(animal) {
@@ -494,106 +354,54 @@ export default {
             })
         },
 
-        async apagarOcorrencia() {
-            try {
-                const response = await api.delete(`http://127.0.0.1:8000/ocorrencias/${this.ocorrencia.id}/`, {
-                });
-
-                if (response.status === 204) {
-                    alert('Ocorrência apagada com sucesso!');
-                    this.buscarOcorrenciasDoAnimal();
-                } else {
-                    alert('Erro ao apagar ocorrencia. Tente novamente mais tarde.');
-                }
-            } catch (error) {
-                console.error('Erro ao enviar requisição:', error);
-                alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-            }
-            this.fecharModal("confirmacaoExclusaoOcorrenciaModal");
+        acessarFotoVisualizacao(animal){
+            this.$router.push({
+            name: 'FotoVisualizacao', 
+            params: { animalId: animal.id } 
+            })
         },
 
-        controlaSlide(id) {
-            switch (id) {
-                case 'voltaSlide':
-                    return this.slider.scrollLeft -= parseInt(this.width);
 
-                case 'passaSlide':
-                    return this.slider.scrollLeft += parseInt(this.width);
-
-                default:
-                    break;
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+        selectTab(tab) {
+            this.activeTab = tab;
+            if (tab === 'animais') {
+                this.$router.push('/animais');
             }
         },
-
-        apresentarImagem(event) {
-            const file = event.target.files[0];
-            if (file) {
-                this.formDataFoto.foto = file;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    this.resizedImage = e.target.result;
-                };
-                reader.readAsDataURL(file);
+        
+        preencheFormAnimal(){
+            this.formDataAnimal.id = this.animal.id;
+            this.formDataAnimal.brinco = this.animal.brinco;
+            this.formDataAnimal.dataNascimento = this.animal.dataNascimento;
+            this.formDataAnimal.piquete = this.animal.piquete.nome;
+            this.formDataAnimal.sexo = this.animal.sexo;
+            this.formDataAnimal.racaObservacao = this.animal.racaObservacao;
+            this.formDataAnimal.brincoPai = this.animal.brincoPai;
+            this.formDataAnimal.brincoMae = this.animal.brincoMae;
+            this.formDataAnimal.status = this.animal.status;
+            this.formDataAnimal.rfid = this.animal.rfid;
+            this.formDataAnimal.observacoes = this.animal.observacoes;
+            this.formDataAnimal.dataCompra = this.animal.dataCompra;
+            this.formDataAnimal.valorCompra = this.animal.valorCompra;
+            if(this.animal.racaPredominante){
+                this.formDataAnimal.racaPredominante = this.animal.racaPredominante.nome;
             }
         },
 
-        async buscarFotos() {
-            try {
-                const response = await api.get('http://127.0.0.1:8000/fotos-animais/', {
-                    params: {
-                        animalSelecionado: this.animal.id
-                    },
-                });
-                this.fotos = response.data;
-                this.fotos = this.fotos.sort((a, b) => new Date(b.dataFoto) - new Date(a.dataFoto));
-                console.log('fotos: ', this.fotos)
-            } catch (error) {
-                console.error('Erro ao buscar fotos da API:', error);
+        fecharModal(modalId) {
+            var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.click();
+            } else {
+                console.error('Botão de fechar não encontrado no modal:', modalId);
             }
         },
 
-        getImagePath(nomeArquivo) {
-            return `http://127.0.0.1:8000${nomeArquivo}`;
+        excluirOcorrencia(ocorrenciaId) {
+            this.ocorrenciaPraExclusao = ocorrenciaId;
         },
-
-        async salvarImagem() {
-
-            if (this.formDataFoto.foto) {
-                try {
-                    const response = await api.post('http://127.0.0.1:8000/fotos-animais/', this.formDataFoto, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
-
-                    if (response.status === 201) {
-                        alert('Cadastro realizado com sucesso!');
-                        this.resetForm();
-                    } else {
-                        alert('Erro ao cadastrar a foto do animal. Tente novamente mais tarde.');
-                    }
-                } catch (error) {
-                    console.error('Erro ao enviar requisição:', error);
-                    alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-                }
-            }
-            else {
-                alert('Nenhuma imagem encontrada.');
-            }
-        },
-
-        async resetForm() {
-            this.resizedImage = null;
-            this.formDataFoto = {
-                id: null,
-                foto: null,
-                dataFoto: '',
-                observacao: '',
-                animal: this.animal.id,
-            }
-        },
-
+        
         formatarData(data) {
             const date = new Date(data);
             const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());

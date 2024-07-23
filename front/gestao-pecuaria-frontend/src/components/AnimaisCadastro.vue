@@ -133,7 +133,7 @@ export default {
   data() {
     return {
       activeTab: 'cadastro',
-      animais: [],
+      animaisDaApi: [],
       racas: [],
       piquetes: [],
       listaMachos: [],
@@ -178,17 +178,18 @@ export default {
     }
   },
   async mounted() {
-    
     const animalJSON = this.$route.params.animalJSON;
     if(animalJSON != 'animaisLista'){
       this.preencheForm(animalJSON);
     }
+    this.buscarAnimaisDaApi();
     this.buscarRacasDaApi();
     this.buscarPiquetesDaApi();
     this.preencheListas();
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(event){
       const value = event.target.value;
       this.formData.brinco =  this.brincoMask(value);
@@ -225,54 +226,108 @@ export default {
       this.filterFemeas();
     },
 
-    validarFormulario() {
-      this.isPiqueteValido = !!this.formData.piquete;
-      if (this.formData.brinco) {
-        this.isBrincoValido = /^\d+$/.test(this.formData.brinco.trim());
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async buscarAnimaisDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/animais/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.animaisDaApi = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar animais da API:', error);
       }
-      this.isDataNascimentoValido = !!this.formData.dataNascimento;
-      this.isSexoValido = !!this.formData.sexo;
-      this.isRacaPredominanteValido = !!this.formData.racaPredominante;
-
-      if (this.formData.rfid !== null) {
-        this.isRfidValido = /^\d*$/.test(this.formData.rfid.trim());
+    },
+    
+    async buscarPiquetesDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.piquetes = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar piquetes da API:', error);
       }
+    },
 
-      if (this.formData.racaObservacao === '') {
-        this.formData.racaObservacao = null;
+    async buscarRacasDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/racas/', {
+        });
+        this.racas = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar raças da API:', error);
       }
+    },
 
-      if (this.formData.observacao === '') {
-        this.formData.observacao = null;
+    async submitForm() {
+      if (this.verificaVazio() && this.validarFormulario()) {
+        try {
+          console.log('formdata: ', this.formData)
+          //FORMATA VALOR DA COMPRA
+          if(this.formData.valorCompra){
+            this.formData.valorCompra = this.replaceVirgulaPonto(this.formData.valorCompra);
+          }
+
+          const response = await api.post(`http://127.0.0.1:8000/animais/`, this.formData, {
+          });
+
+          if (response.status === 201) {
+            alert('Cadastro realizado com sucesso!');
+            this.$router.push('/animais');
+            this.preencherListaFemeas();
+            this.preencherListaMachos();
+          } else {
+            alert('Erro ao cadastrar animal. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
       }
+    },
 
-      if (this.comprado) {
-        this.isDataCompraValido = !!this.formData.dataCompra;
-        this.isValorCompraValido = /^\d+(\.\d{1,2})?$/.test(this.formData.valorCompra);
-      } else {
-        this.isDataCompraValido = true;
-        this.isValorCompraValido = true;
+
+//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterFemeas() {
+      this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoMae));
+    },
+
+    selectMae(animal) {
+      this.formData.brincoMae = animal.brinco;
+      this.femeasFiltradas = [];
+    },
+
+    filterMachos() {
+      this.machosFiltrados = this.listaMachos.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoPai));
+    },
+
+    selectPai(animal) {
+      this.formData.brincoPai = animal.brinco;
+      this.machosFiltrados = [];
+    },
+
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario(){
+      let valido = true;
+      this.isBrincoValido = true;
+      this.brincoPlaceholder = 'Brinco do Animal';
+
+      for (let animal of this.animaisDaApi) {
+        if (animal.brinco === this.formData.brinco) {
+          this.isBrincoValido = false;
+          this.brincoPlaceholder = 'Este Brinco já foi cadastrado';
+          this.formData.brinco = null;
+          valido = false;
+          break;
+        }
       }
-
-      this.piquetePlaceholder = this.isPiqueteValido ? 'Selecione o piquete' : 'Selecione um piquete válido';
-      this.brincoPlaceholder = this.isBrincoValido ? 'Digite o brinco' : 'Campo Brinco é obrigatório (somente números)';
-      this.dataNascimentoPlaceholder = this.isDataNascimentoValido ? 'Selecione a data de nascimento' : 'Campo Data de Nascimento é obrigatório';
-      this.sexoPlaceholder = this.isSexoValido ? 'Selecione o sexo' : 'Selecione o sexo';
-      this.racaPredominantePlaceholder = this.isRacaPredominanteValido ? 'Selecione a raça predominante' : 'Selecione a raça predominante';
-      this.rfidPlaceholder = this.isRfidValido ? 'Digite o RFID' : 'Campo RFID é obrigatório (somente números)';
-      this.dataCompraPlaceholder = this.isDataCompraValido ? 'Selecione a data de compra' : 'Campo Data de Compra é obrigatório';
-      this.valorCompraPlaceholder = this.isValorCompraValido ? 'Digite o valor da compra' : 'Campo Valor da Compra é obrigatório';
-
-      return (
-        this.isPiqueteValido &&
-        this.isBrincoValido &&
-        this.isDataNascimentoValido &&
-        this.isSexoValido &&
-        this.isRacaPredominanteValido &&
-        this.isRfidValido &&
-        this.isDataCompraValido &&
-        this.isValorCompraValido
-      );
+      return valido;
     },
 
     verificaVazio(){
@@ -360,6 +415,45 @@ export default {
           this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
         }
       }
+      else{
+        this.formData.dataCompra = null;
+        this.formData.valorCompra = null;
+        this.isDataCompraValido = true;
+        this.dataCompraPlaceholder = 'Data da Compra';
+        this.isValorCompraValido = true;
+        this.valorCompraPlaceholder = 'Valor da Compra';
+      }
+
+      //OS QUE PODEM ESTAR NULOS NO BANCO
+      //RAÇA PREDOMINANTE
+      if(this.formData.racaPredominante != null && this.formData.racaPredominante === ''){
+        this.formData.racaPredominante = null;
+      }
+      //RAÇA OBSERVAÇÃO
+      if(this.formData.racaObservacao != null && this.formData.racaObservacao === ''){
+        this.formData.racaObservacao = null;
+      }
+
+      //BRINCO PAI
+      if(this.formData.brincoPai != null && this.formData.brincoPai === ''){
+        this.formData.brincoPai = null;
+      }
+      
+      //BRINCO MÃE  
+      if(this.formData.brincoMae != null && this.formData.brincoMae === ''){
+        this.formData.brincoMae = null;
+      }
+
+      //RFID
+      if(this.formData.rfid != null && this.formData.rfid === ''){
+        this.formData.rfid = null;
+      }
+
+      //OBSERVAÇÕES
+      if(this.formData.observacoes != null && this.formData.observacoes === ''){
+        this.formData.observacoes = null;
+      }
+
 
       return (
         this.isPiqueteValido &&
@@ -371,10 +465,9 @@ export default {
       );
     },
 
-    verificaValores(){
 
-    },
 
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     preencheForm(animalJSON){
       this.formData = JSON.parse(animalJSON);
     },
@@ -383,50 +476,6 @@ export default {
       this.activeTab = tab;
       if (tab === 'animais') {
         this.$router.push('/animais');
-      }
-    },
-
-    async buscarPiquetesDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
-          params: {
-            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-          },
-        });
-        this.piquetes = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar piquetes da API:', error);
-      }
-    },
-
-    async buscarRacasDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/racas/', {
-        });
-        this.racas = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar raças da API:', error);
-      }
-    },
-
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-          const response = await api.post(`http://127.0.0.1:8000/animais/`, this.formData, {
-          });
-
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/animais');
-            this.preencherListaFemeas();
-            this.preencherListaMachos();
-          } else {
-            alert('Erro ao cadastrar animal. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
       }
     },
 
@@ -461,22 +510,10 @@ export default {
       this.listaMachos = response.data;
     },
 
-    filterFemeas() {
-      this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoMae));
-    },
+    replaceVirgulaPonto(valorString){
+      valorString = valorString.replace(",", ".");
 
-    filterMachos() {
-      this.machosFiltrados = this.listaMachos.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoPai));
-    },
-
-    selectPai(animal) {
-      this.formData.brincoPai = animal.brinco;
-      this.machosFiltrados = [];
-    },
-
-    selectMae(animal) {
-      this.formData.brincoMae = animal.brinco;
-      this.femeasFiltradas = [];
+      return valorString;
     },
 
   }

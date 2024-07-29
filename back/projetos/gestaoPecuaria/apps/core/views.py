@@ -128,7 +128,7 @@ class PiqueteViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'], url_path='com-animais-propriedade')
-    def list_piquetes_com_animais(self, request, *args, **kwargs):
+    def list_piquetes_com_animais_propriedade(self, request, *args, **kwargs):
         propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         vivos = models.Animal.objects.filter(status = 'Vivo')
         vivosProp = vivos.filter(piquete__propriedade=propriedade_selecionada)

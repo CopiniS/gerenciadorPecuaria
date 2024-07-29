@@ -90,7 +90,7 @@ export default {
         dataVenda: '',
         peso: '',
         precoKg: '',
-        valorTotal: '',
+        valorTotal: null,
         finalidade: '',
         observacao: null,
       },
@@ -118,6 +118,10 @@ export default {
     aplicarValorTotalMask(event) {
       const value = event.target.value;
       this.formData.valorTotal =  this.valorMask(value);
+    },
+
+    aplicarValorTotalMask2(value){
+      this.formData.valorTotal = this.valorMask(value);
     },
 
     aplicarObservacaoMask(event){
@@ -289,14 +293,16 @@ export default {
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     atualizaValorTotalPeloPeso(){
       if(this.formData.precoKg != null && this.formData.precoKg != ''){
-        this.formData.valorTotal = this.replaceVirgulaPonto(this.formData.precoKg) * this.replaceVirgulaPonto(this.formData.peso);
-        this.formData.valorTotal = this.replacePontoVirgula(this.formData.valorTotal.toString());
+        this.formData.valorTotal = parseFloat(this.replaceVirgulaPonto(this.formData.precoKg.toString())) * 
+        parseFloat(this.replaceVirgulaPonto(this.formData.peso.toString()));
+        // this.aplicarValorTotalMask2(this.formData.valorTotal.toString());
       }
     },
 
     atualizaValorTotalPeloPrecoKg(){
       if(this.formData.peso != null && this.formData.peso != ''){
-        this.formData.valorTotal = this.replaceVirgulaPonto(this.formData.precoKg.toString) * this.replaceVirgulaPonto(this.formData.peso);
+        this.formData.valorTotal = parseFloat(this.replaceVirgulaPonto(this.formData.precoKg.toString())) * 
+        parseFloat(this.replaceVirgulaPonto(this.formData.peso.toString()));        
         this.formData.valorTotal = this.replacePontoVirgula(this.formData.valorTotal.toString());
       }
     },

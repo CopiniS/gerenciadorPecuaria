@@ -128,8 +128,8 @@ export default {
 
   mounted() {
     this.buscarAnimaisDaApi();
-    this.buscarPiquetesDaApi();
-    this.buscarPiquetesDaPropriedade();
+    this.buscarPiquetesParaDestino();
+    this.buscarPiquetesParaOrigem();
   },
 
   methods: {
@@ -165,7 +165,7 @@ export default {
       }
     },
 
-    async buscarPiquetesDaApi() {
+    async buscarPiquetesParaDestino() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/piquetes-propriedades');
         this.piquetes = response.data;
@@ -174,7 +174,7 @@ export default {
       }
     },
 
-    async buscarPiquetesDaPropriedade() {
+    async buscarPiquetesParaOrigem() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/com-animais-propriedade', {
           params: {
@@ -212,22 +212,26 @@ export default {
       this.filteredPiquetesOrigem = this.piquetesDaPropriedade.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteOrigemNome));
     },
 
-    selecionarPiqueteOrigem(piquete) {
+    async selecionarPiqueteOrigem(piquete) {
       this.piqueteId = piquete.id;
       this.formData.piqueteOrigem = piquete.id;
       this.piqueteOrigemNome = piquete.nome + " - " + piquete.propriedade.nome;
       this.filteredPiquetesOrigem = [];
-      this.preencheListaAnimais()
+      this.preencheListaAnimais();
+      await this.buscarPiquetesParaDestino();
+      this.atualizaDestino();
     },
 
     filtrarPiquetesDestino() {
       this.filteredPiquetesDestino = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteDestinoNome));
     },
 
-    selecionarPiqueteDestino(piquete) {
+    async selecionarPiqueteDestino(piquete) {
       this.piqueteDestinoNome = piquete.nome + " - " + piquete.propriedade.nome;
       this.formData.piqueteDestino = piquete.id;
       this.filteredPiquetesDestino = [];
+      await this.buscarPiquetesParaOrigem();
+      this.atualizaOrigem();
     },
 
     filterAnimais() {
@@ -342,6 +346,36 @@ export default {
       this.activeTab = tab;
       if (tab === 'movimentacoes') {
         this.$router.push('/movimentacoes');
+      }
+    },
+
+    atualizaOrigem(){
+      let indice = null;
+      for (let index = 0; index < this.piquetesDaPropriedade.length; index++) {
+        const piquete = this.piquetesDaPropriedade[index];
+        if(piquete.id === this.formData.piqueteDestino){
+          indice = index;
+          break;
+        }
+      }
+      console.log('indice: ', indice);
+      if(indice != null){
+        this.piquetesDaPropriedade.splice(indice, 1)
+      }
+    },
+
+    atualizaDestino(){
+      let indice = null;
+      for (let index = 0; index < this.piquetes.length; index++) {
+        const piquete = this.piquetes[index];
+        if(piquete.id === this.formData.piqueteOrigem){
+          indice = index;
+          break;
+        }
+      }
+      console.log('indice: ', indice);
+      if(indice != null){
+        this.piquetes.splice(indice, 1)
       }
     },
   },

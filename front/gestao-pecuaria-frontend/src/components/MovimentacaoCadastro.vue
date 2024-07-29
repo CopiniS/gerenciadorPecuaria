@@ -49,7 +49,7 @@
             <div class="list-group" v-if="piqueteOrigemNome && filteredPiquetesOrigem.length">
               <button type="button" class="list-group-item list-group-item-action"
                 v-for="piquete in filteredPiquetesOrigem" :key="piquete.id" @click="selecionarPiqueteOrigem(piquete)">
-                {{ piquete.nome }}
+                {{ piquete.nome }} - {{ piquete.propriedade.nome }}
               </button>
             </div>
 
@@ -176,7 +176,7 @@ export default {
 
     async buscarPiquetesDaPropriedade() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/piquetes', {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/com-animais-propriedade', {
           params: {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },

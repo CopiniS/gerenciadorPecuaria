@@ -126,6 +126,18 @@ class PiqueteViewSet(viewsets.ModelViewSet):
                 piquetesComAnimais.append(animal.piquete)
         serializer = serializer = serializers.PiqueteSerializer(piquetesComAnimais, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='com-animais-propriedade')
+    def list_piquetes_com_animais(self, request, *args, **kwargs):
+        propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
+        vivos = models.Animal.objects.filter(status = 'Vivo')
+        vivosProp = vivos.filter(piquete__propriedade=propriedade_selecionada)
+        piquetesComAnimais = []
+        for animal in vivosProp:
+            if animal.piquete not in piquetesComAnimais:
+                piquetesComAnimais.append(animal.piquete)
+        serializer = serializers.PiqueteComPropriedadeSerializer(piquetesComAnimais, many=True)
+        return Response(serializer.data)
 
 class VeterinarioViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

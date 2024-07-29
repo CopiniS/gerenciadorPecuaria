@@ -171,7 +171,7 @@ export default {
 
     async buscarPiquetesDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
+        const response = await api.get('http://127.0.0.1:8000/piquetes/com-animais', {
           params: {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },

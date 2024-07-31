@@ -69,15 +69,20 @@ export const masksMixin = {
                 string.slice(primeiraVirgula + 1).replace(/\D/g, '');
             }
 
-            if (valueDigitos.length > 14) {
+            if (valueDigitos.length > 13) {
                 console.log('entra em value.length > 13');
                 value = value.slice(0, 14);
-            }
-            else if (value.length > 13) {
-                console.log('entra em value.length > 13');
-                value = value.replace(/(\d{11}),(\d{2})/, '$1,$2');
+                valueDigitos = valueDigitos.slice(0, 13)
             }
             else if(valueDigitos.length > 3){
+                value = value.replace(/^(\d+)(\d{2})$/, '$1,$2');
+                
+                const regex = /^\d+,\d$/;
+                while(regex.test(value)){
+                    value = value.replace(/(\d+)(\d),(\d)/, '$1,$2$3');
+                    valueDigitos = value.replace(/\D/g, '');
+                }
+
                 const regexAposVirgula = /^\d+,\d{2}\d+$/;
                 while(regexAposVirgula.test(value)){
                     value = value.replace(/(\d+),(\d)(\d+)/, '$1$2,$3');

@@ -26,11 +26,35 @@
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
               <li class="nav-item">
+                <a href="/propriedades" class="nav-link"><i class="fas fa-landmark"></i> Propriedades</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/produtos" class="nav-link"><i class="fas fa-box"></i> Produto</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/outras-despesas" class="nav-link"><i class="fas fa-money-bill-wave"></i> Outras Despesas</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
                 <a href="/animais" class="nav-link"><i class="fas fa-paw"></i> Animais</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
+                <a href="/pesagens" class="nav-link"><i class="fas fa-weight"></i> Pesagens</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
                 <a href="/aplicacoes-produtos" class="nav-link"><i class="fas fa-flask"></i> Aplicações de Produtos</a>
+              </li>
+              <hr class="custom-hr">
+              <li class="nav-item">
+                <a href="/suplementacoes" class="nav-link"><i class="fas fa-prescription-bottle-alt"></i> Suplementações</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
@@ -42,31 +66,7 @@
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/outras-despesas" class="nav-link"><i class="fas fa-money-bill-wave"></i> Outras Despesas</a>
-              </li>
-              <hr class="custom-hr">
-              <li class="nav-item">
-                <a href="/pesagens" class="nav-link"><i class="fas fa-weight"></i> Pesagens</a>
-              </li>
-              <hr class="custom-hr">
-              <li class="nav-item">
-                <a href="/produtos" class="nav-link"><i class="fas fa-box"></i> Produto</a>
-              </li>
-              <hr class="custom-hr">
-              <li class="nav-item">
-                <a href="/propriedades" class="nav-link"><i class="fas fa-landmark"></i> Propriedades</a>
-              </li>
-              <hr class="custom-hr">
-              <li class="nav-item">
-                <a href="/suplementacoes" class="nav-link"><i class="fas fa-prescription-bottle-alt"></i> Suplementações</a>
-              </li>
-              <hr class="custom-hr">
-              <li class="nav-item">
                 <a href="/vendas-animais" class="nav-link"><i class="fas fa-dollar-sign"></i> Vendas de Animais</a>
-              </li>
-              <hr class="custom-hr">
-              <li class="nav-item">
-                <a href="/veterinarios" class="nav-link"><i class="fas fa-user-md"></i> Veterinarios</a>
               </li>
               <hr class="custom-hr">
             </ul>

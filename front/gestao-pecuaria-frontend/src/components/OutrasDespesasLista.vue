@@ -20,20 +20,17 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataDespesa" class="form-label me-2">Data da Despesa</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Inicio"
-            class="form-control" id="dataDespesaInicio" v-model="filtro.dataDespesaInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim"
-            class="form-control" id="dataDespesaFim" v-model="filtro.dataDespesaFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataDespesaInicio" :endDate="formData.dataDespesaFim"
+      @update:startDate="val => formData.dataDespesaInicio = val"
+      @update:endDate="val => formData.dataDespesaFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Descrição</label>
-          <input type="text" class="form-control" id="descricao" v-model="filtro.descricao">
+          <input type="text" class="form-control input-consistente" id="descricao" v-model="filtro.descricao">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Categoria</label>
-          <input type="text" class="form-control" id="categoria" v-model="filtro.categoria">
+          <input type="text" class="form-control input-consistente" id="categoria" v-model="filtro.categoria">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -97,9 +94,13 @@
 
 <script>
 import api from '/src/interceptadorAxios'
+import DateRangePicker from './DateRangePicker.vue';
 
 export default {
   name: 'TelaProdutos',
+  components: {
+    DateRangePicker
+  },
   data() {
     return {
       despesas: [],
@@ -285,6 +286,10 @@ export default {
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.input-consistente, .select-consistente {
+    width: 200px; 
 }
 
 </style>

@@ -29,11 +29,11 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="nome" class="form-label me-2">Nome</label>
-          <input type="text" class="form-control" id="nome" v-model="filtro.nome">
+          <input type="text" class="form-control input-consistente" id="nome" v-model="filtro.nome">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="tipoCultivo" class="form-label me-2">Tipo de Cultivo</label>
-          <select class="form-select" id="tipoCultivo" v-model="filtro.tipoCultivo">
+          <select class="form-select select-consistente" id="tipoCultivo" v-model="filtro.tipoCultivo">
             <option value="">Selecione o tipo</option>
             <option>Pastagem Natural</option>
             <option>Lavoura</option>
@@ -263,6 +263,10 @@ export default {
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.input-consistente, .select-consistente {
+    width: 200px; 
 }
 
 </style>

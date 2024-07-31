@@ -20,17 +20,17 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="nome" class="form-label me-2">Nome</label>
-          <input type="text" class="form-control" id="nome" v-model="filtro.nome">
+          <input type="text" class="form-control input-consistente" id="nome" v-model="filtro.nome">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="tipoCultivo" class="form-label me-2">Cidade</label>
-          <input type="text" class="form-control" id="cidade" v-model="filtro.cidade">
+          <input type="text" class="form-control input-consistente" id="cidade" v-model="filtro.cidade">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="tipoCultivo" class="form-label me-2">Estado</label>
-          <input type="text" class="form-control" id="estado" v-model="filtro.estado">
+          <input type="text" class="form-control input-consistente" id="estado" v-model="filtro.estado">
         </div>
-        <div class="col-auto">
+        <div class="col-auto d-flex align-items-center">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
@@ -284,4 +284,11 @@ export default {
   gap: 10px; 
 }
 
+.input-consistente, .select-consistente {
+    width: 200px; 
+}
+
+.btn {
+  margin-bottom: 0; 
+}
 </style>

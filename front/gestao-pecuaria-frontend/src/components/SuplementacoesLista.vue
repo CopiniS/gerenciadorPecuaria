@@ -21,33 +21,27 @@
         <!-- Outros filtros existentes -->
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>
-          <input type="text" class="form-control" id="produto" v-model="filtro.produto">
+          <input type="text" class="form-control input-consistente" id="produto" v-model="filtro.produto">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="piquete" class="form-label me-2">Piquete</label>
-          <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
+          <input type="text" class="form-control input-consistente" id="piquete" v-model="filtro.piquete">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataInicial" class="form-label me-2">Data Inicial</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Início" 
-          class="form-control" id="dataInicialIncio" v-model="filtro.dataInicialInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim" 
-          class="form-control" id="dataInicialFim" v-model="filtro.dataInicialFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataInicialInicio" :endDate="formData.dataInicialFim"
+      @update:startDate="val => formData.dataInicialInicio = val"
+      @update:endDate="val => formData.dataInicialFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataInicial" class="form-label me-2">Data Final</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Início" 
-          class="form-control" id="dataFinalIncio" v-model="filtro.dataFinalInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim" 
-          class="form-control" id="datafinalFim" v-model="filtro.dataFinalFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataFinalInicio" :endDate="formData.dataFinalFim"
+      @update:startDate="val => formData.dataFinalInicio = val"
+      @update:endDate="val => formData.dataFinalFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="status" class="form-label me-2">Status</label>
-          <select class="form-select" id="status" v-model="filtro.status">
+          <select class="form-select select-consistente" id="status" v-model="filtro.status">
             <option value="andamento">Em andamento</option>
             <option value="finalizado">Finalizado</option>
           </select>
@@ -125,8 +119,12 @@
 
 <script>
 import api from '/src/interceptadorAxios'
+import DateRangePicker from './DateRangePicker.vue';
 
 export default {
+  components: {
+    DateRangePicker
+  },
   data() {
     return {
       suplementacoes: [],
@@ -341,4 +339,8 @@ export default {
   color: #4caf50;
   /* Verde */
 }
+.input-consistente, .select-consistente {
+    width: 200px; 
+}
+
 </style>

@@ -20,33 +20,30 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataMovimentacao" class="form-label me-2">Data da Compra</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Movimentação Inicio"
-            class="form-control" id="dataMovimentacaoInicio" v-model="filtro.dataMovimentacaoInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Movimentação Fim"
-            class="form-control" id="dataMovimentacaoFim" v-model="filtro.dataMovimentacaoFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataMovimentacaoInicio" :endDate="formData.dataMovimentacaoFim"
+      @update:startDate="val => formData.dataMovimentacaoInicio = val"
+      @update:endDate="val => formData.dataMovimentacaoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Piquete de Origem</label>
-          <input type="text" class="form-control" id="piqueteOrigem" v-model="filtro.piqueteOrigem">
+          <input type="text" class="form-control input-consistente" id="piqueteOrigem" v-model="filtro.piqueteOrigem">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Piquete de Destino</label>
-          <input type="text" class="form-control" id="piqueteDestino" v-model="filtro.piqueteDestino">
+          <input type="text" class="form-control input-consistente" id="piqueteDestino" v-model="filtro.piqueteDestino">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="tipoCultivo" class="form-label me-2">Tipo</label>
-          <select class="form-select" id="tipo" v-model="filtro.tipo">
+          <select class="form-select select-consistente" id="tipo" v-model="filtro.tipo">
             <option value="">Selecione o tipo</option>
-            <option value="entrada">Entrada</option>
-            <option value="saida">Saída</option>
-            <option value="interna">Interna</option>
+            <option value="Entrada">Entrada</option>
+            <option value="Saida">Saída</option>
+            <option value="Interna">Interna</option>
           </select>
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
-          <input type="text" @input="aplicarBrincoMask" class="form-control" id="animal" v-model="filtro.animal">
+          <input type="text" @input="aplicarBrincoMask" class="form-control input-consistente" id="animal" v-model="filtro.animal">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -114,10 +111,13 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import DateRangePicker from './DateRangePicker.vue';
 
 export default {
   mixins: [masksMixin],
-
+  components: {
+    DateRangePicker
+  },
   data() {
     return {
       movimentacoes: [],
@@ -323,6 +323,10 @@ export default {
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.input-consistente, .select-consistente {
+    width: 200px; 
 }
 
 </style>

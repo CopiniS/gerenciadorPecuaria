@@ -19,24 +19,21 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataAplicacao" class="form-label me-2">Data da Aplicação</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Aplicação Inicio"
-            class="form-control" id="dataAplicacaoInicio" v-model="filtro.dataAplicacaoInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Aplicação Fim"
-            class="form-control" id="dataAplicacaoFim" v-model="filtro.dataAplicacaoFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataAplicacaoInicio" :endDate="formData.dataAplicacaoFim"
+      @update:startDate="val => formData.dataAplicacaoInicio = val"
+      @update:endDate="val => formData.dataAplicacaoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>
-          <input type="text" class="form-control" id="produto" v-model="filtro.produto">
+          <input type="text" class="form-control input-consistente" id="produto" v-model="filtro.produto">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
-          <input type="text" @input="aplicarBrincoMask" class="form-control" id="animal" v-model="filtro.animal">
+          <input type="text" @input="aplicarBrincoMask" class="form-control input-consistente" id="animal" v-model="filtro.animal">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Piquete</label>
-          <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
+          <input type="text" class="form-control input-consistente" id="piquete" v-model="filtro.piquete">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -104,11 +101,15 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import DateRangePicker from './DateRangePicker.vue';
 
 export default {
   mixins: [masksMixin],
 
   name: 'TelaAplicacoesProdutos',
+  components: {
+    DateRangePicker
+  },
   data() {
     return {
       activeTab: 'aplicacoes',
@@ -296,4 +297,8 @@ export default {
   background-color: #d0d0d0 !important;
   /* Cor um pouco mais escura quando a aba está ativa */
 }
+.input-consistente, .select-consistente {
+    width: 200px; 
+}
+
 </style>

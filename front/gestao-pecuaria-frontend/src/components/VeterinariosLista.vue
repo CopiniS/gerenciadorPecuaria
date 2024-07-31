@@ -19,8 +19,8 @@
       </div>
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
-          <span class="input-group-text"><i class="fas fa-tags"></i></span>
-          <input type="text" class="form-control" id="nome" v-model="filtro.nome">
+          <label for="nome" class="form-label me-2">Nome</label>
+          <input type="text" class="form-control input-consistente" id="nome" v-model="filtro.nome">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -238,6 +238,10 @@ export default {
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.input-consistente, .select-consistente {
+    width: 200px; 
 }
 
 </style>

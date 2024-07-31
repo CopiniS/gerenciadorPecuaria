@@ -21,20 +21,18 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="brinco" class="form-label me-2">Brinco</label>
-          <input type="text" @input="aplicarBrincoMask" class="form-control" id="brinco" v-model="filtro.brinco">
+          <input type="text" @input="aplicarBrincoMask" class="form-control input-consistente" id="brinco"
+            v-model="filtro.brinco">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Início"
-            class="form-control" id="dataNascimentoInicio" v-model="formData.dataNascimentoInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim"
-            class="form-control" id="dataNascimentoFim" v-model="formData.dataNascimentoFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataNascimentoInicio"
+            :endDate="formData.dataNascimentoFim" @update:startDate="val => formData.dataNascimentoInicio = val"
+            @update:endDate="val => formData.dataNascimentoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="sexo" class="form-label me-2">Sexo</label>
-          <select class="form-select" id="sexo" v-model="filtro.sexo">
+          <select class="form-select select-consistente" id="sexo" v-model="filtro.sexo">
             <option value="">Selecione o sexo</option>
             <option value="macho">Macho</option>
             <option value="femea">Fêmea</option>
@@ -42,27 +40,29 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="raca" class="form-label me-2">Raça</label>
-          <input type="text" class="form-control" id="raca" v-model="filtro.raca">
+          <input type="text" class="form-control input-consistente" id="raca" v-model="filtro.raca">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <label for="brincoPai" class="form-label me-2">Brinco Pai</label> 
-          <input type="text" @input="aplicarBrincoPaiMask" class="form-control" id="brincoPai" v-model="filtro.brincoPai">
+          <label for="brincoPai" class="form-label me-2">Brinco Pai</label>
+          <input type="text" @input="aplicarBrincoPaiMask" class="form-control input-consistente" id="brincoPai"
+            v-model="filtro.brincoPai">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="brincoMae" class="form-label me-2">Brinco Mãe</label>
-          <input type="text" @input="aplicarBrincoMaeMask" class="form-control" id="brincoMae" v-model="filtro.brincoMae">
+          <input type="text" @input="aplicarBrincoMaeMask" class="form-control input-consistente" id="brincoMae"
+            v-model="filtro.brincoMae">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="piquete" class="form-label me-2">Piquete</label>
-          <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
+          <input type="text" class="form-control input-consistente" id="piquete" v-model="filtro.piquete">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="status" class="form-label me-2">Status</label>
-          <select class="form-select" id="status" v-model="filtro.status">
+          <select class="form-select select-consistente" id="status" v-model="filtro.status">
             <option value="">Selecione o status</option>
-            <option >Morto</option>
-            <option >Vivo</option>
-            <option >Vendido</option>
+            <option>Morto</option>
+            <option>Vivo</option>
+            <option>Vendido</option>
           </select>
         </div>
         <div class="col-auto">
@@ -75,12 +75,11 @@
     <div>
       <div class="table-container">
         <div class="button-container">
-          <button @click="acessarCadastro()" type="button"
-            class="btn btn-success">Cadastrar Animal</button>
+          <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Animal</button>
 
           <button @click="() => { this.$router.push('/racas'); }" type="button" class="btn btn-success">Lista de
             Raças</button>
-          
+
         </div>
         <table class="table table-bordered">
           <thead>
@@ -141,11 +140,15 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import DateRangePicker from './DateRangePicker.vue';
 
 export default {
   mixins: [masksMixin],
 
   name: 'TelaAnimais',
+  components: {
+    DateRangePicker
+  },
   data() {
     return {
       animais: [],
@@ -201,19 +204,19 @@ export default {
   },
 
   methods: {
-    aplicarBrincoMask(event){
+    aplicarBrincoMask(event) {
       const value = event.target.value;
-      this.filtro.brinco =  this.brincoMask(value);
-    },
-    
-    aplicarBrincoPaiMask(event){
-      const value = event.target.value;
-      this.filtro.brincoPai =  this.brincoMask(value);
+      this.filtro.brinco = this.brincoMask(value);
     },
 
-    aplicarBrincoMaeMask(event){
+    aplicarBrincoPaiMask(event) {
       const value = event.target.value;
-      this.filtro.brincoMae =  this.brincoMask(value);
+      this.filtro.brincoPai = this.brincoMask(value);
+    },
+
+    aplicarBrincoMaeMask(event) {
+      const value = event.target.value;
+      this.filtro.brincoMae = this.brincoMask(value);
     },
 
 
@@ -254,11 +257,11 @@ export default {
       }
     },
 
-    acessarCadastro(){
+    acessarCadastro() {
       this.$router.push({
-          name: 'AnimaisCadastro',
-          params: {animalJSON: 'animaisLista'}
-        });
+        name: 'AnimaisCadastro',
+        params: { animalJSON: 'animaisLista' }
+      });
     },
 
     editarAnimal(animal) {
@@ -420,24 +423,24 @@ export default {
       this.animais = this.animaisDaApi.filter(animal => {
 
         //essas verificações é para o caso de o ususario nao ter cadastrado raça, brinco pai ou brinco mae
-        if(animal.raca == null){
-          animal.raca = {nome: ''};
+        if (animal.raca == null) {
+          animal.raca = { nome: '' };
         }
-        if(animal.brincoPai == null){
+        if (animal.brincoPai == null) {
           animal.brincoPai = '';
         }
-        if(animal.brincoMae == null){
+        if (animal.brincoMae == null) {
           animal.brincoMae = '';
         }
-        return  (new Date(animal.dataNascimento) >= new Date(this.filtro.dataNascimentoInicio || '1970-01-01')) &&
-                (new Date(animal.dataNascimento) <= new Date(this.filtro.dataNascimentoFim || '9999-12-31')) &&
-                animal.brinco.includes(this.filtro.brinco) &&
-                animal.sexo.includes(this.filtro.sexo) &&
-                animal.piquete.nome.includes(this.filtro.piquete) &&
-                (animal.raca.nome.includes(this.filtro.raca)) &&
-                (animal.brincoPai.includes(this.filtro.brincoPai)) &&
-                (animal.brincoMae.includes(this.filtro.brincoMae)) &&
-                animal.status.includes(this.filtro.status);
+        return (new Date(animal.dataNascimento) >= new Date(this.filtro.dataNascimentoInicio || '1970-01-01')) &&
+          (new Date(animal.dataNascimento) <= new Date(this.filtro.dataNascimentoFim || '9999-12-31')) &&
+          animal.brinco.includes(this.filtro.brinco) &&
+          animal.sexo.includes(this.filtro.sexo) &&
+          animal.piquete.nome.includes(this.filtro.piquete) &&
+          (animal.raca.nome.includes(this.filtro.raca)) &&
+          (animal.brincoPai.includes(this.filtro.brincoPai)) &&
+          (animal.brincoMae.includes(this.filtro.brincoMae)) &&
+          animal.status.includes(this.filtro.status);
       });
     },
 
@@ -453,15 +456,15 @@ export default {
 
       this.animais = this.animaisDaApi;
     },
-    
+
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
 
     vizualizarAnimal(animal) {
       this.$router.push({
-        name: 'VizualizarAnimal', 
-        params: { animalId: animal.id } 
+        name: 'VizualizarAnimal',
+        params: { animalId: animal.id }
       })
     }
 
@@ -544,5 +547,14 @@ export default {
 .nav-link.active {
   background-color: #d0d0d0 !important;
   /* Cor um pouco mais escura quando a aba está ativa */
+}
+
+.input-consistente,
+.select-consistente {
+  width: 200px;
+}
+
+.btn {
+  margin-bottom: 0; 
 }
 </style>

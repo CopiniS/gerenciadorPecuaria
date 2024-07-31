@@ -20,31 +20,28 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataVenda" class="form-label me-2">Data da Venda</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Inicio"
-            class="form-control" id="dataVendaInicio" v-model="filtro.dataVendaInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Fim"
-            class="form-control" id="dataVendaFim" v-model="filtro.dataVendaFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataVendaInicio" :endDate="formData.dataVendaFim"
+      @update:startDate="val => formData.dataVendaInicio = val"
+      @update:endDate="val => formData.dataVendaFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
-          <input type="text" class="form-control" id="animal" v-model="filtro.animal" @input="aplicarBrincoMask">
+          <input type="text" class="form-control input-consistente" id="animal" v-model="filtro.animal" @input="aplicarBrincoMask">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Piquete</label>
-          <input type="text" class="form-control" id="piquete" v-model="filtro.piquete">
+          <input type="text" class="form-control input-consistente" id="piquete" v-model="filtro.piquete">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Peso</label>
-          <input type="text" class="form-control" id="pesoInicio" v-model="filtro.pesoInicio" @input="aplicarPesoInicioMask" placeholder="Início">
+          <input type="text" class="form-control input-consistente" id="pesoInicio" v-model="filtro.pesoInicio" @input="aplicarPesoInicioMask" placeholder="Início">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <input type="text" class="form-control" id="pesoFim" v-model="filtro.pesoFim" @input="aplicarPesoFimMask" placeholder="Fim">
+          <input type="text" class="form-control input-consistente" id="pesoFim" v-model="filtro.pesoFim" @input="aplicarPesoFimMask" placeholder="Fim">
         </div>
         <div class="col-auto d-flex align-items-center">
               <label for="tipo" class="form-label me-2">Finalidade</label>
-              <select class="form-select" id="finalidade" v-model="filtro.finalidade">
+              <select class="form-select select-consistente" id="finalidade" v-model="filtro.finalidade">
                   <option value=""></option>
                   <option value="Cria">Cria</option>
                   <option value="Recria">Recria</option>
@@ -122,9 +119,13 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import DateRangePicker from './DateRangePicker.vue';
 
 export default {
   mixins: [masksMixin],
+  components: {
+    DateRangePicker
+  },
 
   data() {
     return {
@@ -331,6 +332,10 @@ export default {
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.input-consistente, .select-consistente {
+    width: 200px; 
 }
 
 </style>

@@ -20,24 +20,21 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataInseminacao" class="form-label me-2">Data da Inseminação</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Inseminação Inicio"
-            class="form-control" id="dataInseminacaoInicio" v-model="filtro.dataInseminacaoInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Inseminação Fim"
-            class="form-control" id="dataInseminacaoFim" v-model="filtro.dataInseminacaoFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataInseminacaoInicio" :endDate="formData.dataInseminacaoFim"
+      @update:startDate="val => formData.dataInseminacaoInicio = val"
+      @update:endDate="val => formData.dataInseminacaoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
-          <input type="text" @input="aplicarBrincoMask" class="form-control" id="animal" v-model="filtro.animal">
+          <input type="text" @input="aplicarBrincoMask" class="form-control input-consistente" id="animal" v-model="filtro.animal">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Veterinário</label>
-          <input type="text" class="form-control" id="veterinario" v-model="filtro.veterinario">
+          <input type="text" class="form-control input-consistente" id="veterinario" v-model="filtro.veterinario">
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Touro</label>
-          <input type="text" class="form-control" id="identificadorTouro" v-model="filtro.identificadorTouro">
+          <input type="text" class="form-control input-consistente" id="identificadorTouro" v-model="filtro.identificadorTouro">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro()">Limpar</button>
@@ -103,10 +100,13 @@
 <script>
 import api from '/src/interceptadorAxios'
 import { masksMixin } from '../mixins/maks';
+import DateRangePicker from './DateRangePicker.vue';
 
 export default {
   mixins: [masksMixin],
-
+  components: {
+    DateRangePicker
+  },
   data() {
     return {
       inseminacoes: [],
@@ -287,6 +287,10 @@ export default {
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.input-consistente, .select-consistente {
+    width: 200px; 
 }
 
 </style>

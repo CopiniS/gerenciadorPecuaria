@@ -29,16 +29,13 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataCompra" class="form-label me-2">Data da Compra</label>
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Compra Inicio"
-            class="form-control" id="dataCompraInicio" v-model="filtro.dataCompraInicio">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Data da Compra Fim"
-            class="form-control" id="dataCompraFim" v-model="filtro.dataCompraFim">
+          <DateRangePicker class="input-consistente" :startDate="formData.dataCompraInicio" :endDate="formData.dataCompraFim"
+      @update:startDate="val => formData.dataCompraInicio = val"
+      @update:endDate="val => formData.dataCompraFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>
-          <input type="text" class="form-control" id="produto" v-model="filtro.produto">
+          <input type="text" class="form-control input-consistente" id="produto" v-model="filtro.produto">
         </div>
         <div class="col-auto">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
@@ -109,8 +106,12 @@
 
 <script>
 import api from '/src/interceptadorAxios'
+import DateRangePicker from './DateRangePicker.vue';
 
 export default {
+  components: {
+    DateRangePicker
+  },
   data() {
     return {
       activeTab: 'compras',
@@ -295,6 +296,10 @@ export default {
 .button-group {
   display: flex;
   gap: 10px; 
+}
+
+.input-consistente, .select-consistente {
+    width: 200px; 
 }
 
 </style>

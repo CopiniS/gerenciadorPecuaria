@@ -295,16 +295,43 @@ export default {
       if(this.formData.precoKg != null && this.formData.precoKg != ''){
         this.formData.valorTotal = parseFloat(this.replaceVirgulaPonto(this.formData.precoKg.toString())) * 
         parseFloat(this.replaceVirgulaPonto(this.formData.peso.toString()));
-        // this.aplicarValorTotalMask2(this.formData.valorTotal.toString());
+        this.ChamaMaskValorTotal();
       }
     },
 
     atualizaValorTotalPeloPrecoKg(){
       if(this.formData.peso != null && this.formData.peso != ''){
         this.formData.valorTotal = parseFloat(this.replaceVirgulaPonto(this.formData.precoKg.toString())) * 
-        parseFloat(this.replaceVirgulaPonto(this.formData.peso.toString()));        
-        this.formData.valorTotal = this.replacePontoVirgula(this.formData.valorTotal.toString());
+        parseFloat(this.replaceVirgulaPonto(this.formData.peso.toString()));  
+        this.ChamaMaskValorTotal();      
       }
+    },
+
+    ChamaMaskValorTotal(){
+      let valorTotal = this.formData.valorTotal.toString();
+      const temPonto = valorTotal.includes('.')
+      if(temPonto){
+        const regex = /^\d.\d+$/
+        if(regex.test(valorTotal)){
+          valorTotal.replace(/^(\d).(d+)/ , '0$1.$2');
+        }
+        const regex2 = /^\d+.\d$/
+        if(regex2.test(valorTotal)){
+          valorTotal.replace(/^(\d+).(d)/ , '$1.$20');
+        }
+
+        const regex3 = /^\d+.\d{2}\d+/
+        if(regex3.test(valorTotal)){
+          valorTotal.replace(/^(\d+).(d{2})\d+/ , '$1.$2');
+        }
+
+        valorTotal = this.replacePontoVirgula(valorTotal);
+      }
+      else{
+        valorTotal = valorTotal + ',00'
+      }
+
+      this.aplicarValorTotalMask2(valorTotal)
     },
 
     selectTab(tab) {

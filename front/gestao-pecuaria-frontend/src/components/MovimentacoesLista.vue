@@ -20,9 +20,9 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataMovimentacao" class="form-label me-2">Data da Compra</label>
-          <DateRangePicker class="input-consistente" :startDate="formData.dataMovimentacaoInicio" :endDate="formData.dataMovimentacaoFim"
-      @update:startDate="val => formData.dataMovimentacaoInicio = val"
-      @update:endDate="val => formData.dataMovimentacaoFim = val" />
+          <DateRangePicker class="input-consistente" :startDate="filtro.dataMovimentacaoInicio" :endDate="filtro.dataMovimentacaoFim"
+      @update:startDate="val => filtro.dataMovimentacaoInicio = val"
+      @update:endDate="val => filtro.dataMovimentacaoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Piquete de Origem</label>

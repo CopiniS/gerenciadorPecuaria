@@ -127,6 +127,11 @@ Dentro da pasta /gestao-pecuaria-frontend:
 
 	npm install vue-router
 
+4 - Instalar o flatpickr
+
+	npm install flatpickr
+
+
 ### Pull dos arquivos do repositório remoto no gitHub
 
 1- Excluir os arquivos do back que serão importados do github:

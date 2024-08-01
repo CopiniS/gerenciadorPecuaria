@@ -26,9 +26,9 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
-          <DateRangePicker class="input-consistente" :startDate="formData.dataNascimentoInicio"
-            :endDate="formData.dataNascimentoFim" @update:startDate="val => formData.dataNascimentoInicio = val"
-            @update:endDate="val => formData.dataNascimentoFim = val" />
+          <DateRangePicker class="input-consistente" :startDate="filtro.dataNascimentoInicio"
+            :endDate="filtro.dataNascimentoFim" @update:startDate="val => filtro.dataNascimentoInicio = val"
+            @update:endDate="val => filtro.dataNascimentoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="sexo" class="form-label me-2">Sexo</label>
@@ -180,7 +180,8 @@ export default {
       mostrarFormulario: false,
       filtro: {
         brinco: '',
-        dataNascimento: '',
+        dataNascimentoInicio: '',
+        dataNascimentoFim: '',
         sexo: '',
         raca: '',
         brincoPai: '',
@@ -446,7 +447,8 @@ export default {
 
     limparFiltro() {
       this.filtro.brinco = '';
-      this.filtro.dataNascimento = '';
+      this.filtro.dataNascimentoInicio = '';
+      this.filtro.dataNascimentoFim = '';
       this.filtro.sexo = '';
       this.filtro.raca = '';
       this.filtro.brincoPai = '';

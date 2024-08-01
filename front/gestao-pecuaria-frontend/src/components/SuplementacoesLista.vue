@@ -29,15 +29,15 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataInicial" class="form-label me-2">Data Inicial</label>
-          <DateRangePicker class="input-consistente" :startDate="formData.dataInicialInicio" :endDate="formData.dataInicialFim"
-      @update:startDate="val => formData.dataInicialInicio = val"
-      @update:endDate="val => formData.dataInicialFim = val" />
+          <DateRangePicker class="input-consistente" :startDate="filtro.dataInicialInicio" :endDate="filtro.dataInicialFim"
+      @update:startDate="val => filtro.dataInicialInicio = val"
+      @update:endDate="val => filtro.dataInicialFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataInicial" class="form-label me-2">Data Final</label>
-          <DateRangePicker class="input-consistente" :startDate="formData.dataFinalInicio" :endDate="formData.dataFinalFim"
-      @update:startDate="val => formData.dataFinalInicio = val"
-      @update:endDate="val => formData.dataFinalFim = val" />
+          <DateRangePicker class="input-consistente" :startDate="filtro.dataFinalInicio" :endDate="filtro.dataFinalFim"
+      @update:startDate="val => filtro.dataFinalInicio = val"
+      @update:endDate="val => filtro.dataFinalFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="status" class="form-label me-2">Status</label>

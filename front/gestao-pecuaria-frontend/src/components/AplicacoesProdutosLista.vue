@@ -19,9 +19,9 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataAplicacao" class="form-label me-2">Data da Aplicação</label>
-          <DateRangePicker class="input-consistente" :startDate="formData.dataAplicacaoInicio" :endDate="formData.dataAplicacaoFim"
-      @update:startDate="val => formData.dataAplicacaoInicio = val"
-      @update:endDate="val => formData.dataAplicacaoFim = val" />
+          <DateRangePicker class="input-consistente" :startDate="filtro.dataAplicacaoInicio" :endDate="filtro.dataAplicacaoFim"
+      @update:startDate="val => filtro.dataAplicacaoInicio = val"
+      @update:endDate="val => filtro.dataAplicacaoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>

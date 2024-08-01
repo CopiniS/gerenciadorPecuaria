@@ -20,9 +20,9 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataInseminacao" class="form-label me-2">Data da Inseminação</label>
-          <DateRangePicker class="input-consistente" :startDate="formData.dataInseminacaoInicio" :endDate="formData.dataInseminacaoFim"
-      @update:startDate="val => formData.dataInseminacaoInicio = val"
-      @update:endDate="val => formData.dataInseminacaoFim = val" />
+          <DateRangePicker class="input-consistente" :startDate="filtro.dataInseminacaoInicio" :endDate="filtro.dataInseminacaoFim"
+      @update:startDate="val => filtro.dataInseminacaoInicio = val"
+      @update:endDate="val => filtro.dataInseminacaoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>

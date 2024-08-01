@@ -20,9 +20,9 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataVenda" class="form-label me-2">Data da Venda</label>
-          <DateRangePicker class="input-consistente" :startDate="formData.dataVendaInicio" :endDate="formData.dataVendaFim"
-      @update:startDate="val => formData.dataVendaInicio = val"
-      @update:endDate="val => formData.dataVendaFim = val" />
+          <DateRangePicker class="input-consistente" :startDate="filtro.dataVendaInicio" :endDate="filtro.dataVendaFim"
+      @update:startDate="val => filtro.dataVendaInicio = val"
+      @update:endDate="val => filtro.dataVendaFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
@@ -34,10 +34,10 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Peso</label>
-          <input type="text" class="form-control input-consistente" id="pesoInicio" v-model="filtro.pesoInicio" @input="aplicarPesoInicioMask" placeholder="Início">
+          <input type="text" class="form-control input-consistente" id="pesoInicio" v-model="filtro.pesoInicio" @input="aplicarPesoInicioMask" placeholder="Inicial">
         </div>
         <div class="col-auto d-flex align-items-center">
-          <input type="text" class="form-control input-consistente" id="pesoFim" v-model="filtro.pesoFim" @input="aplicarPesoFimMask" placeholder="Fim">
+          <input type="text" class="form-control input-consistente" id="pesoFim" v-model="filtro.pesoFim" @input="aplicarPesoFimMask" placeholder="Final">
         </div>
         <div class="col-auto d-flex align-items-center">
               <label for="tipo" class="form-label me-2">Finalidade</label>

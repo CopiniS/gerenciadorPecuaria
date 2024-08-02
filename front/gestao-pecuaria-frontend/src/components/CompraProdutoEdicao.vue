@@ -107,11 +107,11 @@ export default {
       isQuantidadeCompradaValida: true,
       isValidadeValida: true,
       isLoteValido: true,
-      dataCompraPlaceholder: 'Data da Compra',
-      produtoPlaceholder: 'Produto',
-      valorUnitarioPlaceholder: 'Valor do Produto',
-      quantidadeCompradaPlaceholder: 'Quantidade Comprada',
-      validadePlaceholder: 'Validade do produto',
+      dataCompraPlaceholder: 'Data da Compra*',
+      produtoPlaceholder: 'Produto*',
+      valorUnitarioPlaceholder: 'Valor do Produto*',
+      quantidadeCompradaPlaceholder: 'Quantidade Comprada*',
+      validadePlaceholder: 'Validade do produto*',
       lotePlaceholder: 'Lote do Produto',
     };
   },
@@ -133,7 +133,7 @@ export default {
     
     aplicarQuantidadeMask(event) {
       const value = event.target.value;
-      this.formData.quantidadeComprada =  this.valorMask(value);
+      this.formData.quantidadeComprada =  this.digitosMask(value);
     },
 
 
@@ -146,7 +146,7 @@ export default {
         this.formData.dataCompra = compra[0].dataCompra;
         this.formData.produto = compra[0].produto.id;
         this.formData.valorUnitario = this.replacePontoVirgula(compra[0].valorUnitario);
-        this.formData.quantidadeComprada = this.replacePontoVirgula(compra[0].quantidadeComprada);
+        this.formData.quantidadeComprada = compra[0].quantidadeComprada;
         this.formData.validade = compra[0].validade;
         this.formData.lote = compra[0].lote;
 

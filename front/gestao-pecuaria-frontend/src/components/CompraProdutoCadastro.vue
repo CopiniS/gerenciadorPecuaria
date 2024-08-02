@@ -68,7 +68,7 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
-              <input v-model="formData.lote" :class="{ 'is-invalid': !isLoteValido }" type="text" class="form-control"
+              <input v-model="formData.lote" type="text" class="form-control"
                 id="lote" :placeholder="lotePlaceholder">
             </div>
             <div class="button-group justify-content-end">
@@ -105,7 +105,7 @@ export default {
         valorUnitario: '',
         quantidadeComprada: '',
         validade: '',
-        lote: '',
+        lote: null,
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
       isDataCompraValida: true,
@@ -113,13 +113,12 @@ export default {
       isValorUnitarioValido: true,
       isQuantidadeCompradaValida: true,
       isValidadeValida: true,
-      isLoteValido: true,
       dataCompraPlaceholder: 'Data da Compra*',
       produtoPlaceholder: 'Produto*',
       valorUnitarioPlaceholder: 'Valor do Produto*',
       quantidadeCompradaPlaceholder: 'Quantidade Comprada*',
       validadePlaceholder: 'Validade do produto*',
-      lotePlaceholder: 'Lote do Produto*',
+      lotePlaceholder: 'Lote do Produto',
     };
   },
 
@@ -137,7 +136,7 @@ export default {
     
     aplicarQuantidadeMask(event) {
       const value = event.target.value;
-      this.formData.quantidadeComprada =  this.valorMask(value);
+      this.formData.quantidadeComprada =  this.digitosMask(value);
     },
 
 
@@ -154,9 +153,11 @@ export default {
     async submitForm() {
       if (this.verificaVazio()) {
         try {
-          //FORMATA VALOR E QUANTIDADE
+          //FORMATA VALOR
           this.formData.valorUnitario = this.replaceVirgulaPonto(this.formData.valorUnitario);
-          this.formData.quantidadeComprada = this.replaceVirgulaPonto(this.formData.quantidadeComprada);
+
+          console.log('form data: ' ,this.formData);
+          
 
           const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData);
           if (response.status === 201) {
@@ -294,13 +295,8 @@ export default {
 
       //LOTE DO PRODUTO
       if(this.formData.lote != null){
-        if(this.formData.lote.trim() != ''){
-          this.isLoteValido = true;
-          this.lotePlaceholder = 'Lote do Produto*';
-        }
-        else{
-          this.isLoteValido = false;
-          this.lotePlaceholder = 'Lote do Produto é um Campo Obrigatório';
+        if(this.formData.lote.trim() == ''){
+          this.formData.lote = null;
         }
       }
 
@@ -309,8 +305,7 @@ export default {
         this.isProdutoValido &&
         this.isValorUnitarioValido && 
         this.isQuantidadeCompradaValida && 
-        this.isValidadeValida && 
-        this.isLoteValido
+        this.isValidadeValida
       );
     },
 

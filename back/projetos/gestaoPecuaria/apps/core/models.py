@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import Produtor
 
+
 class Propriedade(models.Model):
     nome = models.CharField('Nome', max_length=50)
     endereco = models.CharField('Endereco', max_length=50)
@@ -54,7 +55,7 @@ class Produto(models.Model):
 class Estoque(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
-    quantidade = models.DecimalField('Quantidade', max_digits=10, decimal_places=3)
+    quantidade = models.BigIntegerField('Quantidade')
 
 class Pesagem(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.CASCADE)
@@ -65,10 +66,10 @@ class Pesagem(models.Model):
 class CompraProduto(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
     valorUnitario = models.DecimalField('Valor unitário', max_digits=10,  decimal_places=2)
-    quantidadeComprada = models.DecimalField('Quantidade comprada', max_digits=10,  decimal_places=3)
+    quantidadeComprada = models.BigIntegerField('Quantidade comprada')
     dataCompra = models.DateField('Data de compra')
     validade = models.DateField('Data de vencimento')
-    lote = models.CharField('Lote', max_length=50)
+    lote = models.CharField('Lote', max_length=50, null=True)
     propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
 
 class Suplementacao(models.Model):

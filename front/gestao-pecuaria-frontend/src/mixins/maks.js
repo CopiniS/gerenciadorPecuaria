@@ -114,6 +114,17 @@ export const masksMixin = {
             return value;   
         },
 
+        digitosMask(string){
+            let value = string.replace(/\D/g, '');
+            if(value.length > 11){
+                value = value.slice(0, 11);
+            }
+            else if(parseInt(value) == 0){
+                value = ''
+            }
+            return value;
+        },
+
         brincoMask(string){
             let value = string.replace(/\D/g, '');
             if (value.length > 6) {

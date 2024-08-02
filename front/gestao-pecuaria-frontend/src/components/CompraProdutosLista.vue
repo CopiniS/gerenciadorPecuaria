@@ -66,7 +66,7 @@
             <td>{{ formatarData(compra.dataCompra) }}</td>
             <td>{{ compra.produto.nome }}</td>
             <td>{{ replacePontoVirgula(compra.valorUnitario) }}</td>
-            <td>{{ replacePontoVirgula(compra.quantidadeComprada) }}</td>
+            <td>{{ compra.quantidadeComprada }}</td>
             <td>{{ formatarData(compra.validade) }}</td>
             <td>{{ compra.lote }}</td>
             <td>

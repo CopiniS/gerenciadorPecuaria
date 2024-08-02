@@ -160,7 +160,7 @@ export default {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(event) {
       const value = event.target.value;
-      this.filtro.animal =  this.brincoMask(value);
+      this.filtro.animal =  this.brincoFiltroMask(value);
     },
 
     aplicarPesoInicioMask(event) {

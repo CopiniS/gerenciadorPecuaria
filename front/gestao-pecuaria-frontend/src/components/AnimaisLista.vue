@@ -102,9 +102,7 @@
               <td>{{ animal.status }}</td>
               <td>
                 <div class="d-flex justify-content-center button-group">
-                  <button @click="vizualizarAnimal(animal)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
-                  <button @click="editarAnimal(animal)" class="btn-acoes" data-bs-toggle="modal"
-                    data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                  <button @click="acessarVisualizacao(animal)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
                 </div>
               </td>
 
@@ -153,30 +151,6 @@ export default {
     return {
       animais: [],
       animaisDaApi: [],
-      racas: [],
-      piquetes: [],
-      listaMachos: [],
-      listaFemeas: [],
-      femeasFiltradas: [],
-      machosFiltrados: [],
-      comprado: false,
-      formData: {
-        id: null,
-        brinco: '',
-        dataNascimento: '',
-        sexo: '',
-        racaPredominante: null,
-        racaObservacao: null,
-        piquete: '',
-        brincoPai: '',
-        brincoMae: '',
-        status: 'Vivo',
-        rfid: '',
-        observacoes: '',
-        dataBaixa: null,
-        dataCompra: null,
-        valorCompra: null,
-      },
       mostrarFormulario: false,
       filtro: {
         brinco: '',
@@ -190,21 +164,14 @@ export default {
         piquete: '',
         status: '',
       },
-      novaOcorrencia: {
-        dataOcorrencia: '',
-        tipoOcorrencia: '',
-        descricao: null,
-      },
-      modalTitle: 'Cadastro de Animal',
     }
   },
   async mounted() {
     this.buscarAnimaisDaApi();
-    this.buscarRacasDaApi();
-    this.buscarPiquetesDaApi();
   },
 
   methods: {
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(event) {
       const value = event.target.value;
       this.filtro.brinco = this.brincoMask(value);
@@ -221,29 +188,7 @@ export default {
     },
 
 
-    async buscarPiquetesDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/piquetes/', {
-          params: {
-            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-          },
-        });
-        this.piquetes = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar piquetes da API:', error);
-      }
-    },
-
-    async buscarRacasDaApi() {
-      try {
-        const response = await api.get('http://127.0.0.1:8000/racas/', {
-        });
-        this.racas = response.data;
-      } catch (error) {
-        console.error('Erro ao buscar raças da API:', error);
-      }
-    },
-
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarAnimaisDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/', {
@@ -258,168 +203,8 @@ export default {
       }
     },
 
-    acessarCadastro() {
-      this.$router.push({
-        name: 'AnimaisCadastro',
-        params: { animalJSON: 'animaisLista' }
-      });
-    },
 
-    editarAnimal(animal) {
-      this.modalTitle = 'Editar Animal';
-      this.formData = {
-        id: animal.id,
-        brinco: animal.brinco,
-        dataNascimento: animal.dataNascimento,
-        sexo: animal.sexo,
-        racaPredominante: animal.racaPredominante.id,
-        racaObservacao: animal.racaObservacao,
-        piquete: animal.piquete.id,
-        brincoPai: animal.brincoPai,
-        brincoMae: animal.brincoMae,
-        status: 'Vivo',
-        rfid: animal.rfid,
-        observacoes: animal.observacoes,
-        dataBaixa: animal.dataBaixa,
-        dataCompra: animal.dataCompra,
-        valorCompra: animal.valorCompra,
-      };
-    },
-
-    resetForm() {
-      this.formData = {
-        id: null,
-        brinco: '',
-        dataNascimento: '',
-        sexo: '',
-        racaPredominante: null,
-        racaObservacao: null,
-        piquete: this.formData.piquete,
-        status: 'Vivo',
-        rfid: null,
-        observacoes: null,
-        dataBaixa: null,
-        dataCompra: null,
-        valorCompra: null,
-      };
-      this.modalTitle = 'Cadastro de Animal';
-    },
-
-    fecharModal(modalId) {
-      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
-      if (closeButton) {
-        closeButton.click();
-      } else {
-        console.error('Botão de fechar não encontrado no modal:', modalId);
-      }
-    },
-
-    async apagarAnimal() {
-      try {
-        const response = await api.delete(`http://127.0.0.1:8000/animais/${this.formData.id}/`, {
-        });
-
-        if (response.status === 204) {
-          alert('Animal apagado com sucesso!');
-          this.buscarAnimaisDaApi();
-        } else {
-          alert('Erro ao apagar animal. Tente novamente mais tarde.');
-        }
-      } catch (error) {
-        console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-      }
-      this.fecharModal("confirmacaoExclusaoModal");
-    },
-
-    async submitForm() {
-      if (this.modalTitle === 'Cadastro de Animal') {
-        try {
-          const response = await api.post(`http://127.0.0.1:8000/animais/`, this.formData, {
-          });
-
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.resetForm();
-            this.buscarAnimaisDaApi();
-            this.preencherListaFemeas();
-            this.preencherListaMachos();
-          } else {
-            alert('Erro ao cadastrar animal. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-
-      } else {
-        try {
-          const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
-          });
-
-          if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.resetForm();
-            this.buscarAnimaisDaApi();
-            this.fecharModal("edicaoModal");
-          } else {
-            alert('Erro ao salvar alterações. Tente novamente mais tarde.');
-          }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      }
-    },
-
-    async preencheListas() {
-      this.preencherListaMachos();
-      this.preencherListaFemeas();
-    },
-
-    async preencherListaFemeas() {
-      const response = await api.get(`http://127.0.0.1:8000/animais/femeas`, {
-        params: {
-          propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-        },
-      });
-      this.listaFemeas = response.data;
-    },
-
-    async preencherListaMachos() {
-      const response = await api.get(`http://127.0.0.1:8000/animais/machos`, {
-        params: {
-          propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-        },
-      });
-      this.listaMachos = response.data;
-    },
-
-    filterFemeas() {
-      this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoMae));
-    },
-
-    filterMachos() {
-      this.machosFiltrados = this.listaMachos.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoPai));
-    },
-
-    selectPai(animal) {
-      this.formData.brincoPai = animal.brinco;
-      this.machosFiltrados = [];
-    },
-
-    selectMae(animal) {
-      this.formData.brincoMae = animal.brinco;
-      this.femeasFiltradas = [];
-    },
-
-    formatarData(data) {
-      const date = new Date(data);
-      const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
-      return utcDate.toLocaleDateString('pt-BR', options);
-    },
-
+//FILTROS-----------------------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarFiltro() {
       this.animais = this.animaisDaApi.filter(animal => {
 
@@ -463,12 +248,28 @@ export default {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
 
-    vizualizarAnimal(animal) {
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    acessarCadastro() {
+      this.$router.push({
+        name: 'AnimaisCadastro',
+        params: { animalJSON: 'animaisLista' }
+      });
+    },
+
+    acessarVisualizacao(animal) {
       this.$router.push({
         name: 'VizualizarAnimal',
         params: { animalId: animal.id }
       })
-    }
+    },
+
+    formatarData(data) {
+      const date = new Date(data);
+      const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
+      return utcDate.toLocaleDateString('pt-BR', options);
+    },
 
   }
 }

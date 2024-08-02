@@ -153,17 +153,17 @@ export default {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(event) {
       const value = event.target.value;
-      this.filtro.brinco = this.brincoMask(value);
+      this.filtro.brinco = this.brincoFiltroMask(value);
     },
 
     aplicarBrincoPaiMask(event) {
       const value = event.target.value;
-      this.filtro.brincoPai = this.brincoMask(value);
+      this.filtro.brincoPai = this.brincoFiltroMask(value);
     },
 
     aplicarBrincoMaeMask(event) {
       const value = event.target.value;
-      this.filtro.brincoMae = this.brincoMask(value);
+      this.filtro.brincoMae = this.brincoFiltroMask(value);
     },
 
 

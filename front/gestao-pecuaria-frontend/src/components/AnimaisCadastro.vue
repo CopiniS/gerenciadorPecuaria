@@ -24,7 +24,7 @@
               <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
               <select v-model="formData.piquete" :class="{ 'is-invalid': !isPiqueteValido }" class="form-select"
                 id="piquete" aria-label="Piquete" :placeholder="piquetePlaceholder">
-                <option disabled :value="null">Selecione o piquete</option>
+                <option disabled :value="null">{{ piquetePlaceholder }}</option>
                 <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>
               </select>
             </div>
@@ -44,7 +44,7 @@
               <span class="input-group-text"><i class="fas fa-venus-mars"></i>*</span>
               <select v-model="formData.sexo" :class="{ 'is-invalid': !isSexoValido }" class="form-select" id="sexo"
                 aria-label="Sexo" :placeholder="sexoPlaceholder" >
-                <option disabled :value="null">Selecione o sexo</option>
+                <option disabled :value="null">{{ sexoPlaceholder }}</option>
                 <option value="macho">Macho</option>
                 <option value="femea">Fêmea</option>
               </select>

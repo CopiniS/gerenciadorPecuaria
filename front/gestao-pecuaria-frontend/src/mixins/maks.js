@@ -1,62 +1,5 @@
 export const masksMixin = {
     methods: {
-        // valorMask(string) {
-        //     let value = string.replace(/\D/g, '');  // Remove todos os caracteres não numéricos
-
-        //     // Limita o número de dígitos a 11
-        //     if (value.length > 13) {
-        //         console.log('entra em value.length > 13');
-        //         value = value.slice(0, 13);
-        //     }                   
-        //     console.log('inicial: value: ', value , "  -  contador: ", this.contador);
-        //     // Aplica a máscara conforme o comprimento do número
-        //     if (value.length > 12) {
-        //         console.log('entra em value.length > 12');
-        //         value = value.replace(/(\d{11})(\d{2})/, '$1,$2');
-        //     //Para o caso de apagar algum valor (Os próximos 5 else if)
-        //     } else if(value.length == 0){
-        //         console.log('entra em value.length == 0');
-        //         value = '';
-        //         this.contador = -1;
-        //     } else if(value.length == 1){
-        //         console.log('entra em value.length == 1');
-        //         value = value.replace(/(\d)/ , '00,0$1');
-        //         this.contador = 0;
-        //     } else if(value.length == 2){
-        //         console.log('entra em value.length == 2');
-        //         value = value.replace(/(\d{2})/ , '00,$1');
-        //         this.contador = 1;
-        //     } else if(value.length == 3){
-        //         console.log('entra em value.length == 3');
-        //         value = value.replace(/(\d{1})(\d{2})/ , '0$1,$2');
-        //         this.contador = 2;
-        //     } else if(value.length == 4){
-        //         console.log('entra em value.length == 4');
-        //         value = value.replace(/(\d+)(\d{2})/ , '$1,$2');
-        //         this.contador = 3;
-        //     } else if (this.contador > 3){
-        //         console.log('entra em contador > 3');
-        //         value = value.replace(/(\d+)(\d{2})/, '$1,$2');
-        //     } else if (this.contador == 3) {
-        //         console.log('entra em contador == 3');
-        //         value = value.substring(1);
-        //         value = value.replace(/(\d{2})(\d{2})/, '$1,$2');
-        //     } else if (this.contador == 2) {
-        //         console.log('entra em contador == 2');
-        //         value = value.slice(0,1) + value.substring(2);
-        //         value = value.replace(/(0\d)(\d{2})/, '$1,$2');
-        //     } else if (this.contador == 1){
-        //         console.log('entra em contador == 1');
-        //         value = value.slice(0,2) + value.substring(3);
-        //         value = value.replace(/(00)(\d{2})/, '$1,$2');
-        //     } else if(this.contador == 0){
-        //         console.log('entra em contador == 0');
-        //         value = value.replace(/(\d)/, '00,0$1');
-        //     } 
-        //     this.contador += 1;
-        //     return value;
-        // },
-        
         valorMask(string){
             // Remove caracteres que não são dígitos ou vírgula
             let value = string.replace(/[^0-9,]/g, '');
@@ -127,10 +70,41 @@ export const masksMixin = {
 
         brincoMask(string){
             let value = string.replace(/\D/g, '');
-            if (value.length > 6) {
-                value = value.slice(0, 6);
+            if(parseInt(value) == 0){
+                value = ''
+            }
+            else if(value.length == 1){
+                value = value.replace(/(\d)/, '00000$1')
+            }
+            else if(value.length == 2){
+                value = value.replace(/(\d{2})/, '0000$1')
+            }
+            else if(value.length == 3){
+                value = value.replace(/(\d{3})/, '000$1')
+            }
+            else if(value.length == 4){
+                value = value.replace(/(\d{4})/, '00$1')
+            }
+            else if(value.length == 5){
+                value = value.replace(/(\d{5})/, '0$1')
+            }
+            else if (value.length > 6) {
+                if(value[0] != '0'){
+                    value = value.slice(0, 6);
+                }
+                else{
+                    value = value.slice(1)
+                }
             }  
             return value;
+        },
+
+        brincoFiltroMask(string){
+            let value = string.replace(/\D/g, '');
+            if (value.length > 6) {
+                value = value.slice(0, 6);
+            }
+            return value; 
         },
 
         observacoesMask(string){

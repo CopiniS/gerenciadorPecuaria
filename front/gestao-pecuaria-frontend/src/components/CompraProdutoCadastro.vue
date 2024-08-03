@@ -26,6 +26,9 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Compra</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" :class="{ 'is-invalid': !isDataCompraValida }" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataCompraPlaceholder" class="form-control"
@@ -423,5 +426,9 @@ export default {
 
 .options li:hover {
   background-color: #f0f0f0;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

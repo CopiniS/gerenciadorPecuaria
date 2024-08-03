@@ -27,6 +27,9 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Piquete</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.nome" :class="{ 'is-invalid': !isNomeValido }" type="text" class="form-control"
                 id="nome" :placeholder="nomePlaceholder">
@@ -281,5 +284,9 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

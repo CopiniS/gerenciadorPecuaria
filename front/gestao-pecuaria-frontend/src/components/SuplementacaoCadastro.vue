@@ -20,6 +20,9 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Suplementação</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group">
               <label for="dataInicial" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
               <input type="text" :class="{ 'is-invalid': !isDataInicialValida }" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataInicialPlaceholder" class="form-control"
@@ -327,5 +330,9 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

@@ -20,6 +20,9 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Ocorrência</h1>
           <h2 class="title fs-5" id="cadastroLabel">Animal: {{ brinco }}</h2>
           <form @submit.prevent="submitForm">
+            <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
@@ -249,4 +252,7 @@ export default {
   border-color: #dc3545;
 }
 
+#legenda {
+    font-size: 16px;
+}
 </style>

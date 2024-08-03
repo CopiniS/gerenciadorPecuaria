@@ -20,6 +20,9 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Inseminacao</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar"></i></span>
               <input v-model="formData.dataInseminacao" :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoCadastro">
             </div>
@@ -346,5 +349,9 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

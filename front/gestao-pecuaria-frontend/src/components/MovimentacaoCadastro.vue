@@ -19,6 +19,9 @@
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Movimentação</h1>
           <form @submit.prevent="submitForm">
+            <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
@@ -435,5 +438,9 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

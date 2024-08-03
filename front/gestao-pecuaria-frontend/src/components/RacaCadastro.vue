@@ -10,7 +10,7 @@
         <button v-if="caminho == 'animal'" class="nav-link" :class="{ active: activeTab === 'cadastro-animal' }" id="nav-cadastro-animal-tab" @click="selectTab('cadastro-animal')" 
         type="button" role="tab" aria-controls="nav-cadastro-animal" aria-selected="false">Cadastro de Animal</button>
         <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Raca</button>
+        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Raca*</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">

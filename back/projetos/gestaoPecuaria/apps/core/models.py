@@ -101,8 +101,8 @@ class OutraDespesa(models.Model):
 
 class VendaAnimal(models.Model):
     dataVenda = models.DateField('Data da venda')
-    peso = models.DecimalField('Peso', max_digits=10, decimal_places=3)
-    precoKg = models.DecimalField('Preço po Kg', max_digits=10, decimal_places=2)
+    peso = models.DecimalField('Peso', max_digits=10, decimal_places=3, null=True)
+    precoKg = models.DecimalField('Preço po Kg', max_digits=10, decimal_places=2, null=True)
     valorTotal = models.DecimalField('Valor total', max_digits=10, decimal_places=2)
     finalidade = models.CharField('Finalidade', max_length=50)
     observacao = models.CharField('Observação', max_length=255, null=True)

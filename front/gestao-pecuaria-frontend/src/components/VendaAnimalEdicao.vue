@@ -22,7 +22,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input ref="valor" @input="inputPrecoKg" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder" :class="{'is-invalid': !isprecoKgValido}" required>
+                  <input ref="valor" @input="inputPrecoKg" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder">
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                  <input @input="inputPeso" v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
+                  <input @input="inputPeso" v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder">
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text"><i class="fas fa-tags"></i></span>
@@ -87,24 +87,22 @@ export default {
         id: null,
         animal: '',
         dataVenda: '',
-        peso: '',
-        precoKg: '',
+        peso: null,
+        precoKg: null,
         valorTotal: '',
         finalidade: '',
         observacao: null,
       },
       isBrincoValido: true,
       isDataValida: true,
-      isPesoValido: true,
-      isprecoKgValido: true,
       isValorTotalValido: true,
       isFinalidadeValida: true,
-      brincoPlaceholder: 'Brinco do animal',
-      dataPlaceholder: 'Data da venda',
+      brincoPlaceholder: 'Brinco do animal*',
+      dataPlaceholder: 'Data da venda*',
       pesoPlaceholder: 'Peso do animal',
       precoKgPlaceholder: 'Preço por KG',
-      valorTotalPlaceholder: 'Valor Total',
-      finalidadePlaceholder: 'Finalidade',
+      valorTotalPlaceholder: 'Valor Total*',
+      finalidadePlaceholder: 'Finalidade*',
     };
   },
 
@@ -200,8 +198,12 @@ export default {
       if (this.verificaVazio()) {
         try {
           //FORMATA PESO, PRECOKG E VALORTOTAL
-          this.formData.peso = this.replaceVirgulaPonto(this.formData.peso);
-          this.formData.precoKg = this.replaceVirgulaPonto(this.formData.precoKg);
+          if(this.formData.peso != null){
+            this.formData.peso = this.replaceVirgulaPonto(this.formData.peso);
+          }
+          if(this.formData.precoKg != null){
+            this.formData.precoKg = this.replaceVirgulaPonto(this.formData.precoKg);
+          }
           this.formData.valorTotal = this.replaceVirgulaPonto(this.formData.valorTotal);
 
           const response = await api.patch(`http://127.0.0.1:8000/vendas-animais/${this.formData.id}/`, this.formData, {
@@ -246,13 +248,8 @@ export default {
       }
       
       //PREÇO POR KG
-      if(this.formData.precoKg != null && this.formData.precoKg.trim() != ''){
-          this.isprecoKgValido = true;
-          this.precoKgPlaceholder = 'Preço por Kg*';
-      }
-      else{
-        this.isprecoKgValido = false;
-        this.precoKgPlaceholder = 'Preço por kg é um Campo Obrigatório';
+      if(this.formData.precoKg != null && this.formData.precoKg.trim() == ''){
+          this.formData.precoKg = null;
       }
 
       //FINALIDADE
@@ -276,13 +273,8 @@ export default {
       }
 
       //PESO DO ANIMAL
-      if(this.formData.peso != null && this.formData.peso.trim() != ''){
-          this.isPesoValido= true;
-          this.pesoPlaceholder = 'Peso do Animal*';
-      }
-      else{
-        this.isPesoValido = false;
-        this.pesoPlaceholder = 'Peso do Animal é um Campo Obrigatório';
+      if(this.formData.peso != null && this.formData.peso.trim() == ''){
+          this.formData.peso = null;
       }
 
       //VALOR TOTAL
@@ -302,10 +294,8 @@ export default {
 
       return (
         this.isDataValida &&
-        this.isprecoKgValido &&
         this.isFinalidadeValida &&
-        this.isBrincoValido && 
-        this.isPesoValido &&
+        this.isBrincoValido &&
         this.isValorTotalValido
       );
     },

@@ -25,7 +25,7 @@
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
-              <select v-model="formData.piquete" :class="{ 'is-invalid': !isPiqueteValido }" class="form-select"
+              <select disabled v-model="formData.piquete" :class="{ 'is-invalid': !isPiqueteValido }" class="form-select"
                 id="piquete" aria-label="Piquete" :placeholder="piquetePlaceholder" >
                 <option disabled value="">Selecione o piquete</option>
                 <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{ piquete.nome }}</option>

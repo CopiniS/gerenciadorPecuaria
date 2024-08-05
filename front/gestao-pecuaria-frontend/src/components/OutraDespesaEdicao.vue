@@ -20,6 +20,9 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Despesa</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar"></i></span>
               <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataDespesa"
@@ -27,23 +30,23 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }"
-                type="text" @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder">
+              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
+                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.descricao" type="text" @input="aplicarDescricaoMask" class="form-control" id="descricao"
-                placeholder="Descrição">
-                <div>({{ contadorDescricao }} / 255)</div>
+              <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
+                :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" >
+              <div>({{ contadorDescricao }} / 255)</div>   
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
-                placeholder="Categoria">
+                :placeholder="categoriaPlaceholder" :class="{ 'is-invalid': !isCategoriaValida }" >
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>
-              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
             </div>
           </form>
         </div>
@@ -73,8 +76,12 @@ export default {
       },
       isDataValida: true,
       isValorValido: true,
-      dataPlaceholder: 'Data da Despesa',
-      valorPlaceholder: 'Valor',
+      isDescricaoValida: true,
+      isCategoriaValida: true,
+      dataPlaceholder: 'Data da Despesa*',
+      valorPlaceholder: 'Valor*',
+      descricaoPlaceholder: 'Descrição*',
+      categoriaPlaceholder: 'Categoria*'
     };
   },
 
@@ -107,6 +114,7 @@ export default {
         this.formData.dataDespesa = despesa.dataDespesa;
         this.formData.valor = this.replacePontoVirgula(despesa.valor);
         this.formData.descricao = despesa.descricao;
+        this.formData.categoria = despesa.categoria;
       } catch (error) {
         console.error('Erro ao carregar dados da despesa:', error);
       }
@@ -168,18 +176,41 @@ export default {
       }
 
       //DESCRIÇÃO
-      if(this.formData.descricao != null && this.formData.descricao.trim() == ''){
-        this.formData.descricao = null;
+      if(this.formData.descricao != null){
+        if(this.formData.descricao.trim() != ''){
+          this.isDescricaoValida = true;
+          this.descricaoPlaceholder = 'Descrição*';
+        }
+        else{
+          this.isDescricaoValida = false;
+          this.descricaoPlaceholder = 'Descrição é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isDescricaoValida = false;
+        this.descricaoPlaceholder = 'Descrição é um Campo Obrigatório';
       }
 
       //CATEGORIA
-      if(this.formData.categoria != null && this.formData.categoria.trim() == ''){
-        this.formData.categoria = null;
+      if(this.formData.categoria != null){
+        if(this.formData.categoria.trim() != ''){
+          this.isCategoriaValida = true;
+          this.categoriaPlaceholder = 'Categoria*';
+        }
+        else{
+          this.isCategoriaValida = false;
+          this.categoriaPlaceholder = 'Categoria é um Campo Obrigatório';
+        }
       }
-
+      else{
+        this.isCategoriaValida = false;
+        this.categoriaPlaceholder = 'Categoria é um Campo Obrigatório';
+      }
       return (
         this.isDataValida &&
-        this.isValorValido
+        this.isValorValido &&
+        this.isDescricaoValida &&
+        this.isCategoriaValida
       );
     },
 

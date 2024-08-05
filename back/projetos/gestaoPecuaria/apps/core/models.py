@@ -96,8 +96,8 @@ class OutraDespesa(models.Model):
     propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
     dataDespesa = models.DateField('Data da despesa')
     valor = models.DecimalField('Valor', max_digits=10, decimal_places=2)
-    descricao = models.CharField('Descrição', max_length=255, null=True)
-    categoria = models.CharField('Categoria', max_length=50, null=True)
+    descricao = models.CharField('Descrição', max_length=255)
+    categoria = models.CharField('Categoria', max_length=50)
 
 class VendaAnimal(models.Model):
     dataVenda = models.DateField('Data da venda')

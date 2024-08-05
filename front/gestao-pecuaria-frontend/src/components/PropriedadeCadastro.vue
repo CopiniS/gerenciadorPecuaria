@@ -21,17 +21,17 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
                     <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" :placeholder="nomePlaceholder"
-                        id="nome" required>
+                        id="nome" >
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                     <input v-model="formData.endereco" :class="{'is-invalid': !isEnderecoValido}" type="text" class="form-control"
-                        :placeholder="enderecoPlaceholder" id="endereco" required>
+                        :placeholder="enderecoPlaceholder" id="endereco" >
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-flag"></i></span>
                     <select v-model="formData.estado" :class="{'is-invalid': !isEstadoValido}" class="form-select"
-                        @change="buscarCidadesPorEstado($event.target.value)" required>
+                        @change="buscarCidadesPorEstado($event.target.value)" >
                         <option value="" disabled>{{ estadoPlaceholder }}</option>
                         <option v-for="estado in estados" :key="estado.id" :value="estado.nome">{{ estado.nome
                             }}</option>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-city"></i></span>
-                    <select v-model="formData.cidade" :class="{'is-invalid': !isCidadeValida}" class="form-select" required>
+                    <select v-model="formData.cidade" :class="{'is-invalid': !isCidadeValida}" class="form-select" >
                         <option value="">{{ cidadePlaceholder }}</option>
                         <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{
                 cidade.nome }}</option>
@@ -48,17 +48,17 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.latitude" :class="{'is-invalid': !isLatitudeValida}" type="text" class="form-control"
-                         :placeholder="latitudePlaceholder" id="latitude" required>
+                         :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude" >
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.longitude" :class="{'is-invalid': !isLongitudeValida}" type="text" class="form-control"
-                        :placeholder="longitudePlaceholder" id="longitude" required>
+                        :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" >
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control"
-                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" required>
+                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area">
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('propriedades')">Cancelar</button>
@@ -120,6 +120,16 @@ export default {
     aplicarAreaMask(event){
       const value = event.target.value;
       this.formData.area = this.valorMask(value);
+    },
+
+    aplicarLatMask(event){
+      const value = event.target.value;
+      this.formData.latitude = this.latLongMask(value);
+    },
+
+    aplicarLongMask(event){
+      const value = event.target.value;
+      this.formData.longitude = this.latLongMask(value);
     },
 
 

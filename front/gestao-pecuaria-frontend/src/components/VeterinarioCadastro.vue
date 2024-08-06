@@ -76,7 +76,7 @@ export default {
       isCrmvValido: true,
       nomePlaceholder: 'Nome*',
       telefonePlaceholder: 'Telefone*',
-      emailPlaceholder: 'Email*',
+      emailPlaceholder: 'Email',
       crmvPlaceholder: 'CRMV*',
     };
   },
@@ -111,21 +111,21 @@ export default {
     validarFormulario() {
       if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone)){
         this.isTelefoneValido = true;
-        this.telefonePlaceholder = 'Telefone do Veterinário';
+        this.telefonePlaceholder = 'Telefone';
       }
       else{
         this.isTelefoneValido = false;
-        this.formData.telefone = '';
+        this.formData.telefone = null;
         this.telefonePlaceholder = 'Telefone Inválido';
       }
 
-      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email.trim())){
+      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
           this.isEmailValido = true;
-          this.emailPlaceholder = 'Email do Veterinário';
+          this.emailPlaceholder = 'Email';
       }
       else{
         this.isEmailValido = false;
-         this.formData.email = '';
+         this.formData.email = null;
          this.emailPlaceholder = 'Email Inválido';
       }
       return (this.isTelefoneValido && this.isEmailValido);
@@ -152,14 +152,10 @@ export default {
         this.telefonePlaceholder = 'Telefone do Veterinário é um Campo Obrigatório';
       }
       //EMAIL
-      if(this.formData.email != null && this.formData.email.trim() != ''){
-        this.isEmailValido = true;
-        this.emailPlaceholder = 'Email do Veterinário*';
+      if(this.formData.email != null && this.formData.email.trim() == ''){
+        this.formData.email = null;
       }
-      else{
-        this.isEmailValido = false;
-        this.emailPlaceholder = 'Email do Veterinário é um Campo Obrigatório';
-      }
+
       //CRMV
       if(this.formData.crmv != null && this.formData.crmv.trim() != ''){
         this.isCrmvValido = true;
@@ -173,7 +169,6 @@ export default {
       return(
         this.isNomeValido &&
         this.isTelefoneValido &&
-        this.isEmailValido &&
         this.isCrmvValido
       );
 

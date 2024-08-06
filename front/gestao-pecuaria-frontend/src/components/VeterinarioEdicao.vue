@@ -72,10 +72,10 @@ export default {
       isTelefoneValido: true,
       isEmailValido: true,
       isCrmvValido: true,
-      nomePlaceholder: 'Nome',
-      telefonePlaceholder: 'Telefone',
+      nomePlaceholder: 'Nome*',
+      telefonePlaceholder: 'Telefone*',
       emailPlaceholder: 'Email',
-      crmvPlaceholder: 'CRMV',
+      crmvPlaceholder: 'CRMV*',
     };
   },
   mounted() {
@@ -128,21 +128,23 @@ export default {
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     validarFormulario() {
-      this.isTelefoneValido = /^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(this.formData.telefone);
-      if (this.isTelefoneValido){
-        this.telefonePlaceholder = 'Telefone do Veterinário';
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone)){
+        this.isTelefoneValido = true;
+        this.telefonePlaceholder = 'Telefone';
       }
       else{
-        this.formData.telefone = '';
+        this.isTelefoneValido = false;
+        this.formData.telefone = null;
         this.telefonePlaceholder = 'Telefone Inválido';
       }
 
-      this.isEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email.trim());
-      if (this.isEmailValido){
-         this.emailPlaceholder = 'Email do Veterinário';
+      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
+          this.isEmailValido = true;
+          this.emailPlaceholder = 'Email';
       }
       else{
-         this.formData.email = '';
+        this.isEmailValido = false;
+         this.formData.email = null;
          this.emailPlaceholder = 'Email Inválido';
       }
       return (this.isTelefoneValido && this.isEmailValido);
@@ -169,14 +171,10 @@ export default {
         this.telefonePlaceholder = 'Telefone do Veterinário é um Campo Obrigatório';
       }
       //EMAIL
-      if(this.formData.email != null && this.formData.email.trim() != ''){
-        this.isEmailValido = true;
-        this.emailPlaceholder = 'Email do Veterinário*';
+      if(this.formData.email != null && this.formData.email.trim() == ''){
+        this.formData.email = null;
       }
-      else{
-        this.isEmailValido = false;
-        this.emailPlaceholder = 'Email do Veterinário é um Campo Obrigatório';
-      }
+
       //CRMV
       if(this.formData.crmv != null && this.formData.crmv.trim() != ''){
         this.isCrmvValido = true;
@@ -190,7 +188,6 @@ export default {
       return(
         this.isNomeValido &&
         this.isTelefoneValido &&
-        this.isEmailValido &&
         this.isCrmvValido
       );
 

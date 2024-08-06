@@ -41,7 +41,7 @@ class Animal(models.Model):
 class Veterinario(models.Model):
     nome = models.CharField('Nome', max_length=50)
     telefone = models.CharField('Telefone', max_length=15)
-    email = models.CharField('Email', max_length=255)
+    email = models.CharField('Email', max_length=255, null=True)
     crmv = models.CharField('CRMV', max_length=15)
     produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)
 

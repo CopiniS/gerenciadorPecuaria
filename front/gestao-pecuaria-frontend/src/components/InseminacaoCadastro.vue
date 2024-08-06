@@ -20,16 +20,18 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Inseminacao</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-              <input v-model="formData.dataInseminacao" :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoCadastro">
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <input v-model="formData.dataInseminacao" :class="{ 'is-invalid': !isDataValida }" type="text"
+                onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
+                class="form-control" id="dataInseminacaoCadastro">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+              <span class="input-group-text"><i class="fas fa-user-md"></i></span>
               <input v-model="nomeVet" @input="filterVeterinario" type="text" class="form-control"
-              :placeholder="veterinarioPlaceholder" :class="{'is-invalid': !isVeterinarioValido}">
+                :placeholder="veterinarioPlaceholder" :class="{ 'is-invalid': !isVeterinarioValido }">
             </div>
             <div class="list-group" v-if="nomeVet && veterinariosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -39,14 +41,15 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+              <span class="input-group-text"><i class="fas fa-id-card"></i></span>
               <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
-              :placeholder="identificadorTouroPlaceholder" required :class="{'is-invalid': !isIdentificadorTouroValido}">
+                :placeholder="identificadorTouroPlaceholder" required
+                :class="{ 'is-invalid': !isIdentificadorTouroValido }">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-venus"></i></span>
+              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="brinco" @input="inputBrinco" type="text" class="form-control"
-              :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
+                :placeholder="animalPlaceholder" :class="{ 'is-invalid': !isAnimalValido }">
             </div>
 
             <div class="list-group" v-if="brinco && femeasFiltradas.length">
@@ -55,12 +58,12 @@
                 {{ animal.brinco }}
               </button>
             </div>
-
             <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-comment"></i></span>
-                <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" placeholder="Observação">
-                <div>({{ contadorObservacoes }} / 255)</div>
-              </div>
+              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+              <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control"
+                id="observacao" placeholder="Observação">
+              <div>({{ contadorObservacoes }} / 255)</div>
+            </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('inseminacoes')">Cancelar</button>
               <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
@@ -114,25 +117,25 @@ export default {
   },
 
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarBrincoMask(value){
-      this.brinco =  this.brincoMask(value);
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarBrincoMask(value) {
+      this.brinco = this.brincoMask(value);
     },
 
-    inputBrinco(event){
+    inputBrinco(event) {
       const value = event.target.value;
       this.aplicarBrincoMask(value);
       this.filterFemeas();
     },
 
-    aplicarObservacaoMask(event){
+    aplicarObservacaoMask(event) {
       const value = event.target.value;
       this.formData.observacao = this.observacoesMask(value);
       this.contadorObservacoes = this.formData.observacao.length;
     },
 
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarFemeasVivasDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/femeas/vivas', {
@@ -174,7 +177,7 @@ export default {
     },
 
 
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterFemeas() {
       this.femeasFiltradas = this.femeas.filter(animal => /^\d+$/.test(animal.brinco) && animal.brinco.includes(this.brinco));
     },
@@ -204,87 +207,87 @@ export default {
     },
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    verificaVazio(){
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    verificaVazio() {
       //DATA DA INSEMINAÇÃO
-      if(this.formData.dataInseminacao != null){
-        if(this.formData.dataInseminacao.trim() != ''){
+      if (this.formData.dataInseminacao != null) {
+        if (this.formData.dataInseminacao.trim() != '') {
           this.isDataValida = true;
           this.dataPlaceholder = 'Digite a Data da Inseminação';
         }
-        else{
+        else {
           this.isDataValida = false;
           this.dataPlaceholder = 'Data da Inseminação é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isDataValida = false;
         this.dataPlaceholder = 'Data da Inseminação é um Campo Obrigatório';
       }
 
       //BRINCO
-      if(this.brinco != null){
-        if(this.brinco.trim() != ''){
+      if (this.brinco != null) {
+        if (this.brinco.trim() != '') {
           this.isAnimalValido = true;
           this.animalPlaceholder = 'Digite o brinco do Animal';
         }
-        else{
+        else {
           this.isAnimalValido = false;
           this.animalPlaceholder = 'Brinco do animal é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isAnimalValido = false;
         this.animalPlaceholder = 'Brinco do animal é um Campo Obrigatório';
       }
 
       //VETERINÁRIO
-      if(this.nomeVet != null){
-        if(this.nomeVet.trim() != ''){
+      if (this.nomeVet != null) {
+        if (this.nomeVet.trim() != '') {
           this.isVeterinarioValido = true;
           this.veterinarioPlaceholder = 'Digite o Veterinário';
         }
-        else{
+        else {
           this.isVeterinarioValido = false;
           this.veterinarioPlaceholder = 'Veterinário é um Campo Obrigatório'
         }
       }
-      else{
+      else {
         this.isVeterinarioValido = false;
         this.veterinarioPlaceholder = 'Veterinário é um Campo Obrigatório'
       }
 
       //IDENTIFICADOR TOURO
-      if(this.formData.identificadorTouro != null){
-        if(this.formData.identificadorTouro.trim() != ''){
+      if (this.formData.identificadorTouro != null) {
+        if (this.formData.identificadorTouro.trim() != '') {
           this.isIdentificadorTouroValido = true;
           this.identificadorTouroPlaceholder = 'Digite o Identificador do Touro';
         }
-        else{
+        else {
           this.isIdentificadorTouroValido = false;
           this.identificadorTouroPlaceholder = 'Identificador Touro é um Campo Obrigatório';
         }
       }
-      else{
-          this.isIdentificadorTouroValido = false;
-          this.identificadorTouroPlaceholder = 'Identificador Touro é um Campo Obrigatório';
+      else {
+        this.isIdentificadorTouroValido = false;
+        this.identificadorTouroPlaceholder = 'Identificador Touro é um Campo Obrigatório';
       }
 
       //OBSERVAÇÃO
-      if(this.formData.observacao != null && this.formData.observacao.trim() == ''){
+      if (this.formData.observacao != null && this.formData.observacao.trim() == '') {
         this.formData.observacao = null;
       }
 
       return (
         this.isDataValida &&
-        this.isAnimalValido && 
-        this.isVeterinarioValido && 
+        this.isAnimalValido &&
+        this.isVeterinarioValido &&
         this.isIdentificadorTouroValido
       );
     },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       // Seleciona a aba do formulário
       this.activeTab = tab;
@@ -352,6 +355,6 @@ export default {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
 </style>

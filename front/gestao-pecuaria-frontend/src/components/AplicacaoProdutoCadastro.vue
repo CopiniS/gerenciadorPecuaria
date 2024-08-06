@@ -2,27 +2,31 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'aplicacoes' }" id="nav-vet-tab" @click="selectTab('aplicacoes')" 
-        type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Aplicação</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Aplicação</button>
+        <button class="nav-link" :class="{ active: activeTab === 'aplicacoes' }" id="nav-vet-tab"
+          @click="selectTab('aplicacoes')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista
+          de Aplicação</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Aplicação</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'aplicacoes' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'aplicacoes' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Aplicação</h1>
-            <form @submit.prevent="submitForm">
-              <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+          <form @submit.prevent="submitForm">
+            <div class="mb-3 input-group">
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
-            <div class="mb-3 input-group" >
+            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                :placeholder="dataPlaceholder" class="form-control" id="dataAplicacaoCadastro"
-                v-model="formData.dataAplicacao" :class="{ 'is-invalid': !isDataValida }">
+              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
+                class="form-control" id="dataAplicacaoCadastro" v-model="formData.dataAplicacao"
+                :class="{ 'is-invalid': !isDataValida }">
             </div>
             <div class="mb-3 input-group">
               <input type="radio" v-model="radioEscolha" value="brinco"> Brinco
@@ -30,7 +34,8 @@
             <div class="mb-3 input-group">
               <input type="radio" v-model="radioEscolha" value="piquete"> Piquete
             </div>
-            <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'" >
+            <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'">
+              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" id="brincoField"
                 :placeholder="brincoPlaceholder" :class="{ 'is-invalid': !isBrincoValido }">
             </div>
@@ -40,7 +45,7 @@
                 {{ animal.brinco }}
               </button>
             </div>
-            <div class="mb-3 input-group" v-if="radioEscolha === 'piquete'" >
+            <div class="mb-3 input-group" v-if="radioEscolha === 'piquete'">
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
               <input v-model="nomePiquete" @input="filtrarPiquetes" type="text" class="form-control"
                 :placeholder="piquetePlaceholder" :class="{ 'is-invalid': !isPiqueteValido }">
@@ -51,26 +56,28 @@
                 {{ piquete.nome }}
               </button>
             </div>
-            <div class="mb-3 input-group" >
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-box"></i></span>
               <input v-model="nomeProduto" @input="filterProdutos" type="text" class="form-control"
                 :placeholder="produtoPlaceholder" :class="{ 'is-invalid': !isProdutoValido }">
             </div>
             <div class="list-group" v-if="nomeProduto && produtosFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="produto in produtosFiltrados" :key="produto.id" @click="selectProduto(produto)">
+              <button type="button" class="list-group-item list-group-item-action" v-for="produto in produtosFiltrados"
+                :key="produto.id" @click="selectProduto(produto)">
                 {{ produto.nome }}
               </button>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.dosagem" @input="aplicarDosagemMask" type="text" class="form-control" id="dosagem"
-                :placeholder="dosagemPlaceholder" :class="{ 'is-invalid': !isDosagemValida }">
+              <span class="input-group-text"><i class="fas fa-tint"></i></span>
+              <input v-model="formData.dosagem" @input="aplicarDosagemMask" type="text" class="form-control"
+                id="dosagem" :placeholder="dosagemPlaceholder" :class="{ 'is-invalid': !isDosagemValida }">
             </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.observacao" @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao"
-                :placeholder="observacaoPlaceholder">
-              <div>({{ contadorObservacoes }} / 255)</div>
+            <div class="mb-3 input-group position-relative">
+              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+              <input v-model="formData.observacao" @input="aplicarObservacaoMask" type="text" class="form-control"
+                id="observacao" :placeholder="observacaoPlaceholder">
+              <!-- <div class="character-counter">({{ contadorObservacoes }} / 255)</div> -->
+              <div class="character-counter2">({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
@@ -121,44 +128,44 @@ export default {
       isObservacaoValida: true,
       isProdutoValido: true,
       brincoPlaceholder: 'Brinco do animal*',
-      dataPlaceholder: 'Data da aplicacao*',
+      dataPlaceholder: 'Data da aplicação*',
       piquetePlaceholder: 'Piquete*',
-      dosagemPlaceholder: 'Dosagem do produto*',
+      dosagemPlaceholder: 'Dosagem do produto (ml/gr)*',
       observacaoPlaceholder: 'Observação',
       produtoPlaceholder: 'Produto*'
     };
   },
 
-    mounted() {
+  mounted() {
     this.buscarAnimaisDaApi();
     this.buscarProdutosDaApi();
     this.buscarPiquetesDaApi();
   },
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarDosagemMask(event) {
       const value = event.target.value;
-      this.formData.dosagem =  this.valorMask(value);
+      this.formData.dosagem = this.valorMask(value);
     },
 
-    aplicarObservacaoMask(event){
+    aplicarObservacaoMask(event) {
       const value = event.target.value;
       this.formData.observacao = this.observacoesMask(value);
       this.contadorObservacoes = this.formData.observacao.length;
     },
 
-    aplicarBrincoMask(value){
-      this.brinco =  this.brincoMask(value);
+    aplicarBrincoMask(value) {
+      this.brinco = this.brincoMask(value);
     },
 
-    inputBrinco(event){
+    inputBrinco(event) {
       const value = event.target.value;
       this.aplicarBrincoMask(value);
       this.filterAnimais();
     },
 
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarAnimaisDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/vivos', {
@@ -198,10 +205,10 @@ export default {
       if (this.verificaVazio()) {
         //FORMATA DOSAGEM
         this.formData.dosagem = this.replaceVirgulaPonto(this.formData.dosagem)
-        
+
         try {
-          const response = await api.post('http://127.0.0.1:8000/aplicacoes-produtos/', this.formData , {
-        });
+          const response = await api.post('http://127.0.0.1:8000/aplicacoes-produtos/', this.formData, {
+          });
 
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
@@ -213,11 +220,11 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } 
+      }
     },
 
 
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterAnimais() {
       this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
     },
@@ -251,106 +258,106 @@ export default {
     },
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    verificaVazio(){
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    verificaVazio() {
       //DATA DA APLICAÇÃO
-      if(this.formData.dataAplicacao != null){
-        if(this.formData.dataAplicacao.trim() != ''){
+      if (this.formData.dataAplicacao != null) {
+        if (this.formData.dataAplicacao.trim() != '') {
           this.isDataValida = true;
           this.dataPlaceholder = 'Digite a Data da Aplicação';
         }
-        else{
+        else {
           this.isDataValida = false;
           this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isDataValida = false;
         this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
       }
 
       //BRINCO || PIQUETE
-      if(this.radioEscolha == 'brinco'){
-        if(this.brinco != null){
-          if(this.brinco.trim() != ''){
+      if (this.radioEscolha == 'brinco') {
+        if (this.brinco != null) {
+          if (this.brinco.trim() != '') {
             this.isBrincoValido = true;
             this.brincoPlaceholder = 'Digite o brinco do animal';
           }
-          else{
+          else {
             this.isBrincoValido = false;
             this.brincoPlaceholder = 'Brinco é um Campo Obrigatório';
           }
         }
-        else{
+        else {
           this.isBrincoValido = false;
           this.brincoPlaceholder = 'Brinco é um Campo Obrigatório';
         }
       }
-      else{
-        if(this.nomePiquete != null){
-          if(this.nomePiquete.trim() != ''){
+      else {
+        if (this.nomePiquete != null) {
+          if (this.nomePiquete.trim() != '') {
             this.isPiqueteValido = true;
             this.piquetePlaceholder = 'Digite o Piquete ';
           }
-          else{
+          else {
             this.isPiqueteValido = false;
-          this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
+            this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
           }
         }
-        else{
+        else {
           this.isPiqueteValido = false;
           this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
         }
       }
 
       //PRODUTO
-      if(this.nomeProduto != null){
-        if(this.nomeProduto.trim() != ''){
+      if (this.nomeProduto != null) {
+        if (this.nomeProduto.trim() != '') {
           this.isProdutoValido = true;
           this.produtoPlaceholder = 'Digite o nome do Produto';
         }
-        else{
+        else {
           this.isProdutoValido = false;
           this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isProdutoValido = false;
         this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
       }
 
       //DOSAGEM
-      if(this.formData.dosagem != null){
-        if(this.formData.dosagem.trim() != ''){
+      if (this.formData.dosagem != null) {
+        if (this.formData.dosagem.trim() != '') {
           this.isDosagemValida = true;
           this.dosagemPlaceholder = 'Digite a Dosagem do produto'
         }
-        else{
+        else {
           this.isDosagemValida = false;
           this.dosagemPlaceholder = 'Dosagem é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isDosagemValida = false;
         this.dosagemPlaceholder = 'Dosagem é um Campo Obrigatório';
       }
 
       //OBSERVAÇÕES
-      if(this.formData.observacao != null && this.formData.observacao.trim() == ''){
+      if (this.formData.observacao != null && this.formData.observacao.trim() == '') {
         this.formData.observacao = null;
       }
 
       return (
         this.isDataValida &&
-        this.isBrincoValido && 
-        this.isPiqueteValido && 
-        this.isProdutoValido && 
+        this.isBrincoValido &&
+        this.isPiqueteValido &&
+        this.isProdutoValido &&
         this.isDosagemValida
       );
     },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     preencheListaAnimais() {
       this.formData.animal = [];
       let listaAnimais;
@@ -367,7 +374,7 @@ export default {
       }
     },
 
-    replaceVirgulaPonto(valorString){
+    replaceVirgulaPonto(valorString) {
       valorString = valorString.replace(",", ".");
 
       return valorString;
@@ -432,6 +439,34 @@ export default {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.character-counter {
+  position: absolute;
+  top: 35px;
+  /* Ajuste a posição vertical conforme necessário */
+  right: 10px;
+  /* Ajuste a posição horizontal conforme necessário */
+  font-size: 12px;
+  /* Ajuste o tamanho da fonte conforme necessário */
+  color: #6c757d;
+  /* Cor do texto */
+}
+
+.character-counter2 {
+  position: absolute;
+  top: -15px;
+  /* Ajuste a posição vertical conforme necessário */
+  right: 10px;
+  /* Ajuste a posição horizontal conforme necessário */
+  font-size: 12px;
+  /* Ajuste o tamanho da fonte conforme necessário */
+  color: #6c757d;
+  /* Cor do texto */
 }
 </style>

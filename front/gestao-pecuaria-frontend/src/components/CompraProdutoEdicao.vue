@@ -33,7 +33,7 @@
             </div>
             <div class="select mb-3 input-group">
               <div class="select-option mb-3 input-group" @click="toggleDropdown">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <span class="input-group-text"><i class="fas fa-box"></i></span>
                 <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="filterProdutos()"
                   @click="filterProdutos()" type="text" class="form-control" :placeholder="produtoPlaceholder"
                   id="caixa-select">

@@ -21,7 +21,7 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Propriedade</h1>
           <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                    <span class="input-group-text"><i class="fas fa-landmark"></i></span>
                     <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" :placeholder="nomePlaceholder"
                         id="nome" >
                 </div>
@@ -53,12 +53,12 @@
                         :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude">
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                    <span class="input-group-text"><i class="fas fa-map"></i></span>
                     <input v-model="formData.longitude" :class="{'is-invalid': !isLongitudeValida}" type="text" class="form-control"
                         :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" >
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                    <span class="input-group-text"><i class="fas fa-ruler-combined"></i></span>
                     <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control"
                         @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" >
                 </div>

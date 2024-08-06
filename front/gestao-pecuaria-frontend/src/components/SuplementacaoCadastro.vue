@@ -29,7 +29,7 @@
                 id="dataInicialCadastro" v-model="formData.dataInicial">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+              <span class="input-group-text"><i class="fas fa-box"></i></span>
               <input v-model="nomeProduto" @input="filtrarProdutos" :class="{ 'is-invalid': !isProdutoValido }"
                 type="text" class="form-control" :placeholder="produtoPlaceholder">
             </div>
@@ -51,7 +51,7 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+              <span class="input-group-text"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidade" type="text" :class="{ 'is-invalid': !isQuantidadeValida }"
                 @input="aplicarQuantidadeMask" class="form-control" id="quantidade" :placeholder="quantidadePlaceholder">
             </div>

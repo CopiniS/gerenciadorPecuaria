@@ -35,6 +35,7 @@
               <input type="radio" v-model="radioEscolha" value="piquete"> Todos animais do piquete
             </div>
             <div v-if="radioEscolha === 'brinco'" class="mb-3 input-group" >
+              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder"
                 id="brincoInput" :class="{ 'is-invalid': radioEscolha === 'brinco' && !isBrincoValido }">
             </div>
@@ -69,7 +70,7 @@
             </div>
 
             <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                    <span class="input-group-text"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
                     placeholder="Motivo">
                     <div>({{ contadorMotivo }} / 255)</div>

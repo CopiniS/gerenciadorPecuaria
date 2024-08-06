@@ -24,7 +24,7 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tag"></i>*</span>
+              <span class="input-group-text"><i class="fas fa-hashtag"></i>*</span>
               <select v-model="formData.piquete" :class="{ 'is-invalid': !isPiqueteValido }" class="form-select"
                 id="piquete" aria-label="Piquete" :placeholder="piquetePlaceholder">
                 <option disabled :value="null">{{ piquetePlaceholder }}</option>
@@ -38,7 +38,7 @@
                 @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
                 class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" >
@@ -90,12 +90,12 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+              <span class="input-group-text"><i class="fas fa-barcode"></i></span>
               <input v-model="formData.rfid" :class="{ 'is-invalid': !isRfidValido }" type="text" class="form-control"
                 id="rfid" :placeholder="rfidPlaceholder" pattern="\d*">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
                 @input="aplicarObservacaoMask" placeholder="Observações">
               <div>({{ contadorObservacoes }} / 255)</div>
@@ -104,7 +104,7 @@
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
             </div>
             <div v-if="comprado" class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar"></i>*</span>
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataCompraValido }" :placeholder="dataCompraPlaceholder" class="form-control"
                 id="dataDaCompra" v-model="formData.dataCompra" >

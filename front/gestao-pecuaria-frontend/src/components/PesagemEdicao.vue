@@ -22,6 +22,7 @@
               </div>
               <hr>
               <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
                 <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
               </div>
               <div class="list-group" v-if="brinco && animaisFiltrados.length">
@@ -34,7 +35,7 @@
                 <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
                 <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" placeholder="Observação" >
                 <div>({{ contadorObservacao }} / 255)</div>
               </div>

@@ -19,12 +19,12 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                     <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" 
                     class="form-control" id="dataVenda" v-model="formData.dataVenda" :class="{'is-invalid': !isDataValida}">
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                   <input ref="valor" @input="inputPrecoKg" v-model="formData.precoKg" 
                   type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder" >
                 </div>
@@ -40,6 +40,7 @@
                 </select>
                 </div>
                 <div class="mb-3 input-group">
+                  <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
                     <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
                 </div>
                 <div class="list-group" v-if="brinco && animaisFiltrados.length">
@@ -48,11 +49,11 @@
                     </button>
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <span class="input-group-text"><i class="fas fa-weight-hanging"></i></span>
                   <input @input="inputPeso" v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder">
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                   <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control"  @input="aplicarValorTotalMask"
                   id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" >
                 </div>

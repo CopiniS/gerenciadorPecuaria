@@ -26,7 +26,7 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Piquete</h1>
           <form @submit.prevent="submitForm">
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                 <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" 
                 id="nome" :placeholder="nomePlaceholder">
               </div>
@@ -41,7 +41,7 @@
                 </select>
               </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                <span class="input-group-text"><i class="fas fa-ruler-combined"></i></span>
                 <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control" 
                 @input="aplicarAreaMask" id="area" :placeholder="areaPlaceholder">
               </div>

@@ -20,11 +20,11 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Inseminacao</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input v-model="formData.dataInseminacao" :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoEdicao">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+              <span class="input-group-text"><i class="fas fa-user-md"></i></span>
               <input v-model="nomeVet" @input="filterVeterinario" type="text" class="form-control"
               :placeholder="veterinarioPlaceholder" :class="{'is-invalid': !isVeterinarioValido}">
             </div>
@@ -36,12 +36,12 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+              <span class="input-group-text"><i class="fas fa-id-card"></i></span>
               <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
               :placeholder="identificadorTouroPlaceholder" required :class="{'is-invalid': !isIdentificadorTouroValido}">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-venus"></i></span>
+              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="brinco" @input="inputBrinco" type="text" class="form-control"
               :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
             </div>
@@ -53,7 +53,7 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
                 <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" placeholder="Observação">
                 <div>({{ contadorObservacoes }} / 255)</div>
             </div>

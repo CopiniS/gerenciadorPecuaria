@@ -23,11 +23,11 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text"><i class="fas fa-box"></i></span>
               <input v-model="formData.nome" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" >
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text"><i class="fas fa-clipboard-list"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
                 :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" >
                 <option disabled value="">{{ tipoPlaceholder }}</option>
@@ -36,7 +36,7 @@
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text"><i class="fas fa-balance-scale"></i></span>
               <select v-model="formData.unidade" class="form-select" id="unidade" aria-label="Unidade"
                 :placeholder="unidadePlaceholder" :class="{'is-invalid': !isUnidadeValida}" >
                 <option disabled value="">{{ unidadePlaceholder }}</option>
@@ -48,7 +48,7 @@
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+              <span class="input-group-text"><i class="fas fa-list-alt"></i></span>
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
                 :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" >
             </div>
@@ -326,5 +326,8 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+#legenda {
+    font-size: 16px;
 }
 </style>

@@ -22,6 +22,7 @@
                 v-model="formData.dataAplicacao">
             </div>
             <div class="mb-3 input-group" :class="{ 'is-invalid': !isBrincoValido }">
+              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" id="brincoField"
                 :placeholder="brincoPlaceholder">
             </div>
@@ -32,6 +33,7 @@
               </button>
             </div>
             <div class="mb-3 input-group" :class="{ 'is-invalid': !isProdutoValido }">
+              <span class="input-group-text"><i class="fas fa-box"></i></span>
               <input v-model="nomeProduto" @input="filterProdutos" type="text" class="form-control"
                 :placeholder="produtoPlaceholder">
             </div>
@@ -42,11 +44,11 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text"><i class="fas fa-tint"></i></span>
               <input v-model="formData.dosagem" type="text" @input="aplicarDosagemMask" class="form-control" id="dosagem" :placeholder="dosagemPlaceholder">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
               <div>({{ contadorObservacoes }} / 255)</div>
             </div>
@@ -94,9 +96,9 @@ export default {
       isObservacaoValida: true,
       isProdutoValido: true,
       brincoPlaceholder: 'Brinco do animal*',
-      dataPlaceholder: 'Data da aplicacao*',
+      dataPlaceholder: 'Data da aplicação*',
       piquetePlaceholder: 'Piquete*',
-      dosagemPlaceholder: 'Dosagem do produto*',
+      dosagemPlaceholder: 'Dosagem do produto (ml/gr)*',
       observacaoPlaceholder: 'Observação',
       produtoPlaceholder: 'Produto*'
     };

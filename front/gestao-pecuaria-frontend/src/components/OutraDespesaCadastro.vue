@@ -23,24 +23,24 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
               <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataDespesa"
                 v-model="formData.dataDespesa" required>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
               <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
                 @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
                 :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" >
               <div>({{ contadorDescricao }} / 255)</div>   
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text"><i class="fas fa-list-alt"></i></span>
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
                 :placeholder="categoriaPlaceholder" :class="{ 'is-invalid': !isCategoriaValida }" >
             </div>

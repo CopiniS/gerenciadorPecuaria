@@ -220,12 +220,11 @@ export default {
       };
     },
 
-    replacePontoVirgula(valorString){
-      if(valorString != null){
+    replacePontoVirgula(valorString) {
+      if (typeof valorString === 'string') {
         valorString = valorString.replace(".", ",");
-      }
-      else{
-        valorString = '-'
+      } else {
+        valorString = '-';
       }
       return valorString;
     },

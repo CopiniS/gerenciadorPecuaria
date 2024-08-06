@@ -45,7 +45,7 @@
           <label for="produto" class="form-label me-2">Animal</label>
           <input type="text" @input="aplicarBrincoMask" class="form-control input-consistente" id="animal" v-model="filtro.animal">
         </div>
-        <div class="col-auto">
+        <div class="col-12 d-flex justify-content-center mt-3">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>

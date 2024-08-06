@@ -46,7 +46,7 @@
             <option value="finalizado">Finalizado</option>
           </select>
         </div>
-        <div class="col-auto">
+        <div class="col-12 d-flex justify-content-center mt-3">
             <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
             <button type="submit" class="btn btn-success">Filtrar</button>
         </div>

@@ -37,7 +37,7 @@
           <label for="produto" class="form-label me-2">Piquete</label>
           <input type="text" class="form-control input-consistente" id="piquete" v-model="filtro.piquete">
         </div>
-        <div class="col-auto">
+        <div class="col-12 d-flex justify-content-center mt-3">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
@@ -246,9 +246,12 @@ export default {
     return utcDate.toLocaleDateString('pt-BR', options);
     },
 
-    replacePontoVirgula(valorString){
-      valorString = valorString.replace(".", ",");
-
+    replacePontoVirgula(valorString) {
+      if (typeof valorString === 'string') {
+        valorString = valorString.replace(".", ",");
+      } else {
+        valorString = '-';
+      }
       return valorString;
     },
   }

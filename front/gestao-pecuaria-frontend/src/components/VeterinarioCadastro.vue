@@ -109,20 +109,22 @@ export default {
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     validarFormulario() {
-      this.isTelefoneValido = /^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(this.formData.telefone);
-      if (this.isTelefoneValido){
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone)){
+        this.isTelefoneValido = true;
         this.telefonePlaceholder = 'Telefone do Veterinário';
       }
       else{
+        this.isTelefoneValido = false;
         this.formData.telefone = '';
         this.telefonePlaceholder = 'Telefone Inválido';
       }
 
-      this.isEmailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email.trim());
-      if (this.isEmailValido){
-         this.emailPlaceholder = 'Email do Veterinário';
+      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email.trim())){
+          this.isEmailValido = true;
+          this.emailPlaceholder = 'Email do Veterinário';
       }
       else{
+        this.isEmailValido = false;
          this.formData.email = '';
          this.emailPlaceholder = 'Email Inválido';
       }

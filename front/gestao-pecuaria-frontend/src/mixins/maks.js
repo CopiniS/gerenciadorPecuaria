@@ -122,7 +122,7 @@ export const masksMixin = {
             // Aplica a máscara conforme o comprimento do número
             if (value.length > 10) {
                 value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-            } else if (value.length > 5) {
+            } else if (value.length > 6) {
                 value = value.replace(/(\d{2})(\d{4})(\d+)/, '($1) $2-$3');
             } else if (value.length > 2) {
                 value = value.replace(/(\d{2})(\d+)/, '($1) $2');

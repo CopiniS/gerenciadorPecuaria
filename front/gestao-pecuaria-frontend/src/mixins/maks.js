@@ -12,7 +12,6 @@ export const masksMixin = {
                 string.slice(primeiraVirgula + 1).replace(/\D/g, '');
             }
             if (valueDigitos.length > 13) {
-                console.log('entra em value.length > 13');
                 value = value.slice(0, 14);
                 valueDigitos = valueDigitos.slice(0, 13)
             }
@@ -34,7 +33,6 @@ export const masksMixin = {
                 while(regexPreVirgula.test(value)){
                     value = value.replace(/0(\d\d+),(\d{2})/, '$1,$2');
                     valueDigitos = value.replace(/\D/g, '');
-                    console.log('value antes: ', value);
                 }
             }
             else if(valueDigitos.length == 3){
@@ -172,7 +170,7 @@ export const masksMixin = {
                 value = value.replace(/(-)(\d{3},\d{6})/ , '$2')
             }
             else if(valueComSinal.includes('-')){
-                value = value.replace(/(\d{3},\d{6})/ , '- $1')
+                value = value.replace(/(\d{3},\d{6})/ , '-$1')
             }
             return value;
         }

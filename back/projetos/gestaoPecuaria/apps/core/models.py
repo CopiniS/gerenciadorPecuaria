@@ -7,8 +7,8 @@ class Propriedade(models.Model):
     endereco = models.CharField('Endereco', max_length=50)
     estado = models.CharField('Estado', max_length=50)
     cidade = models.CharField('Cidade', max_length=50)
-    latitude = models.DecimalField('Latitude', max_digits=10, decimal_places=2)
-    longitude = models.DecimalField('Longitude', max_digits=10, decimal_places=2)
+    latitude = models.DecimalField('Latitude', max_digits=9, decimal_places=6, null=True)
+    longitude = models.DecimalField('Longitude', max_digits=9, decimal_places=6, null=True)
     area = models.DecimalField('Área', max_digits=10, decimal_places=2)
     produtor = models.ManyToManyField(Produtor)
 

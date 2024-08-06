@@ -221,8 +221,12 @@ export default {
     },
 
     replacePontoVirgula(valorString){
-      valorString = valorString.replace(".", ",");
-
+      if(valorString != null){
+        valorString = valorString.replace(".", ",");
+      }
+      else{
+        valorString = '-'
+      }
       return valorString;
     },
   }

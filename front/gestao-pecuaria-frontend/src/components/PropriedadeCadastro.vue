@@ -48,16 +48,16 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.latitude" :class="{'is-invalid': !isLatitudeValida}" type="text" class="form-control"
-                         :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude" >
+                    :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude" >
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                    <input v-model="formData.longitude" :class="{'is-invalid': !isLongitudeValida}" type="text" class="form-control"
+                    <span class="input-group-text"><i :class="{'is-invalid': !isLongitudeValida}" class="fas fa-globe"></i></span>
+                    <input v-model="formData.longitude" type="text" class="form-control"
                         :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" >
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                    <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control"
+                    <input v-model="formData.area" type="text" class="form-control"  :class="{'is-invalid': !isAreaValida}"
                         @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area">
                 </div>
                 <div class="button-group justify-content-end">
@@ -92,7 +92,6 @@ export default {
             latitude: '',
             longitude: '',
             area: '',
-            produtor: [],
         },
         isNomeValido: true,
         isCidadeValida: true,
@@ -105,8 +104,8 @@ export default {
         cidadePlaceholder: 'Cidade*',
         estadoPlaceholder: 'Estado*',
         enderecoPlaceholder: 'Endereço*',
-        latitudePlaceholder: 'Latitude*',
-        longitudePlaceholder: 'Longitude*',
+        latitudePlaceholder: 'Latitude',
+        longitudePlaceholder: 'Longitude',
         areaPlaceholder: 'Área*'
     };
   },
@@ -161,10 +160,17 @@ export default {
     },
     
     async submitForm() {
-      if (this.verificaVazio()) {
+      if (this.verificaVazio() && this.validarFormulario()) {
         try {
-          //FORMATA AREA
+          //FORMATA AREA LONGITUDE E LATITUDE
           this.formData.area = this.replaceVirgulaPonto(this.formData.area);
+          
+          if(this.formData.latitude != null){
+            this.formData.latitude = this.replaceVirgulaPonto(this.formData.latitude);
+          }
+          if(this.formData.longitude != null){
+            this.formData.longitude = this.replaceVirgulaPonto(this.formData.longitude);
+          }
 
           const response = await api.post('http://127.0.0.1:8000/propriedades/', this.formData);
 
@@ -184,32 +190,30 @@ export default {
 
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    validarFormulario() {
-      this.isNomeValido = !!this.formData.nome;
-      this.isCidadeValida = !!this.formData.cidade;
-      this.isEstadoValido = !!this.formData.estado;
-      this.isEnderecoValido = !!this.formData.endereco;
-      this.isLatitudeValida = this.validarLatitude(this.formData.latitude);
-      this.isLongitudeValida = this.validarLongitude(this.formData.longitude);
-      this.isAreaValida = !!this.formData.area;
-
-      this.nomePlaceholder = this.isNomeValido ? 'Nome da propriedade' : 'Nome da propriedade é obrigatório';
-      this.cidadePlaceholder = this.isCidadeValida ? 'Cidade' : 'Cidade é obrigatória';
-      this.estadoPlaceholder = this.isEstadoValido ? 'Estado' : 'Estado é obrigatório';
-      this.enderecoPlaceholder = this.isEnderecoValido ? 'Endereço' : 'Endereço é obrigatório';
-      this.latitudePlaceholder = this.isLatitudeValida ? 'Latitude' : 'Latitude inválida';
-      this.longitudePlaceholder = this.isLongitudeValida ? 'Longitude' : 'Longitude inválida';
-      this.areaPlaceholder = this.isAreaValida ? 'Área' : 'Área é obrigatória';
-
-      return (
-        this.isNomeValido &&
-        this.isCidadeValida &&
-        this.isEstadoValido &&
-        this.isEnderecoValido &&
-        this.isLatitudeValida &&
-        this.isLongitudeValida &&
-        this.isAreaValida
-      );
+    validarFormulario(){
+      
+      if(this.validarLatitude()){
+        this.isLatitudeValida = true;
+        this.latitudePlaceholder = 'Latitude';
+      }
+      else{
+        this.isLatitudeValida = false;
+        this.latitudePlaceholder = 'Latitude Inválida'
+        this.formData.latitude = null;
+      }
+      
+      
+      if(this.validarLongitude()){
+        this.isLongitudeValida = true;
+        this.longitudePlaceholder = 'Longitude';
+      }
+      else{
+        this.isLongitudeValida = false;
+        this.longitudePlaceholder = 'Longitude Inválida';
+        this.formData.longitude = null;
+      }
+      
+      return(this.isLatitudeValida && this.isLongitudeValida)
     },
 
     verificaVazio(){
@@ -278,35 +282,13 @@ export default {
       }
 
       //LATITUDE
-      if(this.formData.latitude != null){
-        if(this.formData.latitude.trim() != ''){
-          this.isLatitudeValida = true;
-          this.latitudePlaceholder = 'Latitude da Propriedade*';
-        }
-        else{
-          this.isLatitudeValida = false;
-          this.latitudePlaceholder = 'Latitude é um Campo Obrigatório';
-        }
-      }
-      else{
-        this.isLatitudeValida = false;
-        this.latitudePlaceholder = 'Latitude é um Campo Obrigatório';
+      if(this.formData.latitude != null && this.formData.latitude.trim() == ''){
+        this.formData.latitude = null;
       }
       
       //LONGITUDE
-      if(this.formData.longitude != null){
-        if(this.formData.longitude.trim() != ''){
-          this.isLongitudeValida = true;
-          this.longitudePlaceholder = 'Longitude da Propriedade*';
-        }
-        else{
-          this.isLongitudeValida = false;
-          this.longitudePlaceholder = 'Longitude é um Campo Obrigatório';
-        }
-      }
-      else{
-        this.isLongitudeValida = false;
-        this.longitudePlaceholder = 'Longitude é um Campo Obrigatório';
+      if(this.formData.longitude != null && this.formData.longitude.trim() == ''){
+        this.formData.longitude = null;
       }
 
       //ÁREA
@@ -330,20 +312,28 @@ export default {
         this.isEnderecoValido &&
         this.isEstadoValido &&
         this.isCidadeValida &&
-        this.isLatitudeValida &&
-        this.isLongitudeValida &&
         this.isAreaValida
       );
     },
 
-    validarLatitude(latitude) {
-      const lat = parseFloat(latitude);
-      return !isNaN(lat) && lat >= -90 && lat <= 90;
+    validarLatitude() {
+      if(this.formData.latitude != null){
+        const lat = parseFloat(this.replaceVirgulaPonto(this.formData.latitude));
+        return (lat >= -90 && lat <= 90);
+      }
+      else{
+        return true;
+      }
     },
-    
-    validarLongitude(longitude) {
-      const lon = parseFloat(longitude);
-      return !isNaN(lon) && lon >= -180 && lon <= 180;
+
+    validarLongitude() {
+      if(this.formData.longitude != null){
+        const lon = parseFloat(this.replaceVirgulaPonto(this.formData.longitude));
+        return (lon >= -180 && lon <= 180);
+      }
+      else{
+        return true;
+      }
     },
 
 
@@ -356,6 +346,7 @@ export default {
     },
 
     replaceVirgulaPonto(valorString){
+      
       valorString = valorString.replace(",", ".");
 
       return valorString;

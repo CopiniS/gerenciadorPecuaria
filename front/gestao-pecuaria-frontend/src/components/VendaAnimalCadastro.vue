@@ -306,16 +306,16 @@ export default {
       if(temPonto){
         const regex = /^\d.\d+$/
         if(regex.test(valorTotal)){
-          valorTotal.replace(/^(\d).(d+)/ , '0$1.$2');
+          valorTotal = valorTotal.replace(/^(\d).(\d{2})\d+$/ , '0$1.$2');
         }
         const regex2 = /^\d+.\d$/
         if(regex2.test(valorTotal)){
-          valorTotal.replace(/^(\d+).(d)/ , '$1.$20');
+          valorTotal = valorTotal.replace(/^(\d+).(d)/ , '$1.$20');
         }
 
         const regex3 = /^\d+.\d{2}\d+/
         if(regex3.test(valorTotal)){
-          valorTotal.replace(/^(\d+).(d{2})\d+/ , '$1.$2');
+          valorTotal = valorTotal.replace(/^(\d+).(d{2})\d+/ , '$1.$2');
         }
 
         valorTotal = this.replacePontoVirgula(valorTotal);
@@ -335,14 +335,17 @@ export default {
     },
 
     replacePontoVirgula(valorString){
-      valorString = valorString.replace(".", ",");
+      if(valorString != null){
+        valorString = valorString.replace(".", ",");
+      }
 
       return valorString;
     },
 
     replaceVirgulaPonto(valorString){
-      valorString = valorString.replace(",", ".");
-
+      if(valorString != null){
+        valorString = valorString.replace(",", ".");
+      }
       return valorString;
     },
   },

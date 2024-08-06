@@ -74,7 +74,7 @@ class CompraProduto(models.Model):
 
 class Suplementacao(models.Model):
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    quantidade = models.DecimalField(max_digits=13, decimal_places=3)
+    quantidade = models.DecimalField(max_digits=13, decimal_places=2)
     dataInicial = models.DateField('Data inicial')
     dataFinal = models.DateField('Data final', null=True)
     piquete = models.ForeignKey(Piquete, on_delete=models.CASCADE)
@@ -101,7 +101,7 @@ class OutraDespesa(models.Model):
 
 class VendaAnimal(models.Model):
     dataVenda = models.DateField('Data da venda')
-    peso = models.DecimalField('Peso', max_digits=13, decimal_places=3, null=True)
+    peso = models.DecimalField('Peso', max_digits=13, decimal_places=2, null=True)
     precoKg = models.DecimalField('Preço po Kg', max_digits=13, decimal_places=2, null=True)
     valorTotal = models.DecimalField('Valor total', max_digits=13, decimal_places=2)
     finalidade = models.CharField('Finalidade', max_length=50)

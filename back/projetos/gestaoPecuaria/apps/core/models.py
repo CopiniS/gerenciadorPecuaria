@@ -48,6 +48,7 @@ class Veterinario(models.Model):
 class Produto(models.Model):
     nome = models.CharField('Nome', max_length=50)
     tipo = models.CharField('Tipo', max_length=50)
+    unidade = models.CharField('Unidade', max_length=50)
     categoria = models.CharField('Categoria', max_length=50, null=True)
     descricao = models.CharField('Descricao', max_length=255, null=True)
     produtor = models.ForeignKey(Produtor, on_delete=models.CASCADE)

@@ -19,7 +19,9 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataAplicacao" class="form-label me-2">Data da Aplicação</label>
-          <DateRangePicker class="input-consistente" :startDate="filtro.dataAplicacaoInicio" :endDate="filtro.dataAplicacaoFim"
+          <DateRangePicker ref="dateRangePicker" class="input-consistente" 
+      :startDate="filtro.dataAplicacaoInicio" 
+      :endDate="filtro.dataAplicacaoFim"
       @update:startDate="val => filtro.dataAplicacaoInicio = val"
       @update:endDate="val => filtro.dataAplicacaoFim = val" />
         </div>
@@ -191,12 +193,19 @@ export default {
     },
     
     limparFiltro() {
-      this.filtro.dataAplicacaoInicio = '',
-      this.filtro.dataAplicacaoFim = '',
-      this.filtro.animal = '',
-      this.filtro.piquete = '',
-      this.filtro.produto = ''
-    },
+  this.filtro.dataAplicacaoInicio = '';
+  this.filtro.dataAplicacaoFim = '';
+  this.filtro.animal = '';
+  this.filtro.piquete = '';
+  this.filtro.produto = '';
+
+  // Resetando as datas no DateRangePicker
+  this.$refs.dateRangePicker.resetDates();
+
+  // Restaura a lista de aplicações
+  this.aplicacoes = this.aplicacoesDaApi;
+},
+
 
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

@@ -20,9 +20,9 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataVenda" class="form-label me-2">Data da Venda</label>
-          <DateRangePicker class="input-consistente" :startDate="filtro.dataVendaInicio" :endDate="filtro.dataVendaFim"
-      @update:startDate="val => filtro.dataVendaInicio = val"
-      @update:endDate="val => filtro.dataVendaFim = val" />
+          <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataVendaInicio" :endDate="filtro.dataVendaFim"
+        @update:startDate="val => filtro.dataVendaInicio = val"
+        @update:endDate="val => filtro.dataVendaFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Animal</label>
@@ -232,6 +232,9 @@ export default {
       this.filtro.finalidade = '';
 
       this.vendas = this.vendasDaApi;
+
+       // Resetando as datas no DateRangePicker
+  this.$refs.dateRangePicker.resetDates();
     },
 
     toggleFormulario() {

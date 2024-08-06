@@ -20,7 +20,7 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataDespesa" class="form-label me-2">Data da Despesa</label>
-          <DateRangePicker class="input-consistente" :startDate="filtro.dataDespesaInicio" :endDate="filtro.dataDespesaFim"
+          <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataDespesaInicio" :endDate="filtro.dataDespesaFim"
       @update:startDate="val => filtro.dataDespesaInicio = val"
       @update:endDate="val => filtro.dataDespesaFim = val" />
         </div>
@@ -184,6 +184,9 @@ export default {
       this.filtro.categoria = '';
 
       this.despesas = this.despesasDaApi;
+
+       // Resetando as datas no DateRangePicker
+  this.$refs.dateRangePicker.resetDates();
     },
 
     toggleFormulario() {

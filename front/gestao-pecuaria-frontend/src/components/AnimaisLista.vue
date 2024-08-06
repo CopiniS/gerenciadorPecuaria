@@ -26,7 +26,7 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
-          <DateRangePicker class="input-consistente" :startDate="filtro.dataNascimentoInicio"
+          <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataNascimentoInicio"
             :endDate="filtro.dataNascimentoFim" @update:startDate="val => filtro.dataNascimentoInicio = val"
             @update:endDate="val => filtro.dataNascimentoFim = val" />
         </div>
@@ -221,6 +221,9 @@ export default {
       this.filtro.status = '';
 
       this.animais = this.animaisDaApi;
+
+      // Resetando as datas no DateRangePicker
+      this.$refs.dateRangePicker.resetDates();
     },
 
     toggleFormulario() {

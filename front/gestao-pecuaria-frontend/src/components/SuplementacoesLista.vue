@@ -29,7 +29,7 @@
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="dataInicial" class="form-label me-2">Data Inicial</label>
-          <DateRangePicker class="input-consistente" :startDate="filtro.dataInicialInicio" :endDate="filtro.dataInicialFim"
+          <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataInicialInicio" :endDate="filtro.dataInicialFim"
       @update:startDate="val => filtro.dataInicialInicio = val"
       @update:endDate="val => filtro.dataInicialFim = val" />
         </div>
@@ -211,6 +211,9 @@ export default {
       this.filtro.status = '';
 
       this.suplementacoes = this.suplementacoesDaApi;
+
+       // Resetando as datas no DateRangePicker
+  this.$refs.dateRangePicker.resetDates();
     },
 
     toggleFormulario() {

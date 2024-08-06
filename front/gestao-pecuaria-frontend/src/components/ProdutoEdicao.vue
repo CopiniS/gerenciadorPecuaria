@@ -20,22 +20,37 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Produto</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.nome" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" required>
+              <input v-model="formData.nome" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" >
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tags"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" required>
-                <option disabled value="">Tipo</option>
+                :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" >
+                <option disabled value="">{{ tipoPlaceholder }}</option>
                 <option value="sanitario">Sanitário</option>
                 <option value="alimenticio">Alimentício</option>
               </select>
             </div>
             <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <select v-model="formData.unidade" class="form-select" id="unidade" aria-label="Unidade"
+                :placeholder="unidadePlaceholder" :class="{'is-invalid': !isUnidadeValida}" >
+                <option disabled value="">{{ unidadePlaceholder }}</option>
+                <option value="ton">Ton</option>
+                <option value="kg">Kg</option>
+                <option value="gr">gr</option>
+                <option value="Lt">Lt</option>
+                <option value="ml">ml</option>
+              </select>
+            </div>
+            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-seedling"></i></span>
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
-                :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" required>
+                :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" >
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
@@ -72,13 +87,16 @@ export default {
         tipo: '',
         categoria: '',
         descricao: null,
+        unidade: '',
       },
       isNomeValido: true,
       isTipoValido: true,
       isCategoriaValida: true,
-      nomePlaceholder: 'Nome do Produto',
-      tipoPlaceholder: 'Tipo do produto',
-      categoriaPlaceholder: 'Categoria do Produto',
+      isUnidadeValida: true,
+      nomePlaceholder: 'Nome*',
+      tipoPlaceholder: 'Tipo*',
+      categoriaPlaceholder: 'Categoria*',
+      unidadePlaceholder: 'Unidade de medida*'
     };
   },
 
@@ -108,6 +126,7 @@ export default {
         this.formData.tipo = produto.tipo;
         this.formData.categoria = produto.categoria;
         this.formData.descricao = produto.descricao;
+        this.formData.unidade = produto.unidade;
         
         if(this.formData.descricao){
           this.contadorDescricao = this.formData.descricao.length;
@@ -191,10 +210,27 @@ export default {
         this.formData.categoria = null;
       }
 
+      //UNIDADE
+      if(this.formData.unidade != null){
+        if(this.formData.unidade != ''){
+          this.isUnidadeValida = true;
+          this.unidadePlaceholder = 'Unidade de medida*';
+        }
+        else{
+          this.isUnidadeValida = false;
+          this.unidadePlaceholder = 'Unidade de medida é um Campo Obrigatório';
+        }
+      }
+      else{
+        this.isUnidadeValida = false;
+        this.unidadePlaceholder = 'Unidade de medida é um Campo Obrigatório';
+      }
+
       return(
         this.isNomeValido &&
         this.isTipoValido && 
-        this.isCategoriaValida
+        this.isCategoriaValida &&
+        this.isUnidadeValida
       );
     },
 

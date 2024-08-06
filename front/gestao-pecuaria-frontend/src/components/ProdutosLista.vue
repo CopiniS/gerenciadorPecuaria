@@ -57,6 +57,7 @@
               <th scope="col">Tipo</th>
               <th scope="col">Categoria</th>
               <th scope="col">Estoque</th>
+              <th scope="col">Unidade</th>
               <th scope="col">Ações</th>
             </tr>
           </thead>
@@ -67,6 +68,7 @@
               <td>{{ produto.categoria }}</td>
               <td :class="{ 'is-invalid': achaEstoque(produto.id) <= 0 }">{{
                 replacePontoVirgula(achaEstoque(produto.id).toString()) }}</td>
+              <td>{{ produto.unidade }}</td>
               <td>
                 <button @click="acessarEdicao(produto)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
                 <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"

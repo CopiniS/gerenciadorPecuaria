@@ -28,35 +28,6 @@
                 :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoCadastro"
                 v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }">
             </div>
-            <div class="mb-3 input-group">
-              <input type="radio" v-model="radioEscolha" value="brinco"> Animal
-            </div>
-            <div class="mb-3 input-group">
-              <input type="radio" v-model="radioEscolha" value="piquete"> Todos animais do piquete
-            </div>
-            <div v-if="radioEscolha === 'brinco'" class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder"
-                id="brincoInput" :class="{ 'is-invalid': radioEscolha === 'brinco' && !isBrincoValido }">
-            </div>
-            <div class="list-group" v-if="brinco && animaisFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
-                {{ animal.brinco }}
-              </button>
-            </div>
-            <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="piqueteOrigemNome" @input="filtrarPiquetesOrigem()" type="text" class="form-control"
-                :placeholder="piqueteOrigemPlaceholder" :disabled="radioEscolha === 'brinco'" :class="{ 'is-invalid': radioEscolha === 'piquete' && !isPiqueteOrigemValido }">
-            </div>
-            <div class="list-group" v-if="piqueteOrigemNome && filteredPiquetesOrigem.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="piquete in filteredPiquetesOrigem" :key="piquete.id" @click="selecionarPiqueteOrigem(piquete)">
-                {{ piquete.nome }} - {{ piquete.propriedade.nome }}
-              </button>
-            </div>
-
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
               <input v-model="piqueteDestinoNome" @input="filtrarPiquetesDestino()" type="text" class="form-control"
@@ -75,7 +46,27 @@
                     placeholder="Motivo">
                     <div class="character-counter">({{ contadorMotivo }} / 255)</div>
                 </div>
-
+            <div class="mb-3 input-group" >
+              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+              <input v-model="piqueteOrigemNome" @input="filtrarPiquetesOrigem()" type="text" class="form-control"
+                :placeholder="piqueteOrigemPlaceholder" :class="{ 'is-invalid': !isPiqueteOrigemValido }">
+            </div>
+            <div class="list-group" v-if="piqueteOrigemNome && filteredPiquetesOrigem.length">
+              <button type="button" class="list-group-item list-group-item-action"
+                v-for="piquete in filteredPiquetesOrigem" :key="piquete.id" @click="selecionarPiqueteOrigem(piquete)">
+                {{ piquete.nome }} - {{ piquete.propriedade.nome }}
+              </button>
+            </div>
+            <div class="mb-3 input-group">
+              <label v-if="animaisFiltrados.length != 0">
+                <input type="checkbox" v-model="selecionaTodos" @change="ativaSelecaoTodos"> Selecionar todos
+              </label>
+              <div class="checkbox-container">
+                <label @change="desativaSelecaoTodos" v-for="animal in animaisFiltrados" :key="animal.id">
+                  <input type="checkbox" :value="animal.id" v-model="formData.animal"> {{ animal.brinco }} 
+                </label>
+              </div>
+            </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('movimentacoes')">Cancelar</button>
               <button type="submit" class="btn btn-success">Enviar</button>
@@ -99,7 +90,6 @@ export default {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
       animais: [],
       animaisFiltrados: [],
-      brinco: '',
       piquetes: [],
       piquetesDaPropriedade: [],
       piqueteOrigemNome: '',
@@ -109,6 +99,7 @@ export default {
       filteredPiquetesDestino: [],
       radioEscolha: 'brinco',
       contadorMotivo: 0,
+      selecionaTodos: false,
       formData: {
         animal: [],
         dataMovimentacao: null,
@@ -221,7 +212,7 @@ export default {
       this.formData.piqueteOrigem = piquete.id;
       this.piqueteOrigemNome = piquete.nome + " - " + piquete.propriedade.nome;
       this.filteredPiquetesOrigem = [];
-      this.preencheListaAnimais();
+      this.preencheCheckBox();
       await this.buscarPiquetesParaDestino();
       this.atualizaDestino();
     },
@@ -236,19 +227,6 @@ export default {
       this.filteredPiquetesDestino = [];
       await this.buscarPiquetesParaOrigem();
       this.atualizaOrigem();
-    },
-
-    filterAnimais() {
-      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
-    },
-
-    selectAnimal(animal) {
-      this.formData.animal = [];
-      this.brinco = animal.brinco;
-      this.formData.piqueteOrigem = animal.piquete.id;
-      this.piqueteOrigemNome = animal.piquete.nome
-      this.formData.animal.push(animal.id);
-      this.animaisFiltrados = [];
     },
 
 
@@ -337,13 +315,23 @@ export default {
 
 
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    preencheListaAnimais() {
+    preencheCheckBox(){
+      this.animaisFiltrados = this.animais.filter(animal => animal.piquete.id === this.piqueteId);
+      console.log('animais filtrados: ', this.animaisFiltrados);
+      
+    },
+
+    ativaSelecaoTodos(){
       this.formData.animal = [];
-      let listaAnimais;
-      listaAnimais = this.animais.filter(animal => animal.piquete.id == this.piqueteId);
-      listaAnimais.forEach(animal => {
-        this.formData.animal.push(animal.id);
-      });
+      if(this.selecionaTodos){
+        this.animais.forEach(animal => {
+          this.formData.animal.push(animal.id);
+        });
+      }
+    },
+
+    desativaSelecaoTodos(){
+      this.selecionaTodos = false;
     },
 
     selectTab(tab) {
@@ -455,5 +443,20 @@ export default {
   right: 10px;
   font-size: 12px;
   color: #6c757d;
+}
+.checkbox-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    border: 1px solid #000;
+    padding: 20px;
+    width: 100%; /* Largura do contêiner */
+    height: 150px; /* Altura do contêiner */
+    overflow-y: auto; /* Adiciona uma barra de rolagem se necessário */
+}
+
+.checkbox-container label {
+    display: flex;
+    align-items: center;
 }
 </style>

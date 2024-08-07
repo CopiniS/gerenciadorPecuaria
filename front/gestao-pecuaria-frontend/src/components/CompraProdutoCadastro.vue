@@ -38,7 +38,7 @@
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
                 <span class="input-group-text"><i class="fas fa-box"></i></span>
-                <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="filterProdutos"
+                <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @click="filterProdutos" @keydown.up.prevent="navigateOptions('up')"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
                   :placeholder="produtoPlaceholder" id="caixa-select">
@@ -197,6 +197,11 @@ export default {
         this.dropdownOpen = false;
         this.nomeDigitado = '';
       }
+    },
+
+    inputProduto(){
+      this.filterProdutos();
+      this.dropdownOpen = true;
     },
 
     navigateOptions(direction) {

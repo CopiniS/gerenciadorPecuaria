@@ -29,15 +29,19 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataCompra" class="form-label me-2">Data da Compra</label>
-          <DateRangePicker class="input-consistente" :startDate="filtro.dataCompraInicio" :endDate="filtro.dataCompraFim"
-      @update:startDate="val => filtro.dataCompraInicio = val"
-      @update:endDate="val => filtro.dataCompraFim = val" />
+          <DateRangePicker ref="dateRangePicker" 
+  :startDate="filtro.dataCompraInicio" 
+  :endDate="filtro.dataCompraFim"
+  @update:startDate="val => filtro.dataCompraInicio = val"
+  @update:endDate="val => filtro.dataCompraFim = val"
+/>
+
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Produto</label>
           <input type="text" class="form-control input-consistente" id="produto" v-model="filtro.produto">
         </div>
-        <div class="col-auto">
+        <div class="col-12 d-flex justify-content-center mt-3">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
@@ -183,11 +187,15 @@ export default {
     },
 
     limparFiltro() {
-      this.filtro.dataCompraInicio = '';
-      this.filtro.dataCompraFim = '';
-      this.filtro.produto = '';
-      this.compras = this.comprasDaApi;
-    },
+  this.filtro.dataCompraInicio = null; // ou ''
+  this.filtro.dataCompraFim = null; // ou ''
+  this.filtro.produto = '';
+  this.compras = this.comprasDaApi;
+
+  // Resetando as datas no DateRangePicker
+  this.$refs.dateRangePicker.resetDates();
+},
+
 
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;

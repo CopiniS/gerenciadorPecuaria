@@ -20,7 +20,7 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataPesagem" class="form-label me-2">Data da Pesagem</label>
-          <DateRangePicker class="input-consistente" :startDate="filtro.dataPesagemInicio" :endDate="filtro.dataPesagemFim"
+          <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataPesagemInicio" :endDate="filtro.dataPesagemFim"
       @update:startDate="val => filtro.dataPesagemInicio = val"
       @update:endDate="val => filtro.dataPesagemFim = val" />
         </div>
@@ -41,7 +41,7 @@
           <label for="produto" class="form-label me-2">Piquete</label>
           <input type="text" class="form-control input-consistente" id="piquete" v-model="filtro.piquete">
         </div>
-        <div class="col-auto">
+        <div class="col-12 d-flex justify-content-center mt-3">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
@@ -211,6 +211,9 @@ export default {
       this.filtro.piquete = '';
       
       this.pesagens = this.pesagensDaApi;
+
+       // Resetando as datas no DateRangePicker
+  this.$refs.dateRangePicker.resetDates();
     },
 
     toggleFormulario() {

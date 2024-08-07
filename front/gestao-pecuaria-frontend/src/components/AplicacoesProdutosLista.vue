@@ -19,7 +19,9 @@
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataAplicacao" class="form-label me-2">Data da Aplicação</label>
-          <DateRangePicker class="input-consistente" :startDate="filtro.dataAplicacaoInicio" :endDate="filtro.dataAplicacaoFim"
+          <DateRangePicker ref="dateRangePicker" class="input-consistente" 
+      :startDate="filtro.dataAplicacaoInicio" 
+      :endDate="filtro.dataAplicacaoFim"
       @update:startDate="val => filtro.dataAplicacaoInicio = val"
       @update:endDate="val => filtro.dataAplicacaoFim = val" />
         </div>
@@ -35,7 +37,7 @@
           <label for="produto" class="form-label me-2">Piquete</label>
           <input type="text" class="form-control input-consistente" id="piquete" v-model="filtro.piquete">
         </div>
-        <div class="col-auto">
+        <div class="col-12 d-flex justify-content-center mt-3">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
@@ -191,12 +193,19 @@ export default {
     },
     
     limparFiltro() {
-      this.filtro.dataAplicacaoInicio = '',
-      this.filtro.dataAplicacaoFim = '',
-      this.filtro.animal = '',
-      this.filtro.piquete = '',
-      this.filtro.produto = ''
-    },
+  this.filtro.dataAplicacaoInicio = '';
+  this.filtro.dataAplicacaoFim = '';
+  this.filtro.animal = '';
+  this.filtro.piquete = '';
+  this.filtro.produto = '';
+
+  // Resetando as datas no DateRangePicker
+  this.$refs.dateRangePicker.resetDates();
+
+  // Restaura a lista de aplicações
+  this.aplicacoes = this.aplicacoesDaApi;
+},
+
 
     toggleFormulario() {
       this.mostrarFormulario = !this.mostrarFormulario;
@@ -237,9 +246,12 @@ export default {
     return utcDate.toLocaleDateString('pt-BR', options);
     },
 
-    replacePontoVirgula(valorString){
-      valorString = valorString.replace(".", ",");
-
+    replacePontoVirgula(valorString) {
+      if (typeof valorString === 'string') {
+        valorString = valorString.replace(".", ",");
+      } else {
+        valorString = '-';
+      }
       return valorString;
     },
   }

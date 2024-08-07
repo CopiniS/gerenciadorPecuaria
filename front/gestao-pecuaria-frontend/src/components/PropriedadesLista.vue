@@ -12,30 +12,31 @@
  </div>
 
 <h2>Lista de Propriedades</h2>
-    <div class="d-flex align-items-start table-container flex-column">
-      <div class="d-flex align-items-start">
-          <h2 class="me-3">Filtros</h2>
-          <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
-      </div>
-      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
-        <div class="col-auto d-flex align-items-center">
-          <label for="nome" class="form-label me-2">Nome</label>
-          <input type="text" class="form-control input-consistente" id="nome" v-model="filtro.nome">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="tipoCultivo" class="form-label me-2">Cidade</label>
-          <input type="text" class="form-control input-consistente" id="cidade" v-model="filtro.cidade">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <label for="tipoCultivo" class="form-label me-2">Estado</label>
-          <input type="text" class="form-control input-consistente" id="estado" v-model="filtro.estado">
-        </div>
-        <div class="col-auto d-flex align-items-center">
-          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
-          <button type="submit" class="btn btn-success">Filtrar</button>
-        </div>
-      </form>
+<div class="d-flex align-items-start table-container flex-column">
+  <div class="d-flex align-items-start">
+    <h2 class="me-3">Filtros</h2>
+    <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
+  </div>
+  <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
+    <div class="col-auto d-flex align-items-center">
+      <label for="nome" class="form-label me-2">Nome</label>
+      <input type="text" class="form-control input-consistente" id="nome" v-model="filtro.nome">
     </div>
+    <div class="col-auto d-flex align-items-center">
+      <label for="cidade" class="form-label me-2">Cidade</label>
+      <input type="text" class="form-control input-consistente" id="cidade" v-model="filtro.cidade">
+    </div>
+    <div class="col-auto d-flex align-items-center">
+      <label for="estado" class="form-label me-2">Estado</label>
+      <input type="text" class="form-control input-consistente" id="estado" v-model="filtro.estado">
+    </div>
+    <div class="col-12 d-flex justify-content-center mt-3">
+      <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+      <button type="submit" class="btn btn-success">Filtrar</button>
+    </div>
+  </form>
+</div>
+
 
   <div>
     <div class="table-container">

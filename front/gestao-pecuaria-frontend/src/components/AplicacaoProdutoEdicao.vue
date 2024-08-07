@@ -84,7 +84,7 @@ export default {
       formData: {
         id: null,
         produto: '',
-        animal: [],
+        animal: '',
         dosagem: '',
         dataAplicacao: '',
         observacao: null,
@@ -121,7 +121,7 @@ export default {
     },
 
     aplicarBrincoMask(value){
-      this.brinco =  this.brincoMask(value);
+      this.brinco =  this.brincoFiltroMask(value);
     },
 
     aplicarObservacaoMask(event){
@@ -206,9 +206,8 @@ export default {
     },
 
     selectAnimal(animal) {
-      this.formData.animal = [];
       this.brinco = animal.brinco;
-      this.formData.animal.push(animal.id);
+      this.formData.animal = animal.id;
       this.animaisFiltrados = [];
     },
 

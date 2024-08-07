@@ -37,10 +37,10 @@
                 <span class="input-group-text"><i class="fas fa-weight"></i></span>
                 <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
               </div>
-              <div class="mb-3 input-group">
+              <div class="mb-3 input-group position-relative">
                 <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
                 <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" placeholder="Observação">
-                <div>({{ contadorObservacao }} / 255)</div>
+                <div class="character-counter">({{ contadorObservacao }} / 255)</div>
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('pesagens')">Cancelar</button>
@@ -293,5 +293,17 @@ export default {
 
 #legenda {
     font-size: 16px;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.character-counter {
+  position: absolute;
+  top: 35px;
+  right: 10px;
+  font-size: 12px;
+  color: #6c757d;
 }
 </style>

@@ -53,11 +53,11 @@
                   <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control" @input="aplicarValorTotalMask"
                   id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" required>
                 </div>
-                <div class="mb-3 input-group">
+                <div class="mb-3 input-group position-relative">
                   <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
                   <textarea v-model="formData.observacao" class="form-control" id="observacao"
                     @input="aplicarObservacaoMask" placeholder="Observação"></textarea>
-                  <div>({{ contadorObservacao }} / 255)</div>
+                  <div class="character-counter">({{ contadorObservacao }} / 255)</div>
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
@@ -430,5 +430,17 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.character-counter {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  font-size: 12px;
+  color: #6c757d;
 }
 </style>

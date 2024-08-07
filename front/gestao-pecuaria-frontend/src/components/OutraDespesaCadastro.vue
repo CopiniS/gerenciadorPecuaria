@@ -33,11 +33,11 @@
               <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
                 @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder">
             </div>
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group position-relative">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
                 :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" >
-              <div>({{ contadorDescricao }} / 255)</div>   
+              <div class="character-counter">({{ contadorDescricao }} / 255)</div>   
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-list-alt"></i></span>
@@ -268,5 +268,17 @@ export default {
 
 #legenda {
     font-size: 16px;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.character-counter {
+  position: absolute;
+  top: 35px;
+  right: 10px;
+  font-size: 12px;
+  color: #6c757d;
 }
 </style>

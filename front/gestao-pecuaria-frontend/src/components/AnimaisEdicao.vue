@@ -96,11 +96,11 @@
               <input v-model="formData.rfid" :class="{ 'is-invalid': !isRfidValido }" type="text" class="form-control"
                 id="rfid" :placeholder="rfidPlaceholder" pattern="\d*">
             </div>
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group position-relative">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
                 @input="aplicarObservacaoMask" placeholder="Observações">
-              <div>({{ contadorObservacoes }} / 255)</div>
+              <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
@@ -550,5 +550,17 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.character-counter {
+  position: absolute;
+  top: 35px;
+  right: 10px;
+  font-size: 12px;
+  color: #6c757d;
 }
 </style>

@@ -52,11 +52,11 @@
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
                 :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" >
             </div>
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group position-relative">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
               <textarea v-model="formData.descricao" @input="aplicarDescricaoMask" class="form-control" id="descricao"
                 placeholder="Descrição"></textarea>
-              <div>({{ contadorDescricao }} / 255)</div> 
+              <div class="character-counter">({{ contadorDescricao }} / 255)</div> 
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
@@ -296,5 +296,17 @@ export default {
 
 #legenda {
     font-size: 16px;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.character-counter {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  font-size: 12px;
+  color: #6c757d;
 }
 </style>

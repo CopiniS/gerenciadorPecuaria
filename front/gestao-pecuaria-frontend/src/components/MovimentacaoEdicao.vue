@@ -53,11 +53,11 @@
               </button>
             </div>
 
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-groupposition-relative">
                     <span class="input-group-text"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
                     placeholder="Motivo">
-                    <div>({{ contadorMotivo }} / 255)</div>
+                    <div class="character-counter">({{ contadorMotivo }} / 255)</div>
                 </div>
 
             <div class="button-group justify-content-end">
@@ -95,7 +95,7 @@ export default {
       dataSelecionada: null,
       piqueteOrigemSelecionado: null,
       piqueteDestinoSelecionado: null,
-      contadorMotivo: null,
+      contadorMotivo: 0,
       formData: {
           id: null,
           animal: null,
@@ -388,5 +388,17 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.character-counter {
+  position: absolute;
+  top: 35px;
+  right: 10px;
+  font-size: 12px;
+  color: #6c757d;
 }
 </style>

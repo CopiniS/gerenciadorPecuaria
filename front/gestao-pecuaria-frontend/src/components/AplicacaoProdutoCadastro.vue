@@ -48,8 +48,7 @@
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacao" 
               @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
-              <!-- <div class="character-counter">({{ contadorObservacoes }} / 255)</div> -->
-              <div class="character-counter2">({{ contadorObservacoes }} / 255)</div>
+              <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
@@ -438,25 +437,9 @@ export default {
 .character-counter {
   position: absolute;
   top: 35px;
-  /* Ajuste a posição vertical conforme necessário */
   right: 10px;
-  /* Ajuste a posição horizontal conforme necessário */
   font-size: 12px;
-  /* Ajuste o tamanho da fonte conforme necessário */
   color: #6c757d;
-  /* Cor do texto */
-}
-
-.character-counter2 {
-  position: absolute;
-  top: -15px;
-  /* Ajuste a posição vertical conforme necessário */
-  right: 10px;
-  /* Ajuste a posição horizontal conforme necessário */
-  font-size: 12px;
-  /* Ajuste o tamanho da fonte conforme necessário */
-  color: #6c757d;
-  /* Cor do texto */
 }
 
 .checkbox-container {

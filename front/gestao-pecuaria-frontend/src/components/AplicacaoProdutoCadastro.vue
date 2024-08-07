@@ -29,34 +29,6 @@
                 :class="{ 'is-invalid': !isDataValida }">
             </div>
             <div class="mb-3 input-group">
-              <input type="radio" v-model="radioEscolha" value="brinco"> Brinco
-            </div>
-            <div class="mb-3 input-group">
-              <input type="radio" v-model="radioEscolha" value="piquete"> Piquete
-            </div>
-            <div class="mb-3 input-group" v-if="radioEscolha === 'brinco'">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" id="brincoField"
-                :placeholder="brincoPlaceholder" :class="{ 'is-invalid': !isBrincoValido }">
-            </div>
-            <div class="list-group" v-if="brinco && animaisFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados"
-                :key="animal.id" @click="selectAnimal(animal)">
-                {{ animal.brinco }}
-              </button>
-            </div>
-            <div class="mb-3 input-group" v-if="radioEscolha === 'piquete'">
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="nomePiquete" @input="filtrarPiquetes" type="text" class="form-control"
-                :placeholder="piquetePlaceholder" :class="{ 'is-invalid': !isPiqueteValido }">
-            </div>
-            <div class="list-group" v-if="nomePiquete && piquetesFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="piquete in piquetesFiltrados"
-                :key="piquete.id" @click="selectPiquete(piquete)">
-                {{ piquete.nome }}
-              </button>
-            </div>
-            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-box"></i></span>
               <input v-model="nomeProduto" @input="filterProdutos" type="text" class="form-control"
                 :placeholder="produtoPlaceholder" :class="{ 'is-invalid': !isProdutoValido }">
@@ -74,10 +46,31 @@
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.observacao" @input="aplicarObservacaoMask" type="text" class="form-control"
-                id="observacao" :placeholder="observacaoPlaceholder">
+              <input v-model="formData.observacao" 
+              @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
               <!-- <div class="character-counter">({{ contadorObservacoes }} / 255)</div> -->
               <div class="character-counter2">({{ contadorObservacoes }} / 255)</div>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+              <input v-model="nomePiquete" @input="filtrarPiquetes" type="text" class="form-control"
+                :placeholder="piquetePlaceholder" :class="{ 'is-invalid': !isPiqueteValido }">
+            </div>
+            <div class="list-group" v-if="nomePiquete && piquetesFiltrados.length">
+              <button type="button" class="list-group-item list-group-item-action" v-for="piquete in piquetesFiltrados"
+                :key="piquete.id" @click="selectPiquete(piquete)">
+                {{ piquete.nome }}
+              </button>
+            </div>
+            <div class="mb-3 input-group">
+              <label v-if="animaisFiltrados.length != 0">
+                <input type="checkbox" v-model="selecionaTodos" @change="ativaSelecaoTodos"> Selecionar todos
+              </label>
+              <div class="checkbox-container">
+                <label @change="desativaSelecaoTodos" v-for="animal in animaisFiltrados" :key="animal.id">
+                  <input type="checkbox" :value="animal.id" v-model="formData.animal"> {{ animal.brinco }} 
+                </label>
+              </div>
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
@@ -103,7 +96,6 @@ export default {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
       animais: [],
       animaisFiltrados: [],
-      brinco: '',
       produtos: [],
       produtosFiltrados: [],
       nomeProduto: '',
@@ -111,8 +103,8 @@ export default {
       nomePiquete: '',
       piqueteId: null,
       piquetesFiltrados: [],
-      radioEscolha: 'brinco',
       contadorObservacoes: 0,
+      selecionaTodos: false,
       formData: {
         id: null,
         produto: null,
@@ -132,7 +124,7 @@ export default {
       piquetePlaceholder: 'Piquete*',
       dosagemPlaceholder: 'Dosagem do produto (ml/gr)*',
       observacaoPlaceholder: 'Observação',
-      produtoPlaceholder: 'Produto*'
+      produtoPlaceholder: 'Produto*',
     };
   },
 
@@ -225,17 +217,6 @@ export default {
 
 
     //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
-    filterAnimais() {
-      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
-    },
-
-    selectAnimal(animal) {
-      this.formData.animal = [];
-      this.brinco = animal.brinco;
-      this.formData.animal.push(animal.id);
-      this.animaisFiltrados = [];
-    },
-
     filtrarPiquetes() {
       this.piquetesFiltrados = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.nomePiquete));
     },
@@ -244,7 +225,7 @@ export default {
       this.piqueteId = piquete.id;
       this.nomePiquete = piquete.nome;
       this.piquetesFiltrados = [];
-      this.preencheListaAnimais()
+      this.preencheCheckBox()
     },
 
     filterProdutos() {
@@ -358,13 +339,21 @@ export default {
 
 
     //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    preencheListaAnimais() {
+    preencheCheckBox(){
+      this.animaisFiltrados = this.animais.filter(animal => animal.piquete === this.piqueteId);
+    },
+
+    ativaSelecaoTodos(){
       this.formData.animal = [];
-      let listaAnimais;
-      listaAnimais = this.animais.filter(animal => animal.piquete == this.piqueteId);
-      listaAnimais.forEach(animal => {
-        this.formData.animal.push(animal.id);
-      });
+      if(this.selecionaTodos){
+        this.animais.forEach(animal => {
+          this.formData.animal.push(animal.id);
+        });
+      }
+    },
+
+    desativaSelecaoTodos(){
+      this.selecionaTodos = false;
     },
 
     selectTab(tab) {
@@ -468,5 +457,21 @@ export default {
   /* Ajuste o tamanho da fonte conforme necessário */
   color: #6c757d;
   /* Cor do texto */
+}
+
+.checkbox-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    border: 1px solid #000;
+    padding: 20px;
+    width: 100%; /* Largura do contêiner */
+    height: 150px; /* Altura do contêiner */
+    overflow-y: auto; /* Adiciona uma barra de rolagem se necessário */
+}
+
+.checkbox-container label {
+    display: flex;
+    align-items: center;
 }
 </style>

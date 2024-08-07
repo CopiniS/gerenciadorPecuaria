@@ -2,6 +2,8 @@
   <div class="vh-100 vw-100 login-container">
     <div sm="7" class="login-form">
       <h2 class="text-center mb-5 title-login">Login</h2>
+      <div v-if="errorMessage"  class="alert alert-danger alert-custom mt-3">{{ errorMessage }}</div>
+
       <form @submit.prevent="submitForm">
         <div class="mb-5 input-group">
           <span class="input-group-text"><i class="fas fa-envelope"></i></span>
@@ -18,12 +20,11 @@
 
         <hr>
 
-        <button type="button" class="btn btn-outline-secondary" @click="this.registrar()">
+        <button type="button" class="btn btn-outline-secondary" @click="registrar">
           <i class="fas fa-user-plus"></i> Não tenho conta
         </button>
       </form>
     </div>
-
   </div>
 </template>
 
@@ -34,30 +35,35 @@ export default {
     return {
       email: '',
       password: '',
+      errorMessage: '', // Mensagem de erro
     };
   },
   methods: {
     async login() {
-      const response = await axios.post('http://127.0.0.1:8000/token/', { 
-        email: this.email, 
-        password: this.password 
-      });
+      this.errorMessage = ''; // Limpa a mensagem de erro antes de fazer o login
 
-      localStorage.setItem('access_token', response.data.access);
-      localStorage.setItem('refresh_token', response.data.refresh);
-      localStorage.setItem('access_exp', response.data.access_exp);
-      localStorage.setItem('refresh_exp', response.data.refresh_exp);
-      
-      alert('Login feito com sucesso');
-      this.$router.push('/propriedades-escolha');
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/token/', { 
+          email: this.email, 
+          password: this.password 
+        });
+
+        localStorage.setItem('access_token', response.data.access);
+        localStorage.setItem('refresh_token', response.data.refresh);
+        localStorage.setItem('access_exp', response.data.access_exp);
+        localStorage.setItem('refresh_exp', response.data.refresh_exp);
+        
+        this.$router.push('/propriedades-escolha');
+      } catch (error) {
+        this.errorMessage = 'Email ou senha incorretos.'; // Define a mensagem de erro
+      }
     },
     registrar() {
       this.$router.push('/cadastro');
     }
   }
-  };
+};
 </script>
-
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
@@ -81,19 +87,6 @@ export default {
   margin-left: 150px;
   margin-right: 150px;
 }
-/* .title-login {
-  color: #358137;
-} */
-
-/* .input-group-text {
-  background-color: #358137;
-  color: white;
-  border: 1px solid #358137;
-} */
-
-/* .form-control {
-  border: 1px solid #358137;
-} */
 
 .btn-primary {
   background-color: #125601;
@@ -113,5 +106,10 @@ export default {
 
 .btn-block {
   width: 100%;
+}
+
+.alert-custom {
+  padding: 0.5rem 1rem; /* Diminui o padding do alerta */
+  font-size: 0.875rem; 
 }
 </style>

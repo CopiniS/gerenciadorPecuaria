@@ -122,14 +122,13 @@ export default {
   flex: 1;
   padding: 20px;
   max-width: 400px;
-  border: 1px solid #358137;
+  border: 1px solid #c2e0a6;
   border-radius: 5px;
   margin-left: 150px;
   margin-right: 150px;
-  background-color: rgba(255, 255, 255, 0.8);
 }
 
-.title-cadastro {
+/* .title-cadastro {
   color: #358137;
 }
 
@@ -141,21 +140,21 @@ export default {
 
 .form-control {
   border: 1px solid #358137;
-}
+} */
 
 .btn-primary {
-  background-color: #358137;
-  border-color: #358137;
+  background-color: #125601;
+  border-color: #125601;
 }
 
 .btn-outline-secondary {
-  border-color: #358137;
-  color: #358137;
+  border-color: #125601;
+  color: #125601;
 }
 
 .btn-primary:hover, .btn-outline-secondary:hover {
-  background-color: #3be949;
-  border-color: #3be949;
+  background-color: #259406;
+  border-color: #259406;
   color: white;
 }
 

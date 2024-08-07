@@ -135,7 +135,7 @@ export default {
       },
 
       aplicarBrincoMask(value){
-        this.brinco =  this.brincoMask(value);
+        this.brinco =  this.brincoFiltroMask(value);
       },
 
       inputBrinco(event){

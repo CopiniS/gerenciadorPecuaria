@@ -178,7 +178,7 @@ export default {
     
 //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterProdutos() {
-      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado.toLowerCase()));
     },
 
     selectProduto(produto) {
@@ -190,9 +190,20 @@ export default {
 
     toggleDropdown() {
       this.dropdownOpen = !this.dropdownOpen;
+      let nomeCorreto = false;
 
       if(!this.dropdownOpen){
-        this.nomeDigitado = '';
+        this.produtosFiltrados.forEach(produto => {
+          if(produto.nome.toLowerCase() === this.nomeDigitado.toLowerCase()){
+            this.nomeDigitado = produto.nome;
+            this.formData.produto = produto.id;
+            this.produtosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomeDigitado = '';
+        }
       }
     },
 

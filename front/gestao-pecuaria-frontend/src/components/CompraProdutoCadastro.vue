@@ -210,7 +210,20 @@ export default {
     handleClickOutside(event) {
       if (this.dropdownOpen && this.$refs.dropdown && !this.$refs.dropdown.contains(event.target)) {
         this.dropdownOpen = false;
-        this.nomeDigitado = '';
+      }
+      let nomeCorreto = false;
+      if(!this.dropdownOpen){
+        this.produtos.forEach(produto => {
+          if(produto.nome.toLowerCase() === this.nomeDigitado.toLowerCase()){
+            this.nomeDigitado = produto.nome;
+            this.formData.produto = produto.id;
+            this.produtosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomeDigitado = '';
+        }
       }
     },
 

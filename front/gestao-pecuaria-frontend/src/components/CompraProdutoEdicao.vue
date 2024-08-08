@@ -31,17 +31,20 @@
                 onblur="(this.type='text')" :placeholder="dataCompraPlaceholder" class="form-control"
                 id="dataCompraCadastro" v-model="formData.dataCompra">
             </div>
-            <div class="select mb-3 input-group">
-              <div class="select-option mb-3 input-group" @click="toggleDropdown">
+            <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
+              @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedProduto">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
                 <span class="input-group-text"><i class="fas fa-box"></i></span>
-                <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="filterProdutos()"
-                  @click="filterProdutos()" type="text" class="form-control" :placeholder="produtoPlaceholder"
-                  id="caixa-select">
+                <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
+                  @click="filterProdutos" @keydown.up.prevent="navigateOptions('up')"
+                  @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
+                  :placeholder="produtoPlaceholder" id="caixa-select">
               </div>
               <div class="itens" v-show="dropdownOpen">
                 <ul class="options">
-                  <li v-for="produto in produtosFiltrados" :key="produto.id" :value="produto.id"
-                    @click="selectProduto(produto)">{{ produto.nome }}</li>
+                  <li v-for="(produto, index) in produtosFiltrados" :key="produto.id" :value="produto.id"
+                    @click="selectProduto(produto)" :class="{ 'highlighted': index === highlightedIndex }">{{
+          produto.nome }}</li>
                 </ul>
               </div>
             </div>
@@ -90,6 +93,7 @@ export default {
       produtos: [],
       produtosFiltrados: [],
       nomeDigitado: '',
+      highlightedIndex: -1,
       dropdownOpen: false,
       formData: {
         id: null,
@@ -122,6 +126,7 @@ export default {
       this.fetchCompra(compraId);
     }
     this.buscarProdutos();
+    document.addEventListener('click', this.handleClickOutside);
   },
 
   methods: {
@@ -191,7 +196,7 @@ export default {
 
 //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterProdutos() {
-      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado));
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado.toLowerCase()));
     },
 
     selectProduto(produto) {
@@ -200,9 +205,50 @@ export default {
       this.produtosFiltrados = [];
       this.dropdownOpen = false;
     },
-    
+
     toggleDropdown() {
       this.dropdownOpen = !this.dropdownOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownOpen){
+        this.produtosFiltrados.forEach(produto => {
+          if(produto.nome.toLowerCase() === this.nomeDigitado.toLowerCase()){
+            this.nomeDigitado = produto.nome;
+            this.formData.produto = produto.id;
+            this.produtosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomeDigitado = '';
+        }
+      }
+    },
+
+    handleClickOutside(event) {
+      if (this.dropdownOpen && this.$refs.dropdown && !this.$refs.dropdown.contains(event.target)) {
+        this.dropdownOpen = false;
+        this.nomeDigitado = '';
+      }
+    },
+
+    inputProduto(){
+      this.filterProdutos();
+      this.dropdownOpen = true;
+    },
+
+    navigateOptions(direction) {
+      if (direction === 'up' && this.highlightedIndex > 0) {
+        this.highlightedIndex--;
+      } else if (direction === 'down' && this.highlightedIndex < this.produtosFiltrados.length - 1) {
+        this.highlightedIndex++;
+      }
+    },
+
+    selectHighlightedProduto() {
+      if (this.highlightedIndex >= 0 && this.highlightedIndex < this.produtosFiltrados.length) {
+        this.selectProduto(this.produtosFiltrados[this.highlightedIndex]);
+      }
     },
 
 

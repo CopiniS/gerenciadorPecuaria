@@ -190,6 +190,10 @@ export default {
 
     toggleDropdown() {
       this.dropdownOpen = !this.dropdownOpen;
+
+      if(!this.dropdownOpen){
+        this.nomeDigitado = '';
+      }
     },
 
     handleClickOutside(event) {

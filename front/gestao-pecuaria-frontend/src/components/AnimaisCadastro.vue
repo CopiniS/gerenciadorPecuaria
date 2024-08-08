@@ -210,7 +210,7 @@ export default {
     },
 
     aplicarBrincoPaiMask(value){
-      this.formData.brincoPai =  this.brincoMask(value);
+      this.formData.brincoPai =  this.brincoFiltroMask(value);
     },
 
     inputBrincoPai(event){
@@ -220,7 +220,7 @@ export default {
     },
 
     aplicarBrincoMaeMask(value){
-      this.formData.brincoMae =  this.brincoMask(value);
+      this.formData.brincoMae =  this.brincoFiltroMask(value);
     },
 
     inputBrincoMae(event){

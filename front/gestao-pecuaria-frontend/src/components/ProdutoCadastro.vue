@@ -40,10 +40,10 @@
               <select v-model="formData.unidade" class="form-select" id="unidade" aria-label="Unidade"
                 :placeholder="unidadePlaceholder" :class="{'is-invalid': !isUnidadeValida}" >
                 <option disabled value="">{{ unidadePlaceholder }}</option>
-                <option value="ton">Ton</option>
-                <option value="kg">Kg</option>
+                <option value="ton">ton</option>
+                <option value="kg">kg</option>
                 <option value="gr">gr</option>
-                <option value="Lt">Lt</option>
+                <option value="lt">lt</option>
                 <option value="ml">ml</option>
               </select>
             </div>

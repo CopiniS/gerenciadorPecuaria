@@ -193,7 +193,7 @@ export default {
     },
 
     handleClickOutside(event) {
-      if (this.dropdownOpen && !this.$refs.dropdown.contains(event.target)) {
+      if (this.dropdownOpen && this.$refs.dropdown && !this.$refs.dropdown.contains(event.target)) {
         this.dropdownOpen = false;
         this.nomeDigitado = '';
       }

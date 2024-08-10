@@ -21,27 +21,39 @@
                 :placeholder="dataPlaceholder" class="form-control" id="dataAplicacaoEdicao"
                 v-model="formData.dataAplicacao">
             </div>
-            <div class="mb-3 input-group" :class="{ 'is-invalid': !isBrincoValido }">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" id="brincoField"
-                :placeholder="brincoPlaceholder">
+            <div ref="dropdownAnimal" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsAnimal('up')"
+              @keydown.down.prevent="navigateOptionsAnimal('down')" @keydown.enter.prevent="selectHighlightedAnimal">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownAnimal">
+                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <input v-model="brinco" :class="{ 'is-invalid': !isBrincoValido }" @input="inputBrinco"
+                  @click="filterAnimais" @keydown.up.prevent="navigateOptionsAnimal('up')"
+                  @keydown.down.prevent="navigateOptionsAnimal('down')" type="text" class="form-control"
+                  :placeholder="brincoPlaceholder" id="caixa-select">
+              </div>
+              <div class="itens" v-show="dropdownAnimalOpen">
+                <ul class="options">
+                  <li v-for="(animal, index) in animaisFiltrados" :key="animal.id" :value="animal.id"
+                    @click="selectAnimal(animal)" :class="{ 'highlighted': index === highlightedIndexAnimal }">{{
+                    animal.brinco }}</li>
+                </ul>
+              </div>
             </div>
-            <div class="list-group" v-if="brinco && animaisFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados"
-                :key="animal.id" @click="selectAnimal(animal)">
-                {{ animal.brinco }}
-              </button>
-            </div>
-            <div class="mb-3 input-group" :class="{ 'is-invalid': !isProdutoValido }">
-              <span class="input-group-text"><i class="fas fa-box"></i></span>
-              <input v-model="nomeProduto" @input="filterProdutos" type="text" class="form-control"
-                :placeholder="produtoPlaceholder">
-            </div>
-            <div class="list-group" v-if="nomeProduto && produtosFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="produto in produtosFiltrados" :key="produto.id" @click="selectProduto(produto)">
-                {{ produto.nome }}
-              </button>
+            <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
+              @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
+                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
+                  @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')"
+                  @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
+                  :placeholder="produtoPlaceholder" id="caixa-select">
+              </div>
+              <div class="itens" v-show="dropdownProdutoOpen">
+                <ul class="options">
+                  <li v-for="(produto, index) in produtosFiltrados" :key="produto.id" :value="produto.id"
+                    @click="selectProduto(produto)" :class="{ 'highlighted': index === highlightedIndexProduto }">{{
+                    produto.nome }}</li>
+                </ul>
+              </div>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tint"></i></span>
@@ -81,6 +93,10 @@ export default {
       nomeProduto: '',
       radioEscolha: 'brinco',
       contadorObservacoes: 0,
+      highlightedIndexProduto: -1,
+      dropdownProdutoOpen: false,
+      highlightedIndexAnimal: -1,
+      dropdownAnimalOpen: false,
       formData: {
         id: null,
         produto: '',
@@ -111,7 +127,8 @@ export default {
     }
     this.buscarAnimaisDaApi();
     this.buscarProdutosDaApi();
-
+    document.addEventListener('click', this.handleClickOutsideProduto);
+    document.addEventListener('click', this.handleClickOutsideAnimal);
   },
   methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -128,12 +145,6 @@ export default {
       const value = event.target.value;
       this.formData.observacao = this.observacoesMask(value);
       this.contadorObservacoes = this.formData.observacao.length;
-    },
-
-    inputBrinco(event){
-      const value = event.target.value;
-      this.aplicarBrincoMask(value);
-      this.filterAnimais();
     },
 
 
@@ -200,25 +211,145 @@ export default {
       }
     },
 
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+//LÓGICA DOS SELECT ANIMAL----------------------------------------------------------------------------------------------------------------------------------------------------
     filterAnimais() {
-      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
+      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.includes(this.brinco));
     },
 
     selectAnimal(animal) {
-      this.brinco = animal.brinco;
-      this.formData.animal = animal.id;
-      this.animaisFiltrados = [];
+        this.brinco = animal.brinco;
+        this.formData.animal = animal.id;
+        this.animaisFiltrados = [];
+        this.dropdownAnimalOpen = false;
     },
 
+    toggleDropdownAnimal() {
+      this.dropdownAnimalOpen = !this.dropdownAnimalOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownAnimalOpen){
+        this.animaisFiltrados.forEach(animal => {
+          if(animal.brinco === this.brinco){
+            this.brinco = animal.brinco;
+            this.formData.animal = animal.id;
+            this.animaisFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.brinco = '';
+        }
+      }
+    },
+
+    handleClickOutsideAnimal(event) {
+      if (this.dropdownAnimalOpen && this.$refs.dropdownAnimal && !this.$refs.dropdownAnimal.contains(event.target)) {
+        this.dropdownAnimalOpen = false;
+      }
+      let nomeCorreto = false;
+      if(!this.dropdownAnimalOpen){
+        this.animais.forEach(animal => {
+          if(animal.brinco === this.brinco){
+            this.brinco = animal.brinco;
+            this.formData.animal = animal.id;
+            this.animaisFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.brinco = '';
+        }
+      }
+    },
+
+    inputBrinco(event){
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterAnimais();
+      this.dropdownAnimalOpen = true;
+    },
+
+    navigateOptionsAnimal(direction) {
+      if (direction === 'up' && this.highlightedIndex > 0) {
+        this.highlightedIndex--;
+      } else if (direction === 'down' && this.highlightedIndex < this.animaisFiltrados.length - 1) {
+        this.highlightedIndex++;
+      }
+    },
+
+    selectHighlightedAnimal() {
+      if (this.highlightedIndex >= 0 && this.highlightedIndex < this.animaisFiltrados.length) {
+        this.selectAnimal(this.animaisFiltrados[this.highlightedIndex]);
+      }
+    },
+
+
+//LÓGICA DOS SELECT ANIMAL----------------------------------------------------------------------------------------------------------------------------------------------------
     filterProdutos() {
-      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeProduto));
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeProduto.toLowerCase()));
     },
 
     selectProduto(produto) {
       this.nomeProduto = produto.nome;
       this.formData.produto = produto.id;
       this.produtosFiltrados = [];
+      this.dropdownProdutoOpen = false;
+    },
+
+    toggleDropdownProduto() {
+      this.dropdownProdutoOpen = !this.dropdownProdutoOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownProdutoOpen){
+        this.produtosFiltrados.forEach(produto => {
+          if(produto.nome.toLowerCase() === this.nomeProduto.toLowerCase()){
+            this.nomeProduto = produto.nome;
+            this.formData.produto = produto.id;
+            this.produtosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomeProduto = '';
+        }
+      }
+    },
+
+    handleClickOutsideProduto(event) {
+      if (this.dropdownProdutoOpen && this.$refs.dropdownProduto && !this.$refs.dropdownProduto.contains(event.target)) {
+        let nomeCorreto = false;
+        this.produtos.forEach(produto => {
+          if(produto.nome.toLowerCase() === this.nomeProduto.toLowerCase()){
+            this.nomeProduto = produto.nome;
+            this.formData.produto = produto.id;
+            this.produtosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomeProduto = '';
+        }
+        this.dropdownProdutoOpen = false;
+      }
+    },
+
+    inputProduto(){
+      this.filterProdutos();
+      this.dropdownProdutoOpen = true;
+    },
+
+    navigateOptionsProduto(direction) {
+      if (direction === 'up' && this.highlightedIndexProduto > 0) {
+        this.highlightedIndexProduto--;
+      } else if (direction === 'down' && this.highlightedIndexProduto < this.produtosFiltrados.length - 1) {
+        this.highlightedIndexProduto++;
+      }
+    },
+
+    selectHighlightedProduto() {
+      if (this.highlightedIndexProduto >= 0 && this.highlightedIndexProduto < this.produtosFiltrados.length) {
+        this.selectProduto(this.produtosFiltrados[this.highlightedIndexProduto]);
+      }
     },
 
     
@@ -401,5 +532,41 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+.select-option {
+  width: 100%;
+  cursor: pointer;
+}
+
+.itens {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 999;
+  padding: 20px;
+}
+
+.options {
+  max-height: 200px;
+  /* Ajuste a altura conforme necessário */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.options li:hover {
+  background-color: #f0f0f0;
 }
 </style>

@@ -28,16 +28,22 @@
                 class="form-control" id="dataAplicacaoCadastro" v-model="formData.dataAplicacao"
                 :class="{ 'is-invalid': !isDataValida }">
             </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-box"></i></span>
-              <input v-model="nomeProduto" @input="filterProdutos" type="text" class="form-control"
-                :placeholder="produtoPlaceholder" :class="{ 'is-invalid': !isProdutoValido }">
-            </div>
-            <div class="list-group" v-if="nomeProduto && produtosFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="produto in produtosFiltrados"
-                :key="produto.id" @click="selectProduto(produto)">
-                {{ produto.nome }}
-              </button>
+            <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
+              @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
+                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
+                  @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')"
+                  @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
+                  :placeholder="produtoPlaceholder" id="caixa-select">
+              </div>
+              <div class="itens" v-show="dropdownProdutoOpen">
+                <ul class="options">
+                  <li v-for="(produto, index) in produtosFiltrados" :key="produto.id" :value="produto.id"
+                    @click="selectProduto(produto)" :class="{ 'highlighted': index === highlightedIndexProduto }">{{
+                    produto.nome }}</li>
+                </ul>
+              </div>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-tint"></i></span>
@@ -50,17 +56,25 @@
               @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
               <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
             </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="nomePiquete" @input="filtrarPiquetes" type="text" class="form-control"
-                :placeholder="piquetePlaceholder" :class="{ 'is-invalid': !isPiqueteValido }">
+
+            <div ref="dropdownPiquete" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiquete('up')"
+              @keydown.down.prevent="navigateOptionsPiquete('down')" @keydown.enter.prevent="selectHighlightedPiquete">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
+                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
+                  @click="filterPiquetes" @keydown.up.prevent="navigateOptionsPiquete('up')"
+                  @keydown.down.prevent="navigateOptionsPiquete('down')" type="text" class="form-control"
+                  :placeholder="piquetePlaceholder" id="caixa-select">
+              </div>
+              <div class="itens" v-show="dropdownPiqueteOpen">
+                <ul class="options">
+                  <li v-for="(piquete, index) in piquetesFiltrados" :key="piquete.id" :value="piquete.id"
+                    @click="selectPiquete(piquete)" :class="{ 'highlighted': index === highlightedIndexPiquete }">{{
+                    piquete.nome }}</li>
+                </ul>
+              </div>
             </div>
-            <div class="list-group" v-if="nomePiquete && piquetesFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="piquete in piquetesFiltrados"
-                :key="piquete.id" @click="selectPiquete(piquete)">
-                {{ piquete.nome }}
-              </button>
-            </div>
+
             <div class="mb-3 input-group">
               <label v-if="animaisFiltrados.length != 0">
                 <input type="checkbox" v-model="selecionaTodos" @change="ativaSelecaoTodos"> Selecionar todos
@@ -104,6 +118,10 @@ export default {
       piquetesFiltrados: [],
       contadorObservacoes: 0,
       selecionaTodos: false,
+      highlightedIndexProduto: -1,
+      dropdownProdutoOpen: false,
+      highlightedIndexPiquete: -1,
+      dropdownPiqueteOpen: false,
       formData: {
         id: null,
         produto: null,
@@ -131,6 +149,8 @@ export default {
     this.buscarAnimaisDaApi();
     this.buscarProdutosDaApi();
     this.buscarPiquetesDaApi();
+    document.addEventListener('click', this.handleClickOutsideProduto);
+    document.addEventListener('click', this.handleClickOutsidePiquete);
   },
   methods: {
     //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -215,26 +235,145 @@ export default {
     },
 
 
-    //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
-    filtrarPiquetes() {
-      this.piquetesFiltrados = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.nomePiquete));
+    //LÓGICA DOS SELECT PIQUETE----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterPiquetes() {
+      this.piquetesFiltrados = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.nomePiquete.toLowerCase()));
     },
 
     selectPiquete(piquete) {
-      this.piqueteId = piquete.id;
       this.nomePiquete = piquete.nome;
+      this.piqueteId = piquete.id;
       this.piquetesFiltrados = [];
-      this.preencheCheckBox()
+      this.dropdownPiqueteOpen = false;
+      this.preencheCheckBox();
     },
 
+    toggleDropdownPiquete() {
+      this.dropdownPiqueteOpen = !this.dropdownPiqueteOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownPiqueteOpen){
+        this.piquetesFiltrados.forEach(piquete => {
+          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+            this.nomePiquete = piquete.nome;
+            this.formData.piquete = piquete.id;
+            this.piquetesFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomePiquete = '';
+        }
+      }
+    },
+
+    handleClickOutsidePiquete(event) {
+      let nomeCorreto = false;
+      if (this.dropdownPiqueteOpen && this.$refs.dropdownPiquete && !this.$refs.dropdownPiquete.contains(event.target)) {
+        this.piquetes.forEach(piquete => {
+          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+            this.selectPiquete(piquete);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomePiquete = '';
+          this.animaisFiltrados = [];
+        }
+      }
+      this.dropdownPiqueteOpen = false;
+    },
+
+    inputPiquete(){
+      this.filterPiquetes();
+      this.dropdownPiqueteOpen = true;
+
+      if(this.nomePiquete.trim() == ''){
+        this.animaisFiltrados = [];
+      }
+    },
+
+    navigateOptionsPiquete(direction) {
+      if (direction === 'up' && this.highlightedIndexPiquete > 0) {
+        this.highlightedIndexPiquete--;
+      } else if (direction === 'down' && this.highlightedIndexPiquete < this.piquetesFiltrados.length - 1) {
+        this.highlightedIndexPiquete++;
+      }
+    },
+
+    selectHighlightedPiquete() {
+      if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
+        this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
+      }
+    },
+
+
+//LÓGICA DOS SELECT PRODUTO----------------------------------------------------------------------------------------------------------------------------------------------------
     filterProdutos() {
-      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeProduto));
+      this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeProduto.toLowerCase()));
     },
 
     selectProduto(produto) {
       this.nomeProduto = produto.nome;
       this.formData.produto = produto.id;
       this.produtosFiltrados = [];
+      this.dropdownProdutoOpen = false;
+    },
+
+    toggleDropdownProduto() {
+      this.dropdownProdutoOpen = !this.dropdownProdutoOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownProdutoOpen){
+        this.produtosFiltrados.forEach(produto => {
+          if(produto.nome.toLowerCase() === this.nomeProduto.toLowerCase()){
+            this.nomeProduto = produto.nome;
+            this.formData.produto = produto.id;
+            this.produtosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomeProduto = '';
+        }
+      }
+    },
+
+    handleClickOutsideProduto(event) {
+      if (this.dropdownProdutoOpen && this.$refs.dropdownProduto && !this.$refs.dropdownProduto.contains(event.target)) {
+        let nomeCorreto = false;
+        this.produtos.forEach(produto => {
+          if(produto.nome.toLowerCase() === this.nomeProduto.toLowerCase()){
+            this.nomeProduto = produto.nome;
+            this.formData.produto = produto.id;
+            this.produtosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomeProduto = '';
+        }
+        this.dropdownProdutoOpen = false;
+      }
+    },
+
+    inputProduto(){
+      this.filterProdutos();
+      this.dropdownProdutoOpen = true;
+    },
+
+    navigateOptionsProduto(direction) {
+      if (direction === 'up' && this.highlightedIndexProduto > 0) {
+        this.highlightedIndexProduto--;
+      } else if (direction === 'down' && this.highlightedIndexProduto < this.produtosFiltrados.length - 1) {
+        this.highlightedIndexProduto++;
+      }
+    },
+
+    selectHighlightedProduto() {
+      if (this.highlightedIndexProduto >= 0 && this.highlightedIndexProduto < this.produtosFiltrados.length) {
+        this.selectProduto(this.produtosFiltrados[this.highlightedIndexProduto]);
+      }
     },
 
 
@@ -456,5 +595,41 @@ export default {
 .checkbox-container label {
     display: flex;
     align-items: center;
+}
+
+.select-option {
+  width: 100%;
+  cursor: pointer;
+}
+
+.itens {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 999;
+  padding: 20px;
+}
+
+.options {
+  max-height: 200px;
+  /* Ajuste a altura conforme necessário */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.options li:hover {
+  background-color: #f0f0f0;
 }
 </style>

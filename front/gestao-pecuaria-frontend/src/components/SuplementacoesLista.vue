@@ -80,12 +80,17 @@
             <td :class="{ 'status-andamento': !suplementacao.dataFinal, 'status-finalizada': suplementacao.dataFinal }">{{
           suplementacao.dataFinal ? 'Finalizada' : 'Em Andamento' }}</td>
             <td>
-                <button v-if="!suplementacao.dataFinal" @click="acessarFinalizacao(suplementacao)" class="btn-acoes btn-sm">
-                <i class="fas fa-check"></i>
+                <button v-if="!suplementacao.dataFinal" @click="acessarFinalizacao(suplementacao)" 
+                class="btn-acoes btn-sm" title="Finalizar Suplementação">
+                  <i class="fas fa-check"></i>
                 </button>
-                <button @click="acessarEdicao(suplementacao)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="acessarEdicao(suplementacao)" class="btn-acoes btn-sm" title="Editar Suplementação">
+                  <i class="fas fa-edit"></i>
+                </button>
                 <button @click="confirmarExclusao(suplementacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                data-bs-target="#confirmacaoExclusaoModal" title="Excluir Suplementação">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
             </td>
           </tr>
         </tbody>

@@ -65,9 +65,13 @@
               <td>{{ inseminacao.veterinario.nome }}</td>
               <td>{{ inseminacao.identificadorTouro }}</td>
               <td>
-                <button @click="acessarEdicao(inseminacao)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
-                <button @click="confirmarExclusaoInseminacao(inseminacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                <button @click="acessarEdicao(inseminacao)" class="btn-acoes btn-sm" title="Editar Inseminação">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button @click="confirmarExclusaoInseminacao(inseminacao)" class="btn-acoes btn-sm" 
+                data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal" title="Excluir Inseminação">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </td>
             </tr>
           </tbody>

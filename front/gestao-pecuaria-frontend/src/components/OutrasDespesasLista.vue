@@ -51,6 +51,7 @@
                 <th scope="col">Valor</th>
                 <th scope="col">Descricao</th>
                 <th scope="col">Categoria</th>
+                <th scope="col">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,9 +61,13 @@
                 <td>{{ despesa.descricao }}</td>
                 <td>{{ despesa.categoria }}</td>
                 <td>
-                    <button @click="acessarEdicao(despesa)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
-                    <button @click="confirmarExclusao(despesa)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                        class="fas fa-trash-alt"></i></button>
+                    <button @click="acessarEdicao(despesa)" class="btn-acoes btn-sm" title="Editar Despesa">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button @click="confirmarExclusao(despesa)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#confirmacaoExclusaoModal" title="Excluir Despesa">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
                 </td>
                 </tr>
             </tbody>

@@ -102,10 +102,10 @@
               <td>{{ animal.status }}</td>
               <td>
                 <div class="d-flex justify-content-center button-group">
-                  <button @click="acessarVisualizacao(animal)" class="btn-acoes btn-sm"><i class="fas fa-eye"></i></button>
+                  <button @click="acessarVisualizacao(animal)" class="btn-acoes btn-sm" 
+                  data-bs-toggle="tooltip" title="Visualizar Animal"><i class="fas fa-eye"></i></button>
                 </div>
               </td>
-
             </tr>
           </tbody>
         </table>

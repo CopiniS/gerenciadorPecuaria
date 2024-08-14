@@ -23,22 +23,23 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-box"></i></span>
-              <input v-model="formData.nome" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" >
+              <span class="input-group-text" title="Nome do Produto"><i class="fas fa-box"></i></span>
+              <input v-model="formData.nome" type="text" class="form-control" id="nome" 
+              :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" title="Nome do Produto">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-clipboard-list"></i></span>
+              <span class="input-group-text"  title="Tipo do Produto"><i class="fas fa-clipboard-list"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" >
+                :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" title="Tipo do Produto">
                 <option disabled value="">{{ tipoPlaceholder }}</option>
                 <option value="sanitario">Sanitário</option>
                 <option value="alimenticio">Alimentício</option>
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-balance-scale"></i></span>
+              <span class="input-group-text" title="Unidade de Medida"><i class="fas fa-balance-scale"></i></span>
               <select v-model="formData.unidade" class="form-select" id="unidade" aria-label="Unidade"
-                :placeholder="unidadePlaceholder" :class="{'is-invalid': !isUnidadeValida}" >
+                :placeholder="unidadePlaceholder" :class="{'is-invalid': !isUnidadeValida}" title="Unidade de Medida">
                 <option disabled value="">{{ unidadePlaceholder }}</option>
                 <option value="ton">ton</option>
                 <option value="kg">kg</option>
@@ -48,19 +49,20 @@
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-list-alt"></i></span>
+              <span class="input-group-text" title="Categoria do Produto"><i class="fas fa-list-alt"></i></span>
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
-                :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" >
+                :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" 
+                title="Categoria do Produto">
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Descrição do Produto"><i class="fas fa-sticky-note"></i></span>
               <textarea v-model="formData.descricao" @input="aplicarDescricaoMask" class="form-control" id="descricao"
-                placeholder="Descrição"></textarea>
+                placeholder="Descrição" title="Descrição do Produto"></textarea>
               <div class="character-counter">({{ contadorDescricao }} / 255)</div> 
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
-              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
             </div>
           </form>
         </div>

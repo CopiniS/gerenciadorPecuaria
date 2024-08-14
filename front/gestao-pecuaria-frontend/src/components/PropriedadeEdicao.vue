@@ -20,20 +20,23 @@
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Propriedade</h1>
           <form @submit.prevent="submitForm">
-                <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-landmark"></i></span>
-                    <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" :placeholder="nomePlaceholder"
-                        id="nome" >
+              <div class="mb-3 input-group">
+                    <h2 id="legenda">* Campos Obrigatórios</h2>
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                    <span class="input-group-text" title="Nome da Popriedade"><i class="fas fa-landmark"></i></span>
+                    <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
+                    class="form-control" :placeholder="nomePlaceholder" id="nome" title="Nome da Propriedade">
+                </div>
+                <div class="mb-3 input-group">
+                    <span class="input-group-text" title="Endereço da Propriedade"><i class="fas fa-map-marker-alt"></i></span>
                     <input v-model="formData.endereco" :class="{'is-invalid': !isEnderecoValido}" type="text" class="form-control"
-                        :placeholder="enderecoPlaceholder" id="endereco">
+                        :placeholder="enderecoPlaceholder" id="endereco" title="Endereço da Propriedade">
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-flag"></i></span>
+                    <span class="input-group-text" title="Estado da Propriedade"><i class="fas fa-flag"></i></span>
                     <select v-model="formData.estado" :class="{'is-invalid': !isEstadoValido}" class="form-select"
-                        @change="buscarCidadesPorEstado($event.target.value)">
+                        @change="buscarCidadesPorEstado($event.target.value)" title="Estado da Propriedade">
                         <option value="" disabled>{{ estadoPlaceholder }}</option>
                         <option v-for="estado in estados" :key="estado.id" :value="estado.nome">{{ estado.nome
                             }}</option>
@@ -42,31 +45,31 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"><i class="fas fa-city"></i></span>
                     <select v-model="formData.cidade" :class="{'is-invalid': !isCidadeValida}" class="form-select" >
-                        <option value="" disabled>{{ cidadePlaceholder }}</option>
+                        <option value="">{{ cidadePlaceholder }}</option>
                         <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{
                 cidade.nome }}</option>
                     </select>
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                    <span class="input-group-text"  title="Latitude da Propriedade"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.latitude" :class="{'is-invalid': !isLatitudeValida}" type="text" class="form-control"
-                        :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude">
+                    :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude" title="Latitude da Propriedade">
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-map"></i></span>
+                    <span class="input-group-text" title="Longitude da Propriedade"><i class="fas fa-map" ></i></span>
                     <input v-model="formData.longitude" :class="{'is-invalid': !isLongitudeValida}" type="text" class="form-control"
-                        :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" >
+                        :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" title="Longitude da Propriedade">
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-ruler-combined"></i></span>
-                    <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control"
-                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" >
+                    <span class="input-group-text" title="Área da Propriedade"><i class="fas fa-ruler-combined"></i></span>
+                    <input v-model="formData.area" type="text" class="form-control"  :class="{'is-invalid': !isAreaValida}"
+                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" title="Área da Propriedade">
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('propriedades')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+                    <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
                 </div>
-          </form>
+            </form>
         </div>
       </div>
     </div>
@@ -441,5 +444,9 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

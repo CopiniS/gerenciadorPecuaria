@@ -70,9 +70,13 @@
                 replacePontoVirgula(achaEstoque(produto.id).toString()) }}</td>
               <td>{{ produto.unidade }}</td>
               <td>
-                <button @click="acessarEdicao(produto)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="acessarEdicao(produto)" class="btn-acoes btn-sm" title="Editar Produto">
+                  <i class="fas fa-edit"></i>
+                </button>
                 <button @click="confirmarExclusao(produto)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                  data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                data-bs-target="#confirmacaoExclusaoModal" title="Excluir Produto">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </td>
             </tr>
           </tbody>

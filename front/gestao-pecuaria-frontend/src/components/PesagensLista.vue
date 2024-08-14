@@ -70,9 +70,13 @@
               <td>{{ pesagem.animal.piquete.nome}}</td>
               <td>{{ replacePontoVirgula(pesagem.peso)}}</td>
               <td>
-                <button @click="acessarEdicao(pesagem)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="acessarEdicao(pesagem)" class="btn-acoes btn-sm" title="Editar Pesagem">
+                  <i class="fas fa-edit"></i>
+                </button>
                 <button @click="confirmarExclusaoPesagem(pesagem)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                data-bs-target="#confirmacaoExclusaoModal" title="Excluir Pesagem">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </td>
             </tr>
           </tbody>

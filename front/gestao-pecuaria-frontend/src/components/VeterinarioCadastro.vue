@@ -19,11 +19,12 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-md"></i></span>
-              <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder">
+              <span class="input-group-text" title="Nome do Veterinário"><i class="fas fa-user-md"></i></span>
+              <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
+              class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome do Veterinário">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+              <span class="input-group-text" title="Telefone do Veterinário"><i class="fas fa-phone"></i></span>
               <input
                 v-model="formData.telefone"
                 @input="aplicarTelefoneMask"
@@ -31,15 +32,17 @@
                 type="text"
                 class="form-control"
                 id="telefone"
-                :placeholder="telefonePlaceholder">
+                :placeholder="telefonePlaceholder" title="Telefone do Veterinário">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-              <input v-model="formData.email" :class="{'is-invalid': !isEmailValido}" type="email" class="form-control" id="email" :placeholder="emailPlaceholder">
+              <span class="input-group-text" title="Email do Veterinário"><i class="fas fa-envelope"></i></span>
+              <input v-model="formData.email" :class="{'is-invalid': !isEmailValido}" type="email" 
+              class="form-control" id="email" :placeholder="emailPlaceholder" title="Email do Veterinário">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-              <input v-model="formData.crmv" :class="{'is-invalid': !isCrmvValido}" type="text" class="form-control" id="crmv" :placeholder="crmvPlaceholder">
+              <span class="input-group-text" title="CRMV do Veterinário"><i class="fas fa-id-card"></i></span>
+              <input v-model="formData.crmv" :class="{'is-invalid': !isCrmvValido}" type="text" 
+              class="form-control" id="crmv" :placeholder="crmvPlaceholder" title="CRMV do Veterinário">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('veterinarios')">Cancelar</button>

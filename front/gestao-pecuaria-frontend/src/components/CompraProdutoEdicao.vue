@@ -26,19 +26,22 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Compra</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text" title="Data da Compra"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" :class="{ 'is-invalid': !isDataCompraValida }" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataCompraCadastro" v-model="formData.dataCompra">
+                id="dataCompraCadastro" v-model="formData.dataCompra" title="Data da Compra">
             </div>
             <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
-                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Produto comprado"><i class="fas fa-box"></i></span>
                 <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @click="filterProdutos" @keydown.up.prevent="navigateOptions('up')"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
-                  :placeholder="produtoPlaceholder" id="caixa-select">
+                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto Comprado">
               </div>
               <div class="itens" v-show="dropdownOpen">
                 <ul class="options">
@@ -48,26 +51,29 @@
                 </ul>
               </div>
             </div>
+
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+              <span class="input-group-text" title="Valor da Compra"><i class="fas fa-dollar-sign"></i></span>
               <input ref="valor" v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="text"
-                @input="aplicarValorMask" class="form-control" id="valorUnitario" :placeholder="valorUnitarioPlaceholder">
+                @input="aplicarValorMask" class="form-control" id="valorUnitario" 
+                :placeholder="valorUnitarioPlaceholder" title="Valor da Compra">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-boxes"></i></span>
+              <span class="input-group-text"  title="Quantidade comprada"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
-                type="text" @input="aplicarQuantidadeMask" class="form-control" id="quantidadeComprada" :placeholder="quantidadeCompradaPlaceholder">
+                type="text" @input="aplicarQuantidadeMask" class="form-control" id="quantidadeComprada" 
+                :placeholder="quantidadeCompradaPlaceholder" title="Quantidade comprada">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text"  title="Validade do Produto"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" :class="{ 'is-invalid': !isValidadeValida }" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="validadePlaceholder" class="form-control"
-                id="validadeCadastro" v-model="formData.validade" required>
+                id="validadeCadastro" v-model="formData.validade" title="Validade do Produto">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
-              <input v-model="formData.lote" :class="{ 'is-invalid': !isLoteValido }" type="text" class="form-control"
-                id="lote" :placeholder="lotePlaceholder">
+              <span class="input-group-text" title="Lote do Produto"><i class="fas fa-layer-group"></i></span>
+              <input v-model="formData.lote" type="text" class="form-control"
+                id="lote" :placeholder="lotePlaceholder" title="Lote do Produto">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('compras')">Cancelar</button>
@@ -304,7 +310,7 @@ export default {
 
       //QUANTIDADE COMPRADA
       if(this.formData.quantidadeComprada != null){
-        if(this.formData.quantidadeComprada.trim() != ''){
+        if(this.formData.quantidadeComprada != ''){
           this.isQuantidadeCompradaValida = true;
           this.quantidadeCompradaPlaceholder = 'Quantidade Comprada*';
         }
@@ -475,5 +481,9 @@ export default {
 
 .options li:hover {
   background-color: #f0f0f0;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

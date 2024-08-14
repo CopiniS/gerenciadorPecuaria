@@ -23,26 +23,26 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data da Despesa"><i class="fas fa-calendar-alt"></i></span>
               <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataDespesa"
-                v-model="formData.dataDespesa" required>
+                v-model="formData.dataDespesa" title="Data da Despesa">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+              <span class="input-group-text" title="Valor da Despesa"><i class="fas fa-dollar-sign"></i></span>
               <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
-                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder">
+                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder" title="Valor da Despesa">
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Descrição da Despesa"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
-                :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" >
+                :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Despesa">
               <div class="character-counter">({{ contadorDescricao }} / 255)</div>   
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-list-alt"></i></span>
+              <span class="input-group-text" title="Categoria da Despesa"><i class="fas fa-list-alt"></i></span>
               <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
-                :placeholder="categoriaPlaceholder" :class="{ 'is-invalid': !isCategoriaValida }" >
+                :placeholder="categoriaPlaceholder" :class="{ 'is-invalid': !isCategoriaValida }" title="Categoria da Despesa">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>

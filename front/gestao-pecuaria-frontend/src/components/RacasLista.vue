@@ -52,9 +52,13 @@
                   <tr v-for="(raca, index) in racas" :key="index">
                     <td>{{ raca.nome }}</td>
                     <td>
-                      <button @click="acessarEdicao(raca)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                      <button @click="acessarEdicao(raca)" class="btn-acoes btn-sm" title="Editar Raça">
+                        <i class="fas fa-edit"></i>
+                      </button>
                       <button @click="confirmarExclusao(raca)" class="btn-acoes btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                      data-bs-target="#confirmacaoExclusaoModal" title="Excluir Raça">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
                     </td>
                   </tr>
                 </tbody>

@@ -68,9 +68,13 @@
               <td>{{ aplicacao.produto.nome}}</td>
               <td>{{ replacePontoVirgula(aplicacao.dosagem)}}</td>
               <td>
-                <button @click="acessarEdicao(aplicacao)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="acessarEdicao(aplicacao)" class="btn-acoes btn-sm" title="Editar Aplicação">
+                  <i class="fas fa-edit"></i>
+                </button>
                 <button @click="confirmarExclusaoAplicacao(aplicacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-                data-bs-target="#confirmacaoExclusaoAnimalModal"><i class="fas fa-trash-alt"></i></button>
+                data-bs-target="#confirmacaoExclusaoAnimalModal" title="Excluir Aplicação">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </td>
             </tr>
           </tbody>

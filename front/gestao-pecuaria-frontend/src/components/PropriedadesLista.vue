@@ -68,13 +68,18 @@
             <td>{{ replacePontoVirgula(propriedade.longitude) }}</td>
             <td>{{ replacePontoVirgula(propriedade.area) }}</td>
             <td>
-                <button v-if="propriedadeAtual == propriedade.id" @click="acessarEdicao(propriedade)" class="btn-acoes btn-sm">
+                <button v-if="propriedadeAtual == propriedade.id" @click="acessarEdicao(propriedade)" 
+                class="btn-acoes btn-sm" title="Editar Propriedade">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button v-if="propriedadeAtual == propriedade.id" @click="confirmarExclusao(propriedade)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                <button v-if="propriedadeAtual == propriedade.id" @click="confirmarExclusao(propriedade)" 
+                class="btn-acoes btn-sm" data-bs-toggle="modal" title="Excluir Propriedade"
                 data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i>
                 </button>
-                <button v-if="propriedadeAtual != propriedade.id" @click="trocaPropriedade(propriedade.id)" class="btn-acoes btn-sm"><i class="fas fa-exchange-alt"></i></button>
+                <button v-if="propriedadeAtual != propriedade.id" @click="trocaPropriedade(propriedade.id)" 
+                class="btn-acoes btn-sm" title="Trocar Propriedade">
+                  <i class="fas fa-exchange-alt"></i>
+                </button>
             </td>
           </tr>
         </tbody>

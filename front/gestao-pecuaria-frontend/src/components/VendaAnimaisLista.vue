@@ -84,9 +84,13 @@
               <td>{{ replacePontoVirgula(venda.precoKg)}}</td>
               <td>{{ replacePontoVirgula(venda.valorTotal)}}</td>
               <td>
-                <button @click="acessarEdicao(venda)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                <button @click="acessarEdicao(venda)" class="btn-acoes btn-sm" title="Editar Venda">
+                  <i class="fas fa-edit"></i>
+                </button>
                 <button @click="confirmarExclusaoVenda(venda)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-                data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i></button>
+                data-bs-target="#confirmacaoExclusaoModal" title="Excluir Venda">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </td>
             </tr>
           </tbody>

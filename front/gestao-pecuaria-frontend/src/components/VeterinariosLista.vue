@@ -51,9 +51,13 @@
             <td>{{ veterinario.email }}</td>
             <td>{{ veterinario.crmv }}</td>
             <td>
-              <button @click="acessarEdicao(veterinario)" class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
-              <button @click="confirmarExclusao(veterinario)" class="btn-acoes btn-sm" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal"><i
-                  class="fas fa-trash-alt"></i></button>
+              <button @click="acessarEdicao(veterinario)" class="btn-acoes btn-sm" title="Editar Veterinário">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button @click="confirmarExclusao(veterinario)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+              data-bs-target="#confirmacaoExclusaoModal" title="Excluir Veterinário">
+                <i class="fas fa-trash-alt"></i>
+              </button>
             </td>
           </tr>
         </tbody>

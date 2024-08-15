@@ -15,19 +15,24 @@
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Venda</h1>
             <form @submit.prevent="submitForm">
+              <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    <span class="input-group-text" title="Data da Venda"><i class="fas fa-calendar-alt"></i></span>
                     <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" 
-                    class="form-control" id="dataVenda" v-model="formData.dataVenda" :class="{'is-invalid': !isDataValida}">
+                    class="form-control" id="dataVenda" v-model="formData.dataVenda" 
+                    :class="{'is-invalid': !isDataValida}" title="Data da Venda">
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                  <input ref="valor" @input="inputPrecoKg" v-model="formData.precoKg" type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder">
+                  <span class="input-group-text" title="Preço por kg"><i class="fas fa-dollar-sign"></i></span>
+                  <input ref="valor" @input="inputPrecoKg" v-model="formData.precoKg" 
+                  type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder" title="Preço por kg">
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                  <span class="input-group-text" title="Finalidade da Venda"><i class="fas fa-tags"></i></span>
                   <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
-                    :placeholder="finalidadePlaceholder" :class="{'is-invalid': !isFinalidadeValida}" required>
+                    :placeholder="finalidadePlaceholder" :class="{'is-invalid': !isFinalidadeValida}" title="Finalidade da Venda">
                     <option disabled value="">Finalidade</option>
                     <option value="Cria">Cria</option>
                     <option value="Recria">Recria</option>
@@ -45,18 +50,19 @@
                     </button>
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-weight-hanging"></i></span>
-                  <input @input="inputPeso" v-model="formData.peso" type="text" class="form-control" id="peso" :placeholder="pesoPlaceholder">
+                  <span class="input-group-text" title="Peso do Animal"><i class="fas fa-weight-hanging"></i></span>
+                  <input @input="inputPeso" v-model="formData.peso" type="text" class="form-control" id="peso" 
+                  :placeholder="pesoPlaceholder" title="Peso do Animal">
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                  <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control" @input="aplicarValorTotalMask"
-                  id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" required>
+                  <span class="input-group-text" title="Valor Total da Venda"><i class="fas fa-dollar-sign"></i></span>
+                  <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control"  @input="aplicarValorTotalMask"
+                  id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" title="Valor Total da Venda">
                 </div>
                 <div class="mb-3 input-group position-relative">
-                  <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                  <span class="input-group-text" title="Observação da Venda"><i class="fas fa-sticky-note"></i></span>
                   <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                    @input="aplicarObservacaoMask" placeholder="Observação"></textarea>
+                    @input="aplicarObservacaoMask" placeholder="Observação" title="Observação da Venda"></textarea>
                   <div class="character-counter">({{ contadorObservacao }} / 255)</div>
                 </div>
                 <div class="button-group justify-content-end">
@@ -174,6 +180,7 @@ export default {
         this.formData.precoKg = this.replacePontoVirgula(venda[0].precoKg);
         this.formData.valorTotal = this.replacePontoVirgula(venda[0].valorTotal);
         this.formData.finalidade = venda[0].finalidade;
+        
         this.formData.observacao = venda[0].observacao;
 
         this.brinco = venda[0].animal.brinco;
@@ -364,7 +371,9 @@ export default {
     },
 
     replacePontoVirgula(valorString){
+      if(valorString != null && valorString.trim() != ''){
         valorString = valorString.replace(".", ",");
+      }
       return valorString;
     },
 
@@ -442,5 +451,9 @@ export default {
   right: 10px;
   font-size: 12px;
   color: #6c757d;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

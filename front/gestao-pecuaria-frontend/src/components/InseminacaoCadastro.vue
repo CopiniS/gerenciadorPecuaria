@@ -23,10 +23,10 @@
               <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data da Inseminação"><i class="fas fa-calendar-alt"></i></span>
               <input v-model="formData.dataInseminacao" :class="{ 'is-invalid': !isDataValida }" type="text"
                 onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
-                class="form-control" id="dataInseminacaoCadastro">
+                class="form-control" id="dataInseminacaoCadastro" title="Data da Inseminação">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-md"></i></span>
@@ -41,9 +41,9 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+              <span class="input-group-text" title="Identificador do Touro"><i class="fas fa-id-card"></i></span>
               <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
-                :placeholder="identificadorTouroPlaceholder" required
+                :placeholder="identificadorTouroPlaceholder" title="Identificador do Touro"
                 :class="{ 'is-invalid': !isIdentificadorTouroValido }">
             </div>
             <div class="mb-3 input-group">
@@ -59,9 +59,9 @@
               </button>
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Observação da Inseminação"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control"
-                id="observacao" placeholder="Observação">
+                id="observacao" placeholder="Observação" title="Observação da Inseminação">
               <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">

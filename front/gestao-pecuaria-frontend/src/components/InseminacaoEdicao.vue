@@ -20,13 +20,18 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Inseminacao</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-              <input v-model="formData.dataInseminacao" :class="{'is-invalid': !isDataValida}" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoEdicao">
+              <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text" title="Data da Inseminação"><i class="fas fa-calendar-alt"></i></span>
+              <input v-model="formData.dataInseminacao" :class="{ 'is-invalid': !isDataValida }" type="text"
+                onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
+                class="form-control" id="dataInseminacaoCadastro" title="Data da Inseminação">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-md"></i></span>
               <input v-model="nomeVet" @input="filterVeterinario" type="text" class="form-control"
-              :placeholder="veterinarioPlaceholder" :class="{'is-invalid': !isVeterinarioValido}">
+                :placeholder="veterinarioPlaceholder" :class="{ 'is-invalid': !isVeterinarioValido }">
             </div>
             <div class="list-group" v-if="nomeVet && veterinariosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
@@ -36,14 +41,15 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+              <span class="input-group-text" title="Identificador do Touro"><i class="fas fa-id-card"></i></span>
               <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
-              :placeholder="identificadorTouroPlaceholder" required :class="{'is-invalid': !isIdentificadorTouroValido}">
+                :placeholder="identificadorTouroPlaceholder" title="Identificador do Touro"
+                :class="{ 'is-invalid': !isIdentificadorTouroValido }">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
               <input v-model="brinco" @input="inputBrinco" type="text" class="form-control"
-              :placeholder="animalPlaceholder" :class="{'is-invalid': !isAnimalValido}">
+                :placeholder="animalPlaceholder" :class="{ 'is-invalid': !isAnimalValido }">
             </div>
 
             <div class="list-group" v-if="brinco && femeasFiltradas.length">
@@ -53,13 +59,14 @@
               </button>
             </div>
             <div class="mb-3 input-group position-relative">
-                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" placeholder="Observação">
-                <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
+              <span class="input-group-text" title="Observação da Inseminação"><i class="fas fa-sticky-note"></i></span>
+              <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control"
+                id="observacao" placeholder="Observação" title="Observação da Inseminação">
+              <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('inseminacoes')">Cancelar</button>
-              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
             </div>
           </form>
         </div>
@@ -379,5 +386,9 @@ export default {
   right: 10px;
   font-size: 12px;
   color: #6c757d;
+}
+
+#legenda {
+  font-size: 16px;
 }
 </style>

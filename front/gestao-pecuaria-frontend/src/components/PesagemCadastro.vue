@@ -19,19 +19,20 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                <span class="input-group-text" title="Data da Pesagem"><i class="fas fa-calendar-alt"></i></span>
                 <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"  
-                class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem" :class="{'is-invalid': !isDataValida}">
+                class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem" 
+                :class="{'is-invalid': !isDataValida}" title="Data da Pesagem">
               </div>
               <hr>
               <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedAnimal">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
-                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isBrincoValido }" @input="inputBrinco"
                   @click="filterAnimais" @keydown.up.prevent="navigateOptions('up')"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
-                  :placeholder="brincoPlaceholder" id="caixa-select">
+                  :placeholder="brincoPlaceholder" id="caixa-select" title="Brinco do Animal">
               </div>
               <div class="itens" v-show="dropdownOpen">
                 <ul class="options">
@@ -42,12 +43,14 @@
               </div>
             </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-weight"></i></span>
-                <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" required>
+                <span class="input-group-text" title="Peso do Animal"><i class="fas fa-weight"></i></span>
+                <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" 
+                id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" title="Peso do Animal">
               </div>
               <div class="mb-3 input-group position-relative">
-                <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-                <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" placeholder="Observação">
+                <span class="input-group-text" title="Observações da Pesagem"><i class="fas fa-sticky-note"></i></span>
+                <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" 
+                class="form-control" id="observacao" placeholder="Observação" title="Observações da Pesagem">
                 <div class="character-counter">({{ contadorObservacao }} / 255)</div>
               </div>
               <div class="button-group justify-content-end">

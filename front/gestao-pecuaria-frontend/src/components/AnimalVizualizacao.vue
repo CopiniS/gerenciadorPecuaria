@@ -139,10 +139,10 @@
                             <td>{{ ocorrencia.descricao }}</td>
                             <td>
                                 <button @click="acessarOcorrenciaEdicao(ocorrencia)" 
-                                class="btn-acoes btn-sm"><i class="fas fa-edit"></i></button>
+                                class="btn-acoes btn-sm" title="Editar Ocorrência"><i class="fas fa-edit"></i></button>
                                 <button @click="excluirOcorrencia(ocorrencia.id)" class="btn-acoes btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoOcorrenciaModal"><i
-                                        class="fas fa-trash-alt"></i></button>
+                                        class="fas fa-trash-alt" title="Excluir Ocorrência"></i></button>
                             </td>
                         </tr>
                     </tbody>

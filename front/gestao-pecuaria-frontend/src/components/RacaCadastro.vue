@@ -24,9 +24,9 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Raca</h1>
             <form @submit.prevent="submitForm">
                 <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-horse"></i></span>
+                  <span class="input-group-text" title="Nome da Raça"><i class="fas fa-horse"></i></span>
                   <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
-                  class="form-control" id="nome" :placeholder="nomePlaceholder" required>
+                  class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome da Raça">
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('racas')">Cancelar</button>

@@ -19,35 +19,38 @@
            <h2 class="title fs-5" id="cadastroLabel">Animal: {{ brinco }}</h2>
 
             <form @submit.prevent="submitForm">
-                <div class="mb-3 input-group" >
-                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                    :placeholder="dataPlaceholder" class="form-control" id="dataOcorrencia"
-                    v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }">
-                </div>
-                <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-venus-mars"></i>*</span>
-                <select v-model="formData.tipo" :class="{ 'is-invalid': !isTipoValido }" class="form-select" id="tipo"
-                    aria-label="Tipo" :placeholder="tipoPlaceholder" >
-                    <option disabled :value="null">{{ tipoPlaceholder }}</option>
-                    <option value="morte">Morte</option>
-                    <option value="doenca">Doença</option>
-                    <option value="desaparecido">Desaparecido</option>
-                    <option value="outro">Outro</option>
-                </select>
-                </div>
-                <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-tags"></i></span>
-                <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
-                    placeholder="Descrição">
-                <div>({{ contadorDescricao }} / 255)</div>
-                </div>
-                <div class="button-group justify-content-end">
-                <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>
-                <button type="submit" class="btn btn-success">Enviar</button>
-                </div>
+            <div class="mb-3 input-group">
+                <h2 id="legenda">* Campos Obrigatórios</h2>
+            </div>
+            <div class="mb-3 input-group" >
+              <span class="input-group-text" title="Data da Ocorrência"><i class="fas fa-calendar-alt"></i></span>
+              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+                :placeholder="dataPlaceholder" class="form-control" id="dataOcorrencia"
+                v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }" title="Data da Ocorrência">
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text" title="Tipo da Ocorrência"><i class="fas fa-venus-mars"></i></span>
+              <select v-model="formData.tipo" :class="{ 'is-invalid': !isTipoValido }" class="form-select" id="tipo"
+                aria-label="Tipo" :placeholder="tipoPlaceholder" title="Tipo da Ocorrência">
+                <option disabled :value="null">{{ tipoPlaceholder }}</option>
+                <option value="morte">Morte</option>
+                <option value="doenca">Doença</option>
+                <option value="desaparecido">Desaparecido</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text" title="Descrição da Ocorrência"><i class="fas fa-tags"></i></span>
+              <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
+                placeholder="Descrição" title="Descrição da Ocorrência">
+              <div>({{ contadorDescricao }} / 255)</div>
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
           
-            </form>
+          </form>
         </div>
       </div>
     </div>
@@ -250,5 +253,9 @@ export default {
 
 .is-invalid {
   border-color: #dc3545;
+}
+
+#legenda {
+    font-size: 16px;
 }
 </style>

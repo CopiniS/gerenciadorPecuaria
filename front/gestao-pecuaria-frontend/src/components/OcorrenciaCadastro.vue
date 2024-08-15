@@ -24,15 +24,15 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data da Ocorrência"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :placeholder="dataPlaceholder" class="form-control" id="dataOcorrencia"
-                v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }">
+                v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }" title="Data da Ocorrência">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-venus-mars"></i>*</span>
+              <span class="input-group-text" title="Tipo da Ocorrência"><i class="fas fa-venus-mars"></i></span>
               <select v-model="formData.tipo" :class="{ 'is-invalid': !isTipoValido }" class="form-select" id="tipo"
-                aria-label="Tipo" :placeholder="tipoPlaceholder" >
+                aria-label="Tipo" :placeholder="tipoPlaceholder" title="Tipo da Ocorrência">
                 <option disabled :value="null">{{ tipoPlaceholder }}</option>
                 <option value="morte">Morte</option>
                 <option value="doenca">Doença</option>
@@ -41,9 +41,9 @@
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text" title="Descrição da Ocorrência"><i class="fas fa-tags"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
-                placeholder="Descrição">
+                placeholder="Descrição" title="Descrição da Ocorrência">
               <div>({{ contadorDescricao }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">

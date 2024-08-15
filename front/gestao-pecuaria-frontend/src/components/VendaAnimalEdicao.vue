@@ -67,7 +67,7 @@
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+                    <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
                 </div>
               </form>
         </div>
@@ -90,6 +90,7 @@ export default {
       animaisFiltrados: [],
       brinco: '',
       dataSelecionada: null,
+      contadorObservacao: 0,
       formData: {
         id: null,
         animal: '',

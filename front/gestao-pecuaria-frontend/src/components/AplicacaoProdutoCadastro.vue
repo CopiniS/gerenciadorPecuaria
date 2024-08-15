@@ -23,19 +23,19 @@
               <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data da Aplicação"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
                 class="form-control" id="dataAplicacaoCadastro" v-model="formData.dataAplicacao"
-                :class="{ 'is-invalid': !isDataValida }">
+                :class="{ 'is-invalid': !isDataValida }" title="Data da Aplicação">
             </div>
             <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
               @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
-                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Produto aplicado"><i class="fas fa-box"></i></span>
                 <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')"
                   @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
-                  :placeholder="produtoPlaceholder" id="caixa-select">
+                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto aplicado">
               </div>
               <div class="itens" v-show="dropdownProdutoOpen">
                 <ul class="options">
@@ -46,25 +46,27 @@
               </div>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tint"></i></span>
+              <span class="input-group-text" title="Dosagem da Aplicação"><i class="fas fa-tint"></i></span>
               <input v-model="formData.dosagem" @input="aplicarDosagemMask" type="text" class="form-control"
-                id="dosagem" :placeholder="dosagemPlaceholder" :class="{ 'is-invalid': !isDosagemValida }">
+                id="dosagem" :placeholder="dosagemPlaceholder" :class="{ 'is-invalid': !isDosagemValida }" 
+                title="Dosagem da Aplicação">
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Observação da Aplicação"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacao" 
-              @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
+              @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao" 
+              :placeholder="observacaoPlaceholder" title="Observação da Aplicação">
               <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
             </div>
 
             <div ref="dropdownPiquete" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiquete('up')"
               @keydown.down.prevent="navigateOptionsPiquete('down')" @keydown.enter.prevent="selectHighlightedPiquete">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
-                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Piquete dos Animais aplicados"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
                   @click="filterPiquetes" @keydown.up.prevent="navigateOptionsPiquete('up')"
                   @keydown.down.prevent="navigateOptionsPiquete('down')" type="text" class="form-control"
-                  :placeholder="piquetePlaceholder" id="caixa-select">
+                  :placeholder="piquetePlaceholder" id="caixa-select" title="Piquete dos Animais aplicados">
               </div>
               <div class="itens" v-show="dropdownPiqueteOpen">
                 <ul class="options">

@@ -16,19 +16,19 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Aplicação</h1>
             <form @submit.prevent="submitForm">
             <div class="mb-3 input-group" :class="{ 'is-invalid': !isDataValida }">
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data da Aplicação"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :placeholder="dataPlaceholder" class="form-control" id="dataAplicacaoEdicao"
-                v-model="formData.dataAplicacao">
+                v-model="formData.dataAplicacao" title="Data da Aplicação">
             </div>
             <div ref="dropdownAnimal" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsAnimal('up')"
               @keydown.down.prevent="navigateOptionsAnimal('down')" @keydown.enter.prevent="selectHighlightedAnimal">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownAnimal">
-                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Animal aplicado"><i class="fas fa-box"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isBrincoValido }" @input="inputBrinco"
                   @click="filterAnimais" @keydown.up.prevent="navigateOptionsAnimal('up')"
                   @keydown.down.prevent="navigateOptionsAnimal('down')" type="text" class="form-control"
-                  :placeholder="brincoPlaceholder" id="caixa-select">
+                  :placeholder="brincoPlaceholder" id="caixa-select" title="Animal aplicado">
               </div>
               <div class="itens" v-show="dropdownAnimalOpen">
                 <ul class="options">
@@ -41,11 +41,11 @@
             <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
               @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
-                <span class="input-group-text"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Produto aplicado"><i class="fas fa-box"></i></span>
                 <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')"
                   @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
-                  :placeholder="produtoPlaceholder" id="caixa-select">
+                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto aplicado">
               </div>
               <div class="itens" v-show="dropdownProdutoOpen">
                 <ul class="options">
@@ -56,17 +56,19 @@
               </div>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-tint"></i></span>
-              <input v-model="formData.dosagem" type="text" @input="aplicarDosagemMask" class="form-control" id="dosagem" :placeholder="dosagemPlaceholder">
+              <span class="input-group-text" title="Dosagem da Aplicação"><i class="fas fa-tint"></i></span>
+              <input v-model="formData.dosagem" type="text" @input="aplicarDosagemMask" 
+              class="form-control" id="dosagem" :placeholder="dosagemPlaceholder" title="Dosagem da Aplicação">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control" id="observacao" :placeholder="observacaoPlaceholder">
+              <span class="input-group-text" title="Observação da Aplicação"><i class="fas fa-sticky-note"></i></span>
+              <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" 
+              class="form-control" id="observacao" :placeholder="observacaoPlaceholder" title="Observação da Aplicação">
               <div>({{ contadorObservacoes }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
-              <button type="submit" class="btn btn-success">Enviar</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
             </div>
           </form>
         </div>

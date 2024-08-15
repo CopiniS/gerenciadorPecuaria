@@ -22,15 +22,15 @@
   
               <form @submit.prevent="submitForm" class="form-foto">
                   <div class="mb-3 input-group mb-3-foto">
-                      <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                      <span class="input-group-text" title="Data da Foto"><i class="fas fa-calendar-alt"></i></span>
                       <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                           :placeholder="dataPlaceholder" class="form-control" id="dataFoto"
-                          v-model="formData.dataFoto" :class="{ 'is-invalid': !isDataValida }">
+                          v-model="formData.dataFoto" :class="{ 'is-invalid': !isDataValida }" title="Data da Foto">
                   </div>
                   <div class="mb-3 input-group mb-3-foto">
-                      <span class="input-group-text"><i class="fas fa-sticky-note"></i></span>
+                      <span class="input-group-text" title="Observações da Foto"><i class="fas fa-sticky-note"></i></span>
                       <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                          placeholder="Observação"></textarea>
+                          placeholder="Observação" title="Observações da Foto"></textarea>
                   </div>
                   <div class="mb-3 input-group mb-3-foto justify-content-center">
                       <div class="boxSelect">

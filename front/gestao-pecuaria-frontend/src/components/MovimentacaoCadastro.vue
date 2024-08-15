@@ -23,10 +23,10 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data da Movimentação"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoCadastro"
-                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }">
+                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }" title="Data da Movimentação">
             </div>
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
@@ -41,9 +41,9 @@
             </div>
 
             <div class="mb-3 input-group position-relative">
-                    <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                    <span class="input-group-text" title="Motivo da Movimentação"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
-                    placeholder="Motivo">
+                    placeholder="Motivo" title="Motivo da Movimentação">
                     <div class="character-counter">({{ contadorMotivo }} / 255)</div>
                 </div>
             <div class="mb-3 input-group" >

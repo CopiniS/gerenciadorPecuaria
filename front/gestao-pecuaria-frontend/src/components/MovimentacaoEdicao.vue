@@ -20,10 +20,10 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Movimentação</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data da Movimentação"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoEdicao"
-                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }">
+                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }" title="Data da Movimentação">
             </div>
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
@@ -53,16 +53,16 @@
               </button>
             </div>
 
-            <div class="mb-3 input-groupposition-relative">
-                    <span class="input-group-text"><i class="fas fa-comment"></i></span>
+            <div class="mb-3 input-group">
+                    <span class="input-group-text" title="Motivo da Movimentação"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
-                    placeholder="Motivo">
+                    placeholder="Motivo" title="Motivo da Movimentação">
                     <div class="character-counter">({{ contadorMotivo }} / 255)</div>
                 </div>
 
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('movimentacoes')">Cancelar</button>
-              <button type="submit" class="btn btn-success">Enviar</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
             </div>
           </form>
         </div>

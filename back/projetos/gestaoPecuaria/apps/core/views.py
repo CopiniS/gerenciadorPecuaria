@@ -48,6 +48,13 @@ class AnimalViewSet(viewsets.ModelViewSet):
         serializer = serializers.AnimalComPiqueteAndRacaSerializer(queryset, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'], url_path='produtor')
+    def list_animais_do_produtor(self, request, *args, **kwargs):
+        queryset = models.Animal.objects.all()
+        queryset = queryset.filter(piquete__propriedade__produtor=self.request.user)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
     @action(detail=False, methods=['get'], url_path='machos')
     def list_machos(self, request, *args, **kwargs):
         propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)

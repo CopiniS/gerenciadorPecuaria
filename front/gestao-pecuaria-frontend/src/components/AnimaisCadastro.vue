@@ -21,7 +21,7 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Animais</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Piquete atual do Animal"><i class="fas fa-hashtag"></i></span>
@@ -34,14 +34,16 @@
             <hr>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
-              <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text" class="form-control"
-                @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder" title="Brinco do Animal">
+              <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text"
+                class="form-control" @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder"
+                title="Brinco do Animal">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Data de Nascimento"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
-                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento" title="Data de nascimento">
+                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento"
+                title="Data de nascimento">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Sexo do Animal"><i class="fas fa-venus-mars"></i></span>
@@ -55,7 +57,8 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Raça Predominante do Animal"><i class="fas fa-horse"></i></span>
               <select v-model="formData.racaPredominante" :class="{ 'is-invalid': !isRacaPredominanteValido }"
-                class="form-select" id="racaPredominante" aria-label="Raça Predominante" title="Raça Predominante do Animal">
+                class="form-select" id="racaPredominante" aria-label="Raça Predominante"
+                title="Raça Predominante do Animal">
                 <option disabled :value="null">Selecione a raça predominante</option>
                 <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }}</option>
               </select>
@@ -63,9 +66,10 @@
 
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Raça de Observação do Animal"><i class="fas fa-sticky-note"></i></span>
-              <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
-                placeholder="Raça d Observação" title="Raça de Observação do Animal"></textarea>
+              <span class="input-group-text" title="Observação da Raça do Animal"><i
+                  class="fas fa-sticky-note"></i></span>
+              <input v-model="formData.racaObservacao" type="text" class="form-control" id="racaObservacao"
+                placeholder="Observação da Raça" title="Observação da Raça do Animal" />
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Brinco do Pai do Animal"><i class="fas fa-mars"></i></span>
@@ -81,7 +85,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Brinco da Mãe do Animal"><i class="fas fa-venus"></i></span>
               <input v-model="formData.brincoMae" @input="inputBrincoMae" type="text" class="form-control"
-               id="brincoMae" placeholder="Digite o brinco da Mãe..." title="Brinco da Mãe do Animal">
+                id="brincoMae" placeholder="Digite o brinco da Mãe..." title="Brinco da Mãe do Animal">
             </div>
             <div class="list-group" v-if="formData.brincoMae && femeasFiltradas.length">
               <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
@@ -112,8 +116,8 @@
             <div v-if="comprado" class="mb-3 input-group">
               <span class="input-group-text" title="Valor da Compra"><i class="fas fa-weight"></i></span>
               <input v-model="formData.valorCompra" :class="{ 'is-invalid': !isValorCompraValido }" type="text"
-                @input="aplicarValorCompraMask" class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder"
-                title="Valor da Compra">
+                @input="aplicarValorCompraMask" class="form-control" id="valorCompra"
+                :placeholder="valorCompraPlaceholder" title="Valor da Compra">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('animais')">Cancelar</button>
@@ -183,7 +187,7 @@ export default {
   },
   async mounted() {
     const animalJSON = this.$route.params.animalJSON;
-    if(animalJSON != 'animaisLista'){
+    if (animalJSON != 'animaisLista') {
       this.preencheForm(animalJSON);
     }
     this.buscarAnimaisDaApi();
@@ -193,13 +197,13 @@ export default {
   },
 
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarBrincoMask(event){
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarBrincoMask(event) {
       const value = event.target.value;
-      this.formData.brinco =  this.brincoMask(value);
+      this.formData.brinco = this.brincoMask(value);
     },
 
-    aplicarObservacaoMask(event){
+    aplicarObservacaoMask(event) {
       const value = event.target.value;
       this.formData.observacoes = this.observacoesMask(value);
       this.contadorObservacoes = this.formData.observacoes.length;
@@ -207,31 +211,31 @@ export default {
 
     aplicarValorCompraMask(event) {
       const value = event.target.value;
-      this.formData.valorCompra =  this.valorMask(value);
+      this.formData.valorCompra = this.valorMask(value);
     },
 
-    aplicarBrincoPaiMask(value){
-      this.formData.brincoPai =  this.brincoFiltroMask(value);
+    aplicarBrincoPaiMask(value) {
+      this.formData.brincoPai = this.brincoFiltroMask(value);
     },
 
-    inputBrincoPai(event){
+    inputBrincoPai(event) {
       const value = event.target.value;
       this.aplicarBrincoPaiMask(value);
       this.filterMachos();
     },
 
-    aplicarBrincoMaeMask(value){
-      this.formData.brincoMae =  this.brincoFiltroMask(value);
+    aplicarBrincoMaeMask(value) {
+      this.formData.brincoMae = this.brincoFiltroMask(value);
     },
 
-    inputBrincoMae(event){
+    inputBrincoMae(event) {
       const value = event.target.value;
       this.aplicarBrincoMaeMask(value);
       this.filterFemeas();
     },
 
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarAnimaisDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/animais/produtor/', {
@@ -244,7 +248,7 @@ export default {
         console.error('Erro ao buscar animais da API:', error);
       }
     },
-    
+
     async buscarPiquetesDaApi() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/', {
@@ -273,7 +277,7 @@ export default {
         try {
           console.log('formdata: ', this.formData)
           //FORMATA VALOR DA COMPRA
-          if(this.formData.valorCompra){
+          if (this.formData.valorCompra) {
             this.formData.valorCompra = this.replaceVirgulaPonto(this.formData.valorCompra);
           }
 
@@ -296,7 +300,7 @@ export default {
     },
 
 
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterFemeas() {
       this.femeasFiltradas = this.listaFemeas.filter(animal => animal.brinco.toLowerCase().includes(this.formData.brincoMae));
     },
@@ -316,8 +320,8 @@ export default {
     },
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    validarFormulario(){
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario() {
       let valido = true;
       this.isBrincoValido = true;
       this.brincoPlaceholder = 'Brinco do Animal';
@@ -334,92 +338,92 @@ export default {
       return valido;
     },
 
-    verificaVazio(){
+    verificaVazio() {
       //PIQUETE
-      if(this.formData.piquete == null){
+      if (this.formData.piquete == null) {
         this.isPiqueteValido = false
       }
-      else{
-        this.isPiqueteValido = true 
+      else {
+        this.isPiqueteValido = true
       }
 
       //BRINCO
-      if(this.formData.brinco != null){
-        if(this.formData.brinco.trim == ''){
+      if (this.formData.brinco != null) {
+        if (this.formData.brinco.trim == '') {
           this.isBrincoValido = false
-          this.brincoPlaceholder = 'Brinco é um Campo Obrigatório' 
-        } 
-        else{
+          this.brincoPlaceholder = 'Brinco é um Campo Obrigatório'
+        }
+        else {
           this.isBrincoValido = true
-          this.brincoPlaceholder = 'Digite o Brinco' 
+          this.brincoPlaceholder = 'Digite o Brinco'
         }
       }
-      else{
+      else {
         this.isBrincoValido = false
-        this.brincoPlaceholder = 'Brinco é um Campo Obrigatório' 
+        this.brincoPlaceholder = 'Brinco é um Campo Obrigatório'
       }
 
       //DATA DE NASCIMENTO
-      if(this.formData.dataNascimento != null){
-        if(this.formData.dataNascimento.trim == ''){
+      if (this.formData.dataNascimento != null) {
+        if (this.formData.dataNascimento.trim == '') {
           this.isDataNascimentoValido = false
-          this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório' 
-        } 
-        else{
+          this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório'
+        }
+        else {
           this.isDataNascimentoValido = true
-          this.dataNascimentoPlaceholder = 'Digite Data de Nascimento' 
+          this.dataNascimentoPlaceholder = 'Digite Data de Nascimento'
         }
       }
-      else{
+      else {
         this.isDataNascimentoValido = false
-        this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório'  
+        this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório'
       }
-      
+
       //SEXO
-      if(this.formData.sexo == null){
+      if (this.formData.sexo == null) {
         this.isSexoValido = false
-        this.sexoPlaceholder = 'Sexo é um Campo Obrigatório' 
+        this.sexoPlaceholder = 'Sexo é um Campo Obrigatório'
       }
-      else{
+      else {
         this.isSexoValido = true
-        this.sexoPlaceholder = 'Digite o Sexo' 
+        this.sexoPlaceholder = 'Digite o Sexo'
       }
 
       //COMPRADO
-      if(this.comprado){
+      if (this.comprado) {
         //DATA DA COMPRA
-        if(this.formData.dataCompra != null){
-          if(this.formData.dataCompra.trim == ''){
+        if (this.formData.dataCompra != null) {
+          if (this.formData.dataCompra.trim == '') {
             this.isDataCompraValido = false;
             this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório'
           }
-          else{
+          else {
             this.isDataCompraValido = true;
             this.dataCompraPlaceholder = 'Digite a Data da Compra'
           }
         }
-        else{
+        else {
           this.isDataCompraValido = false;
           this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório'
         }
-        
+
         //VALOR DA COMPRA
-        if(this.formData.valorCompra != null){
-          if(this.formData.valorCompra.trim == ''){
+        if (this.formData.valorCompra != null) {
+          if (this.formData.valorCompra.trim == '') {
             this.isValorCompraValido = false;
             this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
           }
-          else{
+          else {
             this.isValorCompraValido = true;
             this.dataCompraPlaceholder = 'Digite o Valor da Compra'
           }
         }
-        else{
+        else {
           this.isValorCompraValido = false;
           this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
         }
       }
-      else{
+      else {
         this.formData.dataCompra = null;
         this.formData.valorCompra = null;
         this.isDataCompraValido = true;
@@ -430,31 +434,31 @@ export default {
 
       //OS QUE PODEM ESTAR NULOS NO BANCO
       //RAÇA PREDOMINANTE
-      if(this.formData.racaPredominante != null && this.formData.racaPredominante === ''){
+      if (this.formData.racaPredominante != null && this.formData.racaPredominante === '') {
         this.formData.racaPredominante = null;
       }
       //RAÇA OBSERVAÇÃO
-      if(this.formData.racaObservacao != null && this.formData.racaObservacao === ''){
+      if (this.formData.racaObservacao != null && this.formData.racaObservacao === '') {
         this.formData.racaObservacao = null;
       }
 
       //BRINCO PAI
-      if(this.formData.brincoPai != null && this.formData.brincoPai === ''){
+      if (this.formData.brincoPai != null && this.formData.brincoPai === '') {
         this.formData.brincoPai = null;
       }
-      
+
       //BRINCO MÃE  
-      if(this.formData.brincoMae != null && this.formData.brincoMae === ''){
+      if (this.formData.brincoMae != null && this.formData.brincoMae === '') {
         this.formData.brincoMae = null;
       }
 
       //RFID
-      if(this.formData.rfid != null && this.formData.rfid === ''){
+      if (this.formData.rfid != null && this.formData.rfid === '') {
         this.formData.rfid = null;
       }
 
       //OBSERVAÇÕES
-      if(this.formData.observacoes != null && this.formData.observacoes === ''){
+      if (this.formData.observacoes != null && this.formData.observacoes === '') {
         this.formData.observacoes = null;
       }
 
@@ -471,8 +475,8 @@ export default {
 
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    preencheForm(animalJSON){
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    preencheForm(animalJSON) {
       this.formData = JSON.parse(animalJSON);
     },
 
@@ -483,11 +487,11 @@ export default {
       }
     },
 
-    acessarCadastroRaca(){
+    acessarCadastroRaca() {
       let jsonAnimal = JSON.stringify(this.formData);
       this.$router.push({
         name: 'RacaCadastro',
-        params: {animalJSON: jsonAnimal}
+        params: { animalJSON: jsonAnimal }
       })
     },
 
@@ -514,7 +518,7 @@ export default {
       this.listaMachos = response.data;
     },
 
-    replaceVirgulaPonto(valorString){
+    replaceVirgulaPonto(valorString) {
       valorString = valorString.replace(",", ".");
 
       return valorString;
@@ -570,7 +574,7 @@ export default {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .position-relative {

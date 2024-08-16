@@ -58,11 +58,12 @@
               </button>
             </div>
             <div class="mb-3 input-group">
-              <label v-if="animaisFiltrados.length != 0">
+              <div class="checkbox-container">
+                <label v-if="animaisFiltrados.length != 0">
                 <input type="checkbox" v-model="selecionaTodos" @change="ativaSelecaoTodos"> Selecionar todos
               </label>
-              <div class="checkbox-container">
-                <label @change="desativaSelecaoTodos" v-for="animal in animaisFiltrados" :key="animal.id">
+              <hr>
+                <label @change="desativaSelecaoTodos" v-for="animal in animaisOrdenados" :key="animal.id">
                   <input type="checkbox" :value="animal.id" v-model="formData.animal"> {{ animal.brinco }} 
                 </label>
               </div>
@@ -120,7 +121,11 @@ export default {
       piqueteDestinoPlaceholder: 'Piquete de Destino*'
     };
   },
-
+  computed: {
+    animaisOrdenados() {
+        return this.animaisFiltrados.slice().sort((a, b) => a.brinco.localeCompare(b.brinco));
+    }
+},
   mounted() {
     this.buscarAnimaisDaApi();
     this.buscarPiquetesParaDestino();
@@ -445,12 +450,11 @@ export default {
   color: #6c757d;
 }
 .checkbox-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    border: 1px solid #000;
+    border: 1px solid #6c757d;
+    border-radius: 5px;
     padding: 20px;
-    width: 100%; /* Largura do contêiner */
+    width: 40%; /* Largura do contêiner */
     height: 150px; /* Altura do contêiner */
     overflow-y: auto; /* Adiciona uma barra de rolagem se necessário */
 }

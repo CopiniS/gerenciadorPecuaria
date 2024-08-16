@@ -294,7 +294,7 @@ export default {
 
     async buscarAnimaisDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/animais/', {
+        const response = await api.get('http://127.0.0.1:8000/animais/produtor/', {
           params: {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },

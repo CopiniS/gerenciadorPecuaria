@@ -41,7 +41,7 @@
           <label for="produto" class="form-label me-2">Piquete</label>
           <input type="text" class="form-control input-consistente" id="piquete" v-model="filtro.piquete">
         </div>
-        <div class="col-12 d-flex justify-content-center mt-3">
+        <div class="col-12 d-flex justify-content-start mt-3">
           <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>

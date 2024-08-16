@@ -29,8 +29,8 @@
                   </div>
                   <div class="mb-3 input-group mb-3-foto">
                       <span class="input-group-text" title="Observações da Foto"><i class="fas fa-sticky-note"></i></span>
-                      <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                          placeholder="Observação" title="Observações da Foto"></textarea>
+                      <input v-model="formData.observacao" class="form-control" type="text" id="observacao"
+                          placeholder="Observação" title="Observações da Foto" />
                   </div>
                   <div class="mb-3 input-group mb-3-foto justify-content-center">
                       <div class="boxSelect">

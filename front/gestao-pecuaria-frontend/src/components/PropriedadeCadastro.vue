@@ -31,7 +31,7 @@
                 <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsEstado('up')"
                   @keydown.down.prevent="navigateOptionsEstado('down')" @keydown.enter.prevent="selectHighlightedEstado">
                   <div class="select-option mb-3 input-group" @click.stop="toggleDropdownEstado">
-                    <span class="input-group-text" title="Estado da Propriedade"><i class="fas fa-user-tag"></i></span>
+                    <span class="input-group-text" @click="filterEstados" title="Estado da Propriedade"><i class="fas fa-user-tag"></i></span>
                     <input v-model="formData.estado" :class="{ 'is-invalid': !isEstadoValido }" @input="inputEstado"
                       @click="filterEstados" @keydown.up.prevent="navigateOptionsEstado('up')"
                       @keydown.down.prevent="navigateOptionsEstado('down')" type="text" class="form-control"
@@ -45,13 +45,23 @@
                     </ul>
                   </div>
                 </div>
-                <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-city"></i></span>
-                    <select v-model="formData.cidade" :class="{'is-invalid': !isCidadeValida}" class="form-select" >
-                        <option value="">{{ cidadePlaceholder }}</option>
-                        <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{
-                cidade.nome }}</option>
-                    </select>
+                
+                <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsCidade('up')"
+                  @keydown.down.prevent="navigateOptionsCidade('down')" @keydown.enter.prevent="selectHighlightedCidade">
+                  <div class="select-option mb-3 input-group" @click.stop="toggleDropdownCidade">
+                    <span class="input-group-text" @click="filterCidades" title="Cidade da Propriedade"><i class="fas fa-user-tag"></i></span>
+                    <input v-model="formData.cidade" :class="{ 'is-invalid': !isCidadeValida }" @input="inputCidade"
+                      @click="filterCidades" @keydown.up.prevent="navigateOptionsCidade('up')"
+                      @keydown.down.prevent="navigateOptionsCidade('down')" type="text" class="form-control"
+                      :placeholder="cidadePlaceholder" id="caixa-select" title="Cidade da Propriedade">
+                  </div>
+                  <div class="itens" v-show="dropdownCidadeOpen">
+                    <ul class="options">
+                      <li v-for="(cidade, index) in cidadesFiltradas" :key="cidade.id" :value="cidade.nome"
+                        @click="selectCidade(cidade)" :class="{ 'highlighted': index === highlightedIndexCidade }">{{
+                        cidade.nome }}</li>
+                    </ul>
+                  </div>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"  title="Latitude da Propriedade"><i class="fas fa-globe"></i></span>
@@ -95,6 +105,9 @@ export default {
         dropdownEstadoOpen: false,
         highlightedIndexEstado: -1,
         cidades: [],
+        cidadesFiltradas: [],
+        dropdownCidadeOpen: false,
+        highlightedIndexCidade: -1,
         formData: {
             id: null,
             nome: '',
@@ -124,6 +137,8 @@ export default {
   
   mounted() {
     this.buscarEstadosDaApi();
+    document.addEventListener('click', this.handleClickOutsideEstado);
+    document.addEventListener('click', this.handleClickOutsideCidade);
   },
     
   methods: {
@@ -145,15 +160,7 @@ export default {
 
 
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
-    async buscarCidadesPorEstado(estadoNome) {
-        let estadoId;
-
-        this.estados.forEach(estado => {
-            if(estadoNome === estado.nome){
-                estadoId = estado.id;
-            }
-        });
-
+    async buscarCidadesPorEstado(estadoId) {
         try {
             const response = await api.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`);
             this.cidades = response.data;
@@ -201,15 +208,17 @@ export default {
     },
 
 
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
-  filterEstados() {
-        this.estadosFiltrados = this.estados.filter(estado => estado.nome.toLowerCase().includes(this.formData.estado.toLowerCase()));
+//LÓGICA DOS SELECT ESTADO----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterEstados() {
+        this.dropdownCidadeOpen = false;
+        this.estadosFiltrados = this.estados.filter(estado => estado.nome.toLowerCase().includes(this.formData.estado.toLowerCase()));        
     },
 
     selectEstado(estado) {
         this.formData.estado = estado.nome;
         this.estadosFiltrados = [];
         this.dropdownEstadoOpen = false;
+        this.buscarCidadesPorEstado(estado.id);
     },
 
     toggleDropdownEstado() {
@@ -218,14 +227,17 @@ export default {
 
       if(!this.dropdownEstadoOpen){
         this.estadosFiltrados.forEach(estado => {
-          if(estado.nome === this.formData.estado){
+          if(estado.nome.toLowerCase() == this.formData.estado.toLowerCase()){
             this.formData.estado = estado.nome;
             this.estadosFiltrados = [];
+            this.buscarCidadesPorEstado(estado.id);
             nomeCorreto = true;
           }
         });
         if(!nomeCorreto){
           this.formData.estado = '';
+          this.cidades = [];
+          this.formData.cidade = '';
         }
       }
     },
@@ -237,14 +249,17 @@ export default {
       let nomeCorreto = false;
       if(!this.dropdownEstadoOpen){
         this.estados.forEach(estado => {
-          if(estado.nome === this.formData.estado){
+          if(estado.nome.toLowerCase() === this.formData.estado.toLowerCase()){
             this.formData.estado = estado.nome;
             this.estadosFiltrados = [];
+            this.buscarCidadesPorEstado(estado.id);
             nomeCorreto = true;
           }
         });
         if(!nomeCorreto){
           this.formData.estado = '';
+          this.cidades = [];
+          this.formData.cidade = '';
         }
       }
     },
@@ -265,6 +280,76 @@ export default {
     selectHighlightedEstado() {
       if (this.highlightedIndexEstado >= 0 && this.highlightedIndexEstado < this.estadosFiltrados.length) {
         this.selectEstado(this.estadosFiltrados[this.highlightedIndexEstado]);
+      }
+    },
+
+
+
+//LÓGICA DOS SELECT CIDADE----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterCidades() {
+        this.dropdownEstadoOpen = false
+        this.cidadesFiltradas = this.cidades.filter(cidade => cidade.nome.toLowerCase().includes(this.formData.cidade.toLowerCase()));        
+    },
+
+    selectCidade(cidade) {
+        this.formData.cidade = cidade.nome;
+        this.cidadesFiltradas = [];
+        this.dropdownCidadeOpen = false;
+    },
+
+    toggleDropdownCidade() {
+      this.dropdownCidadeOpen = !this.dropdownCidadeOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownCidadeOpen){
+        this.cidadesFiltradas.forEach(cidade => {
+          if(cidade.nome.toLowerCase() === this.formData.cidade.toLowerCase()){
+            this.formData.cidade = cidade.nome;
+            this.cidadesFiltradas = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.cidade = '';
+        }
+      }
+    },
+
+    handleClickOutsideCidade(event) {
+      if (this.dropdownCidadeOpen && this.$refs.dropdown && !this.$refs.dropdown.contains(event.target)) {
+        this.dropdownCidadeOpen = false;
+      }
+      let nomeCorreto = false;
+      if(!this.dropdownCidadeOpen){
+        this.cidades.forEach(cidade => {
+          if(cidade.nome.toLowerCase() === this.formData.cidade.toLowerCase()){
+            this.formData.cidade = cidade.nome;
+            this.cidadesFiltradas = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.cidade = '';
+        }
+      }
+    },
+
+    inputCidade(){
+      this.filterCidades();
+      this.dropdownCidadeOpen = true;
+    },
+
+    navigateOptionsCidade(direction) {
+      if (direction === 'up' && this.highlightedIndexCidade > 0) {
+        this.highlightedIndexCidade--;
+      } else if (direction === 'down' && this.highlightedIndexCidade < this.cidadesFiltradas.length - 1) {
+        this.highlightedIndexCidade++;
+      }
+    },
+
+    selectHighlightedCidade() {
+      if (this.highlightedIndexCidade >= 0 && this.highlightedIndexCidade < this.cidadesFiltradas.length) {
+        this.selectCidade(this.cidadesFiltradas[this.highlightedIndexCidade]);
       }
     },
 

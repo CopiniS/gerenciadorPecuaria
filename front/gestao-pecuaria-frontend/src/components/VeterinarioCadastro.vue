@@ -66,6 +66,7 @@ export default {
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      veterinariosDaApi: null,
       formData: {
         id: null,
         nome: '',
@@ -83,6 +84,11 @@ export default {
       crmvPlaceholder: 'CRMV*',
     };
   },
+
+  mounted() {
+    this.buscarVeterinariosDaApi();
+  },
+
   methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarTelefoneMask(event) {
@@ -109,6 +115,17 @@ export default {
       } 
     },
 
+    async buscarVeterinariosDaApi() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/veterinarios/' , {
+          // Parâmetros da requisição (se houver)
+        });
+        this.veterinariosDaApi = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar veterinários da API:', error);
+      }
+    },
+
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     validarFormulario() {
@@ -131,7 +148,19 @@ export default {
          this.formData.email = null;
          this.emailPlaceholder = 'Email Inválido';
       }
-      return (this.isTelefoneValido && this.isEmailValido);
+
+      this.isCrmvValido = true;
+      this.crmvPlaceholder = 'CRMV do veterinário';
+
+      for (let veterinario of this.veterinariosDaApi) {
+        if (veterinario.crmv === this.formData.crmv) {
+          this.isCrmvValido = false;
+          this.crmvPlaceholder = 'Este CRMV já está cadastrado';
+          this.formData.crmv = null;
+          break;
+        }
+      }
+      return (this.isTelefoneValido && this.isEmailValido && this.isCrmvValido);
     },
 
     verificaVazio(){

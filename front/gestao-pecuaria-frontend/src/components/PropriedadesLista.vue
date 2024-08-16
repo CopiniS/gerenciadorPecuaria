@@ -39,7 +39,7 @@
     </div>
 
 
-    <div class="table-responsive">
+    <div>
       <div class="table-container">
         <div class="button-container">
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Propriedade</button>

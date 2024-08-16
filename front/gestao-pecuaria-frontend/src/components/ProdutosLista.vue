@@ -282,11 +282,15 @@ export default {
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  overflow-x: auto;
 }
 
 .button-container {
-  text-align: left;
-  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: nowrap; /* Garante que os botões não vão para a linha seguinte */
+  gap: 10px; /* Espaço entre os botões */
+  margin-bottom: 20px; 
+  white-space: nowrap; /* Evita quebras de linha nos botões */
 }
 
 .table-container table tbody tr td {

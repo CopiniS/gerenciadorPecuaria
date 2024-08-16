@@ -2,6 +2,8 @@
   <div class="vh-100 vw-100 cadastro-container">
     <div sm="7" class="cadastro-form">
       <h2 class="text-center mb-5 title-cadastro">Faça o cadastro</h2>
+      <div v-if="errorMessage" class="alert alert-danger alert-custom mt-3">{{ errorMessage }}</div>
+      
       <form @submit.prevent="submitForm">
         <div class="mb-3">
           <div class="input-group">
@@ -62,11 +64,37 @@ export default {
       telefone1: '',
       telefone2: '',
       email: '',
-      senha: ''
+      senha: '',
+      errorMessage: '',
     };
   },
   methods: {
     async cadastrar() {
+      this.errorMessage = ''; // Limpa a mensagem de erro antes da validação
+
+      // Validação simples dos campos
+      if (!this.nome || !this.cpf || !this.telefone1 || !this.email || !this.senha) {
+        this.errorMessage = 'Por favor, preencha todos os campos obrigatórios.';
+        return; // Não prossegue se houver campos obrigatórios não preenchidos
+      }
+
+      if (!/\d{3}\.\d{3}\.\d{3}-\d{2}/.test(this.cpf)) {
+        this.errorMessage = 'CPF inválido.';
+        return;
+      }
+      if (!/\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})/.test(this.telefone1)) {
+        this.errorMessage = 'Telefone 1 inválido.';
+        return;
+      }
+      if (this.telefone2 && !/\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})/.test(this.telefone2)) {
+        this.errorMessage = 'Telefone 2 inválido.';
+        return;
+      }
+      if (!/.+@.+\..+/.test(this.email)) {
+        this.errorMessage = 'Email inválido.';
+        return;
+      }
+
       const dadosProdutor = {
         nome: this.nome,
         cpf: this.cpf,
@@ -82,22 +110,23 @@ export default {
           alert('Cadastro realizado com sucesso!');
           this.resetForm();
         } else {
-          alert('Erro ao cadastrar produtor. Tente novamente mais tarde.');
+          this.errorMessage = 'Erro ao cadastrar produtor. Tente novamente mais tarde.';
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);
-        alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        this.errorMessage = 'Erro ao enviar requisição. Verifique o console para mais detalhes.';
       }
     },
 
     resetForm() {
       this.nome = '';
       this.cpf = '';
-      this.telefone1 = '',
-        this.telefone2 = '',
-        this.email = '';
+      this.telefone1 = '';
+      this.telefone2 = '';
+      this.email = '';
       this.senha = '';
     },
+
     voltar() {
       this.$router.push('/login');
     }
@@ -113,9 +142,11 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  width: 100vw;
   background-image: url('../assets/fundo.jpg');
   background-size: cover;
   background-position: center;
+  padding: 20px; /* Adiciona algum espaçamento interno para evitar que o conteúdo toque as bordas da tela */
 }
 
 .cadastro-form {
@@ -124,23 +155,9 @@ export default {
   max-width: 400px;
   border: 1px solid #c2e0a6;
   border-radius: 5px;
-  margin-left: 150px;
-  margin-right: 150px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra suave ao formulário */
+  margin: 0 auto; /* Centraliza o formulário horizontalmente */
 }
-
-/* .title-cadastro {
-  color: #358137;
-}
-
-.input-group-text {
-  background-color: #358137;
-  color: white;
-  border: 1px solid #358137;
-}
-
-.form-control {
-  border: 1px solid #358137;
-} */
 
 .btn-primary {
   background-color: #125601;
@@ -160,5 +177,28 @@ export default {
 
 .btn-block {
   width: 100%;
+}
+
+.alert-custom {
+  padding: 0.5rem 1rem; /* Diminui o padding do alerta */
+  font-size: 0.875rem;
+}
+
+
+/* Ajustes para telas menores */
+@media (max-width: 550px) {
+  .login-container {
+    padding: 10px;
+  }
+
+  .login-form {
+    width: 100%;
+    max-width: 100%; /* Garante que o formulário não exceda a largura da tela */
+    margin: 0; /* Remove as margens laterais */
+  }
+
+  .input-group {
+    flex-wrap: wrap; /* Permite que os inputs ocupem a largura total em dispositivos menores */
+  }
 }
 </style>

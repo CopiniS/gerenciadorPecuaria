@@ -28,9 +28,9 @@
               <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedAnimal">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
-                <span class="input-group-text" @click="filterAnimais" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
+                <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isBrincoValido }" @input="inputBrinco"
-                  @click="filterAnimais" @keydown.up.prevent="navigateOptions('up')"
+                  @keydown.up.prevent="navigateOptions('up')"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
                   :placeholder="brincoPlaceholder" id="caixa-select" title="Brinco do Animal">
               </div>
@@ -209,6 +209,9 @@ export default {
         if(!nomeCorreto){
           this.brinco = '';
         }
+      }
+      else{
+        this.filterAnimais();
       }
     },
 

@@ -33,22 +33,40 @@
                     <input v-model="formData.endereco" :class="{'is-invalid': !isEnderecoValido}" type="text" class="form-control"
                         :placeholder="enderecoPlaceholder" id="endereco" title="Endereço da Propriedade">
                 </div>
-                <div class="mb-3 input-group">
-                    <span class="input-group-text" title="Estado da Propriedade"><i class="fas fa-flag"></i></span>
-                    <select v-model="formData.estado" :class="{'is-invalid': !isEstadoValido}" class="form-select"
-                        @change="buscarCidadesPorEstado($event.target.value)" title="Estado da Propriedade">
-                        <option value="" disabled>{{ estadoPlaceholder }}</option>
-                        <option v-for="estado in estados" :key="estado.id" :value="estado.nome">{{ estado.nome
-                            }}</option>
-                    </select>
+                <div ref="dropdownEstado" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsEstado('up')"
+                  @keydown.down.prevent="navigateOptionsEstado('down')" @keydown.enter.prevent="selectHighlightedEstado">
+                  <div class="select-option mb-3 input-group" @click.stop="toggleDropdownEstado">
+                    <span class="input-group-text" @click="filterEstados" title="Estado da Propriedade"><i class="fas fa-user-tag"></i></span>
+                    <input v-model="formData.estado" :class="{ 'is-invalid': !isEstadoValido }" @input="inputEstado"
+                      @click="filterEstados" @keydown.up.prevent="navigateOptionsEstado('up')"
+                      @keydown.down.prevent="navigateOptionsEstado('down')" type="text" class="form-control"
+                      :placeholder="estadoPlaceholder" id="caixa-select" title="Estado da Propriedade">
+                  </div>
+                  <div class="itens" v-show="dropdownEstadoOpen">
+                    <ul class="options">
+                      <li v-for="(estado, index) in estadosFiltrados" :key="estado.id" :value="estado.nome"
+                        @click="selectEstado(estado)" :class="{ 'highlighted': index === highlightedIndexEstado }">{{
+                        estado.nome }}</li>
+                    </ul>
+                  </div>
                 </div>
-                <div class="mb-3 input-group">
-                    <span class="input-group-text"><i class="fas fa-city"></i></span>
-                    <select v-model="formData.cidade" :class="{'is-invalid': !isCidadeValida}" class="form-select" >
-                        <option value="">{{ cidadePlaceholder }}</option>
-                        <option v-for="cidade in cidades" :key="cidade.id" :value="cidade.nome">{{
-                cidade.nome }}</option>
-                    </select>
+                
+                <div ref="dropdownCidade" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsCidade('up')"
+                  @keydown.down.prevent="navigateOptionsCidade('down')" @keydown.enter.prevent="selectHighlightedCidade">
+                  <div class="select-option mb-3 input-group" @click.stop="toggleDropdownCidade">
+                    <span class="input-group-text" @click="filterCidades" title="Cidade da Propriedade"><i class="fas fa-user-tag"></i></span>
+                    <input v-model="formData.cidade" :class="{ 'is-invalid': !isCidadeValida }" @input="inputCidade"
+                      @click="filterCidades" @keydown.up.prevent="navigateOptionsCidade('up')"
+                      @keydown.down.prevent="navigateOptionsCidade('down')" type="text" class="form-control"
+                      :placeholder="cidadePlaceholder" id="caixa-select" title="Cidade da Propriedade">
+                  </div>
+                  <div class="itens" v-show="dropdownCidadeOpen">
+                    <ul class="options">
+                      <li v-for="(cidade, index) in cidadesFiltradas" :key="cidade.id" :value="cidade.nome"
+                        @click="selectCidade(cidade)" :class="{ 'highlighted': index === highlightedIndexCidade }">{{
+                        cidade.nome }}</li>
+                    </ul>
+                  </div>
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text"  title="Latitude da Propriedade"><i class="fas fa-globe"></i></span>
@@ -87,7 +105,13 @@ export default {
         return {
             activeTab: 'edicao', // Começa na aba de edição
             estados: [],
+            estadosFiltrados: [],
+            dropdownEstadoOpen: false,
+            highlightedIndexEstado: -1,
             cidades: [],
+            cidadesFiltradas: [],
+            dropdownCidadeOpen: false,
+            highlightedIndexCidade: -1,
             formData: {
                 id: null,
                 nome: '',
@@ -122,6 +146,8 @@ export default {
             this.fetchPropriedade(propriedadeId);
         }
         this.buscarEstadosDaApi();
+        document.addEventListener('click', this.handleClickOutsideEstado);
+        document.addEventListener('click', this.handleClickOutsideCidade);
     },
     methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -197,7 +223,6 @@ export default {
         this.formData.latitude = this.replaceVirgulaPonto(this.formData.latitude);
         this.formData.area = this.replaceVirgulaPonto(this.formData.area);
 
-          console.log('formdata: ', this.formData);
           const response = await api.patch(`http://127.0.0.1:8000/propriedades/${this.formData.id}/`, this.formData , {
         });
 
@@ -211,6 +236,183 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
+      }
+    },
+
+
+//LÓGICA DOS SELECT ESTADO----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterEstados() {
+        this.estadosFiltrados = this.estados.filter(estado => estado.nome.toLowerCase().includes(this.formData.estado.toLowerCase()));        
+    },
+
+    selectEstado(estado) {
+        this.formData.estado = estado.nome;
+        this.estadosFiltrados = [];
+        this.dropdownEstadoOpen = false;
+        this.buscarCidadesPorEstado(estado.nome);
+    },
+
+    toggleDropdownEstado() {
+      this.dropdownEstadoOpen = !this.dropdownEstadoOpen;
+      let nomeCorreto = false;
+      
+      if(!this.dropdownEstadoOpen){
+        this.estadosFiltrados.forEach(estado => {
+          if(estado.nome.toLowerCase() == this.formData.estado.toLowerCase()){
+            this.formData.estado = estado.nome;
+            this.estadosFiltrados = [];
+            this.buscarCidadesPorEstado(estado.nome);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.estado = '';
+          this.cidades = [];
+          this.formData.cidade = '';
+        }
+      }
+
+      else if(this.dropdownCidadeOpen){
+        this.cidades.forEach(cidade => {
+          if(cidade.nome.toLowerCase() === this.formData.cidade.toLowerCase()){
+            this.formData.cidade = cidade.nome;
+            this.cidadesFiltradas = [];
+            nomeCorreto = true;
+            
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.cidade = '';
+        }
+        this.dropdownCidadeOpen = false;
+      }
+    },
+
+    handleClickOutsideEstado(event) {
+      if (this.dropdownEstadoOpen && this.$refs.dropdownEstado && !this.$refs.dropdownEstado.contains(event.target)) {
+        this.dropdownEstadoOpen = false;
+      }
+      let nomeCorreto = false;
+      if(!this.dropdownEstadoOpen){
+        this.estados.forEach(estado => {
+          if(estado.nome.toLowerCase() === this.formData.estado.toLowerCase()){
+            this.formData.estado = estado.nome;
+            this.estadosFiltrados = [];
+            this.buscarCidadesPorEstado(estado.nome);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.estado = '';
+          this.cidades = [];
+          this.formData.cidade = '';
+        }
+      }
+    },
+
+    inputEstado(){
+      this.filterEstados();
+      this.dropdownEstadoOpen = true;
+    },
+
+    navigateOptionsEstado(direction) {
+      if (direction === 'up' && this.highlightedIndexEstado > 0) {
+        this.highlightedIndexEstado--;
+      } else if (direction === 'down' && this.highlightedIndexEstado < this.estadosFiltrados.length - 1) {
+        this.highlightedIndexEstado++;
+      }
+    },
+
+    selectHighlightedEstado() {
+      if (this.highlightedIndexEstado >= 0 && this.highlightedIndexEstado < this.estadosFiltrados.length) {
+        this.selectEstado(this.estadosFiltrados[this.highlightedIndexEstado]);
+      }
+    },
+
+
+
+//LÓGICA DOS SELECT CIDADE----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterCidades() {
+        this.cidadesFiltradas = this.cidades.filter(cidade => cidade.nome.toLowerCase().includes(this.formData.cidade.toLowerCase()));        
+    },
+
+    selectCidade(cidade) {
+        this.formData.cidade = cidade.nome;
+        this.cidadesFiltradas = [];
+        this.dropdownCidadeOpen = false;
+    },
+
+    toggleDropdownCidade() {
+      this.dropdownCidadeOpen = !this.dropdownCidadeOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownCidadeOpen){
+        this.cidadesFiltradas.forEach(cidade => {
+          if(cidade.nome.toLowerCase() === this.formData.cidade.toLowerCase()){
+            this.formData.cidade = cidade.nome;
+            this.cidadesFiltradas = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.cidade = '';
+        }
+      }
+      
+      else if(this.dropdownEstadoOpen){
+        this.estados.forEach(estado => {
+          if(estado.nome.toLowerCase() === this.formData.estado.toLowerCase()){
+            this.formData.estado = estado.nome;
+            this.estadosFiltrados = [];
+            this.buscarCidadesPorEstado(estado.nome);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.estado = '';
+          this.cidades = [];
+          this.cidadesFiltradas = [];
+          this.formData.cidade = '';
+        }
+        this.dropdownEstadoOpen = false;
+      }
+    },
+
+    handleClickOutsideCidade(event) {
+      if (this.dropdownCidadeOpen && this.$refs.dropdownCidade && !this.$refs.dropdownCidade.contains(event.target)) {
+        this.dropdownCidadeOpen = false;
+      }
+      let nomeCorreto = false;
+      if(!this.dropdownCidadeOpen){
+        this.cidades.forEach(cidade => {
+          if(cidade.nome.toLowerCase() === this.formData.cidade.toLowerCase()){
+            this.formData.cidade = cidade.nome;
+            this.cidadesFiltradas = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.cidade = '';
+        }
+      }
+    },
+
+    inputCidade(){
+      this.filterCidades();
+      this.dropdownCidadeOpen = true;
+    },
+
+    navigateOptionsCidade(direction) {
+      if (direction === 'up' && this.highlightedIndexCidade > 0) {
+        this.highlightedIndexCidade--;
+      } else if (direction === 'down' && this.highlightedIndexCidade < this.cidadesFiltradas.length - 1) {
+        this.highlightedIndexCidade++;
+      }
+    },
+
+    selectHighlightedCidade() {
+      if (this.highlightedIndexCidade >= 0 && this.highlightedIndexCidade < this.cidadesFiltradas.length) {
+        this.selectCidade(this.cidadesFiltradas[this.highlightedIndexCidade]);
       }
     },
 
@@ -448,5 +650,41 @@ export default {
 
 #legenda {
     font-size: 16px;
+}
+
+.select-option {
+  width: 100%;
+  cursor: pointer;
+}
+
+.itens {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 999;
+  padding: 20px;
+}
+
+.options {
+  max-height: 200px;
+  /* Ajuste a altura conforme necessário */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.options li:hover {
+  background-color: #f0f0f0;
 }
 </style>

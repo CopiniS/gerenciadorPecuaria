@@ -246,12 +246,10 @@ export default {
             this.formData.cidade = cidade.nome;
             this.cidadesFiltradas = [];
             nomeCorreto = true;
-            console.log('true');
             
           }
         });
         if(!nomeCorreto){
-          console.log('nome incorreto')
           this.formData.cidade = '';
         }
         this.dropdownCidadeOpen = false;

@@ -30,7 +30,8 @@
             <div class="mb-3 input-group">
               <span class="input-group-text"  title="Tipo do Produto"><i class="fas fa-clipboard-list"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                :placeholder="tipoPlaceholder" :class="{'is-invalid': !isTipoValido}" title="Tipo do Produto">
+                @change="categoriaPlaceholder = 'Categoria*'; formData.categoria = ''" :class="{'is-invalid': !isTipoValido}" 
+                title="Tipo do Produto">
                 <option disabled value="">{{ tipoPlaceholder }}</option>
                 <option value="sanitario">Sanitário</option>
                 <option value="alimenticio">Alimentício</option>
@@ -49,10 +50,25 @@
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Categoria do Produto"><i class="fas fa-list-alt"></i></span>
-              <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
-                :placeholder="categoriaPlaceholder" :class="{'is-invalid': !isCategoriaValida}" 
-                title="Categoria do Produto">
+              <span class="input-group-text"  title="Tipo do Produto"><i class="fas fa-clipboard-list"></i></span>
+              <select :disabled="formData.tipo == '' || formData.tipo == null" v-model="formData.categoria"
+              class="form-select" id="categoria" aria-label="Categoria"
+              :class="{'is-invalid': !isCategoriaValida}" title="Categoria do Produto">
+                <option disabled value="">{{ categoriaPlaceholder }}</option>
+                <option v-if="formData.tipo == 'sanitario'" value="vacinas">Vacinas</option>
+                <option v-if="formData.tipo == 'sanitario'" value="vermifugos">Vermífugos</option>
+                <option v-if="formData.tipo == 'sanitario'" value="vitaminas">Vitaminas</option>
+                <option v-if="formData.tipo == 'sanitario'" value="antiboticos">Antibóticos</option>
+                <option v-if="formData.tipo == 'sanitario'" value="antiparasitarios">Antiparasitários</option>
+                <option v-if="formData.tipo == 'sanitario'" value="outros">Outros</option>
+                <option v-if="formData.tipo == 'alimenticio'" value="Sal branco">Sal branco</option>
+                <option v-if="formData.tipo == 'alimenticio'" value="Sal mineral">Sal mineral</option>
+                <option v-if="formData.tipo == 'alimenticio'" value="Sal proteinado">Sal proteinado</option>
+                <option v-if="formData.tipo == 'alimenticio'" value="Racao">Ração</option>
+                <option v-if="formData.tipo == 'alimenticio'" value="Silagem">Silagem</option>
+                <option v-if="formData.tipo == 'alimenticio'" value="Milho">Milho</option>
+                <option v-if="formData.tipo == 'alimenticio'" value="Outros">Outros</option>
+              </select>
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Descrição do Produto"><i class="fas fa-sticky-note"></i></span>
@@ -97,7 +113,7 @@ export default {
       isUnidadeValida: true,
       nomePlaceholder: 'Nome*',
       tipoPlaceholder: 'Tipo*',
-      categoriaPlaceholder: 'Categoria*',
+      categoriaPlaceholder: 'Categoria* (Selecione o Tipo do produto antes)',
       unidadePlaceholder: 'Unidade de medida*'
     };
   },
@@ -184,9 +200,26 @@ export default {
       }
 
       //CATEGORIA
-      if(this.formData.categoria != null && this.formData.categoria.trim() == ''){
-        this.formData.categoria = null;
+      if(this.formData.categoria != null){
+        if(this.formData.categoria != ''){
+          this.isCategoriaValida = true;
+          if(this.isTipoValido){
+            this.categoriaPlaceholder = 'Categoria*';
+          }
+          else{
+            this.categoriaPlaceholder = 'Categoria* (Selecione o Tipo do produto antes)';
+          }
+        }
+        else{
+          this.isUnidadeValida = false;
+          this.unidadePlaceholder = 'Categoria é um Campo Obrigatório';
+        }
       }
+      else{
+        this.isCategoriaValida = false;
+        this.categoriaPlaceholder = 'Categoria é um Campo Obrigatório';
+      }
+
 
       //UNIDADE
       if(this.formData.unidade != null){

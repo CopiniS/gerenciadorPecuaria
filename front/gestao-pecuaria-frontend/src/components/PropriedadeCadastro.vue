@@ -28,7 +28,7 @@
                     <input v-model="formData.endereco" :class="{'is-invalid': !isEnderecoValido}" type="text" class="form-control"
                         :placeholder="enderecoPlaceholder" id="endereco" title="Endereço da Propriedade">
                 </div>
-                <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsEstado('up')"
+                <div ref="dropdownEstado" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsEstado('up')"
                   @keydown.down.prevent="navigateOptionsEstado('down')" @keydown.enter.prevent="selectHighlightedEstado">
                   <div class="select-option mb-3 input-group" @click.stop="toggleDropdownEstado">
                     <span class="input-group-text" @click="filterEstados" title="Estado da Propriedade"><i class="fas fa-user-tag"></i></span>
@@ -46,7 +46,7 @@
                   </div>
                 </div>
                 
-                <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsCidade('up')"
+                <div ref="dropdownCidade" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsCidade('up')"
                   @keydown.down.prevent="navigateOptionsCidade('down')" @keydown.enter.prevent="selectHighlightedCidade">
                   <div class="select-option mb-3 input-group" @click.stop="toggleDropdownCidade">
                     <span class="input-group-text" @click="filterCidades" title="Cidade da Propriedade"><i class="fas fa-user-tag"></i></span>
@@ -210,7 +210,6 @@ export default {
 
 //LÓGICA DOS SELECT ESTADO----------------------------------------------------------------------------------------------------------------------------------------------------
     filterEstados() {
-        this.dropdownCidadeOpen = false;
         this.estadosFiltrados = this.estados.filter(estado => estado.nome.toLowerCase().includes(this.formData.estado.toLowerCase()));        
     },
 
@@ -224,7 +223,7 @@ export default {
     toggleDropdownEstado() {
       this.dropdownEstadoOpen = !this.dropdownEstadoOpen;
       let nomeCorreto = false;
-
+      
       if(!this.dropdownEstadoOpen){
         this.estadosFiltrados.forEach(estado => {
           if(estado.nome.toLowerCase() == this.formData.estado.toLowerCase()){
@@ -240,10 +239,27 @@ export default {
           this.formData.cidade = '';
         }
       }
+
+      else if(this.dropdownCidadeOpen){
+        this.cidades.forEach(cidade => {
+          if(cidade.nome.toLowerCase() === this.formData.cidade.toLowerCase()){
+            this.formData.cidade = cidade.nome;
+            this.cidadesFiltradas = [];
+            nomeCorreto = true;
+            console.log('true');
+            
+          }
+        });
+        if(!nomeCorreto){
+          console.log('nome incorreto')
+          this.formData.cidade = '';
+        }
+        this.dropdownCidadeOpen = false;
+      }
     },
 
     handleClickOutsideEstado(event) {
-      if (this.dropdownEstadoOpen && this.$refs.dropdown && !this.$refs.dropdown.contains(event.target)) {
+      if (this.dropdownEstadoOpen && this.$refs.dropdownEstado && !this.$refs.dropdownEstado.contains(event.target)) {
         this.dropdownEstadoOpen = false;
       }
       let nomeCorreto = false;
@@ -287,7 +303,6 @@ export default {
 
 //LÓGICA DOS SELECT CIDADE----------------------------------------------------------------------------------------------------------------------------------------------------
     filterCidades() {
-        this.dropdownEstadoOpen = false
         this.cidadesFiltradas = this.cidades.filter(cidade => cidade.nome.toLowerCase().includes(this.formData.cidade.toLowerCase()));        
     },
 
@@ -313,10 +328,28 @@ export default {
           this.formData.cidade = '';
         }
       }
+      
+      else if(this.dropdownEstadoOpen){
+        this.estados.forEach(estado => {
+          if(estado.nome.toLowerCase() === this.formData.estado.toLowerCase()){
+            this.formData.estado = estado.nome;
+            this.estadosFiltrados = [];
+            this.buscarCidadesPorEstado(estado.id);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.estado = '';
+          this.cidades = [];
+          this.cidadesFiltradas = [];
+          this.formData.cidade = '';
+        }
+        this.dropdownEstadoOpen = false;
+      }
     },
 
     handleClickOutsideCidade(event) {
-      if (this.dropdownCidadeOpen && this.$refs.dropdown && !this.$refs.dropdown.contains(event.target)) {
+      if (this.dropdownCidadeOpen && this.$refs.dropdownCidade && !this.$refs.dropdownCidade.contains(event.target)) {
         this.dropdownCidadeOpen = false;
       }
       let nomeCorreto = false;

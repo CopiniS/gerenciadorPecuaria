@@ -32,7 +32,7 @@
           <input type="text" class="form-control input-consistente" id="estado" v-model="filtro.estado">
         </div>
         <div class="col-12 d-flex justify-content-start mt-3">
-          <button class="btn btn-secondary me-2"  @click="limparFiltro">Limpar</button>
+          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>
@@ -45,6 +45,9 @@
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Propriedade</button>
           <button @click="() => { this.$router.push('/piquetes'); }" type="button" class="btn btn-success">Lista de
             Piquetes</button>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-success" @click="gerarRelatorioPdf">Gerar Relatório PDF</button>
         </div>
         <table class="table table-bordered">
           <thead>
@@ -113,6 +116,8 @@
 
 <script>
 import api from '/src/interceptadorAxios'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 export default {
   data() {
@@ -192,6 +197,29 @@ export default {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
 
+     //RELATÓRIO----------------------------------------------------------------------------------------------------------------------------------------------------------
+     gerarRelatorioPdf() {
+      const doc = new jsPDF();
+      doc.text('Relatório de Propriedades', 14, 16);
+      
+      const tableData = this.propriedades.map(propriedade => [
+        propriedade.nome,
+        propriedade.cidade,
+        propriedade.estado,
+        propriedade.endereco,
+        this.replacePontoVirgula(propriedade.latitude),
+        this.replacePontoVirgula(propriedade.longitude),
+        this.replacePontoVirgula(propriedade.area),
+      ]);
+
+      doc.autoTable({
+        head: [['Nome', 'Cidade', 'Estado', 'Endereço', 'Latitude', 'Longitude', 'Área']],
+        body: tableData,
+        startY: 30,
+      });
+
+      doc.save('relatorio_propriedades.pdf');
+    },
 
     //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     acessarEdicao(propriedade) {

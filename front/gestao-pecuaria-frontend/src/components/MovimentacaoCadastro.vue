@@ -57,7 +57,7 @@
                 {{ piquete.nome }} - {{ piquete.propriedade.nome }}
               </button>
             </div>
-            <div class="mb-3 input-group">
+            <div class="mb-3 input-group" v-if="animaisFiltrados.length != 0">
               <div class="checkbox-container">
                 <label v-if="animaisFiltrados.length != 0">
                 <input type="checkbox" v-model="selecionaTodos" @change="ativaSelecaoTodos"> Selecionar todos

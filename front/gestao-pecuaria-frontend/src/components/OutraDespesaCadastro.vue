@@ -37,7 +37,6 @@
               <span class="input-group-text" title="Descrição da Despesa"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
                 :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Despesa">
-              <div class="character-counter">({{ contadorDescricao }} / 255)</div>   
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Categoria da Despesa"><i class="fas fa-list-alt"></i></span>
@@ -270,15 +269,4 @@ export default {
     font-size: 16px;
 }
 
-.position-relative {
-  position: relative;
-}
-
-.character-counter {
-  position: absolute;
-  top: 35px;
-  right: 10px;
-  font-size: 12px;
-  color: #6c757d;
-}
 </style>

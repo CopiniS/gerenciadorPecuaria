@@ -74,7 +74,6 @@
               <span class="input-group-text" title="Descrição do Produto"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
                 placeholder="Descrição" title="Descrição do Produto" />
-              <div class="character-counter">({{ contadorDescricao }} / 255)</div> 
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
@@ -333,15 +332,4 @@ export default {
     font-size: 16px;
 }
 
-.position-relative {
-  position: relative;
-}
-
-.character-counter {
-  position: absolute;
-  top: 35px;
-  right: 10px;
-  font-size: 12px;
-  color: #6c757d;
-}
 </style>

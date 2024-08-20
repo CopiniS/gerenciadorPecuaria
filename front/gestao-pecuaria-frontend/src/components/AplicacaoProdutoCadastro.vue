@@ -56,11 +56,11 @@
               <input v-model="formData.observacao" 
               @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao" 
               :placeholder="observacaoPlaceholder" title="Observação da Aplicação">
-              <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
+              
             </div>
 
             <div ref="dropdownPiquete" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiquete('up')"
-              @keydown.down.prevent="navigateOptionsPiquete('down')" @keydown.enter.prevent="selectHighlightedPiquete">
+            @keydown.down.prevent="navigateOptionsPiquete('down')" @keydown.enter.prevent="selectHighlightedPiquete">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
                 <span class="input-group-text" title="Piquete dos Animais aplicados"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
@@ -76,6 +76,7 @@
                 </ul>
               </div>
             </div>
+
             <div class="mb-3 input-group" v-if="animaisFiltrados.length != 0">
               <div class="checkbox-container">
                 <label v-if="animaisFiltrados.length != 0">
@@ -248,12 +249,13 @@ export default {
     },
 
     selectPiquete(piquete) {
-      this.nomePiquete = piquete.nome;
-      this.piqueteId = piquete.id;
-      this.piquetesFiltrados = [];
-      this.dropdownPiqueteOpen = false;
-      this.preencheCheckBox();
-    },
+    this.nomePiquete = piquete.nome;
+    this.piqueteId = piquete.id;
+    this.piquetesFiltrados = [];
+    this.dropdownPiqueteOpen = false;
+    this.highlightedIndexPiquete = -1; // Reseta o índice após a seleção
+  },
+
 
     toggleDropdownPiquete() {
       this.dropdownPiqueteOpen = !this.dropdownPiqueteOpen;
@@ -291,28 +293,29 @@ export default {
       this.dropdownPiqueteOpen = false;
     },
 
-    inputPiquete(){
-      this.filterPiquetes();
-      this.dropdownPiqueteOpen = true;
+    inputPiquete() {
+    this.filterPiquetes();
+    this.dropdownPiqueteOpen = true;
+    this.highlightedIndexPiquete = 0; // Inicia o índice ao começar a digitação
 
-      if(this.nomePiquete.trim() == ''){
-        this.animaisFiltrados = [];
-      }
-    },
+    if (this.nomePiquete.trim() === '') {
+      this.animaisFiltrados = [];
+    }
+  },
 
     navigateOptionsPiquete(direction) {
-      if (direction === 'up' && this.highlightedIndexPiquete > 0) {
-        this.highlightedIndexPiquete--;
-      } else if (direction === 'down' && this.highlightedIndexPiquete < this.piquetesFiltrados.length - 1) {
-        this.highlightedIndexPiquete++;
-      }
-    },
+    if (direction === 'up' && this.highlightedIndexPiquete > 0) {
+      this.highlightedIndexPiquete--;
+    } else if (direction === 'down' && this.highlightedIndexPiquete < this.piquetesFiltrados.length - 1) {
+      this.highlightedIndexPiquete++;
+    }
+  },
 
-    selectHighlightedPiquete() {
-      if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
-        this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
-      }
-    },
+  selectHighlightedPiquete() {
+    if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
+      this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
+    }
+  },
 
 
 //LÓGICA DOS SELECT PRODUTO----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -576,17 +579,6 @@ export default {
   font-size: 16px;
 }
 
-.position-relative {
-  position: relative;
-}
-
-.character-counter {
-  position: absolute;
-  top: 35px;
-  right: 10px;
-  font-size: 12px;
-  color: #6c757d;
-}
 
 .checkbox-container {
     gap: 10px;

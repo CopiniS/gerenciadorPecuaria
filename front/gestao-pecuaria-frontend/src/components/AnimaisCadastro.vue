@@ -102,7 +102,7 @@
               <span class="input-group-text" title="Observações do Animal"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
                 @input="aplicarObservacaoMask" placeholder="Observações" title="Observações do Animal">
-              <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
+              
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
@@ -577,15 +577,4 @@ export default {
   font-size: 16px;
 }
 
-.position-relative {
-  position: relative;
-}
-
-.character-counter {
-  position: absolute;
-  top: 35px;
-  right: 10px;
-  font-size: 12px;
-  color: #6c757d;
-}
 </style>

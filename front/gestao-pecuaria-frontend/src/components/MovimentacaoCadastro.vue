@@ -44,7 +44,6 @@
                     <span class="input-group-text" title="Motivo da Movimentação"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
                     placeholder="Motivo" title="Motivo da Movimentação">
-                    <div class="character-counter">({{ contadorMotivo }} / 255)</div>
                 </div>
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
@@ -438,17 +437,6 @@ export default {
     font-size: 16px;
 }
 
-.position-relative {
-  position: relative;
-}
-
-.character-counter {
-  position: absolute;
-  top: 35px;
-  right: 10px;
-  font-size: 12px;
-  color: #6c757d;
-}
 .checkbox-container {
     gap: 10px;
     border: 1px solid #6c757d;

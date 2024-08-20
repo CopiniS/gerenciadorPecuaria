@@ -16,7 +16,7 @@
         <h2 class="me-3">Filtros</h2>
         <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro"  @keyup.enter="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="dataAplicacao" class="form-label me-2">Data da Aplicação</label>
           <DateRangePicker ref="dateRangePicker" class="input-consistente" 

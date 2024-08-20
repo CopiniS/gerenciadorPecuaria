@@ -18,7 +18,7 @@
         <h2 class="me-3">Filtros</h2>
         <button class="btn-acoes btn-sm" @click="toggleFormulario"><i class="fas fa-chevron-down"></i></button>
       </div>
-      <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
+      <form @submit.prevent="aplicarFiltro" @keyup.enter="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
           <label for="nome" class="form-label me-2">Nome</label>
           <input type="text" class="form-control input-consistente" id="nome" v-model="filtro.nome">
@@ -32,7 +32,7 @@
           <input type="text" class="form-control input-consistente" id="estado" v-model="filtro.estado">
         </div>
         <div class="col-12 d-flex justify-content-start mt-3">
-          <button class="btn btn-secondary me-2" @click="limparFiltro">Limpar</button>
+          <button class="btn btn-secondary me-2"  @click="limparFiltro">Limpar</button>
           <button type="submit" class="btn btn-success">Filtrar</button>
         </div>
       </form>

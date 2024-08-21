@@ -93,9 +93,10 @@ class Inseminacao(models.Model):
     veterinario = models.ForeignKey(Veterinario, on_delete=models.CASCADE)
     observacao = models.CharField('Observação', max_length=255, null=True)
 
-class OutraDespesa(models.Model):
+class Gasto(models.Model):
     propriedade = models.ForeignKey(Propriedade, on_delete=models.CASCADE)
-    dataDespesa = models.DateField('Data da despesa')
+    dataGasto = models.DateField('Data da despesa')
+    tipo = models.CharField('Tipo', max_length=50)
     valor = models.DecimalField('Valor', max_digits=13, decimal_places=2)
     descricao = models.CharField('Descrição', max_length=255)
     categoria = models.CharField('Categoria', max_length=50)

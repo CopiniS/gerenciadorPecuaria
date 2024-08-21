@@ -34,7 +34,7 @@
               </li>
               <hr class="custom-hr">
               <li class="nav-item">
-                <a href="/outras-despesas" class="nav-link"><i class="fas fa-money-bill-wave"></i> Outras Despesas</a>
+                <a href="/gastos" class="nav-link"><i class="fas fa-money-bill-wave"></i> Gastos</a>
               </li>
               <hr class="custom-hr">
               <li class="nav-item">

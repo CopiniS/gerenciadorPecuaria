@@ -2,50 +2,77 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'despesas' }" id="nav-vet-tab"
-          @click="selectTab('despesas')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
-          Despesas</button>
+        <button class="nav-link" :class="{ active: activeTab === 'gastos' }" id="nav-vet-tab"
+          @click="selectTab('gastos')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
+          Gastos</button>
         <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
           @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
-          aria-selected="false">Cadastro de Despesa</button>
+          aria-selected="false">Cadastro de Gasto</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'despesas' }" id="nav-vet" role="tabpanel"
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'gastos' }" id="nav-vet" role="tabpanel"
         aria-labelledby="nav-vet-tab">
       </div>
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
         aria-labelledby="nav-cadastro-tab">
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Despesa</h1>
+          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Gasto</h1>
           <form @submit.prevent="submitForm">
             <div class="mb-3 input-group">
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Data da Despesa"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data do Gasto"><i class="fas fa-calendar-alt"></i></span>
               <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
-                onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataDespesa"
-                v-model="formData.dataDespesa" title="Data da Despesa">
+                onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataGasto"
+                v-model="formData.dataGasto" title="Data do Gasto">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Valor da Despesa"><i class="fas fa-dollar-sign"></i></span>
+              <span class="input-group-text"  title="Tipo do Gasto"><i class="fas fa-clipboard-list"></i></span>
+              <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
+                @change="categoriaPlaceholder = 'Categoria*'; formData.categoria = null" :class="{'is-invalid': !isTipoValido}" 
+                title="Categoria do Gasto">
+                <option disabled :value="null">{{ tipoPlaceholder }}</option>
+                <option value="despesa">Despesa</option>
+                <option value="investimento">Investimento</option>
+              </select>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text" title="Valor da Gasto"><i class="fas fa-dollar-sign"></i></span>
               <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
-                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder" title="Valor da Despesa">
+                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder" title="Valor da Gasto">
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text" title="Descrição da Despesa"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Descrição da Gasto"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
-                :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Despesa">
+                :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Gasto">
               <div class="character-counter">({{ contadorDescricao }} / 255)</div>   
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Categoria da Despesa"><i class="fas fa-list-alt"></i></span>
-              <input v-model="formData.categoria" type="text" class="form-control" id="categoria"
-                :placeholder="categoriaPlaceholder" :class="{ 'is-invalid': !isCategoriaValida }" title="Categoria da Despesa">
+              <span class="input-group-text"  title="Categoria do Gasto"><i class="fas fa-clipboard-list"></i></span>
+              <select :disabled="formData.tipo == '' || formData.tipo == null" v-model="formData.categoria"
+              class="form-select" id="categoria" aria-label="Categoria"
+              :class="{'is-invalid': !isCategoriaValida}" title="Categoria do Gasto">
+                <option disabled :value="null">{{ categoriaPlaceholder }}</option>
+                <option v-if="formData.tipo == 'despesa'" value="mao_de_obra">Mão de Obra</option>
+                <option v-if="formData.tipo == 'despesa'" value="manutencao_maquinas">Manutenção de Máquinas</option>
+                <option v-if="formData.tipo == 'despesa'" value="manutencao_benfeitorias">Manutenção de Benfeitorias</option>
+                <option v-if="formData.tipo == 'despesa'" value="medicamentos">Medicamentos</option>
+                <option v-if="formData.tipo == 'despesa'" value="combustiveis">Combustiveis</option>
+                <option v-if="formData.tipo == 'despesa'" value="despesa_administrativa">Despesa Administrativa</option>
+                <option v-if="formData.tipo == 'despesa'" value="sementes">Sementes</option>
+                <option v-if="formData.tipo == 'despesa'" value="adubos">Adubos</option>
+                <option v-if="formData.tipo == 'despesa'" value="outros">Outros</option>
+                <option v-if="formData.tipo == 'investimento'" value="compra_maquinas">Compra Máquinas</option>
+                <option v-if="formData.tipo == 'investimento'" value="construcao_benfeitorias">Construção de Benfeitorias</option>
+                <option v-if="formData.tipo == 'investimento'" value="implantacao_lavouras">Implantação de Lavouras</option>
+                <option v-if="formData.tipo == 'investimento'" value="aquisicao_terra">Aquisição de Terra</option>
+                <option v-if="formData.tipo == 'investimento'" value="Outros">Outros</option>
+              </select>
             </div>
             <div class="button-group justify-content-end">
-              <button type="button" class="btn btn-secondary" @click="selectTab('despesas')">Cancelar</button>
+              <button type="button" class="btn btn-secondary" @click="selectTab('gastos')">Cancelar</button>
               <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
             </div>
           </form>
@@ -68,20 +95,23 @@ export default {
       contadorDescricao: 0,
       formData: {
         id: null,
-        dataDespesa: null,
+        dataGasto: null,
+        tipo: null,
         valor: null,
         descricao: null,
         categoria: null,
         propriedade: localStorage.getItem('propriedadeSelecionada'),
       },
       isDataValida: true,
+      isTipoValido: true,
       isValorValido: true,
       isDescricaoValida: true,
       isCategoriaValida: true,
-      dataPlaceholder: 'Data da Despesa*',
+      dataPlaceholder: 'Data da Gasto*',
+      tipoPlaceholder: 'Tipo*',
       valorPlaceholder: 'Valor*',
       descricaoPlaceholder: 'Descrição*',
-      categoriaPlaceholder: 'Categoria*'
+      categoriaPlaceholder: 'Categoria* (Selecione o Tipo do produto antes)'
     };
   },
 
@@ -101,14 +131,15 @@ export default {
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
       if (this.verificaVazio()) {
+        
         try {
           //FORMATA VALOR
           this.formData.valor = this.replaceVirgulaPonto(this.formData.valor);
           
-          const response = await api.post('http://127.0.0.1:8000/outras-despesas/', this.formData, {});
+          const response = await api.post('http://127.0.0.1:8000/gastos/', this.formData, {});
           if (response.status === 201) {
             alert('Cadastro realizado com sucesso!');
-            this.$router.push('/outras-despesas');
+            this.$router.push('/gastos');
           } else {
             alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');
           }
@@ -122,36 +153,52 @@ export default {
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     verificaVazio(){
-      //DATA DA DESPESA
-      if(this.formData.dataDespesa != null){
-        if(this.formData.dataDespesa.trim() != ''){
+      //DATA DO GASTO
+      if(this.formData.dataGasto != null){
+        if(this.formData.dataGasto.trim() != ''){
           this.isDataValida = true;
-          this.dataPlaceholder = 'Data da Despesa';
+          this.dataPlaceholder = 'Data da Gasto';
         }
         else{
           this.isDataValida = false;
-          this.dataPlaceholder = 'Data da Despesa é um Campo Obrigatório';
+          this.dataPlaceholder = 'Data da Gasto é um Campo Obrigatório';
         }
       }
       else{
         this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Despesa é um Campo Obrigatório';
+        this.dataPlaceholder = 'Data da Gasto é um Campo Obrigatório';
+      }
+
+      //TIPO DO GASTO
+      if(this.formData.tipo != null){
+        if(this.formData.tipo != ''){
+          this.isTipoValido = true;
+          this.tipoPlaceholder = 'Tipo do Gasto';
+        }
+        else{
+          this.isTipoValido = false;
+          this.tipoPlaceholder = 'Tipo do Gasto é um Campo Obrigatório'
+        }
+      }
+      else{
+        this.isTipoValido = false;
+        this.tipoPlaceholder = 'Tipo do Gasto é um Campo Obrigatório'
       }
 
       //VALOR
       if(this.formData.valor != null){
         if(this.formData.valor.trim() != ''){
           this.isValorValido = true;
-          this.valorPlaceholder = 'Valor da Despesa';
+          this.valorPlaceholder = 'Valor da Gasto';
         }
         else{
           this.isValorValido = false;
-          this.valorPlaceholder = 'Valor da Despesa é um Campo Obrigatório';
+          this.valorPlaceholder = 'Valor da Gasto é um Campo Obrigatório';
         }
       }
       else{
         this.isValorValido = false;
-        this.valorPlaceholder = 'Valor da Despesa é um Campo Obrigatório';
+        this.valorPlaceholder = 'Valor da Gasto é um Campo Obrigatório';
       }
 
       //DESCRIÇÃO
@@ -187,6 +234,7 @@ export default {
       }
       return (
         this.isDataValida &&
+        this.isTipoValido &&
         this.isValorValido &&
         this.isDescricaoValida &&
         this.isCategoriaValida
@@ -197,8 +245,8 @@ export default {
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     selectTab(tab) {
       this.activeTab = tab;
-      if (tab === 'despesas') {
-        this.$router.push('/outras-despesas');
+      if (tab === 'gastos') {
+        this.$router.push('/gastos');
       }
     },
 

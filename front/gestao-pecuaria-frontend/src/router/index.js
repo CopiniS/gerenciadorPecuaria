@@ -38,12 +38,12 @@ import AnimalVisualizacao from '@/components/AnimalVizualizacao.vue';
 import TelaInseminacoes from '@/views/TelaInseminacoes.vue';
 import InseminacaoCadastro from '@/components/InseminacaoCadastro.vue';
 import InseminacaoEdicao from '@/components/InseminacaoEdicao.vue';
-import TelaOutrasDespesas from '@/views/TelaOutrasDespesas.vue'
+import TelaGastos from '@/views/TelaGastos.vue'
 import TelaMovimentacoes from '@/views/TelaMovimentacoes.vue';
 import MovimentacaoCadastro from '@/components/MovimentacaoCadastro.vue';
 import MovimentacaoEdicao from '@/components/MovimentacaoEdicao.vue';
-import OutraDespesaEdicao from '@/components/OutraDespesaEdicao.vue';
-import OutraDespesaCadastro from '@/components/OutraDespesaCadastro.vue';
+import GastoEdicao from '@/components/GastoEdicao.vue';
+import GastoCadastro from '@/components/GastoCadastro.vue';
 import PiqueteCadastro from '@/components/PiqueteCadastro.vue';
 import PiqueteEdicao from '@/components/PiqueteEdicao.vue';
 import AnimaisCadastro from '@/components/AnimaisCadastro.vue'; 
@@ -320,22 +320,22 @@ const routes = [
   },
 
   {
-    path: '/outras-despesas',
-    name: 'TelaOutrasDespesas',
-    component: TelaOutrasDespesas,
+    path: '/gastos',
+    name: 'TelaGastos',
+    component: TelaGastos,
   },
 
   {
-    path: '/editar-despesa/:despesaId',
-    name: 'EdicaoDespesa',
-    component: OutraDespesaEdicao,
+    path: '/gasto-edicao/:gastoId',
+    name: 'EdicaoGasto',
+    component: GastoEdicao,
     props: true
   },
 
   {
-    path: '/cadastrar-despesa',
-    name: 'CadastroDespesa',
-    component: OutraDespesaCadastro
+    path: '/gasto-cadastro',
+    name: 'CadastroGasto',
+    component: GastoCadastro
   },
 
   {

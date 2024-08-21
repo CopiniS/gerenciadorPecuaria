@@ -114,9 +114,9 @@ class InseminacaoComAnimalAndVeterinarioSerializer(serializers.ModelSerializer):
         model = models.Inseminacao
         fields = "__all__"
 
-class OutraDespesaSerializer(serializers.ModelSerializer):
+class GastoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.OutraDespesa
+        model = models.Gasto
         fields = "__all__"
 
 class VendaAnimalSerializer(serializers.ModelSerializer):

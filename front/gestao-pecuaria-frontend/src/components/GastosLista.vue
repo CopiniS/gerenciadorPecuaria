@@ -4,14 +4,14 @@
   <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
     <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
-    data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Despesas</button>
+    data-bs-target="#nav-vet" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Gastos</button>
   </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
   <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
  </div>
 
-<h2>Lista de Despesas</h2>
+<h2>Lista de Gastos</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -19,10 +19,10 @@
       </div>
       <form @submit.prevent="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
-          <label for="dataDespesa" class="form-label me-2">Data da Despesa</label>
-          <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataDespesaInicio" :endDate="filtro.dataDespesaFim"
-      @update:startDate="val => filtro.dataDespesaInicio = val"
-      @update:endDate="val => filtro.dataDespesaFim = val" />
+          <label for="dataGasto" class="form-label me-2">Data do Gasto</label>
+          <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataGastoInicio" :endDate="filtro.dataGastoFim"
+      @update:startDate="val => filtro.dataGastoInicio = val"
+      @update:endDate="val => filtro.dataGastoFim = val" />
         </div>
         <div class="col-auto d-flex align-items-center">
           <label for="produto" class="form-label me-2">Descrição</label>
@@ -42,12 +42,13 @@
   <div>
     <div class="table-container">
         <div class="button-container">
-            <button @click="acessarCadastro()" type="button" class="btn btn-success" >Cadastrar Despesa</button>
+            <button @click="acessarCadastro()" type="button" class="btn btn-success" >Cadastrar Gasto</button>
         </div>
         <table class="table table-bordered">
             <thead>
                 <tr>
                 <th scope="col">Data</th>
+                <th scope="col">Tipo</th>
                 <th scope="col">Valor</th>
                 <th scope="col">Descricao</th>
                 <th scope="col">Categoria</th>
@@ -55,17 +56,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(despesa, index) in despesas" :key="index">
-                <td>{{ formatarData(despesa.dataDespesa) }}</td>
-                <td>{{ replacePontoVirgula(despesa.valor) }}</td>
-                <td>{{ despesa.descricao }}</td>
-                <td>{{ despesa.categoria }}</td>
+                <tr v-for="(gasto, index) in gastos" :key="index">
+                <td>{{ formatarData(gasto.dataGasto) }}</td>
+                <td>{{ gasto.tipo }}</td>
+                <td>{{ replacePontoVirgula(gasto.valor) }}</td>
+                <td>{{ gasto.descricao }}</td>
+                <td>{{ retornaCategoria(gasto.categoria) }}</td>
                 <td>
-                    <button @click="acessarEdicao(despesa)" class="btn-acoes btn-sm" title="Editar Despesa">
+                    <button @click="acessarEdicao(gasto)" class="btn-acoes btn-sm" title="Editar Gasto">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button @click="confirmarExclusao(despesa)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-                    data-bs-target="#confirmacaoExclusaoModal" title="Excluir Despesa">
+                    <button @click="confirmarExclusao(gasto)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+                    data-bs-target="#confirmacaoExclusaoModal" title="Excluir Gasto">
                       <i class="fas fa-trash-alt"></i>
                     </button>
                 </td>
@@ -84,11 +86,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            Tem certeza de que deseja excluir esta despesa?
+            Tem certeza de que deseja excluir este gasto?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" @click="apagarDespesa()">Excluir</button>
+            <button type="button" class="btn btn-danger" @click="apagarGasto()">Excluir</button>
           </div>
         </div>
       </div>
@@ -108,11 +110,11 @@ export default {
   },
   data() {
     return {
-      despesas: [],
-      despesasDaApi: [],
+      gastos: [],
+      gastosDaApi: [],
       formData: {
         id: null,
-        dataDespesa: '',
+        dataGasto: '',
         valor: '',
         descricao: null,
         categoria: null,
@@ -120,43 +122,43 @@ export default {
       },
       mostrarFormulario: false,
       filtro: {
-        dataDespesaInicio: '',
-        dataDespesaFim: '',
+        dataGastoInicio: '',
+        dataGastoFim: '',
         descricao: '',
         categoria: '',
       },
-      modalTitle: 'Cadastro de Despesa',
+      modalTitle: 'Cadastro de Gasto',
     }
   },
   mounted() {
-    this.buscarDespesasDaApi();
+    this.buscarGastosDaApi();
   },
   methods: {
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
-    async buscarDespesasDaApi() {
+    async buscarGastosDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/outras-despesas/' , {
+        const response = await api.get('http://127.0.0.1:8000/gastos/' , {
           params: {
                 propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
             },
         });
-        this.despesasDaApi = response.data;
-        this.despesas = this.despesasDaApi;
+        this.gastosDaApi = response.data;
+        this.gastos = this.gastosDaApi;
       } catch (error) {
-        console.error('Erro ao buscar outras despesas da API:', error);
+        console.error('Erro ao buscar gastos da API:', error);
       }
     },
 
-    async apagarDespesa() {
+    async apagarGasto() {
       try {
-        const response = await api.delete(`http://127.0.0.1:8000/outras-despesas/${this.formData.id}/`, {
+        const response = await api.delete(`http://127.0.0.1:8000/gastos/${this.formData.id}/`, {
         });
 
         if (response.status === 204) {
-          alert('Despesa apagada com sucesso!');
-          this.buscarDespesasDaApi();
+          alert('Gasto apagada com sucesso!');
+          this.buscarGastosDaApi();
         } else {
-          alert('Erro ao apagar despesa. Tente novamente mais tarde.');
+          alert('Erro ao apagar gasto. Tente novamente mais tarde.');
         }
       } catch (error) {
         console.error('Erro ao enviar requisição:', error);
@@ -168,27 +170,27 @@ export default {
 
 //FILTROS---------------------------------------------------------------------------------------------------------------------
     aplicarFiltro() {
-      this.despesas = this.despesasDaApi.filter(despesa => {
-        if(despesa.descricao == null){
-          despesa.descricao = '';
+      this.gastos = this.gastosDaApi.filter(gasto => {
+        if(gasto.descricao == null){
+          gasto.descricao = '';
         }
-        if(despesa.categoria == null){
-          despesa.categoria = '';
+        if(gasto.categoria == null){
+          gasto.categoria = '';
         }
-        return  (new Date(despesa.dataDespesa) >= new Date(this.filtro.dataDespesaInicio || '1970-01-01')) &&
-                (new Date(despesa.dataDespesa) <= new Date(this.filtro.dataDespesaFim || '9999-12-31')) &&
-                despesa.descricao.includes(this.filtro.descricao) &&
-                despesa.categoria.includes(this.filtro.categoria);
+        return  (new Date(gasto.dataGasto) >= new Date(this.filtro.dataGastoInicio || '1970-01-01')) &&
+                (new Date(gasto.dataGasto) <= new Date(this.filtro.dataGastoFim || '9999-12-31')) &&
+                gasto.descricao.includes(this.filtro.descricao) &&
+                gasto.categoria.includes(this.filtro.categoria);
       });
     },
 
     limparFiltro() {
-      this.filtro.dataDespesaInicio = null;
-      this.filtro.dataDespesaFim = null;
+      this.filtro.dataGastoInicio = null;
+      this.filtro.dataGastoFim = null;
       this.filtro.descricao = '';
       this.filtro.categoria = '';
 
-      this.despesas = this.despesasDaApi;
+      this.gastos = this.gastosDaApi;
 
        // Resetando as datas no DateRangePicker
   this.$refs.dateRangePicker.resetDates();
@@ -200,16 +202,16 @@ export default {
 
 
 //FUNÇÕES AUXILIARES---------------------------------------------------------------------------------------------------------------------
-    acessarEdicao(despesa) {
+    acessarEdicao(gasto) {
       this.$router.push({
-        name: 'EdicaoDespesa', 
-        params: { despesaId: despesa.id } 
+        name: 'EdicaoGasto', 
+        params: { gastoId: gasto.id } 
       })
     },
 
     acessarCadastro(){
         this.$router.push({
-        name: 'CadastroDespesa', 
+        name: 'CadastroGasto', 
       })
     },
 
@@ -222,9 +224,9 @@ export default {
       }
     },
 
-    confirmarExclusao(despesa) {
+    confirmarExclusao(gasto) {
       this.formData = {
-        id: despesa.id,
+        id: gasto.id,
       };
     },
 
@@ -240,6 +242,37 @@ export default {
 
       return valorString;
     },
+
+    retornaCategoria(string){
+      switch (string) {
+        case 'mao_de_obra':
+          return 'Mão de Obra';
+        case 'manutencao_maquinas':
+          return 'Manutenção de Máquinas';
+        case 'manutencao_benfeitorias':
+          return 'Manutenção de Benfeitorias';
+        case 'medicamentos':
+          return 'Medicamentos';
+        case 'combustiveis':
+          return 'Combustíveis';
+        case 'despesa_administrativa':
+          return 'Despesa Administrativa';
+        case 'sementes':
+          return 'Sementes';
+        case 'adubos':
+          return 'Adubos';
+        case 'outros':
+          return 'Outros';
+        case 'compra_maquinas':
+          return 'Compra de Máquinas';
+        case 'construcao_benfeitorias':
+          return 'Construção de Benfeitorias';
+        case 'implantacao_lavouras':
+          return 'Implantação de Lavouras';
+        case 'aquisicao_terra':
+          return 'Aquisição de Terra';
+      }
+    }
   }
 };
 </script>

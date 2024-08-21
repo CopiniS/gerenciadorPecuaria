@@ -347,17 +347,18 @@ class InseminacaoViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class OutraDespesaViewSet(viewsets.ModelViewSet):
+class GastoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = models.OutraDespesa.objects.all()
-    serializer_class = serializers.OutraDespesaSerializer
+    queryset = models.Gasto.objects.all()
+    serializer_class = serializers.GastoSerializer
 
     def list(self, request, *args, **kwargs):
         propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
-        queryset = models.OutraDespesa.objects.all()
+        queryset = models.Gasto.objects.all()
         if propriedade_selecionada is not None:
             queryset = queryset.filter(propriedade=propriedade_selecionada)
-        serializer = serializers.OutraDespesaSerializer(queryset, many=True)
+        print('queryset: ' , queryset)
+        serializer = serializers.GastoSerializer(queryset, many=True)
         return Response(serializer.data)
 
 

@@ -25,39 +25,50 @@
                 :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoEdicao"
                 v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }" title="Data da Movimentação">
             </div>
-            <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder"
-                id="brincoInput" :class="{ 'is-invalid': !isBrincoValido }">
-            </div>
-            <div class="list-group" v-if="brinco && animaisFiltrados.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
-                {{ animal.brinco }}
-              </button>
+            <div ref="dropdownAnimal" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsAnimal('up')"
+              @keydown.down.prevent="navigateOptionsAnimal('down')" @keydown.enter.prevent="selectHighlightedAnimal">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownAnimal">
+                <span class="input-group-text" title="Animal aplicado"><i class="fas fa-box"></i></span>
+                <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputAnimal"
+                  @click="filterAnimais" @keydown.up.prevent="navigateOptionsAnimal('up')"
+                  @keydown.down.prevent="navigateOptionsAnimal('down')" type="text" class="form-control"
+                  :placeholder="animalPlaceholder" id="caixa-select" title="Animal aplicado">
+              </div>
+              <div class="itens" v-show="dropdownAnimalOpen">
+                <ul class="options">
+                  <li v-for="(animal, index) in animaisFiltrados" :key="animal.id" :value="animal.id"
+                    @click="selectAnimal(animal)" :class="{ 'highlighted': index === highlightedIndexAnimal }">{{
+                    animal.brinco }}</li>
+                </ul>
+              </div>
             </div>
             <div class="mb-3 input-group" >
               <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="piqueteOrigemNome" type="text" class="form-control" :placeholder="piqueteOrigemPlaceholder" :disabled="true">
+              <input v-model="nomePiqueteOrigem" type="text" class="form-control" :placeholder="piqueteOrigemPlaceholder" :disabled="true">
             </div>
 
-            <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="piqueteDestinoNome" @input="filtrarPiquetesDestino()" type="text" class="form-control"
-                :placeholder="piqueteDestinoPlaceholder" :class="{ 'is-invalid': !isPiqueteDestinoValido }">
-            </div>
-            <div class="list-group" v-if="piqueteDestinoNome && filteredPiquetesDestino.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="piquete in filteredPiquetesDestino" :key="piquete.id" @click="selecionarPiqueteDestino(piquete)">
-                {{ piquete.nome }} - {{ piquete.propriedade.nome }}
-              </button>
+            <div ref="dropdownPiqueteDestino" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
+            @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" @keydown.enter.prevent="selectHighlightedPiqueteDestino">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteDestino">
+                <span class="input-group-text" title="Piquete de Destino dos Animais movimentados"><i class="fas fa-box"></i></span>
+                <input v-model="nomePiqueteDestino" :class="{ 'is-invalid': !isPiqueteDestinoValido }" @input="inputPiqueteDestino"
+                  @click="filterPiquetesDestino" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
+                  @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" type="text" class="form-control"
+                  :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino dos Animais movimentados">
+              </div>
+              <div class="itens" v-show="dropdownPiqueteDestinoOpen">
+                <ul class="options">
+                  <li v-for="(piqueteDestino, index) in piquetesDestinoFiltrados" :key="piqueteDestino.id" :value="piqueteDestino.id"
+                    @click="selectPiqueteDestino(piqueteDestino)" :class="{ 'highlighted': index === highlightedIndexPiqueteDestino }">{{
+                    piqueteDestino.nome}} - {{ piqueteDestino.propriedade.nome}}</li>
+                </ul>
+              </div>
             </div>
 
             <div class="mb-3 input-group">
                     <span class="input-group-text" title="Motivo da Movimentação"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
                     placeholder="Motivo" title="Motivo da Movimentação">
-                    <div class="character-counter">({{ contadorMotivo }} / 255)</div>
                 </div>
 
             <div class="button-group justify-content-end">
@@ -80,22 +91,18 @@ export default {
 
     data() {
         return {
-            activeTab: 'edicao', // Começa na aba de edição
-            animais: [],
+      activeTab: 'edicao', // Começa na aba de edição
+      animais: [],
       animaisFiltrados: [],
       brinco: '',
-      piquetes: [],
-      piquetesDaPropriedade: [],
-      piqueteOrigemNome: '',
-      piqueteDestinoNome: '',
-      propriedadeAtual: null,
-      piqueteId: null,
-      filteredPiquetesOrigem: [],
-      filteredPiquetesDestino: [],
-      dataSelecionada: null,
-      piqueteOrigemSelecionado: null,
-      piqueteDestinoSelecionado: null,
-      contadorMotivo: 0,
+      piquetesDestino: [],
+      piquetesDestinoFiltrados: [],
+      nomePiqueteOrigem: '',
+      nomePiqueteDestino: '',
+      highlightedIndexPiqueteDestino: -1,
+      dropdownPiqueteDestinoOpen: false,
+      highlightedIndexAnimal: -1,
+      dropdownAnimalOpen: false,
       formData: {
           id: null,
           animal: null,
@@ -104,13 +111,13 @@ export default {
           piqueteDestino: null,
           motivo: null,
       },
-      isBrincoValido: true,
+      isAnimalValido: true,
       isDataValida: true,
       isPiqueteValido: true,
       isPiqueteOrigemValido: true,
       isPiqueteDestinoValido: true,
       isMotivoKgValido: true,
-      brincoPlaceholder: 'Brinco do animal*',
+      animalPlaceholder: 'Brinco do animal*',
       dataPlaceholder: 'Data da aplicacao*',
       piquetePlaceholder: 'Piquete*',
       piqueteOrigemPlaceholder: 'Piquete de Origem*',
@@ -125,23 +132,18 @@ export default {
         }
         this.buscarAnimaisDaApi();
         this.buscarPiquetesDaApi();
+        document.addEventListener('click', this.handleClickOutsidePiqueteDestino);
+        document.addEventListener('click', this.handleClickOutsideAnimal);
     },
     methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
       aplicarMotivoMask(event){
         const value = event.target.value;
         this.formData.motivo = this.observacoesMask(value);
-        this.contadorMotivo = this.formData.motivo.length;
       },
 
       aplicarBrincoMask(value){
         this.brinco =  this.brincoFiltroMask(value);
-      },
-
-      inputBrinco(event){
-        const value = event.target.value;
-        this.aplicarBrincoMask(value);
-        this.filterAnimais();
       },
 
 
@@ -158,12 +160,8 @@ export default {
           this.formData.motivo = movimentacao[0].motivo;
 
           this.brinco = movimentacao[0].animal.brinco;
-          this.piqueteOrigemNome = movimentacao[0].piqueteOrigem.nome
-          this.piqueteDestinoNome = movimentacao[0].piqueteDestino.nome
-          this.dataSelecionada = movimentacao[0].dataMovimentacao
-          this.piqueteOrigemSelecionado = movimentacao[0].piqueteOrigem.id
-          this.piqueteDestinoSelecionado = movimentacao[0].piqueteDestino.id
-          this.contadorMotivo = this.formData.motivo.length;
+          this.nomePiqueteOrigem = movimentacao[0].piqueteOrigem.nome
+          this.nomePiqueteDestino = movimentacao[0].piqueteDestino.nome
           
         } catch (error) {
           console.error('Erro ao carregar dados da movimentacao:', error);
@@ -186,7 +184,7 @@ export default {
       async buscarPiquetesDaApi() {
         try {
           const response = await api.get('http://127.0.0.1:8000/piquetes/piquetes-propriedades');
-          this.piquetes = response.data;
+          this.piquetesDestino = response.data;
         } catch (error) {
           console.error('Erro ao buscar piquetes da API:', error);
         }
@@ -212,28 +210,186 @@ export default {
       },
 
 
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
-      filtrarPiquetesDestino() {
-        this.filteredPiquetesDestino = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteDestinoNome));
-      },
+//LÓGICA DOS SELECT ANIMAL----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterAnimais() {
+      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.includes(this.brinco));
+    },
 
-      selecionarPiqueteDestino(piquete) {
-        this.piqueteDestinoNome = piquete.nome + " - " + piquete.propriedade.nome;
-        this.formData.piqueteDestino = piquete.id;
-        this.filteredPiquetesDestino = [];
-      },
-      
-      filterAnimais() {
-          this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
-      },
+    selectAnimal(animal) {
+        this.brinco = animal.brinco;
+        this.formData.animal = animal.id;
+        this.animaisFiltrados = [];
+        this.dropdownAnimalOpen = false;
+    },
 
-      selectAnimal(animal) {
-          this.brinco = animal.brinco;
-          this.formData.piqueteOrigem = animal.piquete.id;
-          this.piqueteOrigemNome = animal.piquete.nome
-          this.formData.animal = animal.id;
-          this.animaisFiltrados = [];
-      },
+    toggleDropdownAnimal() {
+      this.dropdownAnimalOpen = !this.dropdownAnimalOpen;
+      let nomeCorreto = false;
+      let brincoCorreto = false;
+
+      if(!this.dropdownAnimalOpen){
+        this.animaisFiltrados.forEach(animal => {
+          if(animal.brinco === this.brinco){
+            this.brinco = animal.brinco;
+            this.formData.animal = animal.id;
+            this.animaisFiltrados = [];
+            brincoCorreto = true;
+          }
+        });
+        if(!brincoCorreto){
+          this.brinco = '';
+        }
+      }
+      else if(this.dropdownPiqueteDestinoOpen){
+        this.piquetesDestino.forEach(piqueteDestino => {
+          if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
+            this.selectPiqueteDestino(piqueteDestino);
+            nomeCorreto = true;
+            
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.piqueteDestino = null;
+          this.nomePiqueteDestino = '';
+        }
+        this.dropdownPiqueteDestinoOpen = false;
+        this.filterAnimais();
+      }
+
+      else{
+        this.filterAnimais();
+      }
+    },
+
+    handleClickOutsideAnimal(event) {
+      if (this.dropdownAnimalOpen && this.$refs.dropdownAnimal && !this.$refs.dropdownAnimal.contains(event.target)) {
+        this.dropdownAnimalOpen = false;
+      }
+      let nomeCorreto = false;
+      if(!this.dropdownAnimalOpen){
+        this.animais.forEach(animal => {
+          if(animal.brinco === this.brinco){
+            this.brinco = animal.brinco;
+            this.formData.animal = animal.id;
+            this.animaisFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.brinco = '';
+        }
+      }
+    },
+
+    inputAnimal(event){
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterAnimais();
+      this.dropdownAnimalOpen = true;
+    },
+
+    navigateOptionsAnimal(direction) {
+      if (direction === 'up' && this.highlightedIndex > 0) {
+        this.highlightedIndex--;
+      } else if (direction === 'down' && this.highlightedIndex < this.animaisFiltrados.length - 1) {
+        this.highlightedIndex++;
+      }
+    },
+
+    selectHighlightedAnimal() {
+      if (this.highlightedIndex >= 0 && this.highlightedIndex < this.animaisFiltrados.length) {
+        this.selectAnimal(this.animaisFiltrados[this.highlightedIndex]);
+      }
+    },
+
+
+//LÓGICA DOS SELECT PIQUETE DESTINO----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterPiquetesDestino() {
+      this.piquetesDestinoFiltrados = this.piquetesDestino.filter(piqueteDestino => piqueteDestino.nome.toLowerCase().includes(this.nomePiqueteDestino.toLowerCase()));
+    },
+
+    async selectPiqueteDestino(piqueteDestino) {
+      this.nomePiqueteDestino = piqueteDestino.nome + " - " + piqueteDestino.propriedade.nome;
+      this.formData.piqueteDestino = piqueteDestino.id;
+      this.piquetesDestinoFiltrados = [];
+      this.dropdownPiqueteDestinoOpen = false;
+      this.highlightedIndexPiqueteDestino = -1; // Reseta o índice após a seleção
+    },
+
+    toggleDropdownPiqueteDestino() {
+      this.dropdownPiqueteDestinoOpen = !this.dropdownPiqueteDestinoOpen;
+      let nomeCorreto = false;
+      let brincoCorreto = false;
+
+      if(!this.dropdownPiqueteDestinoOpen){
+        this.piquetesDestinoFiltrados.forEach(piqueteDestino => {
+          if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
+            this.selectPiqueteDestino(piqueteDestino);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomePiqueteDestino = '';
+          this.formData.piqueteDestino = null;
+        }
+      }
+      else if(this.dropdownAnimalOpen){
+        this.animais.forEach(animal => {
+          if(animal.brinco === this.brinco){
+            this.selectAnimal(animal);
+            brincoCorreto = true;
+            
+          }
+        });
+        if(!brincoCorreto){
+          this.formData.animal = null;
+          this.brinco = '';
+        }
+        this.dropdownAnimalOpen = false;
+        this.filterPiquetesDestino();
+      }
+
+      else{
+        this.filterPiquetesDestino();
+      }
+    },
+
+    handleClickOutsidePiqueteDestino(event) {
+      let nomeCorreto = false;
+      if (this.dropdownPiqueteDestinoOpen && this.$refs.dropdownPiqueteDestino && !this.$refs.dropdownPiqueteDestino.contains(event.target)) {
+        this.piquetesDestino.forEach(piqueteDestino => {
+          if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
+            this.selectPiqueteDestino(piqueteDestino);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomePiqueteDestino = '';
+          this.formData.piqueteDestino = null;
+        }
+      }
+      this.dropdownPiqueteDestinoOpen = false;
+    },
+
+    inputPiqueteDestino() {
+      this.filterPiquetesDestino();
+      this.dropdownPiqueteDestinoOpen = true;
+      this.highlightedIndexPiqueteDestino = 0; // Inicia o índice ao começar a digitação
+    },
+
+    navigateOptionsPiqueteDestino(direction) {
+      if (direction === 'up' && this.highlightedIndexPiqueteDestino > 0) {
+        this.highlightedIndexPiqueteDestino--;
+      } else if (direction === 'down' && this.highlightedIndexPiqueteDestino < this.piquetesDestinoFiltrados.length - 1) {
+        this.highlightedIndexPiqueteDestino++;
+      }
+    },
+
+  selectHighlightedPiqueteDestino() {
+    if (this.highlightedIndexPiqueteDestino >= 0 && this.highlightedIndexPiqueteDestino < this.piquetesDestinoFiltrados.length) {
+      this.selectPiqueteDestino(this.piquetesDestinoFiltrados[this.highlightedIndexPiqueteDestino]);
+    }
+  },
 
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -254,45 +410,25 @@ export default {
           this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
         }
         
-        //BRINCO OU TODOS DO PIQUETE
-        if(this.radioEscolha == 'brinco'){
-          //BRINCO 
+        //BRINCO  
           if(this.brinco != null){
             if(this.brinco.trim() != ''){
-              this.isBrincoValido = true;
-              this.brincoPlaceholder = 'Brinco do Animal'
+              this.isAnimalValido = true;
+              this.animalPlaceholder = 'Brinco do Animal'
             }
             else{
-            this.isBrincoValido = false;
-            this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+            this.isAnimalValido = false;
+            this.animalPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
             }
           }
           else{
-            this.isBrincoValido = false;
-            this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+            this.isAnimalValido = false;
+            this.animalPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
           }
-        }
-        else{
-          //PIQUETE ORIGEM
-          if(this.piqueteOrigemNome != null){
-            if(this.piqueteOrigemNome.trim() != ''){
-              this.isPiqueteOrigemValido = true;
-              this.piqueteOrigemPlaceholder = 'Piquete de Origem';
-            }
-            else{
-              this.isPiqueteOrigemValido = false;
-              this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
-            }
-          }
-          else{
-            this.isPiqueteOrigemValido = false;
-            this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
-          }
-        }
 
         //PIQUETE DE DESTINO
-        if(this.piqueteDestinoNome != null){
-            if(this.piqueteDestinoNome.trim() != ''){
+        if(this.nomePiqueteDestino != null){
+            if(this.nomePiqueteDestino.trim() != ''){
               this.isPiqueteDestinoValido = true;
               this.piqueteDestinoPlaceholder = 'Piquete de Destino';
             }
@@ -313,8 +449,7 @@ export default {
 
         return (
           this.isDataValida &&
-          this.isBrincoValido &&
-          this.isPiqueteOrigemValido &&
+          this.isAnimalValido &&
           this.isPiqueteDestinoValido
         );
       },
@@ -405,5 +540,41 @@ selectTab(tab) {
   right: 10px;
   font-size: 12px;
   color: #6c757d;
+}
+
+.select-option {
+  width: 100%;
+  cursor: pointer;
+}
+
+.itens {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 999;
+  padding: 20px;
+}
+
+.options {
+  max-height: 200px;
+  /* Ajuste a altura conforme necessário */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.options li:hover {
+  background-color: #f0f0f0;
 }
 </style>

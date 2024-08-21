@@ -63,7 +63,6 @@
                   <span class="input-group-text" title="Observação da Venda"><i class="fas fa-sticky-note"></i></span>
                   <input v-model="formData.observacao" type="text" class="form-control" id="observacao"
                     @input="aplicarObservacaoMask" placeholder="Observação" title="Observação da Venda" />
-                  <div class="character-counter">({{ contadorObservacao }} / 255)</div>
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
@@ -412,18 +411,6 @@ export default {
 
 #legenda {
     font-size: 16px;
-}
-
-.position-relative {
-  position: relative;
-}
-
-.character-counter {
-  position: absolute;
-  top: 35px;
-  right: 10px;
-  font-size: 12px;
-  color: #6c757d;
 }
 
 </style>

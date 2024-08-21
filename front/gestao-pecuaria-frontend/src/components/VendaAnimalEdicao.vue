@@ -40,15 +40,25 @@
                     <option value="Abate">Abate</option>
                 </select>
                 </div>
-                <div class="mb-3 input-group">
-                  <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                    <input v-model="brinco" @input="inputBrinco" type="text" class="form-control" :placeholder="brincoPlaceholder" :class="{'is-invalid': !isBrincoValido}">
-                </div>
-                <div class="list-group" v-if="brinco && animaisFiltrados.length">
-                    <button type="button" class="list-group-item list-group-item-action" v-for="animal in animaisFiltrados" :key="animal.id" @click="selectAnimal(animal)">
-                    {{ animal.brinco }}
-                    </button>
-                </div>
+                
+                <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
+              @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedAnimal">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
+                <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
+                <input v-model="brinco" :class="{ 'is-invalid': !isBrincoValido }" @input="inputBrinco"
+                  @keydown.up.prevent="navigateOptions('up')"
+                  @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
+                  :placeholder="brincoPlaceholder" id="caixa-select" title="Brinco do Animal">
+              </div>
+              <div class="itens" v-show="dropdownOpen">
+                <ul class="options">
+                  <li v-for="(animal, index) in animaisFiltrados" :key="animal.id" :value="animal.id"
+                    @click="selectAnimal(animal)" :class="{ 'highlighted': index === highlightedIndex }">{{
+                    animal.brinco }}</li>
+                </ul>
+              </div>
+            </div>
+
                 <div class="mb-3 input-group">
                   <span class="input-group-text" title="Peso do Animal"><i class="fas fa-weight-hanging"></i></span>
                   <input @input="inputPeso" v-model="formData.peso" type="text" class="form-control" id="peso" 
@@ -63,7 +73,6 @@
                   <span class="input-group-text" title="Observação da Venda"><i class="fas fa-sticky-note"></i></span>
                   <textarea v-model="formData.observacao" class="form-control" id="observacao"
                     @input="aplicarObservacaoMask" placeholder="Observação" title="Observação da Venda"></textarea>
-                  <div class="character-counter">({{ contadorObservacao }} / 255)</div>
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
@@ -86,11 +95,13 @@ export default {
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
+      animalVendido: null,
       animais: [],
       animaisFiltrados: [],
       brinco: '',
       dataSelecionada: null,
-      contadorObservacao: 0,
+      highlightedIndex: -1,
+      dropdownOpen: false,
       formData: {
         id: null,
         animal: '',
@@ -119,7 +130,7 @@ export default {
     if (vendaId) {
       this.fetchVenda(vendaId);
     }
-    this.buscarAnimaisDaApi();
+    document.addEventListener('click', this.handleClickOutside);
   },
   methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -135,7 +146,6 @@ export default {
     aplicarObservacaoMask(event){
       const value = event.target.value;
       this.formData.observacao = this.observacoesMask(value);
-      this.contadorObservacao = this.formData.observacao.length;
     },
 
     aplicarPesoMask(value) {
@@ -147,13 +157,7 @@ export default {
     },
 
     aplicarBrincoMask(value){
-      this.brinco =  this.brincoMask(value);
-    },
-
-    inputBrinco(event){
-      const value = event.target.value;
-      this.aplicarBrincoMask(value);
-      this.filterAnimais();
+      this.brinco =  this.brincoFiltroMask(value);
     },
 
     inputPeso(event){
@@ -174,6 +178,7 @@ export default {
       try {
         const response = await api.get(`http://127.0.0.1:8000/vendas-animais/venda/${id}`);
         const venda = response.data;
+        this.animalVendido = venda[0].animal
         this.formData.id = venda[0].id;
         this.formData.animal = venda[0].animal.id;
         this.formData.dataVenda = venda[0].dataVenda;
@@ -181,14 +186,11 @@ export default {
         this.formData.precoKg = this.replacePontoVirgula(venda[0].precoKg);
         this.formData.valorTotal = this.replacePontoVirgula(venda[0].valorTotal);
         this.formData.finalidade = venda[0].finalidade;
-        
         this.formData.observacao = venda[0].observacao;
 
         this.brinco = venda[0].animal.brinco;
-        this.dataSelecionada = venda[0].dataVenda;
-        if(this.formData.observacao){
-          this.contadorObservacao = this.formData.observacao.length;
-        }
+
+        this.buscarAnimaisDaApi();
       } catch (error) {
         console.error('Erro ao carregar dados da venda:', error);
       }
@@ -202,6 +204,9 @@ export default {
           },
         });
         this.animais = response.data;
+        if(this.animalVendido != null){
+          this.animais.push(this.animalVendido);
+        }
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
       }
@@ -238,13 +243,77 @@ export default {
 
 //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterAnimais() {
-      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.toLowerCase().includes(this.brinco));
+        this.animaisFiltrados = this.animais.filter(animal => animal.brinco.includes(this.brinco));
     },
 
     selectAnimal(animal) {
-      this.brinco = animal.brinco;
-      this.formData.animal = animal.id;
-      this.animaisFiltrados = [];
+        this.brinco = animal.brinco;
+        this.formData.animal = animal.id;
+        this.animaisFiltrados = [];
+        this.dropdownOpen = false;
+    },
+
+    toggleDropdown() {
+      this.dropdownOpen = !this.dropdownOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownOpen){
+        this.animaisFiltrados.forEach(animal => {
+          if(animal.brinco === this.brinco){
+            this.brinco = animal.brinco;
+            this.formData.animal = animal.id;
+            this.animaisFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.brinco = '';
+        }
+      }
+      else{
+        this.filterAnimais();
+      }
+    },
+
+    handleClickOutside(event) {
+      if (this.dropdownOpen && this.$refs.dropdown && !this.$refs.dropdown.contains(event.target)) {
+        this.dropdownOpen = false;
+      }
+      let nomeCorreto = false;
+      if(!this.dropdownOpen){
+        this.animais.forEach(animal => {
+          if(animal.brinco === this.brinco){
+            this.brinco = animal.brinco;
+            this.formData.animal = animal.id;
+            this.animaisFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.brinco = '';
+        }
+      }
+    },
+
+    inputBrinco(event){
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterAnimais();
+      this.dropdownOpen = true;
+    },
+
+    navigateOptions(direction) {
+      if (direction === 'up' && this.highlightedIndex > 0) {
+        this.highlightedIndex--;
+      } else if (direction === 'down' && this.highlightedIndex < this.animaisFiltrados.length - 1) {
+        this.highlightedIndex++;
+      }
+    },
+
+    selectHighlightedAnimal() {
+      if (this.highlightedIndex >= 0 && this.highlightedIndex < this.animaisFiltrados.length) {
+        this.selectAnimal(this.animaisFiltrados[this.highlightedIndex]);
+      }
     },
 
 
@@ -461,5 +530,41 @@ atualizaValorTotalPeloPeso(){
 
 #legenda {
     font-size: 16px;
+}
+
+.select-option {
+  width: 100%;
+  cursor: pointer;
+}
+
+.itens {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 999;
+  padding: 20px;
+}
+
+.options {
+  max-height: 200px;
+  /* Ajuste a altura conforme necessário */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.options li:hover {
+  background-color: #f0f0f0;
 }
 </style>

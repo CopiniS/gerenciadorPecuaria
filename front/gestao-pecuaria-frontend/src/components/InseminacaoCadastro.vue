@@ -61,7 +61,7 @@
             <div ref="dropdownFemea" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsFemea('up')"
             @keydown.down.prevent="navigateOptionsFemea('down')" @keydown.enter.prevent="selectHighlightedFemea">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownFemea">
-                <span class="input-group-text" title="Femea dos Animais aplicados"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Femea inseminada"><i class="fas fa-box"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isFemeaValida }" @input="inputFemea"
                   @click="filterFemeas" @keydown.up.prevent="navigateOptionsFemea('up')"
                   @keydown.down.prevent="navigateOptionsFemea('down')" type="text" class="form-control"

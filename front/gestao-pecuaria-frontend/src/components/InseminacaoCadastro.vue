@@ -28,12 +28,24 @@
                 onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
                 class="form-control" id="dataInseminacaoCadastro" title="Data da Inseminação">
             </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-md"></i></span>
-              <input v-model="nomeVet" @input="filterVeterinario" type="text" class="form-control"
-                :placeholder="veterinarioPlaceholder" :class="{ 'is-invalid': !isVeterinarioValido }">
+            <div ref="dropdownVeterinario" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsVeterinario('up')"
+              @keydown.down.prevent="navigateOptionsVeterinario('down')" @keydown.enter.prevent="selectHighlightedVeterinario">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownVeterinario">
+                <span class="input-group-text" title="Veterinario usado na Suplementação"><i class="fas fa-box"></i></span>
+                <input v-model="nomeVeterinario" :class="{ 'is-invalid': !isVeterinarioValido }" @input="inputVeterinario"
+                  @keydown.up.prevent="navigateOptionsVeterinario('up')"
+                  @keydown.down.prevent="navigateOptionsVeterinario('down')" type="text" class="form-control"
+                  :placeholder="veterinarioPlaceholder" id="caixa-select" title="Veterinario que realizou a Inseminação">
+              </div>
+              <div class="itens" v-show="dropdownVeterinarioOpen">
+                <ul class="options">
+                  <li v-for="(veterinario, index) in veterinariosFiltrados" :key="veterinario.id" :value="veterinario.id"
+                    @click="selectVeterinario(veterinario)" :class="{ 'highlighted': index === highlightedIndexVeterinario }">{{
+                    veterinario.nome }}</li>
+                </ul>
+              </div>
             </div>
-            <div class="list-group" v-if="nomeVet && veterinariosFiltrados.length">
+            <div class="list-group" v-if="nomeVeterinario && veterinariosFiltrados.length">
               <button type="button" class="list-group-item list-group-item-action"
                 v-for="veterinario in veterinariosFiltrados" :key="veterinario.id"
                 @click="selectVeterinario(veterinario)">
@@ -46,17 +58,22 @@
                 :placeholder="identificadorTouroPlaceholder" title="Identificador do Touro"
                 :class="{ 'is-invalid': !isIdentificadorTouroValido }">
             </div>
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-              <input v-model="brinco" @input="inputBrinco" type="text" class="form-control"
-                :placeholder="animalPlaceholder" :class="{ 'is-invalid': !isAnimalValido }">
-            </div>
-
-            <div class="list-group" v-if="brinco && femeasFiltradas.length">
-              <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
-                :key="animal.id" @click="selectMae(animal)">
-                {{ animal.brinco }}
-              </button>
+            <div ref="dropdownFemea" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsFemea('up')"
+            @keydown.down.prevent="navigateOptionsFemea('down')" @keydown.enter.prevent="selectHighlightedFemea">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownFemea">
+                <span class="input-group-text" title="Femea dos Animais aplicados"><i class="fas fa-box"></i></span>
+                <input v-model="brinco" :class="{ 'is-invalid': !isFemeaValida }" @input="inputFemea"
+                  @click="filterFemeas" @keydown.up.prevent="navigateOptionsFemea('up')"
+                  @keydown.down.prevent="navigateOptionsFemea('down')" type="text" class="form-control"
+                  :placeholder="femeaPlaceholder" id="caixa-select" title="Femea inseminada">
+              </div>
+              <div class="itens" v-show="dropdownFemeaOpen">
+                <ul class="options">
+                  <li v-for="(femea, index) in femeasFiltradas" :key="femea.id" :value="femea.id"
+                    @click="selectFemea(femea)" :class="{ 'highlighted': index === highlightedIndexFemea }">{{
+                    femea.brinco }}</li>
+                </ul>
+              </div>
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observação da Inseminação"><i class="fas fa-sticky-note"></i></span>
@@ -89,8 +106,11 @@ export default {
       brinco: '',
       veterinarios: [],
       veterinariosFiltrados: [],
-      nomeVet: '',
-      contadorObservacoes: 0,
+      nomeVeterinario: '',
+      highlightedIndexVeterinario: -1,
+      dropdownVeterinarioOpen: false,
+      highlightedIndexFemea: -1,
+      dropdownFemeaOpen: false,
       formData: {
         id: null,
         dataInseminacao: null,
@@ -99,13 +119,13 @@ export default {
         identificadorTouro: null,
         observacao: null,
       },
-      isAnimalValido: true,
+      isFemeaValida: true,
       isDataValida: true,
       isVeterinarioValido: true,
       isIdentificadorTouroValido: true,
-      animalPlaceholder: 'Brinco do animal*',
-      dataPlaceholder: 'Data da inseminacao*',
-      veterinarioPlaceholder: 'Veterinário*',
+      femeaPlaceholder: 'Brinco da Fêmea*',
+      dataPlaceholder: 'Data da Inseminacao*',
+      veterinarioPlaceholder: 'Nome do Veterinário*',
       identificadorTouroPlaceholder: 'Identificador do Touro*',
     };
   },
@@ -113,24 +133,19 @@ export default {
   mounted() {
     this.buscarFemeasVivasDaApi();
     this.buscarVeterinariosDaApi();
+    document.addEventListener('click', this.handleClickOutsideVeterinario);
+    document.addEventListener('click', this.handleClickOutsidePiquete);
   },
 
   methods: {
     //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(value) {
-      this.brinco = this.brincoMask(value);
-    },
-
-    inputBrinco(event) {
-      const value = event.target.value;
-      this.aplicarBrincoMask(value);
-      this.filterFemeas();
+      this.brinco = this.brincoFiltroMask(value);
     },
 
     aplicarObservacaoMask(event) {
       const value = event.target.value;
       this.formData.observacao = this.observacoesMask(value);
-      this.contadorObservacoes = this.formData.observacao.length;
     },
 
 
@@ -176,34 +191,189 @@ export default {
     },
 
 
-    //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
-    filterFemeas() {
-      this.femeasFiltradas = this.femeas.filter(animal => /^\d+$/.test(animal.brinco) && animal.brinco.includes(this.brinco));
-    },
-
-    selectMae(animal) {
-      // Seleciona a fêmea e limpa o campo de busca
-      this.formData.animal = animal.id;
-      this.brinco = animal.brinco;
-      this.femeasFiltradas = [];
-    },
-
-    filterVeterinario(event) {
-      // Filtra veterinários com base no nome
-      const inputValue = event.target.value.trim().replace(/[^a-zA-ZÀ-ÿ ]/g, ''); // Remove caracteres não alfabéticos
-      this.nomeVet = inputValue;
-      this.veterinariosFiltrados = this.veterinarios.filter(veterinario => {
-        const regex = new RegExp(inputValue.toLowerCase());
-        return regex.test(veterinario.nome.toLowerCase());
-      });
+//LÓGICA DOS SELECT VETERINARIO----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterVeterinarios() {
+      this.veterinariosFiltrados = this.veterinarios.filter(veterinario => veterinario.nome.toLowerCase().includes(this.nomeVeterinario.toLowerCase()));
     },
 
     selectVeterinario(veterinario) {
-      // Seleciona o veterinário
-      this.nomeVet = veterinario.nome;
+      this.nomeVeterinario = veterinario.nome;
       this.formData.veterinario = veterinario.id;
       this.veterinariosFiltrados = [];
+      this.dropdownVeterinarioOpen = false;
     },
+
+    toggleDropdownVeterinario() {
+      this.dropdownVeterinarioOpen = !this.dropdownVeterinarioOpen;
+      let nomeCorreto = false;
+      let brincoCorreto = false;
+
+      if(!this.dropdownVeterinarioOpen){
+        this.veterinariosFiltrados.forEach(veterinario => {
+          if(veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()){
+            this.nomeVeterinario = veterinario.nome;
+            this.formData.veterinario = veterinario.id;
+            this.veterinariosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomeVeterinario = '';
+        }
+      }
+
+      else if(this.dropdownFemeaOpen){
+        this.femeas.forEach(femea => {
+          if(femea.brinco === this.brinco){
+            this.formData.animal = femea.id;
+            this.femeasFiltradas = [];
+            brincoCorreto = true;
+            
+          }
+        });
+        if(!brincoCorreto){
+          this.formData.animal = null;
+          this.brinco = ''
+        }
+        this.dropdownFemeaOpen = false;
+        this.filterVeterinarios();
+      }
+
+      else{
+        this.filterVeterinarios();
+      }
+    },
+
+    handleClickOutsideVeterinario(event) {
+      if (this.dropdownVeterinarioOpen && this.$refs.dropdownVeterinario && !this.$refs.dropdownVeterinario.contains(event.target)) {
+        let nomeCorreto = false;
+        this.veterinarios.forEach(veterinario => {
+          if(veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()){
+            this.nomeVeterinario = veterinario.nome;
+            this.formData.veterinario = veterinario.id;
+            this.veterinariosFiltrados = [];
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.veterinario = null;
+          this.nomeVeterinario = '';
+        }
+        this.dropdownVeterinarioOpen = false;
+      }
+    },
+
+    inputVeterinario(){
+      this.filterVeterinarios();
+      this.dropdownVeterinarioOpen = true;
+    },
+
+    navigateOptionsVeterinario(direction) {
+      if (direction === 'up' && this.highlightedIndexVeterinario > 0) {
+        this.highlightedIndexVeterinario--;
+      } else if (direction === 'down' && this.highlightedIndexVeterinario < this.veterinariosFiltrados.length - 1) {
+        this.highlightedIndexVeterinario++;
+      }
+    },
+
+    selectHighlightedVeterinario() {
+      if (this.highlightedIndexVeterinario >= 0 && this.highlightedIndexVeterinario < this.veterinariosFiltrados.length) {
+        this.selectVeterinario(this.veterinariosFiltrados[this.highlightedIndexVeterinario]);
+      }
+    },
+
+
+//LÓGICA DOS SELECT FEMEA----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterFemeas() {
+      this.femeasFiltradas = this.femeas.filter(femea => femea.brinco.includes(this.brinco));
+    },
+
+    selectFemea(femea) {
+      this.brinco = femea.brinco;
+      this.formData.animal = femea.id;
+      this.femeasFiltradas = [];
+      this.dropdownFemeaOpen = false;
+      this.highlightedIndexFemea = -1; // Reseta o índice após a seleção
+    },
+
+    toggleDropdownFemea() {
+      this.dropdownFemeaOpen = !this.dropdownFemeaOpen;
+      let brincoCorreto = false;
+      let nomeCorreto = false;
+
+      if(!this.dropdownFemeaOpen){
+        this.femeasFiltradas.forEach(femea => {
+          if(femea.brinco === this.brinco){
+            this.brinco = femea.brinco;
+            this.formData.animal = femea.id;
+            this.femeasFiltrados = [];
+            brincoCorreto = true;
+          }
+        });
+        if(!brincoCorreto){
+          this.brinco = '';
+        }
+      }
+      else if(this.dropdownVeterinarioOpen){
+        this.veterinarios.forEach(veterinario => {
+          if(veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()){
+            this.formData.veterinario = veterinario.id;
+            this.veterinariosFiltrados = [];
+            nomeCorreto = true;
+            
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.veterinario = null;
+          this.nomeVeterinario = ''
+        }
+        this.dropdownVeterinarioOpen = false;
+        this.filterFemeas();
+      }
+
+      else{
+        this.filterFemeas();
+      }
+    },
+
+    handleClickOutsideFemea(event) {
+      let brincoCorreto = false;
+      if (this.dropdownFemeaOpen && this.$refs.dropdownFemea && !this.$refs.dropdownFemea.contains(event.target)) {
+        this.femeas.forEach(femea => {
+          if(femea.brinco === this.brinco){
+            this.selectFemea(femea);
+            brincoCorreto = true;
+          }
+        });
+        if(!brincoCorreto){
+          this.brinco = '';
+          this.formData.animal = null;
+        }
+      }
+      this.dropdownFemeaOpen = false;
+    },
+
+    inputFemea(event) {
+      const value = event.target.value;
+      this.aplicarBrincoMask(value);
+      this.filterFemeas();
+      this.dropdownFemeaOpen = true;
+      this.highlightedIndexFemea = 0; // Inicia o índice ao começar a digitação
+    },
+
+    navigateOptionsFemea(direction) {
+    if (direction === 'up' && this.highlightedIndexFemea > 0) {
+      this.highlightedIndexFemea--;
+    } else if (direction === 'down' && this.highlightedIndexFemea < this.femeasFiltradas.length - 1) {
+      this.highlightedIndexFemea++;
+    }
+  },
+
+  selectHighlightedFemea() {
+    if (this.highlightedIndexFemea >= 0 && this.highlightedIndexFemea < this.femeasFiltradas.length) {
+      this.selectFemea(this.femeasFiltradas[this.highlightedIndexFemea]);
+    }
+  },
 
 
     //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -227,33 +397,33 @@ export default {
       //BRINCO
       if (this.brinco != null) {
         if (this.brinco.trim() != '') {
-          this.isAnimalValido = true;
-          this.animalPlaceholder = 'Digite o brinco do Animal';
+          this.isFemeaValida = true;
+          this.femeaPlaceholder = 'Brinco da Fêmea';
         }
         else {
-          this.isAnimalValido = false;
-          this.animalPlaceholder = 'Brinco do animal é um Campo Obrigatório';
+          this.isFemeaValida = false;
+          this.femeaPlaceholder = 'Brinco da Fêmea é um Campo Obrigatório';
         }
       }
       else {
-        this.isAnimalValido = false;
-        this.animalPlaceholder = 'Brinco do animal é um Campo Obrigatório';
+        this.isFemeaValida = false;
+        this.femeaPlaceholder = 'Brinco da Fêmea é um Campo Obrigatório';
       }
 
       //VETERINÁRIO
-      if (this.nomeVet != null) {
-        if (this.nomeVet.trim() != '') {
+      if (this.nomeVeterinario != null) {
+        if (this.nomeVeterinario.trim() != '') {
           this.isVeterinarioValido = true;
-          this.veterinarioPlaceholder = 'Digite o Veterinário';
+          this.veterinarioPlaceholder = 'Nome do Veterinário';
         }
         else {
           this.isVeterinarioValido = false;
-          this.veterinarioPlaceholder = 'Veterinário é um Campo Obrigatório'
+          this.veterinarioPlaceholder = 'Nome do Veterinário é um Campo Obrigatório'
         }
       }
       else {
         this.isVeterinarioValido = false;
-        this.veterinarioPlaceholder = 'Veterinário é um Campo Obrigatório'
+        this.veterinarioPlaceholder = 'Nome do Veterinário é um Campo Obrigatório'
       }
 
       //IDENTIFICADOR TOURO
@@ -279,7 +449,7 @@ export default {
 
       return (
         this.isDataValida &&
-        this.isAnimalValido &&
+        this.isFemeaValida &&
         this.isVeterinarioValido &&
         this.isIdentificadorTouroValido
       );
@@ -355,6 +525,42 @@ export default {
 
 #legenda {
   font-size: 16px;
+}
+
+.select-option {
+  width: 100%;
+  cursor: pointer;
+}
+
+.itens {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 999;
+  padding: 20px;
+}
+
+.options {
+  max-height: 200px;
+  /* Ajuste a altura conforme necessário */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.options li:hover {
+  background-color: #f0f0f0;
 }
 
 </style>

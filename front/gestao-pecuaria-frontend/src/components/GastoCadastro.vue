@@ -46,12 +46,8 @@
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Descrição da Gasto"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
-<<<<<<< HEAD:front/gestao-pecuaria-frontend/src/components/GastoCadastro.vue
                 :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Gasto">
               <div class="character-counter">({{ contadorDescricao }} / 255)</div>   
-=======
-                :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Despesa">
->>>>>>> e59a9bb569aed64e05c707828c6d937937e9e7e2:front/gestao-pecuaria-frontend/src/components/OutraDespesaCadastro.vue
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"  title="Categoria do Gasto"><i class="fas fa-clipboard-list"></i></span>

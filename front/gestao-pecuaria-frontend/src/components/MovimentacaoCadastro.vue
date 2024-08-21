@@ -28,16 +28,23 @@
                 :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoCadastro"
                 v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }" title="Data da Movimentação">
             </div>
-            <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="piqueteDestinoNome" @input="filtrarPiquetesDestino()" type="text" class="form-control"
-                :placeholder="piqueteDestinoPlaceholder" :class="{ 'is-invalid': !isPiqueteDestinoValido }">
-            </div>
-            <div class="list-group" v-if="piqueteDestinoNome && filteredPiquetesDestino.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="piquete in filteredPiquetesDestino" :key="piquete.id" @click="selecionarPiqueteDestino(piquete)">
-                {{ piquete.nome }} - {{ piquete.propriedade.nome }}
-              </button>
+
+            <div ref="dropdownPiqueteDestino" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
+            @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" @keydown.enter.prevent="selectHighlightedPiqueteDestino">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteDestino">
+                <span class="input-group-text" title="Piquete de Destino dos Animais movimentados"><i class="fas fa-box"></i></span>
+                <input v-model="nomePiqueteDestino" :class="{ 'is-invalid': !isPiqueteDestinoValido }" @input="inputPiqueteDestino"
+                  @click="filterPiquetesDestino" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
+                  @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" type="text" class="form-control"
+                  :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino dos Animais movimentados">
+              </div>
+              <div class="itens" v-show="dropdownPiqueteDestinoOpen">
+                <ul class="options">
+                  <li v-for="(piqueteDestino, index) in piquetesDestinoFiltrados" :key="piqueteDestino.id" :value="piqueteDestino.id"
+                    @click="selectPiqueteDestino(piqueteDestino)" :class="{ 'highlighted': index === highlightedIndexPiqueteDestino }">{{
+                    piqueteDestino.nome}} - {{ piqueteDestino.propriedade.nome}}</li>
+                </ul>
+              </div>
             </div>
 
             <div class="mb-3 input-group position-relative">
@@ -45,17 +52,25 @@
                     <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
                     placeholder="Motivo" title="Motivo da Movimentação">
                 </div>
-            <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="piqueteOrigemNome" @input="filtrarPiquetesOrigem()" type="text" class="form-control"
-                :placeholder="piqueteOrigemPlaceholder" :class="{ 'is-invalid': !isPiqueteOrigemValido }">
+            
+            <div ref="dropdownPiqueteOrigem" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
+            @keydown.down.prevent="navigateOptionsPiqueteOrigem('down')" @keydown.enter.prevent="selectHighlightedPiqueteOrigem">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteOrigem">
+                <span class="input-group-text" title="PiqueteOrigem dos Animais aplicados"><i class="fas fa-box"></i></span>
+                <input v-model="nomePiqueteOrigem" :class="{ 'is-invalid': !isPiqueteOrigemValido }" @input="inputPiqueteOrigem"
+                  @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
+                  @keydown.down.prevent="navigateOptionsPiqueteOrigem('down')" type="text" class="form-control"
+                  :placeholder="piqueteOrigemPlaceholder" id="caixa-select" title="PiqueteOrigem dos Animais aplicados">
+              </div>
+              <div class="itens" v-show="dropdownPiqueteOrigemOpen">
+                <ul class="options">
+                  <li v-for="(piqueteOrigem, index) in piquetesOrigemFiltrados" :key="piqueteOrigem.id" :value="piqueteOrigem.id"
+                    @click="selectPiqueteOrigem(piqueteOrigem)" :class="{ 'highlighted': index === highlightedIndexPiqueteOrigem }">{{
+                    piqueteOrigem.nome }} - {{ piqueteOrigem.propriedade.nome }}</li>
+                </ul>
+              </div>
             </div>
-            <div class="list-group" v-if="piqueteOrigemNome && filteredPiquetesOrigem.length">
-              <button type="button" class="list-group-item list-group-item-action"
-                v-for="piquete in filteredPiquetesOrigem" :key="piquete.id" @click="selecionarPiqueteOrigem(piquete)">
-                {{ piquete.nome }} - {{ piquete.propriedade.nome }}
-              </button>
-            </div>
+            
             <div class="mb-3 input-group" v-if="animaisFiltrados.length != 0">
               <div class="checkbox-container">
                 <label v-if="animaisFiltrados.length != 0">
@@ -90,15 +105,16 @@ export default {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
       animais: [],
       animaisFiltrados: [],
-      piquetes: [],
-      piquetesDaPropriedade: [],
-      piqueteOrigemNome: '',
-      piqueteDestinoNome: '',
-      piqueteId: null,
-      filteredPiquetesOrigem: [],
-      filteredPiquetesDestino: [],
-      radioEscolha: 'brinco',
-      contadorMotivo: 0,
+      piquetesDestino: [],
+      piquetesOrigem: [],
+      piquetesDestinoFiltrados: [],
+      piquetesOrigemFiltrados: [],
+      nomePiqueteOrigem: '',
+      nomePiqueteDestino: '',
+      highlightedIndexPiqueteDestino: -1,
+      dropdownPiqueteDestinoOpen: false,
+      highlightedIndexPiqueteOrigem: -1,
+      dropdownPiqueteOrigemOpen: false,
       selecionaTodos: false,
       formData: {
         animal: [],
@@ -129,6 +145,8 @@ export default {
     this.buscarAnimaisDaApi();
     this.buscarPiquetesParaDestino();
     this.buscarPiquetesParaOrigem();
+    document.addEventListener('click', this.handleClickOutsidePiqueteOrigem);
+    document.addEventListener('click', this.handleClickOutsidePiqueteDestino);
   },
 
   methods: {
@@ -136,7 +154,6 @@ export default {
     aplicarMotivoMask(event){
       const value = event.target.value;
       this.formData.motivo = this.observacoesMask(value);
-      this.contadorMotivo = this.formData.motivo.length;
     },
 
     aplicarBrincoMask(value){
@@ -167,7 +184,7 @@ export default {
     async buscarPiquetesParaDestino() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/piquetes-propriedades');
-        this.piquetes = response.data;
+        this.piquetesDestino = response.data;
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);
       }
@@ -180,7 +197,7 @@ export default {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
         });
-        this.piquetesDaPropriedade = response.data;
+        this.piquetesOrigem = response.data;
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);
       }
@@ -205,33 +222,189 @@ export default {
       }
     },
 
-
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
-    filtrarPiquetesOrigem() {
-      this.filteredPiquetesOrigem = this.piquetesDaPropriedade.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteOrigemNome));
+//LÓGICA DOS SELECT PIQUETE DESTINO----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterPiquetesDestino() {
+      this.piquetesDestinoFiltrados = this.piquetesDestino.filter(piqueteDestino => piqueteDestino.nome.toLowerCase().includes(this.nomePiqueteDestino.toLowerCase()));
     },
 
-    async selecionarPiqueteOrigem(piquete) {
-      this.piqueteId = piquete.id;
-      this.formData.piqueteOrigem = piquete.id;
-      this.piqueteOrigemNome = piquete.nome + " - " + piquete.propriedade.nome;
-      this.filteredPiquetesOrigem = [];
+    async selectPiqueteDestino(piqueteDestino) {
+      this.nomePiqueteDestino = piqueteDestino.nome + " - " + piqueteDestino.propriedade.nome;
+      this.formData.piqueteDestino = piqueteDestino.id;
+      this.piquetesDestinoFiltrados = [];
+      this.dropdownPiqueteDestinoOpen = false;
+      this.highlightedIndexPiqueteDestino = -1; // Reseta o índice após a seleção
+
+      await this.buscarPiquetesParaOrigem();
+      this.atualizaOrigem();
+    },
+
+    toggleDropdownPiqueteDestino() {
+      this.dropdownPiqueteDestinoOpen = !this.dropdownPiqueteDestinoOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownPiqueteDestinoOpen){
+        this.piquetesDestinoFiltrados.forEach(piqueteDestino => {
+          if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
+            this.selectPiqueteDestino(piqueteDestino);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomePiqueteDestino = '';
+          this.formData.piqueteDestino = null;
+        }
+      }
+      else if(this.dropdownPiqueteOrigemOpen){
+        this.piquetesOrigem.forEach(piqueteOrigem => {
+          if(piqueteOrigem.nome.toLowerCase() === this.nomePiqueteOrigem.toLowerCase()){
+            this.selectPiqueteOrigem();
+            nomeCorreto = true;
+            
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.piqueteOrigem = null;
+          this.nomePiqueteOrigem = ''
+        }
+        this.dropdownPiqueteOrigemOpen = false;
+        this.filterPiquetesDestino();
+      }
+
+      else{
+        this.filterPiquetesDestino();
+      }
+    },
+
+    handleClickOutsidePiqueteDestino(event) {
+      let nomeCorreto = false;
+      if (this.dropdownPiqueteDestinoOpen && this.$refs.dropdownPiqueteDestino && !this.$refs.dropdownPiqueteDestino.contains(event.target)) {
+        this.piquetesDestino.forEach(piqueteDestino => {
+          if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
+            this.selectPiqueteDestino(piqueteDestino);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomePiqueteDestino = '';
+          this.formData.piqueteDestino = null;
+        }
+      }
+      this.dropdownPiqueteDestinoOpen = false;
+    },
+
+    inputPiqueteDestino() {
+      this.filterPiquetesDestino();
+      this.dropdownPiqueteDestinoOpen = true;
+      this.highlightedIndexPiqueteDestino = 0; // Inicia o índice ao começar a digitação
+    },
+
+    navigateOptionsPiqueteDestino(direction) {
+      if (direction === 'up' && this.highlightedIndexPiqueteDestino > 0) {
+        this.highlightedIndexPiqueteDestino--;
+      } else if (direction === 'down' && this.highlightedIndexPiqueteDestino < this.piquetesDestinoFiltrados.length - 1) {
+        this.highlightedIndexPiqueteDestino++;
+      }
+    },
+
+  selectHighlightedPiqueteDestino() {
+    if (this.highlightedIndexPiqueteDestino >= 0 && this.highlightedIndexPiqueteDestino < this.piquetesDestinoFiltrados.length) {
+      this.selectPiqueteDestino(this.piquetesDestinoFiltrados[this.highlightedIndexPiqueteDestino]);
+    }
+  },
+
+
+//LÓGICA DOS SELECT PIQUETE ORIGEM----------------------------------------------------------------------------------------------------------------------------------------------------
+    filterPiquetesOrigem() {
+      this.piquetesOrigemFiltrados = this.piquetesOrigem.filter(piqueteOrigem => piqueteOrigem.nome.toLowerCase().includes(this.nomePiqueteOrigem.toLowerCase()));
+    },
+
+    async selectPiqueteOrigem(piqueteOrigem) {
+      this.nomePiqueteOrigem = piqueteOrigem.nome + " - " + piqueteOrigem.propriedade.nome;
+      this.formData.piqueteOrigem = piqueteOrigem.id;
+      this.piquetesOrigemFiltrados = [];
+      this.dropdownPiqueteOrigemOpen = false;
+      this.highlightedIndexPiqueteOrigem = -1; // Reseta o índice após a seleção
+
       this.preencheCheckBox();
       await this.buscarPiquetesParaDestino();
       this.atualizaDestino();
     },
 
-    filtrarPiquetesDestino() {
-      this.filteredPiquetesDestino = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.piqueteDestinoNome));
+    toggleDropdownPiqueteOrigem() {
+      this.dropdownPiqueteOrigemOpen = !this.dropdownPiqueteOrigemOpen;
+      let nomeCorreto = false;
+
+      if(!this.dropdownPiqueteOrigemOpen){
+        this.piquetesOrigemFiltrados.forEach(piqueteOrigem => {
+          if(piqueteOrigem.nome.toLowerCase() === this.nomePiqueteOrigem.toLowerCase()){
+            this.selectPiqueteOrigem(piqueteOrigem);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomePiqueteOrigem = '';
+          this.formData.piqueteOrigem = null;
+        }
+      }
+      else if(this.dropdownPiqueteDestinoOpen){
+        this.piquetesDestino.forEach(piqueteDestino => {
+          if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
+            this.selectPiqueteDestino();
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.piqueteDestino = null;
+          this.nomePiqueteDestino = ''
+        }
+        this.dropdownPiqueteDestinoOpen = false;
+        this.filterPiquetesOrigem();
+      }
+      else{
+        this.filterPiquetesOrigem();
+      }
     },
 
-    async selecionarPiqueteDestino(piquete) {
-      this.piqueteDestinoNome = piquete.nome + " - " + piquete.propriedade.nome;
-      this.formData.piqueteDestino = piquete.id;
-      this.filteredPiquetesDestino = [];
-      await this.buscarPiquetesParaOrigem();
-      this.atualizaOrigem();
+    handleClickOutsidePiqueteOrigem(event) {
+      let nomeCorreto = false;
+      if (this.dropdownPiqueteOrigemOpen && this.$refs.dropdownPiqueteOrigem && !this.$refs.dropdownPiqueteOrigem.contains(event.target)) {
+        this.piquetesOrigem.forEach(piqueteOrigem => {
+          if(piqueteOrigem.nome.toLowerCase() === this.nomePiqueteOrigem.toLowerCase()){
+            this.selectPiqueteOrigem(piqueteOrigem);
+            nomeCorreto = true;
+          }
+        });
+        if(!nomeCorreto){
+          this.nomePiqueteOrigem = '';
+          this.animaisFiltrados = [];
+        }
+      }
+      this.dropdownPiqueteOrigemOpen = false;
     },
+
+    inputPiqueteOrigem() {
+      this.filterPiquetesOrigem();
+      this.dropdownPiqueteOrigemOpen = true;
+      this.highlightedIndexPiqueteOrigem = 0; // Inicia o índice ao começar a digitação
+
+      if (this.nomePiqueteOrigem.trim() === '') {
+        this.animaisFiltrados = [];
+      }
+    },
+
+    navigateOptionsPiqueteOrigem(direction) {
+    if (direction === 'up' && this.highlightedIndexPiqueteOrigem > 0) {
+      this.highlightedIndexPiqueteOrigem--;
+    } else if (direction === 'down' && this.highlightedIndexPiqueteOrigem < this.piquetesOrigemFiltrados.length - 1) {
+      this.highlightedIndexPiqueteOrigem++;
+    }
+  },
+
+  selectHighlightedPiqueteOrigem() {
+    if (this.highlightedIndexPiqueteOrigem >= 0 && this.highlightedIndexPiqueteOrigem < this.piquetesOrigemFiltrados.length) {
+      this.selectPiqueteOrigem(this.piquetesOrigemFiltrados[this.highlightedIndexPiqueteOrigem]);
+    }
+  },
 
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -251,46 +424,26 @@ export default {
         this.isDataValida = false;
         this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
       }
-      
-      //BRINCO OU TODOS DO PIQUETE
-      if(this.radioEscolha == 'brinco'){
-        //BRINCO 
-        if(this.brinco != null){
-          if(this.brinco.trim() != ''){
-            this.isBrincoValido = true;
-            this.brincoPlaceholder = 'Brinco do Animal'
-          }
-          else{
-          this.isBrincoValido = false;
-          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
-          }
-        }
-        else{
-          this.isBrincoValido = false;
-          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
-        }
-      }
-      else{
-        //PIQUETE ORIGEM
-        if(this.piqueteOrigemNome != null){
-          if(this.piqueteOrigemNome.trim() != ''){
-            this.isPiqueteOrigemValido = true;
-            this.piqueteOrigemPlaceholder = 'Piquete de Origem';
-          }
-          else{
-            this.isPiqueteOrigemValido = false;
-            this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
-          }
+        
+      //PIQUETE ORIGEM
+      if(this.nomePiqueteOrigem != null){
+        if(this.nomePiqueteOrigem.trim() != ''){
+          this.isPiqueteOrigemValido = true;
+          this.piqueteOrigemPlaceholder = 'Piquete de Origem';
         }
         else{
           this.isPiqueteOrigemValido = false;
           this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
         }
       }
+      else{
+        this.isPiqueteOrigemValido = false;
+        this.piqueteOrigemPlaceholder = 'Piquete de Origem é um Campo Obrigatório'
+      }
 
       //PIQUETE DE DESTINO
-      if(this.piqueteDestinoNome != null){
-          if(this.piqueteDestinoNome.trim() != ''){
+      if(this.nomePiqueteDestino != null){
+          if(this.nomePiqueteDestino.trim() != ''){
             this.isPiqueteDestinoValido = true;
             this.piqueteDestinoPlaceholder = 'Piquete de Destino';
           }
@@ -325,7 +478,7 @@ checkEnter(event) {
       }
     },    
 preencheCheckBox(){
-      this.animaisFiltrados = this.animais.filter(animal => animal.piquete.id === this.piqueteId);
+      this.animaisFiltrados = this.animais.filter(animal => animal.piquete.id === this.formData.piqueteOrigem);
       console.log('animais filtrados: ', this.animaisFiltrados);
       
     },
@@ -352,8 +505,8 @@ preencheCheckBox(){
 
     atualizaOrigem(){
       let indice = null;
-      for (let index = 0; index < this.piquetesDaPropriedade.length; index++) {
-        const piquete = this.piquetesDaPropriedade[index];
+      for (let index = 0; index < this.piquetesOrigem.length; index++) {
+        const piquete = this.piquetesOrigem[index];
         if(piquete.id === this.formData.piqueteDestino){
           indice = index;
           break;
@@ -361,14 +514,14 @@ preencheCheckBox(){
       }
       console.log('indice: ', indice);
       if(indice != null){
-        this.piquetesDaPropriedade.splice(indice, 1)
+        this.piquetesOrigem.splice(indice, 1)
       }
     },
 
     atualizaDestino(){
       let indice = null;
-      for (let index = 0; index < this.piquetes.length; index++) {
-        const piquete = this.piquetes[index];
+      for (let index = 0; index < this.piquetesDestino.length; index++) {
+        const piquete = this.piquetesDestino[index];
         if(piquete.id === this.formData.piqueteOrigem){
           indice = index;
           break;
@@ -376,7 +529,7 @@ preencheCheckBox(){
       }
       console.log('indice: ', indice);
       if(indice != null){
-        this.piquetes.splice(indice, 1)
+        this.piquetesDestino.splice(indice, 1)
       }
     },
   },
@@ -455,5 +608,41 @@ preencheCheckBox(){
 .checkbox-container label {
     display: flex;
     align-items: center;
+}
+
+.select-option {
+  width: 100%;
+  cursor: pointer;
+}
+
+.itens {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100%;
+  margin-top: 40px;
+  z-index: 999;
+  padding: 20px;
+}
+
+.options {
+  max-height: 200px;
+  /* Ajuste a altura conforme necessário */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.options li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.options li:hover {
+  background-color: #f0f0f0;
 }
 </style>

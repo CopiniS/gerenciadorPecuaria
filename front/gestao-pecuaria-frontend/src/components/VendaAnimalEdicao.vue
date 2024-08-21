@@ -14,7 +14,7 @@
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel" aria-labelledby="nav-edicao-tab">
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Venda</h1>
-            <form @submit.prevent="submitForm">
+            <form @submit.prevent="submitForm" @keydown="checkEnter">
               <div class="mb-3 input-group">
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
@@ -315,7 +315,12 @@ export default {
 
 
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    atualizaValorTotalPeloPeso(){
+checkEnter(event) {
+      if (event.key === 'Enter') {
+        this.submitForm();
+      }
+    },    
+atualizaValorTotalPeloPeso(){
       if(this.formData.precoKg != null && this.formData.precoKg != ''){
         this.formData.valorTotal = parseFloat(this.replaceVirgulaPonto(this.formData.precoKg) * 
         this.replaceVirgulaPonto(this.formData.peso));

@@ -24,7 +24,7 @@
         aria-labelledby="nav-edicao-tab">
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Piquete</h1>
-          <form @submit.prevent="submitForm">
+          <form @submit.prevent="submitForm" @keydown="checkEnter">
               <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                 <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" 
@@ -231,7 +231,12 @@ export default {
 
 
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    selectTab(tab) {
+checkEnter(event) {
+      if (event.key === 'Enter') {
+        this.submitForm();
+      }
+    },    
+selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'piquetes') {
         this.$router.push('/piquetes');

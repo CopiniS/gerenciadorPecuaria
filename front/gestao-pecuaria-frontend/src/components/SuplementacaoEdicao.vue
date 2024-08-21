@@ -19,7 +19,7 @@
         aria-labelledby="nav-edicao-tab">
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Suplementação</h1>
-          <form @submit.prevent="submitForm">
+          <form @submit.prevent="submitForm" @keydown="checkEnter">
               <div class="mb-3 input-group">
                 <label for="dataInicial" class="input-group-text" title="Data Inicial da Suplementação"><i class="fas fa-calendar-alt"></i></label>
                 <input type="text" :class="{'is-invalid': !isDataInicialValida}" onfocus="(this.type='date')" onblur="(this.type='text')" 
@@ -464,7 +464,12 @@ export default {
 
 
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    verificaFinalizado(suplementacao){
+checkEnter(event) {
+      if (event.key === 'Enter') {
+        this.submitForm();
+      }
+    },    
+verificaFinalizado(suplementacao){
       if(suplementacao.dataFinal != null){
         this.estaFinalizado = true;
       }

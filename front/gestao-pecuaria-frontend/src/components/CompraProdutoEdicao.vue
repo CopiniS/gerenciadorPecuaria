@@ -24,7 +24,7 @@
         aria-labelledby="nav-edicao-tab">
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Compra</h1>
-          <form @submit.prevent="submitForm">
+          <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group">
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
@@ -364,7 +364,12 @@ export default {
 
 
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    selectTab(tab) {
+checkEnter(event) {
+      if (event.key === 'Enter') {
+        this.submitForm();
+      }
+    },    
+selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'compras') {
         this.$router.push('/compraprodutos');

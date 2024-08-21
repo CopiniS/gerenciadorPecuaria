@@ -14,7 +14,7 @@
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel" aria-labelledby="nav-edicao-tab">
         <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
           <h1 class="title fs-5" id="edicaoLabel">Edição de Aplicação</h1>
-            <form @submit.prevent="submitForm">
+            <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group" :class="{ 'is-invalid': !isDataValida }">
               <span class="input-group-text" title="Data da Aplicação"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
@@ -455,7 +455,13 @@ export default {
 
 
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    replacePontoVirgula(valorString){
+checkEnter(event) {
+      if (event.key === 'Enter') {
+        this.submitForm();
+      }
+    },
+
+replacePontoVirgula(valorString){
       valorString = valorString.replace(".", ",");
 
       return valorString;

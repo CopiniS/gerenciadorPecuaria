@@ -47,7 +47,6 @@
               <span class="input-group-text" title="Descrição da Gasto"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
                 :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Gasto">
-              <div class="character-counter">({{ contadorDescricao }} / 255)</div>   
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"  title="Categoria do Gasto"><i class="fas fa-clipboard-list"></i></span>

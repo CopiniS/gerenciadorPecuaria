@@ -277,7 +277,7 @@ export default {
 
     selectPiquete(piquete) {
       this.nomePiquete = piquete.nome;
-      this.piqueteId = piquete.id;
+      this.formData.piquete = piquete.id;
       this.piquetesFiltrados = [];
       this.dropdownPiqueteOpen = false;
       this.highlightedIndexPiquete = -1; // Reseta o índice após a seleção

@@ -134,7 +134,7 @@ export default {
     this.buscarFemeasVivasDaApi();
     this.buscarVeterinariosDaApi();
     document.addEventListener('click', this.handleClickOutsideVeterinario);
-    document.addEventListener('click', this.handleClickOutsidePiquete);
+    document.addEventListener('click', this.handleClickOutsideFemea);
   },
 
   methods: {
@@ -306,7 +306,7 @@ export default {
           if(femea.brinco === this.brinco){
             this.brinco = femea.brinco;
             this.formData.animal = femea.id;
-            this.femeasFiltrados = [];
+            this.femeasFiltradas = [];
             brincoCorreto = true;
           }
         });

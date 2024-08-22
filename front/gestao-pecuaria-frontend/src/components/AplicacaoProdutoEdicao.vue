@@ -240,7 +240,27 @@ export default {
         });
         if(!nomeCorreto){
           this.brinco = '';
+          this.formData.animal = null;
         }
+      }
+      else if(this.dropdownProdutoOpen){
+        this.produtos.forEach(produto => {
+          if(produto.nome === this.nomeProduto){
+            this.selectProduto(produto);
+            nomeCorreto = true;
+            
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.produto = null;
+          this.nomeProduto = ''
+        }
+        this.dropdownProdutoOpen = false;
+        this.filterAnimais();
+      }
+
+      else{
+        this.filterAnimais();
       }
     },
 
@@ -314,6 +334,26 @@ export default {
         if(!nomeCorreto){
           this.nomeProduto = '';
         }
+      }
+
+      else if(this.dropdownAnimalOpen){
+        this.animais.forEach(animal => {
+          if(animal.brinco === this.brinco){
+            this.selectAnimal(animal);
+            nomeCorreto = true;
+            
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.animal = null;
+          this.brinco = ''
+        }
+        this.dropdownAnimalOpen = false;
+        this.filterProdutos();
+      }
+
+      else{
+        this.filterProdutos();
       }
     },
 

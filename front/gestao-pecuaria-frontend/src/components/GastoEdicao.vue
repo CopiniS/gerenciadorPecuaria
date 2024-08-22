@@ -64,7 +64,7 @@
                 <option v-if="formData.tipo == 'despesa'" value="sementes">Sementes</option>
                 <option v-if="formData.tipo == 'despesa'" value="adubos">Adubos</option>
                 <option v-if="formData.tipo == 'despesa'" value="outros">Outros</option>
-                <option v-if="formData.tipo == 'investimento'" value="compra_maquinas">Compra Máquinas</option>
+                <option v-if="formData.tipo == 'investimento'" value="compra_maquinas">Compra de Máquinas</option>
                 <option v-if="formData.tipo == 'investimento'" value="construcao_benfeitorias">Construção de Benfeitorias</option>
                 <option v-if="formData.tipo == 'investimento'" value="implantacao_lavouras">Implantação de Lavouras</option>
                 <option v-if="formData.tipo == 'investimento'" value="aquisicao_terra">Aquisição de Terra</option>

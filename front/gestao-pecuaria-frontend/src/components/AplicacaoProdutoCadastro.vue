@@ -256,7 +256,6 @@ export default {
     this.highlightedIndexPiquete = -1; // Reseta o índice após a seleção
   },
 
-
     toggleDropdownPiquete() {
       this.dropdownPiqueteOpen = !this.dropdownPiqueteOpen;
       let nomeCorreto = false;
@@ -265,14 +264,35 @@ export default {
         this.piquetesFiltrados.forEach(piquete => {
           if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
             this.nomePiquete = piquete.nome;
-            this.formData.piquete = piquete.id;
+            this.piqueteId = piquete.id;
             this.piquetesFiltrados = [];
             nomeCorreto = true;
           }
         });
         if(!nomeCorreto){
           this.nomePiquete = '';
+          this.piqueteId = null;
         }
+      }
+
+      else if(this.dropdownProdutoOpen){
+        this.produtos.forEach(produto => {
+          if(produto.nome === this.nomeProduto){
+            this.selectProduto(produto);
+            nomeCorreto = true;
+            
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.produto = null;
+          this.nomeProduto = ''
+        }
+        this.dropdownProdutoOpen = false;
+        this.filterPiquetes();
+      }
+
+      else{
+        this.filterPiquetes();
       }
     },
 
@@ -294,28 +314,28 @@ export default {
     },
 
     inputPiquete() {
-    this.filterPiquetes();
-    this.dropdownPiqueteOpen = true;
-    this.highlightedIndexPiquete = 0; // Inicia o índice ao começar a digitação
+      this.filterPiquetes();
+      this.dropdownPiqueteOpen = true;
+      this.highlightedIndexPiquete = 0; // Inicia o índice ao começar a digitação
 
-    if (this.nomePiquete.trim() === '') {
-      this.animaisFiltrados = [];
-    }
-  },
+      if (this.nomePiquete.trim() === '') {
+        this.animaisFiltrados = [];
+      }
+    },
 
     navigateOptionsPiquete(direction) {
-    if (direction === 'up' && this.highlightedIndexPiquete > 0) {
-      this.highlightedIndexPiquete--;
-    } else if (direction === 'down' && this.highlightedIndexPiquete < this.piquetesFiltrados.length - 1) {
-      this.highlightedIndexPiquete++;
-    }
-  },
+      if (direction === 'up' && this.highlightedIndexPiquete > 0) {
+        this.highlightedIndexPiquete--;
+      } else if (direction === 'down' && this.highlightedIndexPiquete < this.piquetesFiltrados.length - 1) {
+        this.highlightedIndexPiquete++;
+      }
+    },
 
-  selectHighlightedPiquete() {
-    if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
-      this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
-    }
-  },
+    selectHighlightedPiquete() {
+      if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
+        this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
+      }
+    },
 
 
 //LÓGICA DOS SELECT PRODUTO----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -346,6 +366,26 @@ export default {
         if(!nomeCorreto){
           this.nomeProduto = '';
         }
+      }
+
+      else if(this.dropdownPiqueteOpen){
+        this.piquetes.forEach(piquete => {
+          if(piquete.nome === this.nomePiquete){
+            this.selectPiquete(piquete);
+            nomeCorreto = true;
+            
+          }
+        });
+        if(!nomeCorreto){
+          this.formData.piquete = null;
+          this.nomePiquete = ''
+        }
+        this.dropdownPiqueteOpen = false;
+        this.filterProdutos();
+      }
+
+      else{
+        this.filterProdutos();
       }
     },
 

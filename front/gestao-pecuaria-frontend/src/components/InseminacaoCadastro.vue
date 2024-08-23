@@ -77,7 +77,7 @@
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observação da Inseminação"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" class="form-control"
+              <input v-model="formData.observacao" type="text" class="form-control"
                 id="observacao" placeholder="Observação" title="Observação da Inseminação">
             </div>
             <div class="button-group justify-content-end">
@@ -141,11 +141,6 @@ export default {
     //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(value) {
       this.brinco = this.brincoFiltroMask(value);
-    },
-
-    aplicarObservacaoMask(event) {
-      const value = event.target.value;
-      this.formData.observacao = this.observacoesMask(value);
     },
 
 

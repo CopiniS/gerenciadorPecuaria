@@ -71,7 +71,7 @@
                 <div class="mb-3 input-group position-relative">
                   <span class="input-group-text" title="Observação da Venda"><i class="fas fa-sticky-note"></i></span>
                   <input v-model="formData.observacao" type="text" class="form-control" id="observacao"
-                    @input="aplicarObservacaoMask" placeholder="Observação" title="Observação da Venda" />
+                  placeholder="Observação" title="Observação da Venda" />
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
@@ -97,7 +97,6 @@ export default {
       animais: [],
       animaisFiltrados: [],
       brinco: '',
-      contadorObservacao: 0,
       highlightedIndex: -1,
       dropdownOpen: false,
       formData: {
@@ -137,12 +136,6 @@ export default {
 
     aplicarValorTotalMask2(value){
       this.formData.valorTotal = this.valorMask(value);
-    },
-
-    aplicarObservacaoMask(event){
-      const value = event.target.value;
-      this.formData.observacao = this.observacoesMask(value);
-      this.contadorObservacao = this.formData.observacao.length;
     },
 
     aplicarPesoMask(value) {

@@ -72,7 +72,7 @@
                 <div class="mb-3 input-group position-relative">
                   <span class="input-group-text" title="Observação da Venda"><i class="fas fa-sticky-note"></i></span>
                   <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                    @input="aplicarObservacaoMask" placeholder="Observação" title="Observação da Venda"></textarea>
+                  placeholder="Observação" title="Observação da Venda"></textarea>
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
@@ -141,11 +141,6 @@ export default {
 
     aplicarValorTotalMask2(value){
       this.formData.valorTotal = this.valorMask(value);
-    },
-
-    aplicarObservacaoMask(event){
-      const value = event.target.value;
-      this.formData.observacao = this.observacoesMask(value);
     },
 
     aplicarPesoMask(value) {

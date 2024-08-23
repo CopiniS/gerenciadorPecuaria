@@ -42,9 +42,8 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Descrição da Ocorrência"><i class="fas fa-tags"></i></span>
-              <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
+              <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
                 placeholder="Descrição" title="Descrição da Ocorrência">
-              <div>({{ contadorDescricao }} / 255)</div>
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>
@@ -69,7 +68,6 @@ export default {
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
-      contadorDescricao: 0,
       brinco: null,
       formData: {
         id: null,
@@ -93,14 +91,6 @@ export default {
   },
 
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarDescricaoMask(event){
-      const value = event.target.value;
-      this.formData.descricao = this.observacoesMask(value);
-      this.contadorDescricao = this.formData.descricao.length;
-    },
-
-
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
    async fetchAnimal(animalId) {
       try {

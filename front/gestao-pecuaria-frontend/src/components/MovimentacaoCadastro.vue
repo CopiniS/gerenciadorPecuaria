@@ -49,7 +49,7 @@
 
             <div class="mb-3 input-group position-relative">
                     <span class="input-group-text" title="Motivo da Movimentação"><i class="fas fa-comment"></i></span>
-                    <input v-model="formData.motivo" type="text" @input="aplicarMotivoMask" class="form-control" id="motivo" 
+                    <input v-model="formData.motivo" type="text" class="form-control" id="motivo" 
                     placeholder="Motivo" title="Motivo da Movimentação">
                 </div>
             
@@ -151,11 +151,6 @@ export default {
 
   methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarMotivoMask(event){
-      const value = event.target.value;
-      this.formData.motivo = this.observacoesMask(value);
-    },
-
     aplicarBrincoMask(value){
       this.brinco =  this.brincoMask(value);
     },

@@ -54,7 +54,7 @@
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observação da Aplicação"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacao" 
-              @input="aplicarObservacaoMask" type="text" class="form-control" id="observacao" 
+              type="text" class="form-control" id="observacao" 
               :placeholder="observacaoPlaceholder" title="Observação da Aplicação">
               
             </div>
@@ -119,7 +119,6 @@ export default {
       nomePiquete: '',
       piqueteId: null,
       piquetesFiltrados: [],
-      contadorObservacoes: 0,
       selecionaTodos: false,
       highlightedIndexProduto: -1,
       dropdownProdutoOpen: false,
@@ -165,12 +164,6 @@ export default {
     aplicarDosagemMask(event) {
       const value = event.target.value;
       this.formData.dosagem = this.valorMask(value);
-    },
-
-    aplicarObservacaoMask(event) {
-      const value = event.target.value;
-      this.formData.observacao = this.observacoesMask(value);
-      this.contadorObservacoes = this.formData.observacao.length;
     },
 
     aplicarBrincoMask(value) {

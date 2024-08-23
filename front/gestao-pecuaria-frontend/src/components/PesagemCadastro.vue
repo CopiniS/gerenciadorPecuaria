@@ -49,7 +49,7 @@
               </div>
               <div class="mb-3 input-group position-relative">
                 <span class="input-group-text" title="Observações da Pesagem"><i class="fas fa-sticky-note"></i></span>
-                <input v-model="formData.observacao" type="text" @input="aplicarObservacaoMask" 
+                <input v-model="formData.observacao" type="text"
                 class="form-control" id="observacao" placeholder="Observação" title="Observações da Pesagem">
               </div>
               <div class="button-group justify-content-end">
@@ -76,7 +76,6 @@ export default {
       animais: [],
       animaisFiltrados: [],
       brinco: '',
-      contadorObservacao: 0,
       highlightedIndex: -1,
       dropdownOpen: false,
       formData: {
@@ -102,12 +101,6 @@ export default {
 
   methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarObservacaoMask(event){
-      const value = event.target.value;
-      this.formData.observacao = this.observacoesMask(value);
-      this.contadorObservacao = this.formData.observacao.length;
-    },
-
     aplicarPesoMask(event){
       const value = event.target.value;
       this.formData.peso = this.valorMask(value);

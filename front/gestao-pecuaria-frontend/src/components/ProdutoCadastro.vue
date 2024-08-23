@@ -72,7 +72,7 @@
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Descrição do Produto"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
+              <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
                 placeholder="Descrição" title="Descrição do Produto" />
             </div>
             <div class="button-group justify-content-end">
@@ -96,7 +96,6 @@ export default {
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
-      contadorDescricao: 0,
       produtosDaApi: [],
       formData: {
         id: null,
@@ -119,15 +118,7 @@ export default {
   mounted() {
       this.buscarProdutosDaApi();
   },
-  methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarDescricaoMask(event){
-      const value = event.target.value;
-      this.formData.descricao = this.observacoesMask(value);
-      this.contadorDescricao = this.formData.descricao.length;
-    },
-
-    
+  methods: {  
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {

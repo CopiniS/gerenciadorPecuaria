@@ -72,9 +72,8 @@
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Descrição do Produto"><i class="fas fa-sticky-note"></i></span>
-              <textarea v-model="formData.descricao" @input="aplicarDescricaoMask" class="form-control" id="descricao"
-                placeholder="Descrição" title="Descrição do Produto"></textarea>
-              <div class="character-counter">({{ contadorDescricao }} / 255)</div> 
+              <input v-model="formData.descricao" class="form-control" id="descricao"
+                placeholder="Descrição" title="Descrição do Produto">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
@@ -97,7 +96,6 @@ export default {
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
-      contadorDescricao: 0,
       produtosDaApi: [],
       formData: {
         id: null,
@@ -126,14 +124,6 @@ export default {
     this.buscarProdutosDaApi();
   },
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarDescricaoMask(event){
-      const value = event.target.value;
-      this.formData.descricao = this.observacoesMask(value);
-      this.contadorDescricao = this.formData.descricao.length;
-    },
-
-
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async fetchProduto(id) {
       try {
@@ -145,10 +135,6 @@ export default {
         this.formData.categoria = produto.categoria;
         this.formData.descricao = produto.descricao;
         this.formData.unidade = produto.unidade;
-        
-        if(this.formData.descricao){
-          this.contadorDescricao = this.formData.descricao.length;
-        }
       } catch (error) {
         console.error('Erro ao carregar dados da produto:', error);
       }

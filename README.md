@@ -131,6 +131,14 @@ Dentro da pasta /gestao-pecuaria-frontend:
 
 	npm install flatpickr
 
+5 - Instalar o jspdf
+
+	npm install jspdf
+
+6 - Instalar o jspdf-autotable
+
+	npm install jspdf jspdf-autotable
+
 
 ### Pull dos arquivos do repositório remoto no gitHub
 

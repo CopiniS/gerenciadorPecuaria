@@ -34,8 +34,8 @@
                 @change="categoriaPlaceholder = 'Categoria*'; formData.categoria = null" :class="{'is-invalid': !isTipoValido}" 
                 title="Categoria do Gasto">
                 <option disabled :value="null">{{ tipoPlaceholder }}</option>
-                <option value="despesa">Despesa</option>
-                <option value="investimento">Investimento</option>
+                <option value="Despesa">Despesa</option>
+                <option value="Investimento">Investimento</option>
               </select>
             </div>
             <div class="mb-3 input-group">
@@ -54,20 +54,20 @@
               class="form-select" id="categoria" aria-label="Categoria"
               :class="{'is-invalid': !isCategoriaValida}" title="Categoria do Gasto">
                 <option disabled :value="null">{{ categoriaPlaceholder }}</option>
-                <option v-if="formData.tipo == 'despesa'" value="mao_de_obra">Mão de Obra</option>
-                <option v-if="formData.tipo == 'despesa'" value="manutencao_maquinas">Manutenção de Máquinas</option>
-                <option v-if="formData.tipo == 'despesa'" value="manutencao_benfeitorias">Manutenção de Benfeitorias</option>
-                <option v-if="formData.tipo == 'despesa'" value="medicamentos">Medicamentos</option>
-                <option v-if="formData.tipo == 'despesa'" value="combustiveis">Combustiveis</option>
-                <option v-if="formData.tipo == 'despesa'" value="despesa_administrativa">Despesa Administrativa</option>
-                <option v-if="formData.tipo == 'despesa'" value="sementes">Sementes</option>
-                <option v-if="formData.tipo == 'despesa'" value="adubos">Adubos</option>
-                <option v-if="formData.tipo == 'despesa'" value="outros">Outros</option>
-                <option v-if="formData.tipo == 'investimento'" value="compra_maquinas">Compra de Máquinas</option>
-                <option v-if="formData.tipo == 'investimento'" value="construcao_benfeitorias">Construção de Benfeitorias</option>
-                <option v-if="formData.tipo == 'investimento'" value="implantacao_lavouras">Implantação de Lavouras</option>
-                <option v-if="formData.tipo == 'investimento'" value="aquisicao_terra">Aquisição de Terra</option>
-                <option v-if="formData.tipo == 'investimento'" value="Outros">Outros</option>
+                <option v-if="formData.tipo == 'Despesa'" value="mao_de_obra">Mão de Obra</option>
+                <option v-if="formData.tipo == 'Despesa'" value="manutencao_maquinas">Manutenção de Máquinas</option>
+                <option v-if="formData.tipo == 'Despesa'" value="manutencao_benfeitorias">Manutenção de Benfeitorias</option>
+                <option v-if="formData.tipo == 'Despesa'" value="medicamentos">Medicamentos</option>
+                <option v-if="formData.tipo == 'Despesa'" value="combustiveis">Combustiveis</option>
+                <option v-if="formData.tipo == 'Despesa'" value="despesa_administrativa">Despesa Administrativa</option>
+                <option v-if="formData.tipo == 'Despesa'" value="sementes">Sementes</option>
+                <option v-if="formData.tipo == 'Despesa'" value="adubos">Adubos</option>
+                <option v-if="formData.tipo == 'Despesa'" value="outros">Outros</option>
+                <option v-if="formData.tipo == 'Investimento'" value="compra_maquinas">Compra de Máquinas</option>
+                <option v-if="formData.tipo == 'Investimento'" value="construcao_benfeitorias">Construção de Benfeitorias</option>
+                <option v-if="formData.tipo == 'Investimento'" value="implantacao_lavouras">Implantação de Lavouras</option>
+                <option v-if="formData.tipo == 'Investimento'" value="aquisicao_terra">Aquisição de Terra</option>
+                <option v-if="formData.tipo == 'Investimento'" value="Outros">Outros</option>
               </select>
             </div>
             <div class="button-group justify-content-end">

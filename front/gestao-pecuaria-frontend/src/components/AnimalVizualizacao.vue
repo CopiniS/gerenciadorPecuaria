@@ -56,20 +56,20 @@
                         <label for="raca" class="form-label me-2">Raça</label>
                         <select v-model="formDataAnimal.racaPredominante" class="form-select" id="racaPredominante"
                             aria-label="Raça Predominante" disabled>
-                            <option disabled value="">Selecione a raça</option>
+                            <option disabled :value="null">Raça</option>
                             <option v-for="raca in racas" :key="raca.id" :value="raca.id">{{ raca.nome }} </option>
                         </select>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="observacaoRaca" class="form-label me-2">Observações da Raça</label>
-                        <textarea v-model="formDataAnimal.racaObservacao" class="form-control" id="racaObservacao"
-                            placeholder="Observações sobre a Raça" disabled></textarea>
+                        <input v-model="formDataAnimal.racaObservacao" class="form-control" id="racaObservacao"
+                            placeholder="Observações sobre a Raça" disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="piquete" class="form-label me-2">Piquete</label>
                         <select v-model="formDataAnimal.piquete" class="form-select" id="piquete" aria-label="Piquete"
                             disabled>
-                            <option disabled>Selecione o piquete</option>
+                            <option :value="null" disabled>Piquete</option>
                             <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{
                     piquete.nome }}</option>
                         </select>
@@ -103,8 +103,8 @@
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="observacoes" class="form-label me-2">Observações</label>
-                        <textarea v-model="formDataAnimal.observacoes" class="form-control" id="observacoes"
-                            placeholder="Observações" disabled> </textarea>
+                        <input v-model="formDataAnimal.observacoes" class="form-control" id="observacoes"
+                            placeholder="Observações" disabled>
                     </div>
                     <div v-if="formDataAnimal.dataCompra" class="col-auto d-flex align-items-center">
                         <label for="dataCompra" class="form-label me-2">DataCompra</label>

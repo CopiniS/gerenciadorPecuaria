@@ -71,8 +71,8 @@
                 </div>
                 <div class="mb-3 input-group position-relative">
                   <span class="input-group-text" title="Observação da Venda"><i class="fas fa-sticky-note"></i></span>
-                  <textarea v-model="formData.observacao" class="form-control" id="observacao"
-                  placeholder="Observação" title="Observação da Venda"></textarea>
+                  <input v-model="formData.observacao" class="form-control" id="observacao"
+                  placeholder="Observação" title="Observação da Venda">
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>

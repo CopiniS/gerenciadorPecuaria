@@ -71,8 +71,8 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Raça de Observação do Animal"><i class="fas fa-sticky-note"></i></span>
-              <textarea v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
-                placeholder="Observações sobre a Raça" title="Raça de Observação do Animal"></textarea>
+              <input v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
+                placeholder="Observações sobre a Raça" title="Raça de Observação do Animal">
             </div>
             <div ref="dropdownPai" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPai('up')"
             @keydown.down.prevent="navigateOptionsPai('down')" @keydown.enter.prevent="selectHighlightedPai">
@@ -117,8 +117,7 @@
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observações do Animal"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-                @input="aplicarObservacaoMask" placeholder="Observações" title="Observações do Animal">
-              <div class="character-counter">({{ contadorObservacoes }} / 255)</div>
+              placeholder="Observações" title="Observações do Animal">
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
@@ -171,7 +170,6 @@ export default {
       brincoPai: '',
       brincoMae: '',
       comprado: false,
-      contadorObservacoes: 0,
       highlightedIndexPiquete: -1,
       dropdownPiqueteOpen: false,
       highlightedIndexRaca: -1,
@@ -237,12 +235,6 @@ export default {
       this.formData.brinco =  this.brincoMask(value);
     },
 
-    aplicarObservacaoMask(event){
-      const value = event.target.value;
-      this.formData.observacoes = this.observacoesMask(value);
-      this.contadorObservacoes = this.formData.observacoes.length;
-    },
-
     aplicarValorCompraMask(event) {
       const value = event.target.value;
       this.formData.valorCompra =  this.valorMask(value);
@@ -288,10 +280,6 @@ export default {
 
         if(this.formData.dataCompra){
           this.comprado = true;
-        }
-
-        if(this.formData.observacoes){
-          this.contadorObservacoes = this.formData.observacoes;
         }
 
       } catch (error) {

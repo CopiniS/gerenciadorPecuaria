@@ -45,7 +45,7 @@
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Descrição da Gasto"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.descricao" @input="aplicarDescricaoMask" type="text" class="form-control" id="descricao"
+              <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
                 :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Gasto">
             </div>
             <div class="mb-3 input-group">
@@ -91,7 +91,6 @@ export default {
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
-      contadorDescricao: 0,
       formData: {
         id: null,
         dataGasto: null,
@@ -121,11 +120,6 @@ export default {
       this.formData.valor = this.valorMask(value);
     },
 
-    aplicarDescricaoMask(event){
-      const value = event.target.value;
-      this.formData.descricao = this.observacoesMask(value);
-      this.contadorDescricao = this.formData.descricao.length;
-    },
 
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {

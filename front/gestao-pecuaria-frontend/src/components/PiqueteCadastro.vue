@@ -30,14 +30,14 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+              <span class="input-group-text" title="Nome"><i class="fas fa-hashtag"></i></span>
               <input v-model="formData.nome" :class="{ 'is-invalid': !isNomeValido }" type="text" class="form-control"
-                id="nome" :placeholder="nomePlaceholder">
+                id="nome" :placeholder="nomePlaceholder" title="Nome">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+              <span class="input-group-text" title="Tipo do cultivo"><i class="fas fa-seedling"></i></span>
               <select v-model="formData.tipoCultivo" :class="{ 'is-invalid': !isTipoCultivoValido }" class="form-select"
-                id="tipoCultivo" aria-label="Tipo de Cultivo">
+                id="tipoCultivo" aria-label="Tipo de Cultivo" title="Tipo do cultivo">
                 <option disabled value="">{{ tipoCultivoPlaceholder }}</option>
                 <option>Pastagem Natural</option>
                 <option>Lavoura</option>
@@ -45,9 +45,9 @@
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-ruler-combined"></i></span>
+              <span class="input-group-text" title="Área"><i class="fas fa-ruler-combined"></i></span>
               <input v-model="formData.area" :class="{ 'is-invalid': !isAreaValida }" type="text" class="form-control"
-                @input="aplicarAreaMask" id="area" :placeholder="areaPlaceholder">
+                @input="aplicarAreaMask" id="area" :placeholder="areaPlaceholder" title="Área">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('piquetes')">Cancelar</button>
@@ -81,9 +81,9 @@ export default {
       isNomeValido: true,
       isTipoCultivoValido: true,
       isAreaValida: true,
-      nomePlaceholder: 'Nome do Piquete*',
+      nomePlaceholder: 'Nome*',
       tipoCultivoPlaceholder: 'Tipo do cultivo*',
-      areaPlaceholder: 'Área do Piquete*',
+      areaPlaceholder: 'Área*',
     };
   },
 
@@ -139,12 +139,12 @@ export default {
     validarFormulario(){
       let valido = true;
       this.isNomeValido = true;
-      this.nomePlaceholder = 'Nome do Piquete';
+      this.nomePlaceholder = 'Nome*';
 
       for (let piquete of this.piquetesDaApi) {
         if (piquete.nome === this.formData.nome) {
           this.isNomeValido = false;
-          this.nomePlaceholder = 'Este Piquete já está cadastrado';
+          this.nomePlaceholder = '"' + piquete.nome + '"' + ' já está cadastrado no sistema';
           this.formData.nome = null;
           valido = false;
           break;
@@ -158,48 +158,48 @@ export default {
       if(this.formData.nome != null){
         if(this.formData.nome.trim() != ''){
           this.isNomeValido = true;
-          this.nomePlaceholder = 'Nome do Piquete*';
+          this.nomePlaceholder = 'Nome*';
         }
         else{
           this.isNomeValido = false;
-          this.nomePlaceholder = 'Nome do Piquete é um Campo Obrigatório';
+          this.nomePlaceholder = 'Nome é um Campo Obrigatório';
         }
       }
       else{
         this.isNomeValido = false;
-        this.nomePlaceholder = 'Nome do Piquete é um Campo Obrigatório';
+        this.nomePlaceholder = 'Nome é um Campo Obrigatório';
       }
 
       //TIPO DO CULTIVO
       if(this.formData.tipoCultivo != null){
         if(this.formData.tipoCultivo.trim() != ''){
           this.isTipoCultivoValido = true;
-          this.tipoCultivoPlaceholder = 'Tipo de Cultivo*';
+          this.tipoCultivoPlaceholder = 'Tipo do cultivo*';
         }
         else{
           this.isTipoCultivoValido = false;
-          this.tipoCultivoPlaceholder = 'Tipo de Cultivo é um Campo Obrigatório';
+          this.tipoCultivoPlaceholder = 'Tipo do cultivo é um Campo Obrigatório';
         }
       }
       else{
         this.isTipoCultivoValido = false;
-        this.tipoCultivoPlaceholder = 'Tipo de Cultivo é um Campo Obrigatório';
+        this.tipoCultivoPlaceholder = 'Tipo do cultivo é um Campo Obrigatório';
       }
 
       //ÁREA DO PIQUETE
       if(this.formData.area != null){
         if(this.formData.area.trim() != ''){
           this.isAreaValida = true;
-          this.areaPlaceholder = 'Área do Piquete*';
+          this.areaPlaceholder = 'Área*';
         }
         else{
           this.isAreaValida = false;
-          this.areaPlaceholder = 'Área do Piquete é um Campo Obrigatório';
+          this.areaPlaceholder = 'Área é um Campo Obrigatório';
         }
       }
       else{
         this.isAreaValida = false;
-        this.areaPlaceholder = 'Área do Piquete é um Campo Obrigatório';
+        this.areaPlaceholder = 'Área é um Campo Obrigatório';
       }
 
       return(

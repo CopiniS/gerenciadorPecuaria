@@ -23,24 +23,24 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Nome do Produto"><i class="fas fa-box"></i></span>
+              <span class="input-group-text" title="Nome"><i class="fas fa-box"></i></span>
               <input v-model="formData.nome" type="text" class="form-control" id="nome" 
-              :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" title="Nome do Produto">
+              :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" title="Nome">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Tipo do Produto"><i class="fas fa-clipboard-list"></i></span>
+              <span class="input-group-text"  title="Tipo"><i class="fas fa-clipboard-list"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
                 @change="categoriaPlaceholder = 'Categoria*'; formData.categoria = ''" :class="{'is-invalid': !isTipoValido}" 
-                title="Tipo do Produto">
+                title="Tipo">
                 <option disabled value="">{{ tipoPlaceholder }}</option>
                 <option value="sanitario">Sanitário</option>
                 <option value="alimenticio">Alimentício</option>
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Unidade de Medida"><i class="fas fa-balance-scale"></i></span>
+              <span class="input-group-text" title="Unidade de medida"><i class="fas fa-balance-scale"></i></span>
               <select v-model="formData.unidade" class="form-select" id="unidade" aria-label="Unidade"
-                :placeholder="unidadePlaceholder" :class="{'is-invalid': !isUnidadeValida}" title="Unidade de Medida">
+                :placeholder="unidadePlaceholder" :class="{'is-invalid': !isUnidadeValida}" title="Unidade de medida">
                 <option disabled value="">{{ unidadePlaceholder }}</option>
                 <option value="ton">ton</option>
                 <option value="kg">kg</option>
@@ -50,10 +50,10 @@
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Tipo do Produto"><i class="fas fa-clipboard-list"></i></span>
+              <span class="input-group-text"  title="Categoria"><i class="fas fa-clipboard-list"></i></span>
               <select :disabled="formData.tipo == '' || formData.tipo == null" v-model="formData.categoria"
               class="form-select" id="categoria" aria-label="Categoria"
-              :class="{'is-invalid': !isCategoriaValida}" title="Categoria do Produto">
+              :class="{'is-invalid': !isCategoriaValida}" title="Categoria">
                 <option disabled value="">{{ categoriaPlaceholder }}</option>
                 <option v-if="formData.tipo == 'sanitario'" value="vacinas">Vacinas</option>
                 <option v-if="formData.tipo == 'sanitario'" value="vermifugos">Vermífugos</option>
@@ -71,9 +71,9 @@
               </select>
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text" title="Descrição do Produto"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Descrição"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
-                placeholder="Descrição" title="Descrição do Produto" />
+                placeholder="Descrição" title="Descrição" />
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('produtos')">Cancelar</button>
@@ -156,32 +156,32 @@ export default {
       if(this.formData.nome != null){
         if(this.formData.nome.trim() != ''){
           this.isNomeValido = true;
-          this.nomePlaceholder = 'Nome do Produto';
+          this.nomePlaceholder = 'Nome*';
         }
         else{
           this.isNomeValido = false;
-          this.nomePlaceholder = 'Nome do Produto é um Campo Obrigatório';
+          this.nomePlaceholder = 'Nome é um Campo Obrigatório';
         }
       }
       else{
         this.isNomeValido = false;
-        this.nomePlaceholder = 'Nome do Produto é um Campo Obrigatório';
+        this.nomePlaceholder = 'Nome é um Campo Obrigatório';
       }
 
       //TIPO DO PRODUTO
       if(this.formData.tipo != null){
         if(this.formData.tipo != ''){
           this.isTipoValido = true;
-          this.tipoPlaceholder = 'Tipo do Produto';
+          this.tipoPlaceholder = 'Tipo*';
         }
         else{
           this.isTipoValido = false;
-          this.tipoPlaceholder = 'Tipo do Produto é um Campo Obrigatório'
+          this.tipoPlaceholder = 'Tipo é um Campo Obrigatório'
         }
       }
       else{
         this.isTipoValido = false;
-        this.tipoPlaceholder = 'Tipo do Produto é um Campo Obrigatório'
+        this.tipoPlaceholder = 'Tipo é um Campo Obrigatório'
       }
 
       //DESCRIÇÃO
@@ -201,8 +201,8 @@ export default {
           }
         }
         else{
-          this.isUnidadeValida = false;
-          this.unidadePlaceholder = 'Categoria é um Campo Obrigatório';
+          this.isCategoriaValida = false;
+          this.categoriaPlaceholder = 'Categoria é um Campo Obrigatório';
         }
       }
       else{
@@ -238,12 +238,12 @@ export default {
     validarFormulario(){
       let valido = true;
       this.isNomeValido = true;
-      this.nomePlaceholder = 'Nome do Produto';
+      this.nomePlaceholder = 'Nome*';
 
       for (let produto of this.produtosDaApi) {
         if (produto.nome === this.formData.nome) {
           this.isNomeValido = false;
-          this.nomePlaceholder = 'Este Produto já está cadastrado';
+          this.nomePlaceholder = '"' + produto.nome + '"' + ' já está cadastrado no sistema';
           this.formData.nome = null;
           valido = false;
           break;

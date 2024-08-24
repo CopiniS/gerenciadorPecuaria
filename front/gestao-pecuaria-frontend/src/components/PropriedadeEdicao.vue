@@ -24,23 +24,23 @@
                     <h2 id="legenda">* Campos Obrigatórios</h2>
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text" title="Nome da Popriedade"><i class="fas fa-landmark"></i></span>
+                    <span class="input-group-text" title="Nome"><i class="fas fa-landmark"></i></span>
                     <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
-                    class="form-control" :placeholder="nomePlaceholder" id="nome" title="Nome da Propriedade">
+                    class="form-control" :placeholder="nomePlaceholder" id="nome" title="Nome">
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text" title="Endereço da Propriedade"><i class="fas fa-map-marker-alt"></i></span>
+                    <span class="input-group-text" title="Endereço"><i class="fas fa-map-marker-alt"></i></span>
                     <input v-model="formData.endereco" :class="{'is-invalid': !isEnderecoValido}" type="text" class="form-control"
-                        :placeholder="enderecoPlaceholder" id="endereco" title="Endereço da Propriedade">
+                        :placeholder="enderecoPlaceholder" id="endereco" title="Endereço">
                 </div>
                 <div ref="dropdownEstado" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsEstado('up')"
                   @keydown.down.prevent="navigateOptionsEstado('down')" @keydown.enter.prevent="selectHighlightedEstado">
                   <div class="select-option mb-3 input-group" @click.stop="toggleDropdownEstado">
-                    <span class="input-group-text" @click="filterEstados" title="Estado da Propriedade"><i class="fas fa-user-tag"></i></span>
+                    <span class="input-group-text" @click="filterEstados" title="Estado"><i class="fas fa-user-tag"></i></span>
                     <input v-model="formData.estado" :class="{ 'is-invalid': !isEstadoValido }" @input="inputEstado"
                       @click="filterEstados" @keydown.up.prevent="navigateOptionsEstado('up')"
                       @keydown.down.prevent="navigateOptionsEstado('down')" type="text" class="form-control"
-                      :placeholder="estadoPlaceholder" id="caixa-select" title="Estado da Propriedade">
+                      :placeholder="estadoPlaceholder" id="caixa-select" title="Estado">
                   </div>
                   <div class="itens" v-show="dropdownEstadoOpen">
                     <ul class="options">
@@ -54,11 +54,11 @@
                 <div ref="dropdownCidade" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsCidade('up')"
                   @keydown.down.prevent="navigateOptionsCidade('down')" @keydown.enter.prevent="selectHighlightedCidade">
                   <div class="select-option mb-3 input-group" @click.stop="toggleDropdownCidade">
-                    <span class="input-group-text" @click="filterCidades" title="Cidade da Propriedade"><i class="fas fa-user-tag"></i></span>
+                    <span class="input-group-text" @click="filterCidades" title="Cidade"><i class="fas fa-user-tag"></i></span>
                     <input v-model="formData.cidade" :class="{ 'is-invalid': !isCidadeValida }" @input="inputCidade"
                       @click="filterCidades" @keydown.up.prevent="navigateOptionsCidade('up')"
                       @keydown.down.prevent="navigateOptionsCidade('down')" type="text" class="form-control"
-                      :placeholder="cidadePlaceholder" id="caixa-select" title="Cidade da Propriedade">
+                      :placeholder="cidadePlaceholder" id="caixa-select" title="Cidade">
                   </div>
                   <div class="itens" v-show="dropdownCidadeOpen">
                     <ul class="options">
@@ -69,19 +69,19 @@
                   </div>
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text"  title="Latitude da Propriedade"><i class="fas fa-globe"></i></span>
+                    <span class="input-group-text"  title="Latitude"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.latitude" :class="{'is-invalid': !isLatitudeValida}" type="text" class="form-control"
-                    :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude" title="Latitude da Propriedade">
+                    :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude" title="Latitude">
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text" title="Longitude da Propriedade"><i class="fas fa-map" ></i></span>
+                    <span class="input-group-text" title="Longitude"><i class="fas fa-map" ></i></span>
                     <input v-model="formData.longitude" :class="{'is-invalid': !isLongitudeValida}" type="text" class="form-control"
-                        :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" title="Longitude da Propriedade">
+                        :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" title="Longitude">
                 </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text" title="Área da Propriedade"><i class="fas fa-ruler-combined"></i></span>
+                    <span class="input-group-text" title="Área"><i class="fas fa-ruler-combined"></i></span>
                     <input v-model="formData.area" type="text" class="form-control"  :class="{'is-invalid': !isAreaValida}"
-                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" title="Área da Propriedade">
+                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" title="Área">
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('propriedades')">Cancelar</button>
@@ -130,13 +130,13 @@ export default {
             isLatitudeValida: true,
             isLongitudeValida: true,
             isAreaValida: true,
-            nomePlaceholder: 'Nome da propriedade',
-            cidadePlaceholder: 'Cidade',
-            estadoPlaceholder: 'Estado',
-            enderecoPlaceholder: 'Endereço',
+            nomePlaceholder: 'Nome*',
+            cidadePlaceholder: 'Cidade*',
+            estadoPlaceholder: 'Estado*',
+            enderecoPlaceholder: 'Endereço*',
             latitudePlaceholder: 'Latitude',
             longitudePlaceholder: 'Longitude',
-            areaPlaceholder: 'Área'
+            areaPlaceholder: 'Área*'
         };
     },
  
@@ -449,32 +449,32 @@ export default {
       if(this.formData.nome != null){
         if(this.formData.nome.trim() != ''){
           this.isNomeValido = true;
-          this.nomePlaceholder = 'Nome da Propriedade*';
+          this.nomePlaceholder = 'Nome*';
         }
         else{
           this.isNomeValido = false;
-          this.nomePlaceholder = 'Nome da Propriedade é um Campo Obrigatório';
+          this.nomePlaceholder = 'Nome é um Campo Obrigatório';
         }
       }
       else{
         this.isNomeValido = false;
-        this.nomePlaceholder = 'Nome da Propriedade é um Campo Obrigatório';
+        this.nomePlaceholder = 'Nome é um Campo Obrigatório';
       }
 
       //ENDEREÇO
       if(this.formData.endereco != null){
         if(this.formData.endereco.trim() != ''){
           this.isEnderecoValido = true;
-          this.enderecoPlaceholder = 'Endereço da Propriedade*'
+          this.enderecoPlaceholder = 'Endereço*'
         }
         else{
           this.isEnderecoValido = false;
-          this.enderecoPlaceholder = 'Endereço da Propriedade é um Campo Obrigatório';
+          this.enderecoPlaceholder = 'Endereço é um Campo Obrigatório';
         }
       }
       else{
         this.isEnderecoValido = false;
-        this.enderecoPlaceholder = 'Endereço da Propriedade é um Campo Obrigatório';
+        this.enderecoPlaceholder = 'Endereço é um Campo Obrigatório';
       }
 
       //ESTADO
@@ -523,16 +523,16 @@ export default {
       if(this.formData.area != null){
         if(this.formData.area.trim() != ''){
           this.isAreaValida = true;
-          this.areaPlaceholder = 'Área da Propriedade*'
+          this.areaPlaceholder = 'Área*'
         }
         else{
           this.isAreaValida = false;
-          this.areaPlaceholder = 'Área da Propriedade é um Campo Obrigatório';
+          this.areaPlaceholder = 'Área é um Campo Obrigatório';
         }
       }
       else{
         this.isAreaValida = false;
-        this.areaPlaceholder = 'Área da Propriedade é um Campo Obrigatório';
+        this.areaPlaceholder = 'Área é um Campo Obrigatório';
       }
 
       return(

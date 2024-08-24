@@ -155,7 +155,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Gasto apagada com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarGastosDaApi();
         } else {
           alert('Erro ao apagar gasto. Tente novamente mais tarde.');

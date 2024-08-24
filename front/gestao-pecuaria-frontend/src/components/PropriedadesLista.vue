@@ -165,7 +165,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Propriedade apagada com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarPropriedadesDaApi();
         } else {
           alert('Erro ao apagar propriedade. Tente novamente mais tarde.');

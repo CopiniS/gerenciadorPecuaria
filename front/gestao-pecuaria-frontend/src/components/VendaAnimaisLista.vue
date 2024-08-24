@@ -200,7 +200,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Vendas excluídas com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarVendasDaApi();
         } else {
           alert('Erro ao excluir vendas. Tente novamente mais tarde.');

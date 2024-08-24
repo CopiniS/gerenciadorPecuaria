@@ -165,7 +165,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Inseminação excluída com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarInseminacoesDaApi();
         } else {
           alert('Erro ao excluir inseminacoes. Tente novamente mais tarde.');

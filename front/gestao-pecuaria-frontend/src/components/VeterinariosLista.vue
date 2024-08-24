@@ -132,7 +132,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Veterinário apagado com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarVeterinariosDaApi();
         } else {
           alert('Erro ao apagar veterinário. Tente novamente mais tarde.');

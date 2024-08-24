@@ -176,7 +176,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Suplementação apagado com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarSuplementacoesDaApi();
         } else {
           alert('Erro ao apagar suplementacao. Tente novamente mais tarde.');

@@ -133,7 +133,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Raca apagada com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarRacasDaApi();
         } else {
           alert('Erro ao apagar raca. Tente novamente mais tarde.');

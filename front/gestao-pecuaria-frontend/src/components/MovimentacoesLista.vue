@@ -177,7 +177,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Movimentacão excluída com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarMovimentacoesDaApi();
         } else {
           alert('Erro ao excluir movimentacoes. Tente novamente mais tarde.');

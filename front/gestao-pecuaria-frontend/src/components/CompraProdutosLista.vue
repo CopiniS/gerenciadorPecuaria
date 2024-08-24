@@ -170,7 +170,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Compra apagado com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarComprasDaApi();
         } else {
           alert('Erro ao apagar compra. Tente novamente mais tarde.');

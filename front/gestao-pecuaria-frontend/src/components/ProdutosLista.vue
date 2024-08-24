@@ -169,7 +169,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Produto apagado com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarProdutosDaApi();
         } else {
           alert('Erro ao apagar produto. Tente novamente mais tarde.');

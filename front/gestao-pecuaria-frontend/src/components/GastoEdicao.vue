@@ -151,7 +151,7 @@ export default {
 
           const response = await api.patch(`http://127.0.0.1:8000/gastos/${this.formData.id}/`, this.formData, {});
           if (response.status === 200) {
-            alert('Gasto atualizada com sucesso!');
+            alert('Alterações salvas com sucesso!');
             this.$router.push('/gastos');
           } else {
             alert('Erro ao atualizar Gasto. Tente novamente mais tarde.');

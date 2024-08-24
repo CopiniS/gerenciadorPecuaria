@@ -294,7 +294,7 @@ export default {
                 });
 
                 if (response.status === 204) {
-                    alert('Animal apagado com sucesso!');
+                    alert('Exclusão realizada com sucesso!');
                     this.$router.push('/animais');
                 } else {
                     alert('Erro ao apagar animal. Tente novamente mais tarde.');
@@ -312,7 +312,7 @@ export default {
                 });
 
                 if (response.status === 204) {
-                    alert('Ocorrência apagada com sucesso!');
+                    alert('Exclusão realizada com sucesso');
                     this.buscarOcorrenciasDoAnimal();
                 } else {
                     alert('Erro ao apagar ocorrencia. Tente novamente mais tarde.');

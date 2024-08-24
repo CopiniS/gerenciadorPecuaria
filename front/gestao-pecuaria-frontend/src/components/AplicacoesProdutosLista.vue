@@ -172,7 +172,7 @@ export default {
         const response = await api.delete(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`);
 
         if (response.status === 204) {
-          alert('Aplicação excluída com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarAplicacoesDaApi();
         } else {
           alert('Erro ao excluir a aplicação. Tente novamente mais tarde.');

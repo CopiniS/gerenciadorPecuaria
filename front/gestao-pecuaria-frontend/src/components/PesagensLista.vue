@@ -181,7 +181,7 @@ export default {
         const response = await api.delete(`http://127.0.0.1:8000/pesagens/${this.formData.id}/`);
 
         if (response.status === 204) {
-          alert('Pesagem excluído com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarPesagensDaApi();
         } else {
           alert('Erro ao excluir a pesagem. Tente novamente mais tarde.');

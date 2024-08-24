@@ -123,7 +123,7 @@ export default {
         try {
           const response = await api.patch(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/`, this.formData, {});
           if (response.status === 200) {
-            alert('Veterinário atualizado com sucesso!');
+            alert('Alterações salvas com sucesso!');
             this.$router.push('/veterinarios');
           } else {
             alert('Erro ao atualizar veterinário. Tente novamente mais tarde.');

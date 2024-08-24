@@ -186,7 +186,7 @@ export default {
         });
 
         if (response.status === 204) {
-          alert('Piquete apagado com sucesso!');
+          alert('Exclusão realizada com sucesso!');
           this.buscarPiquetesDaApi();
         } else {
           alert('Erro ao apagar piquete. Tente novamente mais tarde.');

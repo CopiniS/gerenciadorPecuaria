@@ -34,7 +34,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteDestino">
                 <span class="input-group-text" title="Piquete de Destino dos Animais movimentados"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiqueteDestino" :class="{ 'is-invalid': !isPiqueteDestinoValido }" @input="inputPiqueteDestino"
-                  @click="filterPiquetesDestino" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
+                  @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
                   @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" type="text" class="form-control"
                   :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino dos Animais movimentados">
               </div>
@@ -107,6 +107,8 @@ export default {
       animaisFiltrados: [],
       piquetesDestino: [],
       piquetesOrigem: [],
+      piquetesDestinoPossiveis: [],
+      piquetesOrigemPossiveis: [],
       piquetesDestinoFiltrados: [],
       piquetesOrigemFiltrados: [],
       nomePiqueteOrigem: '',
@@ -179,7 +181,8 @@ export default {
     async buscarPiquetesParaDestino() {
       try {
         const response = await api.get('http://127.0.0.1:8000/piquetes/piquetes-propriedades');
-        this.piquetesDestino = response.data;
+        this.piquetesDestino = response.data.slice();
+        this.piquetesDestinoPossiveis = response.data.slice();
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);
       }
@@ -192,7 +195,8 @@ export default {
             propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
           },
         });
-        this.piquetesOrigem = response.data;
+        this.piquetesOrigem = response.data.slice();
+        this.piquetesOrigemPossiveis = response.data.slice();
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);
       }
@@ -224,7 +228,8 @@ export default {
 
 //LÓGICA DOS SELECT PIQUETE DESTINO----------------------------------------------------------------------------------------------------------------------------------------------------
     filterPiquetesDestino() {
-      this.piquetesDestinoFiltrados = this.piquetesDestino.filter(piqueteDestino => piqueteDestino.nome.toLowerCase().includes(this.nomePiqueteDestino.toLowerCase()));
+      this.atualizaDestino();
+      this.piquetesDestinoFiltrados = this.piquetesDestinoPossiveis.filter(piqueteDestino => piqueteDestino.nome.toLowerCase().includes(this.nomePiqueteDestino.toLowerCase()));
     },
 
     async selectPiqueteDestino(piqueteDestino) {
@@ -233,9 +238,6 @@ export default {
       this.piquetesDestinoFiltrados = [];
       this.dropdownPiqueteDestinoOpen = false;
       this.highlightedIndexPiqueteDestino = -1; // Reseta o índice após a seleção
-
-      await this.buscarPiquetesParaOrigem();
-      this.atualizaOrigem();
     },
 
     toggleDropdownPiqueteDestino() {
@@ -255,16 +257,17 @@ export default {
         }
       }
       else if(this.dropdownPiqueteOrigemOpen){
-        this.piquetesOrigem.forEach(piqueteOrigem => {
+        this.piquetesOrigemPossiveis.forEach(piqueteOrigem => {
           if(piqueteOrigem.nome.toLowerCase() === this.nomePiqueteOrigem.toLowerCase()){
-            this.selectPiqueteOrigem();
+            this.selectPiqueteOrigem(piqueteOrigem);
             nomeCorreto = true;
             
           }
         });
         if(!nomeCorreto){
           this.formData.piqueteOrigem = null;
-          this.nomePiqueteOrigem = ''
+          this.nomePiqueteOrigem = '';
+          this.animaisFiltrados = [];
         }
         this.dropdownPiqueteOrigemOpen = false;
         this.filterPiquetesDestino();
@@ -278,7 +281,7 @@ export default {
     handleClickOutsidePiqueteDestino(event) {
       let nomeCorreto = false;
       if (this.dropdownPiqueteDestinoOpen && this.$refs.dropdownPiqueteDestino && !this.$refs.dropdownPiqueteDestino.contains(event.target)) {
-        this.piquetesDestino.forEach(piqueteDestino => {
+        this.piquetesDestinoPossiveis.forEach(piqueteDestino => {
           if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
             this.selectPiqueteDestino(piqueteDestino);
             nomeCorreto = true;
@@ -315,7 +318,8 @@ export default {
 
 //LÓGICA DOS SELECT PIQUETE ORIGEM----------------------------------------------------------------------------------------------------------------------------------------------------
     filterPiquetesOrigem() {
-      this.piquetesOrigemFiltrados = this.piquetesOrigem.filter(piqueteOrigem => piqueteOrigem.nome.toLowerCase().includes(this.nomePiqueteOrigem.toLowerCase()));
+      this.atualizaOrigem();
+      this.piquetesOrigemFiltrados = this.piquetesOrigemPossiveis.filter(piqueteOrigem => piqueteOrigem.nome.toLowerCase().includes(this.nomePiqueteOrigem.toLowerCase()));
     },
 
     async selectPiqueteOrigem(piqueteOrigem) {
@@ -326,13 +330,13 @@ export default {
       this.highlightedIndexPiqueteOrigem = -1; // Reseta o índice após a seleção
 
       this.preencheCheckBox();
-      await this.buscarPiquetesParaDestino();
-      this.atualizaDestino();
     },
 
     toggleDropdownPiqueteOrigem() {
       this.dropdownPiqueteOrigemOpen = !this.dropdownPiqueteOrigemOpen;
       let nomeCorreto = false;
+      this.filterPiquetesOrigem();
+
 
       if(!this.dropdownPiqueteOrigemOpen){
         this.piquetesOrigemFiltrados.forEach(piqueteOrigem => {
@@ -344,10 +348,11 @@ export default {
         if(!nomeCorreto){
           this.nomePiqueteOrigem = '';
           this.formData.piqueteOrigem = null;
+          this.animaisFiltrados = [];
         }
       }
       else if(this.dropdownPiqueteDestinoOpen){
-        this.piquetesDestino.forEach(piqueteDestino => {
+        this.piquetesDestinoPossiveis.forEach(piqueteDestino => {
           if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
             this.selectPiqueteDestino();
             nomeCorreto = true;
@@ -358,17 +363,13 @@ export default {
           this.nomePiqueteDestino = ''
         }
         this.dropdownPiqueteDestinoOpen = false;
-        this.filterPiquetesOrigem();
-      }
-      else{
-        this.filterPiquetesOrigem();
       }
     },
 
     handleClickOutsidePiqueteOrigem(event) {
       let nomeCorreto = false;
       if (this.dropdownPiqueteOrigemOpen && this.$refs.dropdownPiqueteOrigem && !this.$refs.dropdownPiqueteOrigem.contains(event.target)) {
-        this.piquetesOrigem.forEach(piqueteOrigem => {
+        this.piquetesOrigemPossiveis.forEach(piqueteOrigem => {
           if(piqueteOrigem.nome.toLowerCase() === this.nomePiqueteOrigem.toLowerCase()){
             this.selectPiqueteOrigem(piqueteOrigem);
             nomeCorreto = true;
@@ -376,6 +377,7 @@ export default {
         });
         if(!nomeCorreto){
           this.nomePiqueteOrigem = '';
+          this.formData.piqueteOrigem = null;
           this.animaisFiltrados = [];
         }
       }
@@ -483,8 +485,6 @@ checkEnter(event) {
     },    
 preencheCheckBox(){
       this.animaisFiltrados = this.animais.filter(animal => animal.piquete.id === this.formData.piqueteOrigem);
-      console.log('animais filtrados: ', this.animaisFiltrados);
-      
     },
 
     ativaSelecaoTodos(){
@@ -508,32 +508,34 @@ preencheCheckBox(){
     },
 
     atualizaOrigem(){
+      this.piquetesOrigemPossiveis = this.piquetesOrigem.slice();
       let indice = null;
-      for (let index = 0; index < this.piquetesOrigem.length; index++) {
-        const piquete = this.piquetesOrigem[index];
+      for (let index = 0; index < this.piquetesOrigemPossiveis.length; index++) {
+        const piquete = this.piquetesOrigemPossiveis[index];
         if(piquete.id === this.formData.piqueteDestino){
+          console.log('entra aqui indice: ', index);
+          
           indice = index;
           break;
         }
       }
-      console.log('indice: ', indice);
       if(indice != null){
-        this.piquetesOrigem.splice(indice, 1)
+        this.piquetesOrigemPossiveis.splice(indice, 1)
       }
     },
 
     atualizaDestino(){
+      this.piquetesDestinoPossiveis = this.piquetesDestino.slice();
       let indice = null;
-      for (let index = 0; index < this.piquetesDestino.length; index++) {
-        const piquete = this.piquetesDestino[index];
+      for (let index = 0; index < this.piquetesDestinoPossiveis.length; index++) {
+        const piquete = this.piquetesDestinoPossiveis[index];
         if(piquete.id === this.formData.piqueteOrigem){
           indice = index;
           break;
         }
       }
-      console.log('indice: ', indice);
       if(indice != null){
-        this.piquetesDestino.splice(indice, 1)
+        this.piquetesDestinoPossiveis.splice(indice, 1)
       }
     },
   },

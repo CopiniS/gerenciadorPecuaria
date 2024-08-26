@@ -215,22 +215,27 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio()) {
-        //FORMATA DOSAGEM
-        this.formData.dosagem = this.replaceVirgulaPonto(this.formData.dosagem)
+        if(this.verificaVazioAnimais()){
+          //FORMATA DOSAGEM
+          this.formData.dosagem = this.replaceVirgulaPonto(this.formData.dosagem)
 
-        try {
-          const response = await api.post('http://127.0.0.1:8000/aplicacoes-produtos/', this.formData, {
-          });
+          try {
+            const response = await api.post('http://127.0.0.1:8000/aplicacoes-produtos/', this.formData, {
+            });
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/aplicacoes-produtos');
-          } else {
-            alert('Erro ao cadastrar aplicacao. Tente novamente mais tarde.');
+            if (response.status === 201) {
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/aplicacoes-produtos');
+            } else {
+              alert('Erro ao cadastrar aplicacao. Tente novamente mais tarde.');
+            }
+          } catch (error) {
+            console.error('Erro ao enviar requisição:', error);
+            alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
           }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+        else{
+          alert('Nenhum animal foi selecionado');
         }
       }
     },
@@ -438,38 +443,20 @@ export default {
         this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
       }
 
-      //BRINCO || PIQUETE
-      if (this.radioEscolha == 'brinco') {
-        if (this.brinco != null) {
-          if (this.brinco.trim() != '') {
-            this.isBrincoValido = true;
-            this.brincoPlaceholder = 'Digite o brinco do animal';
-          }
-          else {
-            this.isBrincoValido = false;
-            this.brincoPlaceholder = 'Brinco é um Campo Obrigatório';
-          }
-        }
-        else {
-          this.isBrincoValido = false;
-          this.brincoPlaceholder = 'Brinco é um Campo Obrigatório';
-        }
-      }
-      else {
-        if (this.nomePiquete != null) {
-          if (this.nomePiquete.trim() != '') {
-            this.isPiqueteValido = true;
-            this.piquetePlaceholder = 'Digite o Piquete ';
-          }
-          else {
-            this.isPiqueteValido = false;
-            this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
-          }
+      //PIQUETE
+      if (this.nomePiquete != null) {
+        if (this.nomePiquete.trim() != '') {
+          this.isPiqueteValido = true;
+          this.piquetePlaceholder = 'Piquete* ';
         }
         else {
           this.isPiqueteValido = false;
           this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
         }
+      }
+      else {
+        this.isPiqueteValido = false;
+        this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
       }
 
       //PRODUTO
@@ -516,6 +503,10 @@ export default {
         this.isProdutoValido &&
         this.isDosagemValida
       );
+    },
+
+    verificaVazioAnimais(){
+      return (this.formData.animal.length > 0)
     },
 
 

@@ -200,19 +200,24 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio()) {
-        try {
-          const response = await api.post('http://127.0.0.1:8000/movimentacoes/', this.formData, {
-          });
+        if(this.verificaVazioAnimais()){
+          try {
+            const response = await api.post('http://127.0.0.1:8000/movimentacoes/', this.formData, {
+            });
 
-          if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/movimentacoes');
-          } else {
-            alert('Erro ao cadastrar movimentacao. Tente novamente mais tarde.');
+            if (response.status === 201) {
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/movimentacoes');
+            } else {
+              alert('Erro ao cadastrar movimentacao. Tente novamente mais tarde.');
+            }
+          } catch (error) {
+            console.error('Erro ao enviar requisição:', error);
+            alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
           }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+        else{
+          alert('Nenhum animal foi selecionado');
         }
       }
     },
@@ -463,6 +468,10 @@ export default {
         this.isPiqueteOrigemValido &&
         this.isPiqueteDestinoValido
       );
+    },
+
+    verificaVazioAnimais(){
+      return (this.formData.animal.length > 0)
     },
 
 

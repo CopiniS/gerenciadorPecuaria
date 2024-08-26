@@ -245,6 +245,8 @@ export default {
     this.nomePiquete = piquete.nome;
     this.piqueteId = piquete.id;
     this.piquetesFiltrados = [];
+    this.preencheCheckBox();
+
     this.dropdownPiqueteOpen = false;
     this.highlightedIndexPiquete = -1; // Reseta o índice após a seleção
   },
@@ -256,9 +258,7 @@ export default {
       if(!this.dropdownPiqueteOpen){
         this.piquetesFiltrados.forEach(piquete => {
           if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
-            this.nomePiquete = piquete.nome;
-            this.piqueteId = piquete.id;
-            this.piquetesFiltrados = [];
+            this.selectPiquete(piquete);
             nomeCorreto = true;
           }
         });

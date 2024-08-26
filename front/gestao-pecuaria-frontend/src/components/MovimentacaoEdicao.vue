@@ -187,19 +187,24 @@ export default {
 
       async submitForm() {
         if (this.verificaVazio()) {
-        try {
-            const response = await api.patch(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, this.formData , {
-          });
+          if(this.verificaDuploPiquete()){
+            try {
+                const response = await api.patch(`http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`, this.formData , {
+              });
 
-            if (response.status === 200) {
-              alert('Alterações salvas com sucesso!');
-              this.selectTab('movimentacoes');
-            } else {
-              alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+              if (response.status === 200) {
+                alert('Alterações salvas com sucesso!');
+                this.selectTab('movimentacoes');
+              } else {
+                alert('Erro ao salvar alterações. Tente novamente mais tarde.');
+              }
+            } catch (error) {
+                console.error('Erro ao enviar requisição:', error);
+                alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
             }
-          } catch (error) {
-            console.error('Erro ao enviar requisição:', error);
-            alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+          }
+          else{
+            alert('Não é possível movimentar o Animal dentro do mesmo Piquete');
           }
         }
       },
@@ -213,6 +218,8 @@ export default {
     selectAnimal(animal) {
         this.brinco = animal.brinco;
         this.formData.animal = animal.id;
+        this.formData.piqueteOrigem = animal.piquete.id;
+        this.nomePiqueteOrigem = animal.piquete.nome;
         this.animaisFiltrados = [];
         this.dropdownAnimalOpen = false;
     },
@@ -225,9 +232,7 @@ export default {
       if(!this.dropdownAnimalOpen){
         this.animaisFiltrados.forEach(animal => {
           if(animal.brinco === this.brinco){
-            this.brinco = animal.brinco;
-            this.formData.animal = animal.id;
-            this.animaisFiltrados = [];
+            this.selectAnimal(animal);
             brincoCorreto = true;
           }
         });
@@ -264,9 +269,7 @@ export default {
       if(!this.dropdownAnimalOpen){
         this.animais.forEach(animal => {
           if(animal.brinco === this.brinco){
-            this.brinco = animal.brinco;
-            this.formData.animal = animal.id;
-            this.animaisFiltrados = [];
+            this.selectAnimal(animal);
             nomeCorreto = true;
           }
         });
@@ -447,6 +450,10 @@ export default {
           this.isAnimalValido &&
           this.isPiqueteDestinoValido
         );
+      },
+
+      verificaDuploPiquete(){
+        return (this.formData.piqueteOrigem != this.formData.piqueteDestino);
       },
 
 

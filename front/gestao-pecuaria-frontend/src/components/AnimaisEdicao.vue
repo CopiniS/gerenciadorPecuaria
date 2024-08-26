@@ -78,7 +78,7 @@
             @keydown.down.prevent="navigateOptionsPai('down')" @keydown.enter.prevent="selectHighlightedPai">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPai">
                 <span class="input-group-text" title="Pai do Animal"><i class="fas fa-box"></i></span>
-                <input v-model="brincoPai" @input="inputPai"
+                <input v-model="formData.brincoPai" @input="inputPai"
                   @keydown.up.prevent="navigateOptionsPai('up')"
                   @keydown.down.prevent="navigateOptionsPai('down')" type="text" class="form-control"
                   placeholder="Pai" id="caixa-select" title="Pai do Animal">
@@ -96,7 +96,7 @@
             @keydown.down.prevent="navigateOptionsMae('down')" @keydown.enter.prevent="selectHighlightedMae">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownMae">
                 <span class="input-group-text" title="Mae do Animal"><i class="fas fa-box"></i></span>
-                <input v-model="brincoMae" @input="inputMae"
+                <input v-model="formData.brincoMae" @input="inputMae"
                   @keydown.up.prevent="navigateOptionsMae('up')"
                   @keydown.down.prevent="navigateOptionsMae('down')" type="text" class="form-control"
                   placeholder="Mãe" id="caixa-select" title="Mae do Animal">
@@ -167,8 +167,6 @@ export default {
       femeas: [],
       femeasFiltradas: [],
       machosFiltrados: [],
-      brincoPai: '',
-      brincoMae: '',
       comprado: false,
       highlightedIndexPiquete: -1,
       dropdownPiqueteOpen: false,
@@ -241,11 +239,11 @@ export default {
     },
 
     aplicarBrincoPaiMask(value){
-      this.brincoPai =  this.brincoMask(value);
+      this.formData.brincoPai =  this.brincoMask(value);
     },
 
     aplicarBrincoMaeMask(value){
-      this.brincoMae =  this.brincoMask(value);
+      this.formData.brincoMae =  this.brincoMask(value);
     },
 
 
@@ -263,13 +261,11 @@ export default {
           this.formData.racaPredominante = animais[0].racaPredominante.id;
           this.nomeRaca = animais[0].racaPredominante.nome;
         }
-        this.formData.brincoPai = animais[0].brincoPai;
         if(animais[0].brincoPai != null){
-          this.brincoPai = animais[0].brincoPai;
+          this.formData.brincoPai = animais[0].brincoPai;
         }
-        this.formData.brincoMae = animais[0].brincoMae;
-        if(animais[0].brincoMae){
-          this.brincoMae = animais[0].brincoMae;
+        if(animais[0].brincoMae != null){ 
+          this.formData.brincoMae = animais[0].brincoMae;
         }
         this.nomePiquete = animais[0].piquete.nome;
         this.formData.racaObservacao = animais[0].racaObservacao;
@@ -391,33 +387,11 @@ export default {
       }
 
       else if(this.dropdownPaiOpen){
-        this.machos.forEach(macho => {
-          if(macho.brinco === this.brincoPai){
-            this.selectPai(macho);
-            nomeCorreto = true;
-            
-          }
-        });
-        if(!nomeCorreto){
-          this.formData.brincoPai = null;
-          this.brincoPai = ''
-        }
         this.dropdownPaiOpen = false;
         this.filterPiquetes();
       }
 
       else if(this.dropdownMaeOpen){
-        this.femeas.forEach(femea => {
-          if(femea.brinco === this.brincoMae){
-            this.selectMae(femea);
-            nomeCorreto = true;
-            
-          }
-        });
-        if(!nomeCorreto){
-          this.formData.brincoMae = null;
-          this.brincoMae = ''
-        }
         this.dropdownMaeOpen = false;
         this.filterPiquetes();
       }
@@ -510,33 +484,11 @@ export default {
       }
 
       else if(this.dropdownPaiOpen){
-        this.machos.forEach(macho => {
-          if(macho.brinco === this.brincoPai){
-            this.selectPai(macho);
-            nomeCorreto = true;
-            
-          }
-        });
-        if(!nomeCorreto){
-          this.formData.brincoPai = null;
-          this.brincoPai = ''
-        }
         this.dropdownPaiOpen = false;
         this.filterRacas();
       }
 
       else if(this.dropdownMaeOpen){
-        this.femeas.forEach(femea => {
-          if(femea.brinco === this.brincoMae){
-            this.selectMae(femea);
-            nomeCorreto = true;
-            
-          }
-        });
-        if(!nomeCorreto){
-          this.formData.brincoMae = null;
-          this.brincoMae = ''
-        }
         this.dropdownMaeOpen = false;
         this.filterRacas();
       }
@@ -585,16 +537,11 @@ export default {
 
   //LÓGICA DOS SELECT PAI----------------------------------------------------------------------------------------------------------------------------------------------------
     filterMachos() {
-      console.log('machos: ', this.machos);
-      
-      this.machosFiltrados = this.machos.filter(macho => macho.brinco.includes(this.brincoPai));
-      console.log('filtrados: ', this.machosFiltrados);
-      
+      this.machosFiltrados = this.machos.filter(macho => macho.brinco.includes(this.formData.brincoPai));
     },
 
     selectPai(macho) {
-      this.brincoPai = macho.brinco;
-      this.formData.brincoPai = macho.id;
+      this.formData.brincoPai = macho.brinco;
       this.machosFiltrados = [];
       this.dropdownPaiOpen = false;
       this.highlightedIndexPai = -1; // Reseta o índice após a seleção
@@ -604,21 +551,7 @@ export default {
       this.dropdownPaiOpen = !this.dropdownPaiOpen;
       let nomeCorreto = false;
 
-      if(!this.dropdownPaiOpen){
-        this.machosFiltrados.forEach(macho => {
-          if(macho.brinco === this.brincoPai){
-            this.formData.brincoPai = macho.id;
-            this.machosFiltrados = [];
-            nomeCorreto = true;
-          }
-        });
-        if(!nomeCorreto){
-          this.brincoPai = '';
-          this.formData.brincoPai = null;
-        }
-      }
-
-      else if(this.dropdownPiqueteOpen){
+      if(this.dropdownPiqueteOpen){
         this.piquetes.forEach(piquete => {
           if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
             this.formData.piquete = piquete.id;
@@ -650,17 +583,6 @@ export default {
       }
 
       else if(this.dropdownMaeOpen){
-        this.femeas.forEach(femea => {
-          if(femea.brinco === this.brincoMae){
-            this.selectMae(femea);
-            nomeCorreto = true;
-            
-          }
-        });
-        if(!nomeCorreto){
-          this.formData.brincoMae = null;
-          this.brincoMae = ''
-        }
         this.dropdownMaeOpen = false;
         this.filterMachos();
       }
@@ -670,20 +592,7 @@ export default {
       }
     },
 
-    handleClickOutsidePai(event) {
-      let nomeCorreto = false;
-      if (this.dropdownPaiOpen && this.$refs.dropdownPai && !this.$refs.dropdownPai.contains(event.target)) {
-        this.machos.forEach(macho => {
-          if(macho.brinco === this.brincoPai){
-            this.selectPai(macho);
-            nomeCorreto = true;
-          }
-        });
-        if(!nomeCorreto){
-          this.brincoPai = '';
-          this.formData.brincoPai = null;
-        }
-      }
+    handleClickOutsidePai() {
       this.dropdownPaiOpen = false;
     },
 
@@ -713,12 +622,11 @@ export default {
 
   //LÓGICA DOS SELECT MAE----------------------------------------------------------------------------------------------------------------------------------------------------
     filterFemeas() {
-      this.femeasFiltradas = this.femeas.filter(femea => femea.brinco.includes(this.brincoMae));
+      this.femeasFiltradas = this.femeas.filter(femea => femea.brinco.includes(this.formData.brincoMae));
     },
 
     selectMae(femea) {
-      this.brincoMae = femea.brinco;
-      this.formData.brincoMae = femea.id;
+      this.formData.brincoMae = femea.brinco;
       this.femeasFiltradas = [];
       this.dropdownMaeOpen = false;
       this.highlightedIndexMae = -1; // Reseta o índice após a seleção
@@ -728,21 +636,7 @@ export default {
       this.dropdownMaeOpen = !this.dropdownMaeOpen;
       let nomeCorreto = false;
 
-      if(!this.dropdownMaeOpen){
-        this.femeasFiltradas.forEach(femea => {
-          if(femea.brinco === this.brincoMae){
-            this.formData.brincoMae = femea.id;
-            this.femeasFiltradas = [];
-            nomeCorreto = true;
-          }
-        });
-        if(!nomeCorreto){
-          this.brincoMae = '';
-          this.formData.brincoMae = null;
-        }
-      }
-
-      else if(this.dropdownPiqueteOpen){
+      if(this.dropdownPiqueteOpen){
         this.piquetes.forEach(piquete => {
           if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
             this.formData.piquete = piquete.id;
@@ -774,17 +668,6 @@ export default {
       }
 
       else if(this.dropdownPaiOpen){
-        this.machos.forEach(macho => {
-          if(macho.brinco === this.brincoPai){
-            this.selectPai(macho);
-            nomeCorreto = true;
-            
-          }
-        });
-        if(!nomeCorreto){
-          this.formData.brincoPai = null;
-          this.brincoPai = ''
-        }
         this.dropdownPaiOpen = false;
         this.filterFemeas();
       }
@@ -794,20 +677,7 @@ export default {
       }
     },
 
-    handleClickOutsideMae(event) {
-      let nomeCorreto = false;
-      if (this.dropdownMaeOpen && this.$refs.dropdownMae && !this.$refs.dropdownMae.contains(event.target)) {
-        this.femeas.forEach(femea => {
-          if(femea.brinco === this.brincoMae){
-            this.selectMae(femea);
-            nomeCorreto = true;
-          }
-        });
-        if(!nomeCorreto){
-          this.brincoMae = '';
-          this.formData.brincoMae = null;
-        }
-      }
+    handleClickOutsideMae() {
       this.dropdownMaeOpen = false;
     },
 

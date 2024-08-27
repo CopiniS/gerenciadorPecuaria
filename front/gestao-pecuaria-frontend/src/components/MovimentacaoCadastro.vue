@@ -23,20 +23,20 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group" >
-              <span class="input-group-text" title="Data da Movimentação"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoCadastro"
-                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }" title="Data da Movimentação">
+                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }" title="Data">
             </div>
 
             <div ref="dropdownPiqueteDestino" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
             @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" @keydown.enter.prevent="selectHighlightedPiqueteDestino">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteDestino">
-                <span class="input-group-text" title="Piquete de Destino dos Animais movimentados"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Piquete de Destino"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiqueteDestino" :class="{ 'is-invalid': !isPiqueteDestinoValido }" @input="inputPiqueteDestino"
                   @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
                   @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" type="text" class="form-control"
-                  :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino dos Animais movimentados">
+                  :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino">
               </div>
               <div class="itens" v-show="dropdownPiqueteDestinoOpen">
                 <ul class="options">
@@ -48,19 +48,19 @@
             </div>
 
             <div class="mb-3 input-group position-relative">
-                    <span class="input-group-text" title="Motivo da Movimentação"><i class="fas fa-comment"></i></span>
+                    <span class="input-group-text" title="Motivo"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" class="form-control" id="motivo" 
-                    placeholder="Motivo" title="Motivo da Movimentação">
+                    placeholder="Motivo" title="Motivo">
                 </div>
             
             <div ref="dropdownPiqueteOrigem" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
             @keydown.down.prevent="navigateOptionsPiqueteOrigem('down')" @keydown.enter.prevent="selectHighlightedPiqueteOrigem">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteOrigem">
-                <span class="input-group-text" title="PiqueteOrigem dos Animais aplicados"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Piquete de Origem"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiqueteOrigem" :class="{ 'is-invalid': !isPiqueteOrigemValido }" @input="inputPiqueteOrigem"
                   @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
                   @keydown.down.prevent="navigateOptionsPiqueteOrigem('down')" type="text" class="form-control"
-                  :placeholder="piqueteOrigemPlaceholder" id="caixa-select" title="PiqueteOrigem dos Animais aplicados">
+                  :placeholder="piqueteOrigemPlaceholder" id="caixa-select" title="Piquete de Origem">
               </div>
               <div class="itens" v-show="dropdownPiqueteOrigemOpen">
                 <ul class="options">
@@ -125,15 +125,10 @@ export default {
         piqueteDestino: null,
         motivo: null,
       },
-      isBrincoValido: true,
       isDataValida: true,
-      isPiqueteValido: true,
       isPiqueteOrigemValido: true,
       isPiqueteDestinoValido: true,
-      isMotivoKgValido: true,
-      brincoPlaceholder: 'Brinco do Animal*',
-      dataPlaceholder: 'Data da Movimentação*',
-      piquetePlaceholder: 'Piquete*',
+      dataPlaceholder: 'Data*',
       piqueteOrigemPlaceholder: 'Piquete de Origem*',
       piqueteDestinoPlaceholder: 'Piquete de Destino*'
     };
@@ -415,23 +410,23 @@ export default {
       if(this.formData.dataMovimentacao != null){
         if(this.formData.dataMovimentacao.trim() != ''){
           this.isDataValida = true;
-          this.dataPlaceholder = 'Data da Movimentação';
+          this.dataPlaceholder = 'Data*';
         }
         else{
           this.isDataValida = false;
-          this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+          this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
       else{
         this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+        this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
         
       //PIQUETE ORIGEM
       if(this.nomePiqueteOrigem != null){
         if(this.nomePiqueteOrigem.trim() != ''){
           this.isPiqueteOrigemValido = true;
-          this.piqueteOrigemPlaceholder = 'Piquete de Origem';
+          this.piqueteOrigemPlaceholder = 'Piquete de Origem*';
         }
         else{
           this.isPiqueteOrigemValido = false;
@@ -447,7 +442,7 @@ export default {
       if(this.nomePiqueteDestino != null){
           if(this.nomePiqueteDestino.trim() != ''){
             this.isPiqueteDestinoValido = true;
-            this.piqueteDestinoPlaceholder = 'Piquete de Destino';
+            this.piqueteDestinoPlaceholder = 'Piquete de Destino*';
           }
           else{
             this.isPiqueteDestinoValido = false;
@@ -466,7 +461,6 @@ export default {
 
       return (
         this.isDataValida &&
-        this.isBrincoValido &&
         this.isPiqueteOrigemValido &&
         this.isPiqueteDestinoValido
       );

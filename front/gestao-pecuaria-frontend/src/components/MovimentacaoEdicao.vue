@@ -20,19 +20,19 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Movimentação</h1>
           <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group" >
-              <span class="input-group-text" title="Data da Movimentação"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :placeholder="dataPlaceholder" class="form-control" id="dataMovimentacaoEdicao"
-                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }" title="Data da Movimentação">
+                v-model="formData.dataMovimentacao" :class="{ 'is-invalid': !isDataValida }" title="Data">
             </div>
             <div ref="dropdownAnimal" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsAnimal('up')"
               @keydown.down.prevent="navigateOptionsAnimal('down')" @keydown.enter.prevent="selectHighlightedAnimal">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownAnimal">
-                <span class="input-group-text" title="Animal aplicado"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Animal"><i class="fas fa-box"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputAnimal"
                   @click="filterAnimais" @keydown.up.prevent="navigateOptionsAnimal('up')"
                   @keydown.down.prevent="navigateOptionsAnimal('down')" type="text" class="form-control"
-                  :placeholder="animalPlaceholder" id="caixa-select" title="Animal aplicado">
+                  :placeholder="animalPlaceholder" id="caixa-select" title="Animal">
               </div>
               <div class="itens" v-show="dropdownAnimalOpen">
                 <ul class="options">
@@ -43,18 +43,18 @@
               </div>
             </div>
             <div class="mb-3 input-group" >
-              <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-              <input v-model="nomePiqueteOrigem" type="text" class="form-control" :placeholder="piqueteOrigemPlaceholder" :disabled="true">
+              <span class="input-group-text" title="Piquete de Origem"><i class="fas fa-hashtag"></i></span>
+              <input v-model="nomePiqueteOrigem" title="Piquete de Origem" type="text" class="form-control" :placeholder="piqueteOrigemPlaceholder" :disabled="true">
             </div>
 
             <div ref="dropdownPiqueteDestino" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
             @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" @keydown.enter.prevent="selectHighlightedPiqueteDestino">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteDestino">
-                <span class="input-group-text" title="Piquete de Destino dos Animais movimentados"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Piquete de Destino"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiqueteDestino" :class="{ 'is-invalid': !isPiqueteDestinoValido }" @input="inputPiqueteDestino"
                   @click="filterPiquetesDestino" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
                   @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" type="text" class="form-control"
-                  :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino dos Animais movimentados">
+                  :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino">
               </div>
               <div class="itens" v-show="dropdownPiqueteDestinoOpen">
                 <ul class="options">
@@ -66,9 +66,9 @@
             </div>
 
             <div class="mb-3 input-group">
-                    <span class="input-group-text" title="Motivo da Movimentação"><i class="fas fa-comment"></i></span>
+                    <span class="input-group-text" title="Motivo"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" class="form-control" id="motivo" 
-                    placeholder="Motivo" title="Motivo da Movimentação">
+                    placeholder="Motivo" title="Motivo">
                 </div>
 
             <div class="button-group justify-content-end">
@@ -113,13 +113,9 @@ export default {
       },
       isAnimalValido: true,
       isDataValida: true,
-      isPiqueteValido: true,
-      isPiqueteOrigemValido: true,
       isPiqueteDestinoValido: true,
-      isMotivoKgValido: true,
-      animalPlaceholder: 'Brinco do animal*',
-      dataPlaceholder: 'Data da aplicacao*',
-      piquetePlaceholder: 'Piquete*',
+      animalPlaceholder: 'Animal*',
+      dataPlaceholder: 'Data*',
       piqueteOrigemPlaceholder: 'Piquete de Origem*',
       piqueteDestinoPlaceholder: 'Piquete de Destino*'
         };
@@ -238,6 +234,9 @@ export default {
         });
         if(!brincoCorreto){
           this.brinco = '';
+          this.formData.animal = null;
+          this.formData.piqueteOrigem = null;
+          this.nomePiqueteOrigem = '';
         }
       }
       else if(this.dropdownPiqueteDestinoOpen){
@@ -245,7 +244,6 @@ export default {
           if(piqueteDestino.nome.toLowerCase() === this.nomePiqueteDestino.toLowerCase()){
             this.selectPiqueteDestino(piqueteDestino);
             nomeCorreto = true;
-            
           }
         });
         if(!nomeCorreto){
@@ -275,6 +273,9 @@ export default {
         });
         if(!nomeCorreto){
           this.brinco = '';
+          this.formData.animal = null;
+          this.formData.piqueteOrigem = null;
+          this.nomePiqueteOrigem = '';
         }
       }
     },
@@ -340,8 +341,10 @@ export default {
           }
         });
         if(!brincoCorreto){
-          this.formData.animal = null;
           this.brinco = '';
+          this.formData.animal = null;
+          this.formData.piqueteOrigem = null;
+          this.nomePiqueteOrigem = '';
         }
         this.dropdownAnimalOpen = false;
         this.filterPiquetesDestino();
@@ -396,39 +399,39 @@ export default {
         if(this.formData.dataMovimentacao != null){
           if(this.formData.dataMovimentacao.trim() != ''){
             this.isDataValida = true;
-            this.dataPlaceholder = 'Data da Movimentação';
+            this.dataPlaceholder = 'Data*';
           }
           else{
             this.isDataValida = false;
-            this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+            this.dataPlaceholder = 'Data é um Campo Obrigatório';
           }
         }
         else{
           this.isDataValida = false;
-          this.dataPlaceholder = 'Data da Movimentação é um Campo Obrigatório';
+          this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
         
         //BRINCO  
           if(this.brinco != null){
             if(this.brinco.trim() != ''){
               this.isAnimalValido = true;
-              this.animalPlaceholder = 'Brinco do Animal'
+              this.animalPlaceholder = 'Animal*'
             }
             else{
             this.isAnimalValido = false;
-            this.animalPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+            this.animalPlaceholder = 'Animal é um Campo Obrigatório';
             }
           }
           else{
             this.isAnimalValido = false;
-            this.animalPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+            this.animalPlaceholder = 'Animal é um Campo Obrigatório';
           }
 
         //PIQUETE DE DESTINO
         if(this.nomePiqueteDestino != null){
             if(this.nomePiqueteDestino.trim() != ''){
               this.isPiqueteDestinoValido = true;
-              this.piqueteDestinoPlaceholder = 'Piquete de Destino';
+              this.piqueteDestinoPlaceholder = 'Piquete de Destino*';
             }
             else{
               this.isPiqueteDestinoValido = false;

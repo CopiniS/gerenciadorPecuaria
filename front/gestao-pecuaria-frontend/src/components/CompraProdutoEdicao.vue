@@ -29,19 +29,19 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Data da Compra"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" :class="{ 'is-invalid': !isDataCompraValida }" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataCompraCadastro" v-model="formData.dataCompra" title="Data da Compra">
+                id="dataCompraCadastro" v-model="formData.dataCompra" title="Data">
             </div>
             <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
-                <span class="input-group-text" @click="filterProdutos" title="Produto comprado"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" @click="filterProdutos" title="Produto"><i class="fas fa-box"></i></span>
                 <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @click="filterProdutos" @keydown.up.prevent="navigateOptions('up')"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
-                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto Comprado">
+                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto">
               </div>
               <div class="itens" v-show="dropdownOpen">
                 <ul class="options">
@@ -53,16 +53,16 @@
             </div>
 
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Valor da Compra"><i class="fas fa-dollar-sign"></i></span>
+              <span class="input-group-text" title="Valor do Produto"><i class="fas fa-dollar-sign"></i></span>
               <input ref="valor" v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="text"
                 @input="aplicarValorMask" class="form-control" id="valorUnitario" 
-                :placeholder="valorUnitarioPlaceholder" title="Valor da Compra">
+                :placeholder="valorUnitarioPlaceholder" title="Valor do Produto">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Quantidade comprada"><i class="fas fa-boxes"></i></span>
+              <span class="input-group-text"  title="Quantidade do Produto"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
                 type="text" @input="aplicarQuantidadeMask" class="form-control" id="quantidadeComprada" 
-                :placeholder="quantidadeCompradaPlaceholder" title="Quantidade comprada">
+                :placeholder="quantidadeCompradaPlaceholder" title="Quantidade do Produto">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"  title="Validade do Produto"><i class="fas fa-calendar-alt"></i></span>
@@ -116,11 +116,10 @@ export default {
       isValorUnitarioValido: true,
       isQuantidadeCompradaValida: true,
       isValidadeValida: true,
-      isLoteValido: true,
-      dataCompraPlaceholder: 'Data da Compra*',
+      dataCompraPlaceholder: 'Data*',
       produtoPlaceholder: 'Produto*',
       valorUnitarioPlaceholder: 'Valor do Produto*',
-      quantidadeCompradaPlaceholder: 'Quantidade Comprada*',
+      quantidadeCompradaPlaceholder: 'Quantidade do Produto*',
       validadePlaceholder: 'Validade do produto*',
       lotePlaceholder: 'Lote do Produto',
     };
@@ -181,7 +180,6 @@ export default {
         try {
           //FORMATA VALOR E QUANTIDADE
           this.formData.valorUnitario = this.replaceVirgulaPonto(this.formData.valorUnitario);
-          this.formData.quantidadeComprada = this.replaceVirgulaPonto(this.formData.quantidadeComprada);
 
           const response = await api.patch(`http://127.0.0.1:8000/compras-produtos/${this.formData.id}/`, this.formData, {
           });
@@ -264,16 +262,16 @@ export default {
       if(this.formData.dataCompra != null){
         if(this.formData.dataCompra.trim() != ''){
           this.isDataCompraValida = true;
-          this.dataCompraPlaceholder = 'Data da Compra*';
+          this.dataCompraPlaceholder = 'Data*';
         }
         else{
           this.isDataCompraValida = false;
-          this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório';
+          this.dataCompraPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
       else{
         this.isDataCompraValida = false;
-        this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório';
+        this.dataCompraPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //PRODUTO DA COMPRADO
@@ -312,16 +310,16 @@ export default {
       if(this.formData.quantidadeComprada != null){
         if(this.formData.quantidadeComprada != ''){
           this.isQuantidadeCompradaValida = true;
-          this.quantidadeCompradaPlaceholder = 'Quantidade Comprada*';
+          this.quantidadeCompradaPlaceholder = 'Quantidade do Produto*';
         }
         else{
           this.isQuantidadeCompradaValida = false;
-          this.quantidadeCompradaPlaceholder = 'Quantidade Comprada é um Campo Obrigatório';
+          this.quantidadeCompradaPlaceholder = 'Quantidade do Produto é um Campo Obrigatório';
         }
       }
       else{
         this.isQuantidadeCompradaValida = false;
-        this.quantidadeCompradaPlaceholder = 'Quantidade Comprada é um Campo Obrigatório';
+        this.quantidadeCompradaPlaceholder = 'Quantidade do Produto é um Campo Obrigatório';
       }
 
       //VALIDADE DO PRODUTO
@@ -342,13 +340,8 @@ export default {
 
       //LOTE DO PRODUTO
       if(this.formData.lote != null){
-        if(this.formData.lote.trim() != ''){
-          this.isLoteValido = true;
-          this.lotePlaceholder = 'Lote do Produto*';
-        }
-        else{
-          this.isLoteValido = false;
-          this.lotePlaceholder = 'Lote do Produto é um Campo Obrigatório';
+        if(this.formData.lote.trim() == ''){
+          this.formData.lote = null;
         }
       }
 
@@ -357,8 +350,7 @@ export default {
         this.isProdutoValido &&
         this.isValorUnitarioValido && 
         this.isQuantidadeCompradaValida && 
-        this.isValidadeValida && 
-        this.isLoteValido
+        this.isValidadeValida
       );
     },
 

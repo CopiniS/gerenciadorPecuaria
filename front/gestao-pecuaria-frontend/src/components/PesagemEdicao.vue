@@ -19,10 +19,10 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text" title="Data da Pesagem"><i class="fas fa-calendar-alt"></i></span>
+                <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
                 <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"  
                 class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem" 
-                :class="{'is-invalid': !isDataValida}" title="Data da Pesagem">
+                :class="{'is-invalid': !isDataValida}" title="Data">
               </div>
               <hr>
               <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
@@ -43,14 +43,14 @@
               </div>
             </div>
               <div class="mb-3 input-group">
-                <span class="input-group-text" title="Peso do Animal"><i class="fas fa-weight"></i></span>
+                <span class="input-group-text" title="Peso"><i class="fas fa-weight"></i></span>
                 <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" 
-                id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" title="Peso do Animal">
+                id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" title="Peso">
               </div>
               <div class="mb-3 input-group position-relative">
-                <span class="input-group-text" title="Observações da Pesagem"><i class="fas fa-sticky-note"></i></span>
+                <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
                 <input v-model="formData.observacao" type="text"  
-                class="form-control" id="observacao" placeholder="Observação" title="Observações da Pesagem">
+                class="form-control" id="observacao" placeholder="Observação" title="Observação">
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('pesagens')">Cancelar</button>
@@ -89,10 +89,9 @@ export default {
       isDataValida: true,
       isPesoValido: true,
       isValorValido: true,
-      brincoPlaceholder: 'Brinco do animal',
-      dataPlaceholder: 'Data da pesagem',
-      pesoPlaceholder: 'Peso do animal',
-      observacaoPlaceholder: 'Observação',
+      brincoPlaceholder: 'Brinco do animal*',
+      dataPlaceholder: 'Data*',
+      pesoPlaceholder: 'Peso*',
     };
   },
 
@@ -254,23 +253,23 @@ export default {
       if(this.formData.dataPesagem != null){
         if(this.formData.dataPesagem.trim() != ''){
           this.isDataValida = true;
-          this.dataPlaceholder = 'Data da Pesagem';
+          this.dataPlaceholder = 'Data*';
         }
         else{
           this.isDataValida = false;
-          this.dataPlaceholder = 'Data da Pesagem é um Campo Obrigatório';
+          this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
       else{
         this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Pesagem é um Campo Obrigatório';
+        this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //BRINCO
       if(this.brinco != null){
         if(this.brinco.trim() != ''){
           this.isBrincoValido = true;
-          this.brincoPlaceholder = 'Brinco do Animal';
+          this.brincoPlaceholder = 'Brinco do Animal*';
         }
         else{
           this.isBrincoValido = false;
@@ -286,11 +285,11 @@ export default {
       if(this.formData.peso != null){
         if(this.formData.peso.trim() != ''){
           this.isPesoValido = true;
-          this.pesoPlaceholder = 'Peso do Animal';
+          this.pesoPlaceholder = 'Peso*';
         }
         else{
           this.isPesoValido = false;
-          this.pesoPlaceholder = 'Peso do Animal é um Campo Obrigatório';
+          this.pesoPlaceholder = 'Peso é um Campo Obrigatório';
         }
       }
 

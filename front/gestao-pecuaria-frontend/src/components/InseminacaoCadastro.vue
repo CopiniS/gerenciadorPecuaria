@@ -23,19 +23,19 @@
               <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Data da Inseminação"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input v-model="formData.dataInseminacao" :class="{ 'is-invalid': !isDataValida }" type="text"
                 onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
-                class="form-control" id="dataInseminacaoCadastro" title="Data da Inseminação">
+                class="form-control" id="dataInseminacaoCadastro" title="Data">
             </div>
             <div ref="dropdownVeterinario" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsVeterinario('up')"
               @keydown.down.prevent="navigateOptionsVeterinario('down')" @keydown.enter.prevent="selectHighlightedVeterinario">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownVeterinario">
-                <span class="input-group-text" title="Veterinario usado na Suplementação"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Veterinario"><i class="fas fa-box"></i></span>
                 <input v-model="nomeVeterinario" :class="{ 'is-invalid': !isVeterinarioValido }" @input="inputVeterinario"
                   @keydown.up.prevent="navigateOptionsVeterinario('up')"
                   @keydown.down.prevent="navigateOptionsVeterinario('down')" type="text" class="form-control"
-                  :placeholder="veterinarioPlaceholder" id="caixa-select" title="Veterinario que realizou a Inseminação">
+                  :placeholder="veterinarioPlaceholder" id="caixa-select" title="Veterinario">
               </div>
               <div class="itens" v-show="dropdownVeterinarioOpen">
                 <ul class="options">
@@ -61,11 +61,11 @@
             <div ref="dropdownFemea" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsFemea('up')"
             @keydown.down.prevent="navigateOptionsFemea('down')" @keydown.enter.prevent="selectHighlightedFemea">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownFemea">
-                <span class="input-group-text" title="Femea inseminada"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Fêmea"><i class="fas fa-box"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isFemeaValida }" @input="inputFemea"
                   @click="filterFemeas" @keydown.up.prevent="navigateOptionsFemea('up')"
                   @keydown.down.prevent="navigateOptionsFemea('down')" type="text" class="form-control"
-                  :placeholder="femeaPlaceholder" id="caixa-select" title="Femea inseminada">
+                  :placeholder="femeaPlaceholder" id="caixa-select" title="Fêmea">
               </div>
               <div class="itens" v-show="dropdownFemeaOpen">
                 <ul class="options">
@@ -76,9 +76,9 @@
               </div>
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text" title="Observação da Inseminação"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacao" type="text" class="form-control"
-                id="observacao" placeholder="Observação" title="Observação da Inseminação">
+                id="observacao" placeholder="Observação" title="Observação">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('inseminacoes')">Cancelar</button>
@@ -123,9 +123,9 @@ export default {
       isDataValida: true,
       isVeterinarioValido: true,
       isIdentificadorTouroValido: true,
-      femeaPlaceholder: 'Brinco da Fêmea*',
-      dataPlaceholder: 'Data da Inseminacao*',
-      veterinarioPlaceholder: 'Nome do Veterinário*',
+      femeaPlaceholder: 'Fêmea*',
+      dataPlaceholder: 'Data*',
+      veterinarioPlaceholder: 'Veterinário*',
       identificadorTouroPlaceholder: 'Identificador do Touro*',
     };
   },
@@ -393,39 +393,39 @@ export default {
       if (this.brinco != null) {
         if (this.brinco.trim() != '') {
           this.isFemeaValida = true;
-          this.femeaPlaceholder = 'Brinco da Fêmea';
+          this.femeaPlaceholder = 'Fêmea';
         }
         else {
           this.isFemeaValida = false;
-          this.femeaPlaceholder = 'Brinco da Fêmea é um Campo Obrigatório';
+          this.femeaPlaceholder = 'Fêmea é um Campo Obrigatório';
         }
       }
       else {
         this.isFemeaValida = false;
-        this.femeaPlaceholder = 'Brinco da Fêmea é um Campo Obrigatório';
+        this.femeaPlaceholder = 'Fêmea é um Campo Obrigatório';
       }
 
       //VETERINÁRIO
       if (this.nomeVeterinario != null) {
         if (this.nomeVeterinario.trim() != '') {
           this.isVeterinarioValido = true;
-          this.veterinarioPlaceholder = 'Nome do Veterinário';
+          this.veterinarioPlaceholder = 'Veterinário';
         }
         else {
           this.isVeterinarioValido = false;
-          this.veterinarioPlaceholder = 'Nome do Veterinário é um Campo Obrigatório'
+          this.veterinarioPlaceholder = 'Veterinário é um Campo Obrigatório'
         }
       }
       else {
         this.isVeterinarioValido = false;
-        this.veterinarioPlaceholder = 'Nome do Veterinário é um Campo Obrigatório'
+        this.veterinarioPlaceholder = 'Veterinário é um Campo Obrigatório'
       }
 
       //IDENTIFICADOR TOURO
       if (this.formData.identificadorTouro != null) {
         if (this.formData.identificadorTouro.trim() != '') {
           this.isIdentificadorTouroValido = true;
-          this.identificadorTouroPlaceholder = 'Digite o Identificador do Touro';
+          this.identificadorTouroPlaceholder = 'Identificador do Touro';
         }
         else {
           this.isIdentificadorTouroValido = false;

@@ -16,19 +16,19 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Aplicação</h1>
             <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group" :class="{ 'is-invalid': !isDataValida }">
-              <span class="input-group-text" title="Data da Aplicação"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :placeholder="dataPlaceholder" class="form-control" id="dataAplicacaoEdicao"
-                v-model="formData.dataAplicacao" title="Data da Aplicação">
+                v-model="formData.dataAplicacao" title="Data">
             </div>
             <div ref="dropdownAnimal" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsAnimal('up')"
               @keydown.down.prevent="navigateOptionsAnimal('down')" @keydown.enter.prevent="selectHighlightedAnimal">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownAnimal">
-                <span class="input-group-text" title="Animal aplicado"><i class="fas fa-box"></i></span>
-                <input v-model="brinco" :class="{ 'is-invalid': !isBrincoValido }" @input="inputBrinco"
+                <span class="input-group-text" title="Animal"><i class="fas fa-box"></i></span>
+                <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputBrinco"
                   @click="filterAnimais" @keydown.up.prevent="navigateOptionsAnimal('up')"
                   @keydown.down.prevent="navigateOptionsAnimal('down')" type="text" class="form-control"
-                  :placeholder="brincoPlaceholder" id="caixa-select" title="Animal aplicado">
+                  :placeholder="animalPlaceholder" id="caixa-select" title="Animal">
               </div>
               <div class="itens" v-show="dropdownAnimalOpen">
                 <ul class="options">
@@ -41,11 +41,11 @@
             <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
               @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
-                <span class="input-group-text" title="Produto aplicado"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Produto"><i class="fas fa-box"></i></span>
                 <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')"
                   @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
-                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto aplicado">
+                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto">
               </div>
               <div class="itens" v-show="dropdownProdutoOpen">
                 <ul class="options">
@@ -56,14 +56,14 @@
               </div>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Dosagem da Aplicação"><i class="fas fa-tint"></i></span>
+              <span class="input-group-text" title="Dosagem"><i class="fas fa-tint"></i></span>
               <input v-model="formData.dosagem" type="text" @input="aplicarDosagemMask" 
-              class="form-control" id="dosagem" :placeholder="dosagemPlaceholder" title="Dosagem da Aplicação">
+              class="form-control" id="dosagem" :placeholder="dosagemPlaceholder" title="Dosagem">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Observação da Aplicação"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacao" type="text"
-              class="form-control" id="observacao" :placeholder="observacaoPlaceholder" title="Observação da Aplicação">
+              class="form-control" id="observacao" placeholder="Observação" title="Observação">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('aplicacoes')">Cancelar</button>
@@ -105,17 +105,14 @@ export default {
         dataAplicacao: '',
         observacao: null,
       },
-      isBrincoValido: true,
+      isAnimalValido: true,
       isDataValida: true,
-      isPiqueteValido: true,
       isDosagemValida: true,
       isObservacaoValida: true,
       isProdutoValido: true,
-      brincoPlaceholder: 'Brinco do animal*',
-      dataPlaceholder: 'Data da aplicação*',
-      piquetePlaceholder: 'Piquete*',
-      dosagemPlaceholder: 'Dosagem do produto (ml/gr)*',
-      observacaoPlaceholder: 'Observação',
+      animalPlaceholder: 'Animal*',
+      dataPlaceholder: 'Data*',
+      dosagemPlaceholder: 'Dosagem* (ml/gr)',
       produtoPlaceholder: 'Produto*'
     };
   },
@@ -393,57 +390,40 @@ export default {
       if(this.formData.dataAplicacao != null){
         if(this.formData.dataAplicacao.trim() != ''){
           this.isDataValida = true;
-          this.dataPlaceholder = 'Digite a Data da Aplicação';
+          this.dataPlaceholder = 'Data*';
         }
         else{
           this.isDataValida = false;
-          this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
+          this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
       else{
         this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
+        this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
 
-      //BRINCO || PIQUETE
-      if(this.radioEscolha == 'brinco'){
-        if(this.brinco != null){
-          if(this.brinco.trim() != ''){
-            this.isBrincoValido = true;
-            this.brincoPlaceholder = 'Digite o brinco do animal';
-          }
-          else{
-            this.isBrincoValido = false;
-            this.brincoPlaceholder = 'Brinco é um Campo Obrigatório';
-          }
+      //ANIMAL
+      if(this.brinco != null){
+        if(this.brinco.trim() != ''){
+          this.isAnimalValido = true;
+          this.animalPlaceholder = 'Animal*';
         }
         else{
-          this.isBrincoValido = false;
-          this.brincoPlaceholder = 'Brinco é um Campo Obrigatório';
+          this.isAnimalValido = false;
+          this.animalPlaceholder = 'Animal é um Campo Obrigatório';
         }
       }
       else{
-        if(this.nomePiquete != null){
-          if(this.nomePiquete.trim() != ''){
-            this.isPiqueteValido = true;
-            this.piquetePlaceholder = 'Digite o Piquete ';
-          }
-          else{
-            this.isPiqueteValido = false;
-          this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
-          }
-        }
-        else{
-          this.isPiqueteValido = false;
-          this.piquetePlaceholder = 'Piquete é um Campo Obrigatório';
-        }
+        this.isAnimalValido = false;
+        this.animalPlaceholder = 'Animal é um Campo Obrigatório';
       }
+      
 
       //PRODUTO
       if(this.nomeProduto != null){
         if(this.nomeProduto.trim() != ''){
           this.isProdutoValido = true;
-          this.produtoPlaceholder = 'Digite o nome do Produto';
+          this.produtoPlaceholder = 'Produto*';
         }
         else{
           this.isProdutoValido = false;
@@ -459,7 +439,7 @@ export default {
       if(this.formData.dosagem != null){
         if(this.formData.dosagem.trim() != ''){
           this.isDosagemValida = true;
-          this.dosagemPlaceholder = 'Digite a Dosagem do produto'
+          this.dosagemPlaceholder = 'Dosagem*'
         }
         else{
           this.isDosagemValida = false;
@@ -478,7 +458,7 @@ export default {
 
       return (
         this.isDataValida &&
-        this.isBrincoValido && 
+        this.isAnimalValido && 
         this.isPiqueteValido && 
         this.isProdutoValido && 
         this.isDosagemValida

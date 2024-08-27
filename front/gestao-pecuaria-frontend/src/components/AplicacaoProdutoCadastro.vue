@@ -23,19 +23,19 @@
               <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Data da Aplicação"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
                 class="form-control" id="dataAplicacaoCadastro" v-model="formData.dataAplicacao"
-                :class="{ 'is-invalid': !isDataValida }" title="Data da Aplicação">
+                :class="{ 'is-invalid': !isDataValida }" title="Data">
             </div>
             <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
               @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
-                <span class="input-group-text" title="Produto aplicado"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Produto"><i class="fas fa-box"></i></span>
                 <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')"
                   @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
-                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto aplicado">
+                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto">
               </div>
               <div class="itens" v-show="dropdownProdutoOpen">
                 <ul class="options">
@@ -46,16 +46,16 @@
               </div>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Dosagem da Aplicação"><i class="fas fa-tint"></i></span>
+              <span class="input-group-text" title="Dosagem"><i class="fas fa-tint"></i></span>
               <input v-model="formData.dosagem" @input="aplicarDosagemMask" type="text" class="form-control"
                 id="dosagem" :placeholder="dosagemPlaceholder" :class="{ 'is-invalid': !isDosagemValida }" 
-                title="Dosagem da Aplicação">
+                title="Dosagem">
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text" title="Observação da Aplicação"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacao" 
               type="text" class="form-control" id="observacao" 
-              :placeholder="observacaoPlaceholder" title="Observação da Aplicação">
+              placeholder="Observação" title="Observação">
               
             </div>
 
@@ -138,11 +138,9 @@ export default {
       isDosagemValida: true,
       isObservacaoValida: true,
       isProdutoValido: true,
-      brincoPlaceholder: 'Brinco do animal*',
-      dataPlaceholder: 'Data da aplicação*',
+      dataPlaceholder: 'Data*',
       piquetePlaceholder: 'Piquete*',
-      dosagemPlaceholder: 'Dosagem do produto (ml/gr)*',
-      observacaoPlaceholder: 'Observação',
+      dosagemPlaceholder: 'Dosagem* (ml/gr)',
       produtoPlaceholder: 'Produto*',
     };
   },
@@ -431,16 +429,16 @@ export default {
       if (this.formData.dataAplicacao != null) {
         if (this.formData.dataAplicacao.trim() != '') {
           this.isDataValida = true;
-          this.dataPlaceholder = 'Digite a Data da Aplicação';
+          this.dataPlaceholder = 'Data*';
         }
         else {
           this.isDataValida = false;
-          this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
+          this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
       else {
         this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Aplicação é um Campo Obrigatório';
+        this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //PIQUETE
@@ -463,7 +461,7 @@ export default {
       if (this.nomeProduto != null) {
         if (this.nomeProduto.trim() != '') {
           this.isProdutoValido = true;
-          this.produtoPlaceholder = 'Digite o nome do Produto';
+          this.produtoPlaceholder = 'Produto';
         }
         else {
           this.isProdutoValido = false;
@@ -479,7 +477,7 @@ export default {
       if (this.formData.dosagem != null) {
         if (this.formData.dosagem.trim() != '') {
           this.isDosagemValida = true;
-          this.dosagemPlaceholder = 'Digite a Dosagem do produto'
+          this.dosagemPlaceholder = 'Dosagem*'
         }
         else {
           this.isDosagemValida = false;

@@ -12,7 +12,7 @@
         tabindex="0"></div>
     </div>
 
-    <h2>Animais</h2>
+    <h2>Lista de Animais</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
         <h2 class="me-3">Filtros</h2>

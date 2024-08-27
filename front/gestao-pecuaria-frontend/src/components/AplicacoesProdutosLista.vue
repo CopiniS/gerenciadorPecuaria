@@ -10,7 +10,7 @@
   <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-vet-tab" tabindex="0"></div>
  </div>
 
-  <h2>Aplicações de Produtos</h2>
+  <h2>Lista de Aplicações</h2>
     <div class="d-flex align-items-start table-container flex-column">
       <div class="d-flex align-items-start">
         <h2 class="me-3">Filtros</h2>
@@ -18,7 +18,7 @@
       </div>
       <form @submit.prevent="aplicarFiltro"  @keyup.enter="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
-          <label for="dataAplicacao" class="form-label me-2">Data da Aplicação</label>
+          <label for="dataAplicacao" class="form-label me-2">Data</label>
           <DateRangePicker ref="dateRangePicker" class="input-consistente" 
       :startDate="filtro.dataAplicacaoInicio" 
       :endDate="filtro.dataAplicacaoFim"

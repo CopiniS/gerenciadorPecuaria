@@ -19,7 +19,7 @@
       </div>
       <form @submit.prevent="aplicarFiltro"  @keyup.enter="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
-          <label for="dataInseminacao" class="form-label me-2">Data da Inseminação</label>
+          <label for="dataInseminacao" class="form-label me-2">Data</label>
           <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataInseminacaoInicio" :endDate="filtro.dataInseminacaoFim"
       @update:startDate="val => filtro.dataInseminacaoInicio = val"
       @update:endDate="val => filtro.dataInseminacaoFim = val" />
@@ -51,7 +51,7 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-              <th scope="col">Data Inseminação</th>
+              <th scope="col">Data</th>
               <th scope="col">Animal</th>
               <th scope="col">Veterinario</th>
               <th scope="col">Touro</th>

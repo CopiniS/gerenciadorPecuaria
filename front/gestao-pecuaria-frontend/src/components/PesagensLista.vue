@@ -19,7 +19,7 @@
       </div>
       <form @submit.prevent="aplicarFiltro"  @keyup.enter="aplicarFiltro" class="row g-3 align-items-center" v-show="mostrarFormulario">
         <div class="col-auto d-flex align-items-center">
-          <label for="dataPesagem" class="form-label me-2">Data da Pesagem</label>
+          <label for="dataPesagem" class="form-label me-2">Data</label>
           <DateRangePicker ref="dateRangePicker" class="input-consistente" :startDate="filtro.dataPesagemInicio" :endDate="filtro.dataPesagemFim"
       @update:startDate="val => filtro.dataPesagemInicio = val"
       @update:endDate="val => filtro.dataPesagemFim = val" />

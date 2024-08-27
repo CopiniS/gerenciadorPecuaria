@@ -21,8 +21,8 @@
           <h1 class="title fs-5" id="finalizacaoLabel">Finalização de Suplementação</h1>
           <form @submit.prevent="finalizarSuplementoSubmit">
               <div class="mb-3 input-group">
-                <label for="dataFinal" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataFinalPlaceholder" 
+                <label for="dataFinal" title="Data Final" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
+                <input type="text" title="Data Final" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataFinalPlaceholder" 
                 class="form-control" id="dataFinalFi" v-model="formData.dataFinal" :class="{'is-invalid': !isDataFinalValida}">
               </div>
               <div class="button-group justify-content-end">
@@ -48,7 +48,7 @@ export default {
               dataFinal: null,
           },
           isDataFinalValida: true,
-          dataFinalPlaceholder: 'Data Final da Suplementação',
+          dataFinalPlaceholder: 'Data Final*',
       };
   },
 
@@ -86,7 +86,7 @@ export default {
       if(this.formData.dataFinal != null){
         if(this.formData.dataFinal.trim() != ''){
           this.isDataFinalValida = true;
-          this.dataFinalPlaceholder = 'Data Final da Suplementação*'
+          this.dataFinalPlaceholder = 'Data Final*'
         }
         else{
           this.isDataFinalValida = false;

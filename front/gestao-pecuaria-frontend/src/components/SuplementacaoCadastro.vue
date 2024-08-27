@@ -23,19 +23,19 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <label for="dataInicial" class="input-group-text" title="Data Inicial da Suplementação"><i class="fas fa-calendar-alt"></i></label>
+              <label for="dataInicial" class="input-group-text" title="Data Inicial"><i class="fas fa-calendar-alt"></i></label>
               <input type="text" :class="{ 'is-invalid': !isDataInicialValida }" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataInicialPlaceholder" class="form-control"
-                id="dataInicialCadastro" v-model="formData.dataInicial" title="Data Inicial da Suplementação">
+                id="dataInicialCadastro" v-model="formData.dataInicial" title="Data Inicial">
             </div>
             <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
               @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
-                <span class="input-group-text" title="Produto usado na Suplementação"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Produto"><i class="fas fa-box"></i></span>
                 <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @keydown.up.prevent="navigateOptionsProduto('up')"
                   @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
-                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto aplicado">
+                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto">
               </div>
               <div class="itens" v-show="dropdownProdutoOpen">
                 <ul class="options">
@@ -48,11 +48,11 @@
             <div ref="dropdownPiquete" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiquete('up')"
             @keydown.down.prevent="navigateOptionsPiquete('down')" @keydown.enter.prevent="selectHighlightedPiquete">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
-                <span class="input-group-text" title="Piquete dos Animais aplicados"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Piquete"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
                   @click="filterPiquetes" @keydown.up.prevent="navigateOptionsPiquete('up')"
                   @keydown.down.prevent="navigateOptionsPiquete('down')" type="text" class="form-control"
-                  :placeholder="piquetePlaceholder" id="caixa-select" title="Piquete dos Animais aplicados">
+                  :placeholder="piquetePlaceholder" id="caixa-select" title="Piquete">
               </div>
               <div class="itens" v-show="dropdownPiqueteOpen">
                 <ul class="options">
@@ -63,10 +63,10 @@
               </div>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Quantidade de Produto na Suplementação"><i class="fas fa-boxes"></i></span>
+              <span class="input-group-text" title="Quantidade do Produto"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidade" type="text" :class="{ 'is-invalid': !isQuantidadeValida }"
                 @input="aplicarQuantidadeMask" class="form-control" id="quantidade" 
-                :placeholder="quantidadePlaceholder" title="Quantidade de Produto na Suplementação">
+                :placeholder="quantidadePlaceholder" title="Quantidade do Produto">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('suplementacoes')">Cancelar</button>
@@ -112,10 +112,10 @@ export default {
       isPiqueteValido: true,
       isQuantidadeValida: true,
       isDataInicialValida: true,
-      produtoPlaceholder: 'Produto usado na Suplementação*',
-      piquetePlaceholder: 'Piquete da Suplementação*',
+      produtoPlaceholder: 'Produto*',
+      piquetePlaceholder: 'Piquete*',
       quantidadePlaceholder: 'Quantidade do Produto*',
-      dataInicialPlaceholder: 'Data Inicial da Suplementação*',
+      dataInicialPlaceholder: 'Data Inicial*',
     };
   },
 
@@ -365,7 +365,7 @@ export default {
       if(this.formData.dataInicial != null){
         if(this.formData.dataInicial.trim() != ''){
           this.isDataInicialValida = true;
-          this.dataInicialPlaceholder = 'Data Inicial da Suplementação*';
+          this.dataInicialPlaceholder = 'Data Inicial*';
         }
         else{
           this.isDataInicialValida = false;
@@ -381,7 +381,7 @@ export default {
       if(this.nomeProduto != null){
         if(this.nomeProduto.trim() != ''){
           this.isProdutoValido = true;
-          this.produtoPlaceholder = 'Produto usado na Suplementação*';
+          this.produtoPlaceholder = 'Produto*';
         }
         else{
           this.isProdutoValido = false;
@@ -397,7 +397,7 @@ export default {
       if(this.nomePiquete != null){
         if(this.nomePiquete != ''){
           this.isPiqueteValido = true;
-          this.piquetePlaceholder = 'Piquete da Suplementação*';
+          this.piquetePlaceholder = 'Piquete*';
         }
         else{
           this.isPiqueteValido = false;

@@ -27,9 +27,9 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Raca</h1>
             <form @submit.prevent="submitForm" @keydown="checkEnter">
                 <div class="mb-3 input-group">
-                  <span class="input-group-text" title="Nome da Raça"><i class="fas fa-horse"></i></span>
+                  <span class="input-group-text" title="Nome"><i class="fas fa-horse"></i></span>
                   <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
-                  class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome da Raça">
+                  class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome">
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('racas')">Cancelar</button>
@@ -55,7 +55,7 @@ export default {
                 nome: ''
             },
             isNomeValido: true,
-            nomePlaceholder: 'Nome da Raca',
+            nomePlaceholder: 'Nome*',
         };
     },
  
@@ -113,7 +113,7 @@ export default {
     validarFormulario() {
       let valido = true;
       this.isNomeValido = true;
-      this.nomePlaceholder = 'Nome do raca';
+      this.nomePlaceholder = 'Nome*';
       
       // Cria uma nova lista sem o item com o id atual
       let racasComExclusao = this.racasDaApi.filter(raca => raca.id !== this.formData.id);
@@ -122,7 +122,7 @@ export default {
       for (let i = 0; i < racasComExclusao.length; i++) {
         if (racasComExclusao[i].nome === this.formData.nome) {
           this.isNomeValido = false;
-          this.nomePlaceholder = 'Esta Raça já está cadastrada';
+          this.nomePlaceholder = 'Esta Raça já está cadastrada no sistema';
           this.formData.nome = null;
           valido = false;
           break;
@@ -136,16 +136,16 @@ export default {
       if(this.formData.nome != null){
         if(this.formData.nome.trim() != ''){
           this.isNomeValido = true;
-          this.nomePlaceholder = 'Digite o nome da Raça';
+          this.nomePlaceholder = 'Nome*';
         }
         else{
           this.isNomeValido = false;
-          this.nomePlaceholder = 'Nome da Raça é um Campo Obrigatório'
+          this.nomePlaceholder = 'Nome é um Campo Obrigatório'
         }
       }
       else{
         this.isNomeValido = false;
-        this.nomePlaceholder = 'Nome da Raça é um Campo Obrigatório'
+        this.nomePlaceholder = 'Nome é um Campo Obrigatório'
       }
 
       return this.isNomeValido;

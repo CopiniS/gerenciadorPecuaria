@@ -28,11 +28,11 @@
               <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedAnimal">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
-                <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
-                <input v-model="brinco" :class="{ 'is-invalid': !isBrincoValido }" @input="inputBrinco"
+                <span class="input-group-text" title="Animal"><i class="fas fa-user-tag"></i></span>
+                <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputBrinco"
                   @keydown.up.prevent="navigateOptions('up')"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
-                  :placeholder="brincoPlaceholder" id="caixa-select" title="Brinco do Animal">
+                  :placeholder="animalPlaceholder" id="caixa-select" title="Animal">
               </div>
               <div class="itens" v-show="dropdownOpen">
                 <ul class="options">
@@ -85,10 +85,10 @@ export default {
         observacao: null,
         animal: null
       },
-      isBrincoValido: true,
+      isAnimalValido: true,
       isDataValida: true,
       isPesoValido: true,
-      brincoPlaceholder: 'Brinco do Animal*',
+      animalPlaceholder: 'Animal*',
       dataPlaceholder: 'Data*',
       pesoPlaceholder: 'Peso*',
     };
@@ -245,17 +245,17 @@ export default {
       //BRINCO
       if(this.brinco != null){
         if(this.brinco.trim() != ''){
-          this.isBrincoValido = true;
-          this.brincoPlaceholder = 'Brinco do Animal*';
+          this.isAnimalValido = true;
+          this.animalPlaceholder = 'Animal*';
         }
         else{
-          this.isBrincoValido = false;
-          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+          this.isAnimalValido = false;
+          this.animalPlaceholder = 'Animal é um Campo Obrigatório';
         }
       }
       else{
-        this.isBrincoValido = false;
-        this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+        this.isAnimalValido = false;
+        this.animalPlaceholder = 'Animal é um Campo Obrigatório';
       }
 
       //PESO DO ANIMAL
@@ -277,7 +277,7 @@ export default {
 
       return (
         this.isDataValida &&
-        this.isBrincoValido &&
+        this.isAnimalValido &&
         this.isPesoValido
       );
     },

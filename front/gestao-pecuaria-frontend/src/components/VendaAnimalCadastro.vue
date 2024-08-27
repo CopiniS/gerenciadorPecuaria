@@ -19,10 +19,10 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
                 <div class="mb-3 input-group">
-                    <span class="input-group-text" title="Data da Venda"><i class="fas fa-calendar-alt"></i></span>
+                    <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
                     <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder" 
                     class="form-control" id="dataVenda" v-model="formData.dataVenda" 
-                    :class="{'is-invalid': !isDataValida}" title="Data da Venda">
+                    :class="{'is-invalid': !isDataValida}" title="Data">
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text" title="Preço por kg"><i class="fas fa-dollar-sign"></i></span>
@@ -30,9 +30,9 @@
                   type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder" title="Preço por kg">
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text" title="Finalidade da Venda"><i class="fas fa-tags"></i></span>
+                  <span class="input-group-text" title="Finalidade"><i class="fas fa-tags"></i></span>
                   <select v-model="formData.finalidade" class="form-select" id="finalidade" aria-label="Finalidade"
-                    :placeholder="finalidadePlaceholder" :class="{'is-invalid': !isFinalidadeValida}" title="Finalidade da Venda">
+                    :placeholder="finalidadePlaceholder" :class="{'is-invalid': !isFinalidadeValida}" title="Finalidade">
                     <option disabled value="">Finalidade</option>
                     <option value="Cria">Cria</option>
                     <option value="Recria">Recria</option>
@@ -44,11 +44,11 @@
                 <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedAnimal">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
-                <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
-                <input v-model="brinco" :class="{ 'is-invalid': !isBrincoValido }" @input="inputBrinco"
+                <span class="input-group-text" title="Animal"><i class="fas fa-user-tag"></i></span>
+                <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputBrinco"
                   @keydown.up.prevent="navigateOptions('up')"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
-                  :placeholder="brincoPlaceholder" id="caixa-select" title="Brinco do Animal">
+                  :placeholder="animalPlaceholder" id="caixa-select" title="Animal">
               </div>
               <div class="itens" v-show="dropdownOpen">
                 <ul class="options">
@@ -64,14 +64,14 @@
                   :placeholder="pesoPlaceholder" title="Peso do Animal">
                 </div>
                 <div class="mb-3 input-group">
-                  <span class="input-group-text" title="Valor Total da Venda"><i class="fas fa-dollar-sign"></i></span>
+                  <span class="input-group-text" title="Valor Total"><i class="fas fa-dollar-sign"></i></span>
                   <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control"  @input="aplicarValorTotalMask"
-                  id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" title="Valor Total da Venda">
+                  id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" title="Valor Total">
                 </div>
                 <div class="mb-3 input-group position-relative">
-                  <span class="input-group-text" title="Observação da Venda"><i class="fas fa-sticky-note"></i></span>
+                  <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
                   <input v-model="formData.observacao" type="text" class="form-control" id="observacao"
-                  placeholder="Observação" title="Observação da Venda" />
+                  placeholder="Observação" title="Observação" />
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>
@@ -109,13 +109,13 @@ export default {
         finalidade: '',
         observacao: null,
       },
-      isBrincoValido: true,
+      isAnimalValido: true,
       isDataValida: true,
       isValorTotalValido: true,
       isFinalidadeValida: true,
-      brincoPlaceholder: 'Brinco do animal*',
-      dataPlaceholder: 'Data da venda*',
-      pesoPlaceholder: 'Peso do animal',
+      animalPlaceholder: 'Animal*',
+      dataPlaceholder: 'Data*',
+      pesoPlaceholder: 'Peso do Animal',
       precoKgPlaceholder: 'Preço por KG',
       valorTotalPlaceholder: 'Valor Total*',
       finalidadePlaceholder: 'Finalidade*',
@@ -287,11 +287,11 @@ export default {
       //DATA DA VENDA
       if(this.formData.dataVenda != null && this.formData.dataVenda.trim() != ''){
           this.isDataValida = true;
-          this.dataPlaceholder = 'Data da Venda*';
+          this.dataPlaceholder = 'Data*';
       }
       else{
         this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Venda é um Campo Obrigatório';
+        this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
       
       //PREÇO POR KG
@@ -311,12 +311,12 @@ export default {
 
       //BRINCO DO ANIMAL
       if(this.brinco != null && this.brinco.trim() != ''){
-          this.isBrincoValido = true;
-          this.brincoPlaceholder = 'Brinco do Animal*';
+          this.isAnimalValido = true;
+          this.animalPlaceholder = 'Animal*';
       }
       else{
-        this.isBrincoValido = false;
-        this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório';
+        this.isAnimalValido = false;
+        this.animalPlaceholder = 'Animal é um Campo Obrigatório';
       }
 
       //PESO DO ANIMAL
@@ -342,7 +342,7 @@ export default {
       return (
         this.isDataValida &&
         this.isFinalidadeValida &&
-        this.isBrincoValido &&
+        this.isAnimalValido &&
         this.isValorTotalValido
       );
     },

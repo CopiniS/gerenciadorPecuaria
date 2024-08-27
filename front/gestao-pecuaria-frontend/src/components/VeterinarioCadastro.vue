@@ -19,12 +19,12 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Nome do Veterinário"><i class="fas fa-user-md"></i></span>
+              <span class="input-group-text" title="Nome"><i class="fas fa-user-md"></i></span>
               <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
-              class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome do Veterinário">
+              class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Telefone do Veterinário"><i class="fas fa-phone"></i></span>
+              <span class="input-group-text" title="Telefone"><i class="fas fa-phone"></i></span>
               <input
                 v-model="formData.telefone"
                 @input="aplicarTelefoneMask"
@@ -32,17 +32,17 @@
                 type="text"
                 class="form-control"
                 id="telefone"
-                :placeholder="telefonePlaceholder" title="Telefone do Veterinário">
+                :placeholder="telefonePlaceholder" title="Telefone">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Email do Veterinário"><i class="fas fa-envelope"></i></span>
+              <span class="input-group-text" title="Email"><i class="fas fa-envelope"></i></span>
               <input v-model="formData.email" :class="{'is-invalid': !isEmailValido}" type="email" 
-              class="form-control" id="email" :placeholder="emailPlaceholder" title="Email do Veterinário">
+              class="form-control" id="email" :placeholder="emailPlaceholder" title="Email">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="CRMV do Veterinário"><i class="fas fa-id-card"></i></span>
+              <span class="input-group-text" title="CRMV"><i class="fas fa-id-card"></i></span>
               <input v-model="formData.crmv" :class="{'is-invalid': !isCrmvValido}" type="text" 
-              class="form-control" id="crmv" :placeholder="crmvPlaceholder" title="CRMV do Veterinário">
+              class="form-control" id="crmv" :placeholder="crmvPlaceholder" title="CRMV">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('veterinarios')">Cancelar</button>
@@ -131,7 +131,7 @@ export default {
     validarFormulario() {
       if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone)){
         this.isTelefoneValido = true;
-        this.telefonePlaceholder = 'Telefone';
+        this.telefonePlaceholder = 'Telefone*';
       }
       else{
         this.isTelefoneValido = false;
@@ -150,12 +150,12 @@ export default {
       }
 
       this.isCrmvValido = true;
-      this.crmvPlaceholder = 'CRMV do veterinário';
+      this.crmvPlaceholder = 'CRMV*';
 
       for (let veterinario of this.veterinariosDaApi) {
         if (veterinario.crmv === this.formData.crmv) {
           this.isCrmvValido = false;
-          this.crmvPlaceholder = 'Este CRMV já está cadastrado';
+          this.crmvPlaceholder = 'Este CRMV já está cadastrado no sistema';
           this.formData.crmv = null;
           break;
         }
@@ -167,21 +167,21 @@ export default {
       //NOME
       if(this.formData.nome != null && this.formData.nome.trim() != ''){
         this.isNomeValido = true;
-        this.nomePlaceholder = 'Nome do Veterinário*';
+        this.nomePlaceholder = 'Nome*';
       }
       else{
         this.isNomeValido = false;
-        this.nomePlaceholder = 'Nome do Veterinário é um Campo Obrigatório';
+        this.nomePlaceholder = 'Nome é um Campo Obrigatório';
       }
       
       //TELEFONE
       if(this.formData.telefone != null && this.formData.telefone.trim() != ''){
         this.isTelefoneValido = true;
-        this.telefonePlaceholder = 'Telefone do Veterinário*';
+        this.telefonePlaceholder = 'Telefone*';
       }
       else{
         this.isTelefoneValido = false;
-        this.telefonePlaceholder = 'Telefone do Veterinário é um Campo Obrigatório';
+        this.telefonePlaceholder = 'Telefone é um Campo Obrigatório';
       }
       //EMAIL
       if(this.formData.email != null && this.formData.email.trim() == ''){
@@ -191,11 +191,11 @@ export default {
       //CRMV
       if(this.formData.crmv != null && this.formData.crmv.trim() != ''){
         this.isCrmvValido = true;
-        this.crmvPlaceholder = 'CRMV do Veterinário*';
+        this.crmvPlaceholder = 'CRMV*';
       }
       else{
         this.isCrmvValido = false;
-        this.crmvPlaceholder = 'CRMV do Veterinário é um Campo Obrigatório';
+        this.crmvPlaceholder = 'CRMV é um Campo Obrigatório';
       }
 
       return(

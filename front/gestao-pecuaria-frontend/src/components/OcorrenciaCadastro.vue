@@ -24,15 +24,15 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group" >
-              <span class="input-group-text" title="Data da Ocorrência"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :placeholder="dataPlaceholder" class="form-control" id="dataOcorrencia"
-                v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }" title="Data da Ocorrência">
+                v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }" title="Data">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Tipo da Ocorrência"><i class="fas fa-venus-mars"></i></span>
+              <span class="input-group-text" title="Tipo"><i class="fas fa-venus-mars"></i></span>
               <select v-model="formData.tipo" :class="{ 'is-invalid': !isTipoValido }" class="form-select" id="tipo"
-                aria-label="Tipo" :placeholder="tipoPlaceholder" title="Tipo da Ocorrência">
+                aria-label="Tipo" :placeholder="tipoPlaceholder" title="Tipo">
                 <option disabled :value="null">{{ tipoPlaceholder }}</option>
                 <option value="morte">Morte</option>
                 <option value="doenca">Doença</option>
@@ -41,9 +41,9 @@
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Descrição da Ocorrência"><i class="fas fa-tags"></i></span>
+              <span class="input-group-text" title="Descrição"><i class="fas fa-tags"></i></span>
               <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
-                placeholder="Descrição" title="Descrição da Ocorrência">
+                placeholder="Descrição" title="Descrição">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>
@@ -78,8 +78,8 @@ export default {
       },
       isDataValida: true,
       isTipoValido: true,
-      dataPlaceholder: 'Data da Ocorrência*',
-      tipoPlaceholder: 'Tipo da Ocorrencia*',
+      dataPlaceholder: 'Data*',
+      tipoPlaceholder: 'Tipo*',
     };
   },
 
@@ -130,32 +130,32 @@ export default {
       if(this.formData.dataOcorrencia != null){
         if(this.formData.dataOcorrencia.trim() != ''){
           this.isDataValida = true;
-          this.dataPlaceholder = 'Data da Ocorrência';
+          this.dataPlaceholder = 'Data*';
         }
         else{
           this.isDataValida = false;
-          this.dataPlaceholder = 'Data da Ocorrência é um Campo Obrigatório';
+          this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
       else{
         this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Ocorrência é um Campo Obrigatório';
+        this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //TIPO
       if(this.formData.tipo != null){
         if(this.formData.tipo.trim() != ''){
           this.isTipoValido = true;
-          this.tipoPlaceholder = 'Tipo da Ocorrência';
+          this.tipoPlaceholder = 'Tipo*';
         }
         else{
           this.isTipoValido = false;
-          this.tipoPlaceholder = 'Tipo da Ocorrência é um Campo Obrigatório';
+          this.tipoPlaceholder = 'Tipo é um Campo Obrigatório';
         }
       }
       else{
         this.isTipoValido = false;
-        this.tipoPlaceholder = 'Tipo da Ocorrência é um Campo Obrigatório';
+        this.tipoPlaceholder = 'Tipo é um Campo Obrigatório';
       }
 
       //DESCRIÇÃO

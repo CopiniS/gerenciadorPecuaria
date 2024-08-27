@@ -23,36 +23,36 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Data do Gasto"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataGasto"
-                v-model="formData.dataGasto" title="Data do Gasto">
+                v-model="formData.dataGasto" title="Data">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Tipo do Gasto"><i class="fas fa-clipboard-list"></i></span>
+              <span class="input-group-text"  title="Tipo"><i class="fas fa-clipboard-list"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
                 @change="categoriaPlaceholder = 'Categoria*'; formData.categoria = null" :class="{'is-invalid': !isTipoValido}" 
-                title="Categoria do Gasto">
+                title="Tipo">
                 <option disabled :value="null">{{ tipoPlaceholder }}</option>
                 <option value="Despesa">Despesa</option>
                 <option value="Investimento">Investimento</option>
               </select>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Valor da Gasto"><i class="fas fa-dollar-sign"></i></span>
+              <span class="input-group-text" title="Valor"><i class="fas fa-dollar-sign"></i></span>
               <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
-                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder" title="Valor da Gasto">
+                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder" title="Valor">
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text" title="Descrição da Gasto"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Descrição"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
-                :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição da Gasto">
+                :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Categoria do Gasto"><i class="fas fa-clipboard-list"></i></span>
+              <span class="input-group-text"  title="Categoria"><i class="fas fa-clipboard-list"></i></span>
               <select :disabled="formData.tipo == '' || formData.tipo == null" v-model="formData.categoria"
               class="form-select" id="categoria" aria-label="Categoria"
-              :class="{'is-invalid': !isCategoriaValida}" title="Categoria do Gasto">
+              :class="{'is-invalid': !isCategoriaValida}" title="Categoria">
                 <option disabled :value="null">{{ categoriaPlaceholder }}</option>
                 <option v-if="formData.tipo == 'Despesa'" value="mao_de_obra">Mão de Obra</option>
                 <option v-if="formData.tipo == 'Despesa'" value="manutencao_maquinas">Manutenção de Máquinas</option>
@@ -105,7 +105,7 @@ export default {
       isValorValido: true,
       isDescricaoValida: true,
       isCategoriaValida: true,
-      dataPlaceholder: 'Data da Gasto*',
+      dataPlaceholder: 'Data*',
       tipoPlaceholder: 'Tipo*',
       valorPlaceholder: 'Valor*',
       descricaoPlaceholder: 'Descrição*',
@@ -150,48 +150,48 @@ export default {
       if(this.formData.dataGasto != null){
         if(this.formData.dataGasto.trim() != ''){
           this.isDataValida = true;
-          this.dataPlaceholder = 'Data da Gasto';
+          this.dataPlaceholder = 'Data*';
         }
         else{
           this.isDataValida = false;
-          this.dataPlaceholder = 'Data da Gasto é um Campo Obrigatório';
+          this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
       else{
         this.isDataValida = false;
-        this.dataPlaceholder = 'Data da Gasto é um Campo Obrigatório';
+        this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //TIPO DO GASTO
       if(this.formData.tipo != null){
         if(this.formData.tipo != ''){
           this.isTipoValido = true;
-          this.tipoPlaceholder = 'Tipo do Gasto';
+          this.tipoPlaceholder = 'Tipo*';
         }
         else{
           this.isTipoValido = false;
-          this.tipoPlaceholder = 'Tipo do Gasto é um Campo Obrigatório'
+          this.tipoPlaceholder = 'Tipo é um Campo Obrigatório'
         }
       }
       else{
         this.isTipoValido = false;
-        this.tipoPlaceholder = 'Tipo do Gasto é um Campo Obrigatório'
+        this.tipoPlaceholder = 'Tipo é um Campo Obrigatório'
       }
 
       //VALOR
       if(this.formData.valor != null){
         if(this.formData.valor.trim() != ''){
           this.isValorValido = true;
-          this.valorPlaceholder = 'Valor da Gasto';
+          this.valorPlaceholder = 'Valor*';
         }
         else{
           this.isValorValido = false;
-          this.valorPlaceholder = 'Valor da Gasto é um Campo Obrigatório';
+          this.valorPlaceholder = 'Valor é um Campo Obrigatório';
         }
       }
       else{
         this.isValorValido = false;
-        this.valorPlaceholder = 'Valor da Gasto é um Campo Obrigatório';
+        this.valorPlaceholder = 'Valor é um Campo Obrigatório';
       }
 
       //DESCRIÇÃO

@@ -36,12 +36,12 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="brinco" class="form-label me-2">Brinco</label>
                         <input v-model="formDataAnimal.brinco" type="text" class="form-control" id="brinco"
-                            placeholder="Número do Brinco" disabled>
+                        disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
                         <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                            placeholder="Data de nascimento" class="form-control" id="dataNascimento"
+                            class="form-control" id="dataNascimento"
                             v-model="formDataAnimal.dataNascimento" disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
@@ -63,7 +63,7 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="observacaoRaca" class="form-label me-2">Observações da Raça</label>
                         <input v-model="formDataAnimal.racaObservacao" class="form-control" id="racaObservacao"
-                            placeholder="Observações sobre a Raça" disabled>
+                            disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="piquete" class="form-label me-2">Piquete</label>
@@ -77,7 +77,7 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="brincoPai" class="form-label me-2">Brinco pai</label>
                         <input v-model="formDataAnimal.brincoPai" @input="filterMachos()" type="text"
-                            class="form-control" placeholder="Digite o brinco do Pai..." disabled>
+                            class="form-control" disabled>
                     </div>
                     <div class="list-group" v-if="formDataAnimal.brincoPai && machosFiltrados.length">
                         <button type="button" class="list-group-item list-group-item-action"
@@ -88,7 +88,7 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="brincoMae" class="form-label me-2">Brinco mãe</label>
                         <input v-model="formDataAnimal.brincoMae" @input="filterFemeas()" type="text"
-                            class="form-control" placeholder="Digite o brinco da Mãe..." disabled>
+                            class="form-control"  disabled>
                     </div>
                     <div class="list-group" v-if="formDataAnimal.brincoMae && femeasFiltradas.length">
                         <button type="button" class="list-group-item list-group-item-action"
@@ -99,23 +99,23 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="rfid" class="form-label me-2">RfId</label>
                         <input v-model="formDataAnimal.rfid" type="text" class="form-control" id="rfid"
-                            placeholder="RFID" disabled>
+                            disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="observacoes" class="form-label me-2">Observações</label>
                         <input v-model="formDataAnimal.observacoes" class="form-control" id="observacoes"
-                            placeholder="Observações" disabled>
+                             disabled>
                     </div>
                     <div v-if="formDataAnimal.dataCompra" class="col-auto d-flex align-items-center">
                         <label for="dataCompra" class="form-label me-2">DataCompra</label>
                         <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                            placeholder="Data da compra" class="form-control" id="dataDaCompra"
+                             class="form-control" id="dataDaCompra"
                             v-model="formDataAnimal.dataCompra" disabled>
                     </div>
                     <div v-if="formDataAnimal.valorCompra" class="col-auto d-flex align-items-center">
                         <label for="valor" class="form-label me-2">Valor Compra</label>
                         <input v-model="formDataAnimal.valorCompra" type="text" class="form-control" id="valorCompra"
-                            placeholder="Valor da compra" disabled>
+                             disabled>
                     </div>
                 </form>
             </div>

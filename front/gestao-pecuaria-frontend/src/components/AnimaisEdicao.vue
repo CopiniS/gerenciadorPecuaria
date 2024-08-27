@@ -27,9 +27,9 @@
                 <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="select mb-3 input-group">
-                <span class="input-group-text" title="Piquete atual do Animal"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Piquete"><i class="fas fa-box"></i></span>
                 <input disabled v-model="nomePiquete" class="form-control"
-                placeholder="Piquete" title="Piquete atual do Animal">
+                :placeholder="piquetePlaceholder" title="Piquete">
             </div>
             <hr>
             <div class="mb-3 input-group">
@@ -38,15 +38,15 @@
                 @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder" title="Brinco do Animal">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Data de Nascimento"><i class="fas fa-calendar-alt"></i></span>
+              <span class="input-group-text" title="Data de nascimento"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
                 class="form-control" id="dataNascimentoEdicao" v-model="formData.dataNascimento" title="Data de nascimento">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Sexo do Animal"><i class="fas fa-venus-mars"></i></span>
+              <span class="input-group-text" title="Sexo"><i class="fas fa-venus-mars"></i></span>
               <select v-model="formData.sexo" :class="{ 'is-invalid': !isSexoValido }" class="form-select" id="sexo"
-                aria-label="Sexo" :placeholder="sexoPlaceholder" title="Sexo do Animal">
+                aria-label="Sexo" :placeholder="sexoPlaceholder" title="Sexo">
                 <option disabled value="">Selecione o sexo</option>
                 <option value="macho">Macho</option>
                 <option value="femea">Fêmea</option>
@@ -55,11 +55,11 @@
             <div ref="dropdownRaca" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsRaca('up')"
             @keydown.down.prevent="navigateOptionsRaca('down')" @keydown.enter.prevent="selectHighlightedRaca">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownRaca">
-                <span class="input-group-text" title="Raca Predominante do Animal"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Raca Predominante"><i class="fas fa-box"></i></span>
                 <input v-model="nomeRaca" @input="inputRaca"
                   @keydown.up.prevent="navigateOptionsRaca('up')"
                   @keydown.down.prevent="navigateOptionsRaca('down')" type="text" class="form-control"
-                  placeholder="Raça Predominante" id="caixa-select" title="Raca Predominante do Animal">
+                  placeholder="Raça Predominante" id="caixa-select" title="Raca Predominante">
               </div>
               <div class="itens" v-show="dropdownRacaOpen">
                 <ul class="options">
@@ -70,18 +70,18 @@
               </div>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Raça de Observação do Animal"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Observação da Raça"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
-                placeholder="Observações sobre a Raça" title="Raça de Observação do Animal">
+                placeholder="Observação da Raça" title="Observação da Raça">
             </div>
             <div ref="dropdownPai" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPai('up')"
             @keydown.down.prevent="navigateOptionsPai('down')" @keydown.enter.prevent="selectHighlightedPai">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPai">
-                <span class="input-group-text" title="Pai do Animal"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Brinco do Pai"><i class="fas fa-box"></i></span>
                 <input v-model="formData.brincoPai" @input="inputPai"
                   @keydown.up.prevent="navigateOptionsPai('up')"
                   @keydown.down.prevent="navigateOptionsPai('down')" type="text" class="form-control"
-                  placeholder="Pai" id="caixa-select" title="Pai do Animal">
+                  placeholder="Brindo do Pai" id="caixa-select" title="Brinco do Pai">
               </div>
               <div class="itens" v-show="dropdownPaiOpen">
                 <ul class="options">
@@ -95,11 +95,11 @@
             <div ref="dropdownMae" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsMae('up')"
             @keydown.down.prevent="navigateOptionsMae('down')" @keydown.enter.prevent="selectHighlightedMae">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownMae">
-                <span class="input-group-text" title="Mae do Animal"><i class="fas fa-box"></i></span>
+                <span class="input-group-text" title="Brinco da Mãe"><i class="fas fa-box"></i></span>
                 <input v-model="formData.brincoMae" @input="inputMae"
                   @keydown.up.prevent="navigateOptionsMae('up')"
                   @keydown.down.prevent="navigateOptionsMae('down')" type="text" class="form-control"
-                  placeholder="Mãe" id="caixa-select" title="Mae do Animal">
+                  placeholder="Brinco da Mãe" id="caixa-select" title="Brinco da Mãe">
               </div>
               <div class="itens" v-show="dropdownMaeOpen">
                 <ul class="options">
@@ -111,28 +111,28 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="RFID do Animal"><i class="fas fa-barcode"></i></span>
-              <input v-model="formData.rfid" :class="{ 'is-invalid': !isRfidValido }" type="text" class="form-control"
-                id="rfid" :placeholder="rfidPlaceholder" title="RFID do Animal">
+              <input v-model="formData.rfid" type="text" class="form-control"
+                id="rfid" placeholder="RFID do Animal" title="RFID do Animal">
             </div>
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text" title="Observações do Animal"><i class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Observações"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-              placeholder="Observações" title="Observações do Animal">
+              placeholder="Observações" title="Observações">
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
             </div>
             <div v-if="comprado" class="mb-3 input-group">
-              <span class="input-group-text" title="Data da Compra do Animal"><i class="fas fa-calendar-alt"></i>*</span>
+              <span class="input-group-text" title="Data da Compra"><i class="fas fa-calendar-alt"></i>*</span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataCompraValido }" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataDaCompra" v-model="formData.dataCompra" title="Data da Compra do Animal">
+                id="dataDaCompra" v-model="formData.dataCompra" title="Data da Compra">
             </div>
             <div v-if="comprado" class="mb-3 input-group">
-              <span class="input-group-text" title="Valor da Compra do Animal"><i class="fas fa-weight"></i>*</span>
+              <span class="input-group-text" title="Valor da Compra"><i class="fas fa-weight"></i>*</span>
               <input v-model="formData.valorCompra" :class="{ 'is-invalid': !isValorCompraValido }" type="text"
                 @input="aplicarValorCompraMask" class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder"
-                title="Valor da Compra do Animal">
+                title="Valor da Compra">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('animais')">Cancelar</button>
@@ -197,18 +197,14 @@ export default {
       isBrincoValido: true,
       isDataNascimentoValido: true,
       isSexoValido: true,
-      isRacaPredominanteValido: true,
-      isRfidValido: true,
       isDataCompraValido: true,
       isValorCompraValido: true,
-      piquetePlaceholder: 'Selecione o piquete',
-      brincoPlaceholder: 'Digite o brinco',
-      dataNascimentoPlaceholder: 'Selecione a data de nascimento',
-      sexoPlaceholder: 'Selecione o sexo',
-      racaPredominantePlaceholder: 'Selecione a raça predominante',
-      rfidPlaceholder: 'Digite o RFID',
-      dataCompraPlaceholder: 'Selecione a data de compra',
-      valorCompraPlaceholder: 'Digite o valor da compra',
+      piquetePlaceholder: 'Piquete*',
+      brincoPlaceholder: 'Brinco*',
+      dataNascimentoPlaceholder: 'Data de nascimento*',
+      sexoPlaceholder: 'Sexo*',
+      dataCompraPlaceholder: 'Data de compra*',
+      valorCompraPlaceholder: 'Valor da compra*',
     }
   },
   async mounted() {
@@ -709,7 +705,7 @@ export default {
     validarFormulario() {
       let valido = true;
       this.isBrincoValido = true;
-      this.brincoPlaceholder = 'Brinco do Animal';
+      this.brincoPlaceholder = 'Brinco do Animal*';
       
       // Cria uma nova lista sem o item com o id atual
       let brincosComExclusao = this.animaisDaApi.filter(animal => animal.id !== this.formData.id);
@@ -730,43 +726,45 @@ export default {
 
     verificaVazio(){
       //PIQUETE
-      if(this.formData.piquete == null){
+      if(this.formData.piquete == null || this.formData.piquete == ''){
         this.isPiqueteValido = false
+        this.piquetePlaceholder = "Piquete é um Campo Obrigatório"
       }
       else{
         this.isPiqueteValido = true 
+        this.piquetePlaceholder = "Piquete*"
       }
 
       //BRINCO
       if(this.formData.brinco != null){
-        if(this.formData.brinco.trim == ''){
+        if(this.formData.brinco == ''){
           this.isBrincoValido = false
-          this.brincoPlaceholder = 'Brinco é um Campo Obrigatório' 
+          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório' 
         } 
         else{
           this.isBrincoValido = true
-          this.brincoPlaceholder = 'Digite o Brinco' 
+          this.brincoPlaceholder = 'Brinco do Animal*' 
         }
       }
       else{
         this.isBrincoValido = false
-        this.brincoPlaceholder = 'Brinco é um Campo Obrigatório' 
+        this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório' 
       }
 
       //DATA DE NASCIMENTO
       if(this.formData.dataNascimento != null){
         if(this.formData.dataNascimento.trim == ''){
           this.isDataNascimentoValido = false
-          this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório' 
+          this.dataNascimentoPlaceholder = 'Data de nascimento é um Campo Obrigatório' 
         } 
         else{
           this.isDataNascimentoValido = true
-          this.dataNascimentoPlaceholder = 'Digite Data de Nascimento' 
+          this.dataNascimentoPlaceholder = 'Data de nascimento*' 
         }
       }
       else{
         this.isDataNascimentoValido = false
-        this.dataNascimentoPlaceholder = 'Data de Nascimento é um Campo Obrigatório'  
+        this.dataNascimentoPlaceholder = 'Data de nascimento é um Campo Obrigatório'  
       }
       
       //SEXO
@@ -776,7 +774,7 @@ export default {
       }
       else{
         this.isSexoValido = true
-        this.sexoPlaceholder = 'Digite o Sexo' 
+        this.sexoPlaceholder = 'Sexo*' 
       }
 
       //COMPRADO
@@ -785,32 +783,32 @@ export default {
         if(this.formData.dataCompra != null){
           if(this.formData.dataCompra.trim == ''){
             this.isDataCompraValido = false;
-            this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório'
+            this.dataCompraPlaceholder = 'Data da compra é um Campo Obrigatório'
           }
           else{
             this.isDataCompraValido = true;
-            this.dataCompraPlaceholder = 'Digite a Data da Compra'
+            this.dataCompraPlaceholder = 'Data da Compra*'
           }
         }
         else{
           this.isDataCompraValido = false;
-          this.dataCompraPlaceholder = 'Data da Compra é um Campo Obrigatório'
+          this.dataCompraPlaceholder = 'Data da compra é um Campo Obrigatório'
         }
         
         //VALOR DA COMPRA
         if(this.formData.valorCompra != null){
           if(this.formData.valorCompra.trim == ''){
             this.isValorCompraValido = false;
-            this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
+            this.valorCompraPlaceholder = 'Valor da compra é um Campo Obrigatório'
           }
           else{
             this.isValorCompraValido = true;
-            this.dataCompraPlaceholder = 'Digite o Valor da Compra'
+            this.dataCompraPlaceholder = 'Valor da compra*'
           }
         }
         else{
           this.isValorCompraValido = false;
-          this.valorCompraPlaceholder = 'Valor da Compra é um Campo Obrigatório'
+          this.valorCompraPlaceholder = 'Valor da compra é um Campo Obrigatório'
         }
       }
 

@@ -49,8 +49,6 @@ export default {
 
         localStorage.setItem('access_token', response.data.access);
         localStorage.setItem('refresh_token', response.data.refresh);
-        localStorage.setItem('access_exp', response.data.access_exp);
-        localStorage.setItem('refresh_exp', response.data.refresh_exp);
         
         this.$router.push('/propriedades-escolha');
       } catch (error) {

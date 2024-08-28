@@ -8,37 +8,37 @@
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-user"></i></span>
-            <input v-model="nome" type="text" class="form-control" id="nome" placeholder="Nome*" required>
+            <input v-model="nome" type="text" class="form-control" id="nome" placeholder="Nome*" >
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-            <input v-model="cpf" type="text" class="form-control" id="cpf" placeholder="CPF*" required pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Insira um CPF válido">
+            <input v-model="cpf" type="text" class="form-control" id="cpf" placeholder="CPF*" title="Insira um CPF válido">
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-phone"></i></span>
-            <input v-model="telefone1" type="tel" class="form-control" id="telefone1" placeholder="Telefone 1*" required pattern="\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})">
+            <input v-model="telefone1" type="tel" class="form-control" id="telefone1" placeholder="Telefone 1*">
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-phone"></i></span>
-            <input v-model="telefone2" type="tel" class="form-control" id="telefone2" placeholder="Telefone 2" pattern="\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})">
+            <input v-model="telefone2" type="tel" class="form-control" id="telefone2" placeholder="Telefone 2">
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-            <input v-model="email" type="email" class="form-control" id="email" placeholder="Email*" required>
+            <input v-model="email" type="email" class="form-control" id="email" placeholder="Email*" >
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            <input v-model="senha" type="password" class="form-control" id="senha" placeholder="Senha*" required>
+            <input v-model="senha" type="password" class="form-control" id="senha" placeholder="Senha*" >
           </div>
         </div>
 
@@ -78,22 +78,22 @@ export default {
         return; // Não prossegue se houver campos obrigatórios não preenchidos
       }
 
-      if (!/\d{3}\.\d{3}\.\d{3}-\d{2}/.test(this.cpf)) {
-        this.errorMessage = 'CPF inválido.';
-        return;
-      }
-      if (!/\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})/.test(this.telefone1)) {
-        this.errorMessage = 'Telefone 1 inválido.';
-        return;
-      }
-      if (this.telefone2 && !/\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})/.test(this.telefone2)) {
-        this.errorMessage = 'Telefone 2 inválido.';
-        return;
-      }
-      if (!/.+@.+\..+/.test(this.email)) {
-        this.errorMessage = 'Email inválido.';
-        return;
-      }
+      // if (!/\d{3}\.\d{3}\.\d{3}-\d{2}/.test(this.cpf)) {
+      //   this.errorMessage = 'CPF inválido.';
+      //   return;
+      // }
+      // if (!/\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})/.test(this.telefone1)) {
+      //   this.errorMessage = 'Telefone 1 inválido.';
+      //   return;
+      // }
+      // if (this.telefone2 && !/\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})/.test(this.telefone2)) {
+      //   this.errorMessage = 'Telefone 2 inválido.';
+      //   return;
+      // }
+      // if (!/.+@.+\..+/.test(this.email)) {
+      //   this.errorMessage = 'Email inválido.';
+      //   return;
+      // }
 
       const dadosProdutor = {
         nome: this.nome,

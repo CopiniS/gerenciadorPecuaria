@@ -14,7 +14,7 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="dropdownMenuButton">
             <li><a class="dropdown-item" href="/meuperfil"><i class="fas fa-user"></i> Meu Perfil</a></li>
-            <li><a class="dropdown-item" href="/login"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            <li><a class="dropdown-item" @click="confirmAction"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
           </ul>
         </div>
         <div class="offcanvas offcanvas-start text-bg-dark custom-offcanvas justify-content-center" tabindex="-1"

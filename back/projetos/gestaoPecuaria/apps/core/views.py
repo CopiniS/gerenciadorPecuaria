@@ -111,14 +111,17 @@ class PiqueteViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         queryset = models.Piquete.objects.all()
+        print('queryset antes: ', queryset)
         if propriedade_selecionada is not None:
             queryset = queryset.filter(propriedade=propriedade_selecionada)
+            print('queryset: ', queryset)
         serializer = serializers.PiqueteSerializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='piquetes-propriedades')
     def list_piquetes_propriedade(self, request, *args, **kwargs):
         piquetes = models.Piquete.objects.all()
+        piquetes = piquetes.filter(propriedade__produtor=self.request.user)
         serializer = serializers.PiqueteComPropriedadeSerializer(piquetes, many=True)
         return Response(serializer.data)
     

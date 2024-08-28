@@ -45,9 +45,19 @@
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Propriedade</button>
           <button @click="() => { this.$router.push('/piquetes'); }" type="button" class="btn btn-success">Lista de
             Piquetes</button>
-        </div>
-        <div class="d-flex justify-content-end mt-3">
-        <button class="btn btn-success" @click="gerarRelatorioPdf">Gerar Relatório PDF</button>
+            <RelatorioPdf
+      titulo="Relatório de Propriedades"
+      :colunas="['Nome', 'Cidade', 'Estado', 'Endereço', 'Latitude', 'Longitude', 'Área']"
+      :dados="propriedades.map(propriedade => [
+        propriedade.nome,
+        propriedade.cidade,
+        propriedade.estado,
+        propriedade.endereco,
+        replacePontoVirgula(propriedade.latitude),
+        replacePontoVirgula(propriedade.longitude),
+        replacePontoVirgula(propriedade.area)
+      ])"
+    />
         </div>
         <table class="table table-bordered">
           <thead>
@@ -116,10 +126,12 @@
 
 <script>
 import api from '/src/interceptadorAxios'
-import jsPDF from 'jspdf'
-import 'jspdf-autotable'
+import RelatorioPdf from './RelatorioPdf.vue';
 
 export default {
+  components: {
+    RelatorioPdf
+  },
   data() {
     return {
       propriedades: [],
@@ -197,29 +209,29 @@ export default {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
 
-     //RELATÓRIO----------------------------------------------------------------------------------------------------------------------------------------------------------
-     gerarRelatorioPdf() {
-      const doc = new jsPDF();
-      doc.text('Relatório de Propriedades', 14, 16);
+    //  //RELATÓRIO----------------------------------------------------------------------------------------------------------------------------------------------------------
+    //  gerarRelatorioPdf() {
+    //   const doc = new jsPDF();
+    //   doc.text('Relatório de Propriedades', 14, 16);
       
-      const tableData = this.propriedades.map(propriedade => [
-        propriedade.nome,
-        propriedade.cidade,
-        propriedade.estado,
-        propriedade.endereco,
-        this.replacePontoVirgula(propriedade.latitude),
-        this.replacePontoVirgula(propriedade.longitude),
-        this.replacePontoVirgula(propriedade.area),
-      ]);
+    //   const tableData = this.propriedades.map(propriedade => [
+    //     propriedade.nome,
+    //     propriedade.cidade,
+    //     propriedade.estado,
+    //     propriedade.endereco,
+    //     this.replacePontoVirgula(propriedade.latitude),
+    //     this.replacePontoVirgula(propriedade.longitude),
+    //     this.replacePontoVirgula(propriedade.area),
+    //   ]);
 
-      doc.autoTable({
-        head: [['Nome', 'Cidade', 'Estado', 'Endereço', 'Latitude', 'Longitude', 'Área']],
-        body: tableData,
-        startY: 30,
-      });
+    //   doc.autoTable({
+    //     head: [['Nome', 'Cidade', 'Estado', 'Endereço', 'Latitude', 'Longitude', 'Área']],
+    //     body: tableData,
+    //     startY: 30,
+    //   });
 
-      doc.save('relatorio_propriedades.pdf');
-    },
+    //   doc.save('relatorio_propriedades.pdf');
+    // },
 
     //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     acessarEdicao(propriedade) {

@@ -356,15 +356,4 @@ selectTab(tab) {
     font-size: 16px;
 }
 
-.position-relative {
-  position: relative;
-}
-
-.character-counter {
-  position: absolute;
-  top: 60px;
-  right: 10px;
-  font-size: 12px;
-  color: #6c757d;
-}
 </style>

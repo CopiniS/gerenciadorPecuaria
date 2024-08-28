@@ -916,18 +916,6 @@ selectTab(tab) {
   border-color: #dc3545;
 }
 
-.position-relative {
-  position: relative;
-}
-
-.character-counter {
-  position: absolute;
-  top: 35px;
-  right: 10px;
-  font-size: 12px;
-  color: #6c757d;
-}
-
 #legenda {
     font-size: 16px;
 }

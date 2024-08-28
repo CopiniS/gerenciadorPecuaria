@@ -400,4 +400,7 @@ selectTab(tab) {
     font-size: 16px;
 }
 
+.select{
+  margin-bottom: 0px !important;
+}
 </style>

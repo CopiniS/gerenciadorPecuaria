@@ -645,4 +645,8 @@ preencheCheckBox(){
 .options li:hover {
   background-color: #f0f0f0;
 }
+
+.select{
+  margin-bottom: 0px !important;
+}
 </style>

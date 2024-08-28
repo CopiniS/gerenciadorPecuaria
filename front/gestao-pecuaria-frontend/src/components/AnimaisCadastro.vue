@@ -41,7 +41,7 @@
                 </ul>
               </div>
             </div>
-            <hr>
+            <hr class="custon-hr">
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
               <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text"
@@ -982,4 +982,11 @@ export default {
   background-color: #f0f0f0;
 }
 
+.select{
+  margin-bottom: 0px !important;
+}
+
+.custon-hr{
+  margin-top: 0px !important;
+}
 </style>

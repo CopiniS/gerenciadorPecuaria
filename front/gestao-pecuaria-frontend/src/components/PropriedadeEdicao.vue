@@ -26,19 +26,19 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text" title="Nome"><i class="fas fa-landmark"></i></span>
                     <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
-                    class="form-control" :placeholder="nomePlaceholder" id="nome" title="Nome">
+                    class="form-control" :placeholder="nomePlaceholder" id="nome" title="Nome" autocomplete="off">
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text" title="Endereço"><i class="fas fa-map-marker-alt"></i></span>
                     <input v-model="formData.endereco" :class="{'is-invalid': !isEnderecoValido}" type="text" class="form-control"
-                        :placeholder="enderecoPlaceholder" id="endereco" title="Endereço">
+                        :placeholder="enderecoPlaceholder" id="endereco" title="Endereço" autocomplete="off">
                 </div>
                 <div ref="dropdownEstado" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsEstado('up')"
                   @keydown.down.prevent="navigateOptionsEstado('down')" @keydown.enter.prevent="selectHighlightedEstado">
                   <div class="select-option mb-3 input-group" @click.stop="toggleDropdownEstado">
                     <span class="input-group-text" @click="filterEstados" title="Estado"><i class="fas fa-user-tag"></i></span>
                     <input v-model="formData.estado" :class="{ 'is-invalid': !isEstadoValido }" @input="inputEstado"
-                      @click="filterEstados" @keydown.up.prevent="navigateOptionsEstado('up')"
+                      @click="filterEstados" @keydown.up.prevent="navigateOptionsEstado('up')" autocomplete="off"
                       @keydown.down.prevent="navigateOptionsEstado('down')" type="text" class="form-control"
                       :placeholder="estadoPlaceholder" id="caixa-select" title="Estado">
                   </div>
@@ -56,7 +56,7 @@
                   <div class="select-option mb-3 input-group" @click.stop="toggleDropdownCidade">
                     <span class="input-group-text" @click="filterCidades" title="Cidade"><i class="fas fa-user-tag"></i></span>
                     <input v-model="formData.cidade" :class="{ 'is-invalid': !isCidadeValida }" @input="inputCidade"
-                      @click="filterCidades" @keydown.up.prevent="navigateOptionsCidade('up')"
+                      @click="filterCidades" @keydown.up.prevent="navigateOptionsCidade('up')" autocomplete="off"
                       @keydown.down.prevent="navigateOptionsCidade('down')" type="text" class="form-control"
                       :placeholder="cidadePlaceholder" id="caixa-select" title="Cidade">
                   </div>
@@ -71,17 +71,17 @@
                 <div class="mb-3 input-group">
                     <span class="input-group-text"  title="Latitude"><i class="fas fa-globe"></i></span>
                     <input v-model="formData.latitude" :class="{'is-invalid': !isLatitudeValida}" type="text" class="form-control"
-                    :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude" title="Latitude">
+                    :placeholder="latitudePlaceholder" @input="aplicarLatMask" id="latitude" title="Latitude" autocomplete="off">
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text" title="Longitude"><i class="fas fa-map" ></i></span>
                     <input v-model="formData.longitude" :class="{'is-invalid': !isLongitudeValida}" type="text" class="form-control"
-                        :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" title="Longitude">
+                        :placeholder="longitudePlaceholder" @input="aplicarLongMask" id="longitude" title="Longitude" autocomplete="off">
                 </div>
                 <div class="mb-3 input-group">
                     <span class="input-group-text" title="Área"><i class="fas fa-ruler-combined"></i></span>
                     <input v-model="formData.area" type="text" class="form-control"  :class="{'is-invalid': !isAreaValida}"
-                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" title="Área">
+                        @input="aplicarAreaMask" :placeholder="areaPlaceholder" id="area" title="Área" autocomplete="off">
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('propriedades')">Cancelar</button>

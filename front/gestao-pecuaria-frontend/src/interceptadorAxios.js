@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from '@/router';
 
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000/', 
@@ -18,7 +19,7 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => {
+  response => {
     return response;
   },
   async (error) => {
@@ -29,19 +30,19 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem('refresh_token');
       if (refreshToken) {
         try {
-          const { data } = await api.post('/token/refresh/', { token: refreshToken });
+          const response = await axios.post('http://127.0.0.1:8000/token/refresh/', {
+            refresh: refreshToken
+          });
           
-          localStorage.setItem('access_token', data.access_token);
-          api.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
+          localStorage.setItem('access_token', response.data.access);
+          originalRequest.headers['Authorization'] = `Bearer ${response.data.access}`;
           
           return api(originalRequest);
         } catch (err) {
           // Lidar com erro ao obter novo token
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-          alert('Sua sessão foi expirada');
           localStorage.clear();
-          this.$router.push('/login');
+          alert('Sua sessão foi expirada');
+          router.push({ name: 'login' }); 
         }
       }
     }

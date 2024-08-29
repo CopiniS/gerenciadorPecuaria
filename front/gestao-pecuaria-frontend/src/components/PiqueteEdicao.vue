@@ -28,7 +28,7 @@
               <div class="mb-3 input-group">
                 <span class="input-group-text" title="Nome"><i class="fas fa-hashtag"></i></span>
                 <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" 
-                id="nome" :placeholder="nomePlaceholder" title="Nome">
+                id="nome" :placeholder="nomePlaceholder" title="Nome" autocomplete="off">
               </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text" title="Tipo do cultivo"><i class="fas fa-seedling"></i></span>
@@ -43,7 +43,7 @@
               <div class="mb-3 input-group">
                 <span class="input-group-text" title="Área"><i class="fas fa-ruler-combined"></i></span>
                 <input v-model="formData.area" :class="{'is-invalid': !isAreaValida}" type="text" class="form-control" 
-                @input="aplicarAreaMask" id="area" :placeholder="areaPlaceholder" title="Área">
+                @input="aplicarAreaMask" id="area" :placeholder="areaPlaceholder" title="Área" autocomplete="off">
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('piquetes')">Cancelar</button>

@@ -33,7 +33,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
                 <span class="input-group-text" title="Produto"><i class="fas fa-box"></i></span>
                 <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
-                  @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')"
+                  @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
                   :placeholder="produtoPlaceholder" id="caixa-select" title="Produto">
               </div>
@@ -49,11 +49,11 @@
               <span class="input-group-text" title="Dosagem"><i class="fas fa-tint"></i></span>
               <input v-model="formData.dosagem" @input="aplicarDosagemMask" type="text" class="form-control"
                 id="dosagem" :placeholder="dosagemPlaceholder" :class="{ 'is-invalid': !isDosagemValida }" 
-                title="Dosagem">
+                title="Dosagem" autocomplete="off">
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.observacao" 
+              <input v-model="formData.observacao" autocomplete="off" 
               type="text" class="form-control" id="observacao" 
               placeholder="Observação" title="Observação">
               
@@ -64,7 +64,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
                 <span class="input-group-text" title="Piquete dos Animais aplicados"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
-                  @click="filterPiquetes" @keydown.up.prevent="navigateOptionsPiquete('up')"
+                  @click="filterPiquetes" @keydown.up.prevent="navigateOptionsPiquete('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsPiquete('down')" type="text" class="form-control"
                   :placeholder="piquetePlaceholder" id="caixa-select" title="Piquete dos Animais aplicados">
               </div>

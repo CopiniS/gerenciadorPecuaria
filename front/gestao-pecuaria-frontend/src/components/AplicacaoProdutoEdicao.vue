@@ -28,7 +28,7 @@
                 <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputBrinco"
                   @click="filterAnimais" @keydown.up.prevent="navigateOptionsAnimal('up')"
                   @keydown.down.prevent="navigateOptionsAnimal('down')" type="text" class="form-control"
-                  :placeholder="animalPlaceholder" id="caixa-select" title="Animal">
+                  :placeholder="animalPlaceholder" id="caixa-select" title="Animal" autocomplete="off">
               </div>
               <div class="itens" v-show="dropdownAnimalOpen">
                 <ul class="options">
@@ -45,7 +45,7 @@
                 <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
                   @click="filterProdutos" @keydown.up.prevent="navigateOptionsProduto('up')"
                   @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
-                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto">
+                  :placeholder="produtoPlaceholder" id="caixa-select" title="Produto" autocomplete="off">
               </div>
               <div class="itens" v-show="dropdownProdutoOpen">
                 <ul class="options">
@@ -57,12 +57,12 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Dosagem"><i class="fas fa-tint"></i></span>
-              <input v-model="formData.dosagem" type="text" @input="aplicarDosagemMask" 
+              <input v-model="formData.dosagem" type="text" @input="aplicarDosagemMask" autocomplete="off" 
               class="form-control" id="dosagem" :placeholder="dosagemPlaceholder" title="Dosagem">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.observacao" type="text"
+              <input v-model="formData.observacao" type="text" autocomplete="off"
               class="form-control" id="observacao" placeholder="Observação" title="Observação">
             </div>
             <div class="button-group justify-content-end">

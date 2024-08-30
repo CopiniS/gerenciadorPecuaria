@@ -25,7 +25,7 @@
             <div class="mb-3 input-group" >
               <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                :placeholder="dataPlaceholder" class="form-control" id="dataOcorrencia"
+                :placeholder="dataPlaceholder" class="form-control" id="dataOcorrencia" autocomplete="off"
                 v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }" title="Data">
             </div>
             <div class="mb-3 input-group">
@@ -42,7 +42,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Descrição"><i class="fas fa-tags"></i></span>
               <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
-                placeholder="Descrição" title="Descrição">
+                placeholder="Descrição" title="Descrição" autocomplete="off">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>

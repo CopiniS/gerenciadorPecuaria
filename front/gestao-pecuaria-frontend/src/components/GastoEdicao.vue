@@ -26,7 +26,7 @@
               <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataGasto"
-                v-model="formData.dataGasto" title="Data">
+                v-model="formData.dataGasto" title="Data" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"  title="Tipo"><i class="fas fa-clipboard-list"></i></span>
@@ -40,12 +40,12 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Valor"><i class="fas fa-dollar-sign"></i></span>
-              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
+              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text" autocomplete="off"
                 @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder" title="Valor">
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Descrição"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.descricao" type="text" class="form-control" id="descricao"
+              <input v-model="formData.descricao" type="text" class="form-control" id="descricao" autocomplete="off"
                 :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição">
             </div>
             <div class="mb-3 input-group">

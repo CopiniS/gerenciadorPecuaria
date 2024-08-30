@@ -33,7 +33,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownProduto">
                 <span class="input-group-text" title="Produto"><i class="fas fa-box"></i></span>
                 <input v-model="nomeProduto" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
-                  @keydown.up.prevent="navigateOptionsProduto('up')"
+                  @keydown.up.prevent="navigateOptionsProduto('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsProduto('down')" type="text" class="form-control"
                   :placeholder="produtoPlaceholder" id="caixa-select" title="Produto">
               </div>
@@ -50,7 +50,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
                 <span class="input-group-text" title="Piquete"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
-                  @click="filterPiquetes" @keydown.up.prevent="navigateOptionsPiquete('up')"
+                  @click="filterPiquetes" @keydown.up.prevent="navigateOptionsPiquete('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsPiquete('down')" type="text" class="form-control"
                   :placeholder="piquetePlaceholder" id="caixa-select" title="Piquete">
               </div>
@@ -65,7 +65,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Quantidade do Produto"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidade" type="text" :class="{ 'is-invalid': !isQuantidadeValida }"
-                @input="aplicarQuantidadeMask" class="form-control" id="quantidade" 
+                @input="aplicarQuantidadeMask" class="form-control" id="quantidade" autocomplete="off"
                 :placeholder="quantidadePlaceholder" title="Quantidade do Produto">
             </div>
             <div class="button-group justify-content-end">

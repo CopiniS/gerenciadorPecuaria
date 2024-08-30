@@ -32,14 +32,14 @@
               <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" :class="{ 'is-invalid': !isDataCompraValida }" onfocus="(this.type='date')"
                 onblur="(this.type='text')" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataCompraCadastro" v-model="formData.dataCompra" title="Data">
+                id="dataCompraCadastro" v-model="formData.dataCompra" title="Data" autocomplete="off">
             </div>
             <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedProduto">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
                 <span class="input-group-text" @click="filterProdutos" title="Produto"><i class="fas fa-box"></i></span>
                 <input v-model="nomeDigitado" :class="{ 'is-invalid': !isProdutoValido }" @input="inputProduto"
-                  @click="filterProdutos" @keydown.up.prevent="navigateOptions('up')"
+                  @click="filterProdutos" @keydown.up.prevent="navigateOptions('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
                   :placeholder="produtoPlaceholder" id="caixa-select" title="Produto">
               </div>
@@ -55,24 +55,24 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Valor do Produto"><i class="fas fa-dollar-sign"></i></span>
               <input ref="valor" v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="text"
-                @input="aplicarValorMask" class="form-control" id="valorUnitario" 
+                @input="aplicarValorMask" class="form-control" id="valorUnitario" autocomplete="off"
                 :placeholder="valorUnitarioPlaceholder" title="Valor do Produto">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"  title="Quantidade do Produto"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
                 type="text" @input="aplicarQuantidadeMask" class="form-control" id="quantidadeComprada" 
-                :placeholder="quantidadeCompradaPlaceholder" title="Quantidade do Produto">
+                :placeholder="quantidadeCompradaPlaceholder" title="Quantidade do Produto" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"  title="Validade do Produto"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" :class="{ 'is-invalid': !isValidadeValida }" onfocus="(this.type='date')"
-                onblur="(this.type='text')" :placeholder="validadePlaceholder" class="form-control"
+                onblur="(this.type='text')" :placeholder="validadePlaceholder" class="form-control" autocomplete="off"
                 id="validadeCadastro" v-model="formData.validade" title="Validade do Produto">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Lote do Produto"><i class="fas fa-layer-group"></i></span>
-              <input v-model="formData.lote" type="text" class="form-control"
+              <input v-model="formData.lote" type="text" class="form-control" autocomplete="off"
                 id="lote" :placeholder="lotePlaceholder" title="Lote do Produto">
             </div>
             <div class="button-group justify-content-end">

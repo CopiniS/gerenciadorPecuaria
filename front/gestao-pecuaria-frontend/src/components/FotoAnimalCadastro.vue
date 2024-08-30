@@ -24,13 +24,13 @@
                   <div class="mb-3 input-group mb-3-foto">
                       <span class="input-group-text" title="Data da Foto"><i class="fas fa-calendar-alt"></i></span>
                       <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                          :placeholder="dataPlaceholder" class="form-control" id="dataFoto"
+                          :placeholder="dataPlaceholder" class="form-control" id="dataFoto" autocomplete="off"
                           v-model="formData.dataFoto" :class="{ 'is-invalid': !isDataValida }" title="Data da Foto">
                   </div>
                   <div class="mb-3 input-group mb-3-foto">
                       <span class="input-group-text" title="Observações da Foto"><i class="fas fa-sticky-note"></i></span>
                       <input v-model="formData.observacao" class="form-control" type="text" id="observacao"
-                          placeholder="Observação" title="Observações da Foto" />
+                          placeholder="Observação" title="Observações da Foto" autocomplete="off" />
                   </div>
                   <div class="mb-3 input-group mb-3-foto justify-content-center">
                       <div class="boxSelect">

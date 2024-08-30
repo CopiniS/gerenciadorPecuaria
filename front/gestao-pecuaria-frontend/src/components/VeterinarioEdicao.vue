@@ -25,7 +25,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Nome"><i class="fas fa-user-md"></i></span>
               <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
-              class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome">
+              class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Telefone"><i class="fas fa-phone"></i></span>
@@ -33,6 +33,7 @@
                 v-model="formData.telefone"
                 @input="aplicarTelefoneMask"
                 :class="{'is-invalid': !isTelefoneValido}"
+                autocomplete="off"
                 type="text"
                 class="form-control"
                 id="telefone"
@@ -41,12 +42,12 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Email"><i class="fas fa-envelope"></i></span>
               <input v-model="formData.email" :class="{'is-invalid': !isEmailValido}" type="email" 
-              class="form-control" id="email" :placeholder="emailPlaceholder" title="Email">
+              class="form-control" id="email" :placeholder="emailPlaceholder" title="Email" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="CRMV"><i class="fas fa-id-card"></i></span>
               <input v-model="formData.crmv" :class="{'is-invalid': !isCrmvValido}" type="text" 
-              class="form-control" id="crmv" :placeholder="crmvPlaceholder" title="CRMV">
+              class="form-control" id="crmv" :placeholder="crmvPlaceholder" title="CRMV" autocomplete="off">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('veterinarios')">Cancelar</button>

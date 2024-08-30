@@ -25,7 +25,7 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Nome"><i class="fas fa-box"></i></span>
               <input v-model="formData.nome" type="text" class="form-control" id="nome" 
-              :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" title="Nome">
+              :placeholder="nomePlaceholder" :class="{'is-invalid': !isNomeValido}" title="Nome" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text"  title="Tipo"><i class="fas fa-clipboard-list"></i></span>
@@ -72,7 +72,7 @@
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Descrição"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.descricao" class="form-control" id="descricao"
+              <input v-model="formData.descricao" class="form-control" id="descricao" autocomplete="off"
                 placeholder="Descrição" title="Descrição">
             </div>
             <div class="button-group justify-content-end">

@@ -33,7 +33,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownVeterinario">
                 <span class="input-group-text" title="Veterinario"><i class="fas fa-box"></i></span>
                 <input v-model="nomeVeterinario" :class="{ 'is-invalid': !isVeterinarioValido }" @input="inputVeterinario"
-                  @keydown.up.prevent="navigateOptionsVeterinario('up')"
+                  @keydown.up.prevent="navigateOptionsVeterinario('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsVeterinario('down')" type="text" class="form-control"
                   :placeholder="veterinarioPlaceholder" id="caixa-select" title="Veterinario">
               </div>
@@ -56,14 +56,14 @@
               <span class="input-group-text" title="Identificador do Touro"><i class="fas fa-id-card"></i></span>
               <input v-model="formData.identificadorTouro" type="text" class="form-control" id="identificadorTouro"
                 :placeholder="identificadorTouroPlaceholder" title="Identificador do Touro"
-                :class="{ 'is-invalid': !isIdentificadorTouroValido }">
+                :class="{ 'is-invalid': !isIdentificadorTouroValido }" autocomplete="off">
             </div>
             <div ref="dropdownFemea" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsFemea('up')"
             @keydown.down.prevent="navigateOptionsFemea('down')" @keydown.enter.prevent="selectHighlightedFemea">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownFemea">
                 <span class="input-group-text" title="Fêmea"><i class="fas fa-box"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isFemeaValida }" @input="inputFemea"
-                  @click="filterFemeas" @keydown.up.prevent="navigateOptionsFemea('up')"
+                  @click="filterFemeas" @keydown.up.prevent="navigateOptionsFemea('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsFemea('down')" type="text" class="form-control"
                   :placeholder="femeaPlaceholder" id="caixa-select" title="Fêmea">
               </div>
@@ -77,7 +77,7 @@
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.observacao" type="text" class="form-control"
+              <input v-model="formData.observacao" type="text" class="form-control" autocomplete="off"
                 id="observacao" placeholder="Observação" title="Observação">
             </div>
             <div class="button-group justify-content-end">

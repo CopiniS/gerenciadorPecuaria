@@ -22,7 +22,7 @@
                 <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
                 <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"  
                 class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem" 
-                :class="{'is-invalid': !isDataValida}" title="Data">
+                :class="{'is-invalid': !isDataValida}" title="Data" autocomplete="off">
               </div>
               <hr>
               <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
@@ -30,7 +30,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
                 <span class="input-group-text" title="Animal"><i class="fas fa-user-tag"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputBrinco"
-                  @keydown.up.prevent="navigateOptions('up')"
+                  @keydown.up.prevent="navigateOptions('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
                   :placeholder="animalPlaceholder" id="caixa-select" title="Animal">
               </div>
@@ -44,12 +44,12 @@
             </div>
               <div class="mb-3 input-group">
                 <span class="input-group-text" title="Peso"><i class="fas fa-weight"></i></span>
-                <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" 
+                <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" autocomplete="off"
                 id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" title="Peso">
               </div>
               <div class="mb-3 input-group position-relative">
                 <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
-                <input v-model="formData.observacao" type="text"  
+                <input v-model="formData.observacao" type="text" autocomplete="off"
                 class="form-control" id="observacao" placeholder="Observação" title="Observação">
               </div>
               <div class="button-group justify-content-end">

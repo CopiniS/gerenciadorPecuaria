@@ -34,7 +34,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteDestino">
                 <span class="input-group-text" title="Piquete de Destino"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiqueteDestino" :class="{ 'is-invalid': !isPiqueteDestinoValido }" @input="inputPiqueteDestino"
-                  @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
+                  @keydown.up.prevent="navigateOptionsPiqueteDestino('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" type="text" class="form-control"
                   :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino">
               </div>
@@ -50,7 +50,7 @@
             <div class="mb-3 input-group position-relative">
                     <span class="input-group-text" title="Motivo"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" class="form-control" id="motivo" 
-                    placeholder="Motivo" title="Motivo">
+                    placeholder="Motivo" title="Motivo" autocomplete="off">
                 </div>
             
             <div ref="dropdownPiqueteOrigem" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
@@ -58,7 +58,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteOrigem">
                 <span class="input-group-text" title="Piquete de Origem"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiqueteOrigem" :class="{ 'is-invalid': !isPiqueteOrigemValido }" @input="inputPiqueteOrigem"
-                  @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
+                  @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsPiqueteOrigem('down')" type="text" class="form-control"
                   :placeholder="piqueteOrigemPlaceholder" id="caixa-select" title="Piquete de Origem">
               </div>

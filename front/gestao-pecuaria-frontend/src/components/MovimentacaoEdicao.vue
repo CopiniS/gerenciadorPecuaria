@@ -30,7 +30,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownAnimal">
                 <span class="input-group-text" title="Animal"><i class="fas fa-box"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputAnimal"
-                  @click="filterAnimais" @keydown.up.prevent="navigateOptionsAnimal('up')"
+                  @click="filterAnimais" @keydown.up.prevent="navigateOptionsAnimal('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsAnimal('down')" type="text" class="form-control"
                   :placeholder="animalPlaceholder" id="caixa-select" title="Animal">
               </div>
@@ -44,7 +44,8 @@
             </div>
             <div class="mb-3 input-group" >
               <span class="input-group-text" title="Piquete de Origem"><i class="fas fa-hashtag"></i></span>
-              <input v-model="nomePiqueteOrigem" title="Piquete de Origem" type="text" class="form-control" :placeholder="piqueteOrigemPlaceholder" :disabled="true">
+              <input v-model="nomePiqueteOrigem" title="Piquete de Origem" type="text" autocomplete="off"
+              class="form-control" :placeholder="piqueteOrigemPlaceholder" :disabled="true">
             </div>
 
             <div ref="dropdownPiqueteDestino" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
@@ -52,7 +53,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteDestino">
                 <span class="input-group-text" title="Piquete de Destino"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiqueteDestino" :class="{ 'is-invalid': !isPiqueteDestinoValido }" @input="inputPiqueteDestino"
-                  @click="filterPiquetesDestino" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
+                  @click="filterPiquetesDestino" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" type="text" class="form-control"
                   :placeholder="piqueteDestinoPlaceholder" id="caixa-select" title="Piquete de Destino">
               </div>
@@ -68,7 +69,7 @@
             <div class="mb-3 input-group">
                     <span class="input-group-text" title="Motivo"><i class="fas fa-comment"></i></span>
                     <input v-model="formData.motivo" type="text" class="form-control" id="motivo" 
-                    placeholder="Motivo" title="Motivo">
+                    placeholder="Motivo" title="Motivo" autocomplete="off">
                 </div>
 
             <div class="button-group justify-content-end">

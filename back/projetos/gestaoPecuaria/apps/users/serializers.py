@@ -5,7 +5,7 @@ from .models import Produtor
 class ProdutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produtor
-        fields = ['id', 'nome', 'cpf', 'email', 'password', 'telefone1', 'telefone2']
+        fields = "__all__"
         extra_kwargs = {
             'password': {'write_only': True}
         }

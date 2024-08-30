@@ -62,7 +62,7 @@ export default {
       nome: '',
       cpf: '',
       telefone1: '',
-      telefone2: '',
+      telefone2: null,
       email: '',
       senha: '',
       errorMessage: '',

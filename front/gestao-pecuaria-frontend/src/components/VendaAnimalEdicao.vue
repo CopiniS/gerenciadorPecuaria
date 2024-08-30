@@ -26,7 +26,7 @@
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text" title="Preço por kg"><i class="fas fa-dollar-sign"></i></span>
-                  <input ref="valor" @input="inputPrecoKg" v-model="formData.precoKg" 
+                  <input ref="valor" @input="inputPrecoKg" v-model="formData.precoKg" autocomplete="off"
                   type="text" class="form-control" id="precoKg" :placeholder="precoKgPlaceholder" title="Preço por kg">
                 </div>
                 <div class="mb-3 input-group">
@@ -46,7 +46,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
                 <span class="input-group-text" title="Animal"><i class="fas fa-user-tag"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isAnimalValido }" @input="inputBrinco"
-                  @keydown.up.prevent="navigateOptions('up')"
+                  @keydown.up.prevent="navigateOptions('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptions('down')" type="text" class="form-control"
                   :placeholder="animalPlaceholder" id="caixa-select" title="Animal">
               </div>
@@ -62,17 +62,17 @@
                 <div class="mb-3 input-group">
                   <span class="input-group-text" title="Peso do Animal"><i class="fas fa-weight-hanging"></i></span>
                   <input @input="inputPeso" v-model="formData.peso" type="text" class="form-control" id="peso" 
-                  :placeholder="pesoPlaceholder" title="Peso do Animal">
+                  :placeholder="pesoPlaceholder" title="Peso do Animal" autocomplete="off">
                 </div>
                 <div class="mb-3 input-group">
                   <span class="input-group-text" title="Valor Total"><i class="fas fa-dollar-sign"></i></span>
-                  <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control"  @input="aplicarValorTotalMask"
+                  <input ref="valor" v-model="formData.valorTotal" type="text" class="form-control"  @input="aplicarValorTotalMask" autocomplete="off"
                   id="valorTotal" :class="{'is-invalid': !isValorTotalValido}" :placeholder="valorTotalPlaceholder" title="Valor Total">
                 </div>
                 <div class="mb-3 input-group position-relative">
                   <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
                   <input v-model="formData.observacao" class="form-control" id="observacao"
-                  placeholder="Observação" title="Observação">
+                  placeholder="Observação" title="Observação" autocomplete="off">
                 </div>
                 <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('vendas')">Cancelar</button>

@@ -29,7 +29,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
                 <span class="input-group-text" title="Piquete"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
-                  @keydown.up.prevent="navigateOptionsPiquete('up')"
+                  @keydown.up.prevent="navigateOptionsPiquete('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsPiquete('down')" type="text" class="form-control"
                   :placeholder="piquetePlaceholder" id="caixa-select" title="Piquete">
               </div>
@@ -46,14 +46,14 @@
               <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
               <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text"
                 class="form-control" @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder"
-                title="Brinco do Animal">
+                title="Brinco do Animal" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Data de Nascimento"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
                 class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento"
-                title="Data de nascimento">
+                title="Data de nascimento" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Sexo"><i class="fas fa-venus-mars"></i></span>
@@ -69,7 +69,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownRaca">
                 <span class="input-group-text" title="Raca Predominante"><i class="fas fa-box"></i></span>
                 <input v-model="nomeRaca" @input="inputRaca"
-                  @keydown.up.prevent="navigateOptionsRaca('up')"
+                  @keydown.up.prevent="navigateOptionsRaca('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsRaca('down')" type="text" class="form-control"
                   placeholder="Raça Predominante" id="caixa-select" title="Raca Predominante">
               </div>
@@ -85,7 +85,7 @@
               <span class="input-group-text" title="Observação da Raça"><i
                   class="fas fa-sticky-note"></i></span>
               <input v-model="formData.racaObservacao" type="text" class="form-control" id="racaObservacao"
-                placeholder="Observação da Raça" title="Observação da Raça" />
+                placeholder="Observação da Raça" title="Observação da Raça" autocomplete="off" />
             </div>
 
             <div ref="dropdownPai" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPai('up')"
@@ -93,7 +93,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPai">
                 <span class="input-group-text" title="Brinco do Pai"><i class="fas fa-box"></i></span>
                 <input v-model="formData.brincoPai" @input="inputPai"
-                  @keydown.up.prevent="navigateOptionsPai('up')"
+                  @keydown.up.prevent="navigateOptionsPai('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsPai('down')" type="text" class="form-control"
                   placeholder="Brinco do Pai" id="caixa-select" title="Brinco do Pai">
               </div>
@@ -111,7 +111,7 @@
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownMae">
                 <span class="input-group-text" title="Brinco da Mãe"><i class="fas fa-box"></i></span>
                 <input v-model="formData.brincoMae" @input="inputMae"
-                  @keydown.up.prevent="navigateOptionsMae('up')"
+                  @keydown.up.prevent="navigateOptionsMae('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsMae('down')" type="text" class="form-control"
                   placeholder="Brinco da Mãe" id="caixa-select" title="Brinco da Mãe">
               </div>
@@ -127,12 +127,12 @@
             <div class="mb-3 input-group">
               <span class="input-group-text" title="RFID do Animal"><i class="fas fa-barcode"></i></span>
               <input v-model="formData.rfid" type="text" class="form-control"
-                id="rfid" placeholder="RFID do Animal" title="RFID do Animal">
+                id="rfid" placeholder="RFID do Animal" title="RFID do Animal" autocomplete="off">
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observações"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-              placeholder="Observações" title="Observações">
+              placeholder="Observações" title="Observações" autocomplete="off">
               
             </div>
             <div class="mb-3 input-group">
@@ -142,13 +142,13 @@
               <span class="input-group-text" title="Data da Compra"><i class="fas fa-calendar-alt"></i></span>
               <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataCompraValido }" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataDaCompra" v-model="formData.dataCompra" title="Data da Compra">
+                id="dataDaCompra" v-model="formData.dataCompra" title="Data da Compra" autocomplete="off">
             </div>
             <div v-if="comprado" class="mb-3 input-group">
               <span class="input-group-text" title="Valor da Compra"><i class="fas fa-weight"></i></span>
               <input v-model="formData.valorCompra" :class="{ 'is-invalid': !isValorCompraValido }" type="text"
                 @input="aplicarValorCompraMask" class="form-control" id="valorCompra"
-                :placeholder="valorCompraPlaceholder" title="Valor da Compra">
+                :placeholder="valorCompraPlaceholder" title="Valor da Compra" autocomplete="off">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('animais')">Cancelar</button>

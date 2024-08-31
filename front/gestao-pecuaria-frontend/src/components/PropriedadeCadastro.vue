@@ -194,6 +194,7 @@ export default {
           const response = await api.post('http://127.0.0.1:8000/propriedades/', this.formData);
 
           if (response.status === 201) {
+              localStorage.setItem('propriedadeSelecionada', response.data.id)
               alert('Cadastro realizado com sucesso!');
               this.$router.push('/propriedades');
           } else {

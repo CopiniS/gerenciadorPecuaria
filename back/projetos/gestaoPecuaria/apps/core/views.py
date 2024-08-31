@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
+from django.http import JsonResponse
 
 
 class PropriedadeViewSet(viewsets.ModelViewSet):
@@ -19,8 +20,12 @@ class PropriedadeViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         request.data['produtor'] = [self.request.user.id]
-        return super().create(request, *args, **kwargs)
-    
+        response = super().create(request, *args, **kwargs)
+        if response.status_code == 201:
+            novo_objeto_id = response.data.get('id')
+            return JsonResponse({'id': novo_objeto_id}, status=201)
+        return response
+
 
 class RacaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -111,10 +116,8 @@ class PiqueteViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         queryset = models.Piquete.objects.all()
-        print('queryset antes: ', queryset)
         if propriedade_selecionada is not None:
             queryset = queryset.filter(propriedade=propriedade_selecionada)
-            print('queryset: ', queryset)
         serializer = serializers.PiqueteSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -251,7 +254,6 @@ class CompraProdutoViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         propriedade_selecionada = request.query_params.get('propriedadeSelecionada', None)
         queryset = models.CompraProduto.objects.all()
-        print('prop: ', propriedade_selecionada)
         if propriedade_selecionada is not None:
             queryset = queryset.filter(propriedade=propriedade_selecionada)
         serializer = serializers.CompraProdutosComProdutosSerializer(queryset, many=True)

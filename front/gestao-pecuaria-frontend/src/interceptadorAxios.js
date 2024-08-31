@@ -25,25 +25,24 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
+      
       originalRequest._retry = true;
       
       const refreshToken = localStorage.getItem('refresh_token');
-      if (refreshToken) {
-        try {
-          const response = await axios.post('http://127.0.0.1:8000/token/refresh/', {
-            refresh: refreshToken
-          });
-          
-          localStorage.setItem('access_token', response.data.access);
-          originalRequest.headers['Authorization'] = `Bearer ${response.data.access}`;
-          
-          return api(originalRequest);
-        } catch (err) {
-          // Lidar com erro ao obter novo token
-          localStorage.clear();
-          alert('Sua sessão foi expirada');
-          router.push({ name: 'login' }); 
-        }
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/token/refresh/', {
+          refresh: refreshToken
+        });
+        
+        localStorage.setItem('access_token', response.data.access);
+        originalRequest.headers['Authorization'] = `Bearer ${response.data.access}`;
+        
+        return api(originalRequest);
+      } catch (err) {
+        // Lidar com erro ao obter novo token
+        localStorage.clear();
+        alert('Sua sessão foi expirada');
+        router.push({ name: 'login' }); 
       }
     }
     return Promise.reject(error);

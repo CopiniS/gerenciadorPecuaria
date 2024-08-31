@@ -52,6 +52,7 @@ import OcorrenciaCadastro from '@/components/OcorrenciaCadastro.vue';
 import OcorrenciaEdicao from '@/components/OcorrenciaEdicao.vue';
 import FotoAnimalCadastro from '@/components/FotoAnimalCadastro.vue';
 import FotoAnimalVisualizacao from '@/components/FotoAnimalVisualizacao.vue';
+import PrimeiraPropriedade from '@/views/PrimeiraPropriedade.vue'
 
 const routes = [
   
@@ -336,6 +337,12 @@ const routes = [
     path: '/gasto-cadastro',
     name: 'CadastroGasto',
     component: GastoCadastro
+  },
+
+  {
+    path: '/primeira-propriedade',
+    name: 'PrimeiraPropriedade',
+    component: PrimeiraPropriedade
   },
 
   {

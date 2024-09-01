@@ -18,31 +18,52 @@ api.interceptors.request.use(
   }
 );
 
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+function onRefreshed(token) {
+  refreshSubscribers.map(callback => callback(token));
+}
+
+function addRefreshSubscriber(callback) {
+  refreshSubscribers.push(callback);
+}
+
 api.interceptors.response.use(
-  response => {
-    return response;
-  },
+  response => response,
   async (error) => {
     const originalRequest = error.config;
     if (error.response.status === 401 && !originalRequest._retry) {
-      
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          addRefreshSubscriber((token) => {
+            originalRequest.headers['Authorization'] = `Bearer ${token}`;
+            resolve(api(originalRequest));
+          });
+        });
+      }
+
       originalRequest._retry = true;
-      
+      isRefreshing = true;
+
       const refreshToken = localStorage.getItem('refresh_token');
       try {
         const response = await axios.post('http://127.0.0.1:8000/token/refresh/', {
-          refresh: refreshToken
+          refresh: refreshToken,
         });
-        
+
         localStorage.setItem('access_token', response.data.access);
+        api.defaults.headers['Authorization'] = `Bearer ${response.data.access}`;
         originalRequest.headers['Authorization'] = `Bearer ${response.data.access}`;
-        
+        isRefreshing = false;
+        onRefreshed(response.data.access);
+
         return api(originalRequest);
       } catch (err) {
-        // Lidar com erro ao obter novo token
+        isRefreshing = false;
         localStorage.clear();
         alert('Sua sessão foi expirada');
-        router.push({ name: 'login' }); 
+        router.push({ name: 'login' });
       }
     }
     return Promise.reject(error);

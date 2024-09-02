@@ -142,7 +142,9 @@ Dentro da pasta /gestao-pecuaria-frontend:
 
 ### Pull dos arquivos do repositório remoto no gitHub
 
-1- Excluir os arquivos do back que serão importados do github:
+1- Salvar a SECRET_KEY que está no arquivo settings.py
+
+2- Excluir os arquivos do back que serão importados do github:
 
 	-gestaoPecuaria/gestaoPecuaria/settings.py;
 	-gestaoPecuaria/gestaoPecuaria/urls.py;
@@ -151,21 +153,33 @@ Dentro da pasta /gestao-pecuaria-frontend:
  	-gestaoPecuaria/apps/users/models.py;
 	-gestaoPecuaria/apps/users/views.py;
 
+3- Criar um arquivo .env nesse caminho: 
 
-2- Excluir os arquivos do front que serão importados do git:
+	back/projetos/gestaoPecuaria/gestaoPecuaria/.env
+
+4- Seguir esse modelo de arquivo:
+
+	SECRET_KEY=sua secret key salva anteriormente no item 1
+	DB_NAME=nome da database
+	DB_USER=usuario usado na database
+	DB_PASSWORD= senha do usuario
+	DB_HOST=localhost
+	DB_PORT=5432
+
+5- Excluir os arquivos do front que serão importados do git:
 
 	Excluir a pasta src da pasta gestao-pecuaria-frontend
  	Excluir o .gitignore da pasta gestao-pecuaria-frontend
  
-3- Dentro da pasta inicial "gestao_pecuaria" inicie o git com o comando: 
+6- Dentro da pasta inicial "gestao_pecuaria" inicie o git com o comando: 
 
 	git init
  
-4- Adicione o URL do repositório remoto do Git como um repositório remoto em seu repositório local usando o comando: 
+7- Adicione o URL do repositório remoto do Git como um repositório remoto em seu repositório local usando o comando: 
 
 	git remote add origin https://github.com/CopiniS/gerenciadorPecuaria.git
  
-5- Puxar as alterações do repositório remoto para o seu repositório local usando o comando: 
+8- Puxar as alterações do repositório remoto para o seu repositório local usando o comando: 
 
 comando para criar uma branch local pecuariaMain:
 

@@ -76,9 +76,6 @@
               <td>{{ movimentacao.piqueteDestino.nome }} - {{ movimentacao.piqueteDestino.propriedade.nome }}</td>
               <td>{{ achaTipo(movimentacao)}}</td>
               <td>
-                <button @click="acessarEdicao(movimentacao)" class="btn-acoes btn-sm" title="Editar Movimentação">
-                  <i class="fas fa-edit"></i>
-                </button>
                 <button @click="confirmarExclusaoMovimentacao(movimentacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                 data-bs-target="#confirmacaoExclusaoModal" title="Excluir Movimentação">
                   <i class="fas fa-trash-alt"></i>
@@ -241,13 +238,6 @@ export default {
       else{
         return 'Entrada'
       }
-    },
-    
-    acessarEdicao(movimentacao) {
-      this.$router.push({
-        name: 'MovimentacaoEdicao', 
-        params: { movimentacaoId: movimentacao.id } 
-      })
     },
 
     acessarCadastro(){

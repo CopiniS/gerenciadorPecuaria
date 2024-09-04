@@ -580,7 +580,7 @@ export default {
 
 .table-container table thead tr th {
   border-bottom: 2px solid #176d1a;
-  background-color: #f0f0f0;
+  background-color: #f0f0f0 ; 
 }
 
 .btn-acoes {
@@ -650,11 +650,15 @@ export default {
 }
 
 .options li {
-  padding: 10px;
+  padding: 10px; 
   cursor: pointer;
 }
 
 .options li:hover {
+  background-color: #f0f0f0 ;
+}
+
+.highlighted {
   background-color: #f0f0f0;
 }
 

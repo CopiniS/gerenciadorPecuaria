@@ -520,4 +520,8 @@ atualizaValorTotalPeloPeso(){
 .select{
   margin-bottom: 0px !important;
 }
+
+.highlighted {
+  background-color: #f0f0f0;
+}
 </style>

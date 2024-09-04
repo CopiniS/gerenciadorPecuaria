@@ -250,4 +250,8 @@ export default {
 #legenda {
     font-size: 16px;
 }
+
+.highlighted {
+  background-color: #f0f0f0;
+}
 </style>

@@ -989,4 +989,8 @@ export default {
 .custon-hr{
   margin-top: 0px !important;
 }
+
+.highlighted {
+  background-color: #f0f0f0;
+}
 </style>

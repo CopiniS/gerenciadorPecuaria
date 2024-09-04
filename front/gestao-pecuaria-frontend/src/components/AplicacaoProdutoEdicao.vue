@@ -589,4 +589,8 @@ replacePontoVirgula(valorString){
 .options li:hover {
   background-color: #f0f0f0;
 }
+
+.highlighted {
+  background-color: #f0f0f0;
+}
 </style>

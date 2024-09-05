@@ -173,6 +173,27 @@ export const masksMixin = {
                 value = value.replace(/(\d{3},\d{6})/ , '-$1')
             }
             return value;
+        },
+
+        cpfMask(string){
+            let value = string.replace(/\D/g, '');  // Remove todos os caracteres não numéricos
+            
+            // Limita o número de dígitos a 11
+            if (value.length > 11) {
+                value = value.slice(0, 11);
+            }
+            
+            // Aplica a máscara conforme o comprimento do número
+            if (value.length > 10) {
+                value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+            } else if (value.length > 9) {
+                value = value.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1.$2.$3-$4');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3');
+            } else if (value.length > 3) {
+                value = value.replace(/(\d{3})(\d+)/, '$1.$2');
+            } 
+            return value;
         }
     }
   };

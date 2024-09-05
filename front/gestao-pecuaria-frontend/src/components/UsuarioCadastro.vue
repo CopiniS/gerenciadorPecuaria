@@ -12,19 +12,22 @@
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-            <input v-model="formData.cpf" type="text" class="form-control" id="cpf" :class="{'is-invalid': !isCpfValido}" :placeholder="cpfPlaceholder" title="Insira um CPF válido">
+            <input v-model="formData.cpf" type="text" class="form-control" id="cpf" @input="aplicarCpfMask"
+            :class="{'is-invalid': !isCpfValido}" :placeholder="cpfPlaceholder" title="Insira um CPF válido">
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-phone"></i></span>
-            <input v-model="formData.telefone1" type="tel" class="form-control" :class="{'is-invalid': !isTelefone1Valido}" id="telefone1" :placeholder="telefone1Placeholder">
+            <input v-model="formData.telefone1" type="tel" class="form-control" @input="aplicarTelefone1Mask"
+            :class="{'is-invalid': !isTelefone1Valido}" id="telefone1" :placeholder="telefone1Placeholder">
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="fas fa-phone"></i></span>
-            <input v-model="formData.telefone2" type="tel" class="form-control" id="telefone2" placeholder="Telefone 2">
+            <input v-model="formData.telefone2" type="tel" class="form-control" id="telefone2" 
+            :placeholder="telefone2Placeholder" @input="aplicarTelefone2Mask" :class="{'is-invalid': !isTelefone2Valido}">
           </div>
         </div>
         <div class="mb-3">
@@ -54,7 +57,11 @@
 
 <script>
 import axios from 'axios';
+import { masksMixin } from '../mixins/maks';
+
 export default {
+  mixins: [masksMixin],
+
   data() {
     return {
       formData: {
@@ -68,22 +75,37 @@ export default {
       isNomeValido: true,
       isCpfValido: true,
       isTelefone1Valido: true,
+      isTelefone2Valido: true,
       isEmailValido: true,
       isPasswordValida: true,
       nomePlaceholder: 'Nome*',
       cpfPlaceholder: 'CPF*',
       telefone1Placeholder: 'Telefone 1*',
+      telefone2Placeholder: 'Telefone 2*',
       emailPlaceholder: 'Email*',
       passwordPlaceholder: 'Senha*',
     };
   },
   methods: {
 //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarCpfMask(event) {
+      const value = event.target.value;
+      this.formData.cpf = this.cpfMask(value);
+    },
+    
+    aplicarTelefone1Mask(event) {
+      const value = event.target.value;
+      this.formData.telefone1 = this.telefoneMask(value);
+    },
 
+    aplicarTelefone2Mask(event) {
+      const value = event.target.value;
+      this.formData.telefone2 = this.telefoneMask(value);
+    },
 
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
-      if(this.verificaVazio()){
+      if(this.verificaVazio() && this.validarFormulario()){
         try {
           const response = await axios.post('http://127.0.0.1:8000/singup', this.formData);
           if (response.status === 200) {
@@ -101,6 +123,52 @@ export default {
 
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario() {
+      //CPF
+      if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(this.formData.cpf)){
+        this.isCpfValido = true;
+        this.cpfPlaceholder = 'CPF*';
+      }
+      else{
+        this.isCpfValido = false;
+        this.formData.cpf = null;
+        this.cpfPlaceholder = 'CPF Inválido';
+      }
+
+      //TELEFONE 1
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone1)){
+        this.isTelefone1Valido = true;
+        this.telefone1Placeholder = 'Telefone 1*';
+      }
+      else{
+        this.isTelefone1Valido = false;
+        this.formData.telefone1 = null;
+        this.telefone1Placeholder = 'Telefone 1 Inválido';
+      }
+
+      //TELEFONE 2
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone2) || this.formData.telefone2 == null){
+        this.isTelefone2Valido = true;
+        this.telefone2Placeholder = 'Telefone 2*';
+      }
+      else{
+        this.isTelefone2Valido = false;
+        this.formData.telefone2 = null;
+        this.telefone2Placeholder = 'Telefone 2 Inválido';
+      }
+      //EMAIL
+      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
+          this.isEmailValido = true;
+          this.emailPlaceholder = 'Email*';
+      }
+      else{
+        this.isEmailValido = false;
+         this.formData.email = null;
+         this.emailPlaceholder = 'Email Inválido';
+      }
+      return (this.isCpfValido && this.isTelefone1Valido && this.isEmailValido && this.isTelefone2Valido);
+    },
+    
     verificaVazio(){
         //NOME
         if(this.formData.nome != null && this.formData.nome.trim() != ''){

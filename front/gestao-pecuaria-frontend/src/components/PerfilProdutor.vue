@@ -1,121 +1,286 @@
 <template>
   <div class="background">
-    <div class="form-container">
-      <form id="formProdutor">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-              <input type="text" class="form-control" id="nomeProdutor" placeholder="Nome" required>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-              <input type="text" class="form-control" id="cpfProdutor" placeholder="CPF sem pontos ou traços." maxlength="11" required pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Insira um CPF válido">
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-phone"></i></span>
-              <input type="text" class="form-control" id="telefone1Produtor" placeholder="Telefone 1" required pattern="\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})">
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-phone"></i></span>
-              <input type="text" class="form-control" id="telefone2Produtor" placeholder="Telefone 2" pattern="\(?([0-9]{2})\)?([ .-]?)([0-9]{4,5})?([ .-]?)([0-9]{4})">
-            </div>
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
+          aria-selected="false">Meu Perfil</button>
+      </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
+        aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Meu Perfil</h1>
+          <form @submit.prevent="submitForm">
+        <div class="mb-3">
+          <div class="input-group">
+            <span class="input-group-text" title="Nome"><i class="fas fa-user"></i></span>
+            <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
+            class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome" autocomplete="off">
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-              <input type="email" class="form-control" id="emailProdutor" aria-describedby="emailHelp" placeholder="Email" required>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3 input-group">
-              <span class="input-group-text"><i class="fas fa-lock"></i></span>
-              <input type="password" class="form-control" id="senhaProdutor" placeholder="Senha" required>
-            </div>
+        <div class="mb-3">
+          <div class="input-group">
+            <span class="input-group-text" title="CPF"><i class="fas fa-id-card"></i></span>
+            <input v-model="formData.cpf" type="text" class="form-control" id="cpf" @input="aplicarCpfMask"
+            :class="{'is-invalid': !isCpfValido}" :placeholder="cpfPlaceholder" title="CPF" autocomplete="off">
           </div>
         </div>
-        
-        <button type="button" class="btn btn-primary" @click="editar">Cadastrar</button>
+        <div class="mb-3">
+          <div class="input-group">
+            <span class="input-group-text" title="Telefone 1"><i class="fas fa-phone"></i></span>
+            <input v-model="formData.telefone1" type="tel" class="form-control" @input="aplicarTelefone1Mask"
+            :class="{'is-invalid': !isTelefone1Valido}" id="telefone1" :placeholder="telefone1Placeholder"
+            title="Telefone 1" autocomplete="off">
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group">
+            <span class="input-group-text" title="Telefone 2"><i class="fas fa-phone"></i></span>
+            <input v-model="formData.telefone2" type="tel" class="form-control" id="telefone2" 
+            :placeholder="telefone2Placeholder" @input="aplicarTelefone2Mask" :class="{'is-invalid': !isTelefone2Valido}"
+            title="Telefone 2" autocomplete="off">
+          </div>
+        </div>
+        <div class="button-group justify-content-end">
+            <button type="button" class="btn btn-secondary" @click="voltar">Cancelar</button>
+            <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
+        </div>
       </form>
+        </div>
+      </div>
     </div>
   </div>
-  </template>
+</template>
 
 <script>
-// import axios from 'axios';
+import api from '/src/interceptadorAxios';
+import { masksMixin } from '../mixins/maks';
 
 export default {
-    data() {
+  mixins: [masksMixin],
+
+  data() {
     return {
-      nome: '',
-      cpf: '',
-      telefone1: '',
-      telefone2: '',
-      email: '',
-      senha: ''
+      activeTab: 'edicao',
+      formData: {
+        id: '',
+        nome: '',
+        cpf: '',
+        telefone1: '',
+        telefone2: null,
+      },
+      isNomeValido: true,
+      isCpfValido: true,
+      isTelefone1Valido: true,
+      isTelefone2Valido: true,
+      nomePlaceholder: 'Nome*',
+      cpfPlaceholder: 'CPF*',
+      telefone1Placeholder: 'Telefone 1*',
+      telefone2Placeholder: 'Telefone 2*',
     };
   },
 
-
+  mounted() {
+    this.fetchUsuario();
+  },
+  
   methods: {
-    async editar() {
-    //   const dadosProdutor = {
-    //     nome: this.nome,
-    //     cpf: this.cpf,
-    //     telefone1: this.telefone1,
-    //     telefone2: this.telefone2,
-    //     email: this.email,
-    //     password: this.senha
-    //   };
-
-    //   try {
-    //     colocar a url
-    //     if (response.status === 200) {
-    //       alert('Cadastro realizado com sucesso!');
-    //       this.resetForm();
-    //     } else {
-    //       alert('Erro ao cadastrar produtor. Tente novamente mais tarde.');
-    //     }
-    //   } catch (error) {
-    //     console.error('Erro ao enviar requisição:', error);
-    //     alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-    //   }
+//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarCpfMask(event) {
+      const value = event.target.value;
+      this.formData.cpf = this.cpfMask(value);
     },
-}
+    
+    aplicarTelefone1Mask(event) {
+      const value = event.target.value;
+      this.formData.telefone1 = this.telefoneMask(value);
+    },
+
+    aplicarTelefone2Mask(event) {
+      const value = event.target.value;
+      this.formData.telefone2 = this.telefoneMask(value);
+    },
+
+//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async fetchUsuario() {
+      try {
+        const response = await api.get(`http://127.0.0.1:8000/meuperfil/`);
+        const usuario = response.data;
+        this.formData.id = usuario.id;
+        this.formData.nome = usuario.nome;
+        this.formData.cpf = usuario.cpf;
+        this.formData.telefone1 = usuario.telefone1;
+        this.formData.telefone2 = usuario.telefone2;
+      } catch (error) {
+        console.error('Erro ao carregar dados da usuario:', error);
+      }
+    },
+    
+    async submitForm() {
+      if(this.verificaVazio() && this.validarFormulario()){
+        try {
+          const response = await api.put('http://127.0.0.1:8000/meuperfil/', this.formData);
+          if (response.status === 200) {
+            alert('Alterações salvas com sucesso!');
+            this.fetchUsuario();
+          } else {
+            alert('Erro ao alterar produtor. Tente novamente mais tarde.');
+          }
+        } catch (error) {
+          console.error('Erro ao enviar requisição:', error);
+          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+        }
+      }
+    },
+
+
+//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario() {
+      //CPF
+      if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(this.formData.cpf)){
+        this.isCpfValido = true;
+        this.cpfPlaceholder = 'CPF*';
+      }
+      else{
+        this.isCpfValido = false;
+        this.formData.cpf = null;
+        this.cpfPlaceholder = 'CPF Inválido';
+      }
+
+      //TELEFONE 1
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone1)){
+        this.isTelefone1Valido = true;
+        this.telefone1Placeholder = 'Telefone 1*';
+      }
+      else{
+        this.isTelefone1Valido = false;
+        this.formData.telefone1 = null;
+        this.telefone1Placeholder = 'Telefone 1 Inválido';
+      }
+
+      //TELEFONE 2
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone2) || this.formData.telefone2 == null){
+        this.isTelefone2Valido = true;
+        this.telefone2Placeholder = 'Telefone 2*';
+      }
+      else{
+        this.isTelefone2Valido = false;
+        this.formData.telefone2 = null;
+        this.telefone2Placeholder = 'Telefone 2 Inválido';
+      }
+      
+      return (this.isCpfValido && this.isTelefone1Valido && this.isTelefone2Valido);
+    },
+    
+    verificaVazio(){
+        //NOME
+        if(this.formData.nome != null && this.formData.nome.trim() != ''){
+            this.isNomeValido = true;
+            this.nomePlaceholder = 'Nome*';
+        }
+        else{
+          this.isNomeValido = false;
+          this.nomePlaceholder = 'Nome é um Campo Obrigatório';
+        }
+
+        //CPF
+        if(this.formData.cpf != null && this.formData.cpf.trim() != ''){
+            this.isCpfValido = true;
+            this.cpfPlaceholder = 'CPF*';
+        }
+        else{
+          this.isCpfValido = false;
+          this.cpfPlaceholder = 'CPF é um Campo Obrigatório';
+        }
+
+        //Telefone 1
+        if(this.formData.telefone1 != null && this.formData.telefone1.trim() != ''){
+            this.isTelefone1Valido = true;
+            this.telefone1Placeholder = 'Telefone 1*';
+        }
+        else{
+          this.isTelefone1Valido = false;
+          this.telefone1Placeholder = 'Telefone 1 é um Campo Obrigatório';
+        }
+
+        //Telefone 2
+        if(this.formData.telefone2 != null && this.formData.telefone2.trim() == ''){
+            this.formData.telefone2 = null;
+        }
+        
+        return (
+          this.isNomeValido &&
+          this.isCpfValido &&
+          this.isTelefone1Valido
+        );
+    },
+
+//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    voltar() {
+      this.$router.push('/inicio');
+    }
+  }
 };
 </script>
 
 <style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 .background {
-  background-color:  #ededef; /* Um tom mais escuro que o branco */
-  min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
+  background-color: #ededef;
+  min-height: 100vh;
   padding: 20px;
 }
 
-.form-container {
+.nav-link.active {
+  background-color: #d0d0d0 !important;
+}
+
+.table-container {
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.button-container {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.table-container table tbody tr td {
+  background-color: #ededef !important;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #176d1a;
+  background-color: #f0f0f0;
+}
+
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.btn-acoes i {
+  color: #176d1a;
+}
+
+.button-group {
   display: flex;
-  justify-content: center; 
-  height: 40vh; 
-  margin-top: 10px;
-  margin-bottom: 10px;
+  gap: 10px;
 }
 
-#formProdutor {
-  width: 100%; 
-  max-width: 1600px; 
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-  background-color: white; 
+.is-invalid {
+  border-color: #dc3545;
 }
+#legenda {
+    font-size: 16px;
+}
+
 </style>

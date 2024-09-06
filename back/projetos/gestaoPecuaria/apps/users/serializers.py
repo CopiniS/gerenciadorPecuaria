@@ -17,3 +17,8 @@ class ProdutorSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+    
+class UpdateProdutorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Produtor
+        fields = ['nome', 'cpf', 'telefone1', 'telefone2']

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     "corsheaders",
     #apps do projeto
     'core.apps.CoreConfig',
@@ -139,7 +140,10 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  
     # 'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),  
-    # 'REFRESH_TOKEN_LIFETIME': timedelta(minutes=3),   
+    # 'REFRESH_TOKEN_LIFETIME': timedelta(minutes=3), 
+    'ROTATE_REFRESH_TOKENS': True, 
+    'BLACKLIST_AFTER_ROTATION': True,
+    'TOKEN_BLACKLIST_ENABLED': True, 
 }
 
 LANGUAGE_CODE = 'en-us'

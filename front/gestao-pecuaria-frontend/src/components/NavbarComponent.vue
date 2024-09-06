@@ -134,6 +134,14 @@ export default {
       }
     },
     async fazLogout() {
+      try {
+        const refreshToken = localStorage.getItem('refresh_token');
+        await api.post('http://127.0.0.1:8000/logout/', {
+          refresh: refreshToken
+        });
+      } catch (error) {
+        console.error('Erro ao invalidar token:', error);
+      }
       localStorage.clear();
       this.$router.push('/login');
     }

@@ -37,16 +37,16 @@
         const totalPagesExp = "{total_pages_count_string}";
         // const pageCount = doc.internal.getNumberOfPages();
   
-        // Renderiza a informação na primeira página e define o template para as outras páginas
-        const footer = function (data) {
+          const date = new Date();
+          const emissionDate = date.toLocaleDateString();
+          const emissionTime = date.toLocaleTimeString();
+  
+          // Renderiza a informação na primeira página e define o template para as outras páginas
+          const footer = function (data) {
           let str = "Página " + data.pageCount;
           if (typeof doc.putTotalPages === 'function') {
             str = str + " de " + totalPagesExp;
           }
-  
-          const date = new Date();
-          const emissionDate = date.toLocaleDateString();
-          const emissionTime = date.toLocaleTimeString();
   
           doc.setFontSize(10);
           doc.text(str, data.settings.margin.left + 150, 20);
@@ -83,7 +83,7 @@
         }
   
         // Salva o arquivo PDF
-        doc.save(`${this.titulo.toLowerCase().replace(/ /g, '_')}.pdf`);
+        doc.save(`${this.titulo.toLowerCase().replace(/ /g, '_')}_${emissionDate.replace(/\//g, '-')}_${emissionTime.replace(/:/g, '-')}.pdf`);
       }
     }
   }

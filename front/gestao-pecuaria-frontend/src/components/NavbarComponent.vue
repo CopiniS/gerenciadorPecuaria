@@ -255,4 +255,8 @@ a {
 .content {
   margin-top: 50px;
 }
+
+.dropdown-item {
+  cursor: pointer; /* Adiciona a mãozinha ao passar o mouse */
+}
 </style>

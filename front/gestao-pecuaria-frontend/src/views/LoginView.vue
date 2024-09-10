@@ -11,7 +11,17 @@
         </div>
         <div class="mb-4 input-group">
           <span class="input-group-text"><i class="fas fa-lock"></i></span>
-          <input v-model="password" type="password" class="form-control" id="password" placeholder="Senha" required>
+          <input 
+            v-model="password" 
+            :type="passwordType" 
+            class="form-control" 
+            id="password" 
+            placeholder="Senha" 
+            required
+          >
+          <span class="input-group-text" @click="togglePasswordVisibility">
+            <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+          </span>
         </div>
 
         <button type="button" class="btn btn-primary btn-block" @click="login">
@@ -27,6 +37,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import axios from 'axios'; 
 import api from '/src/interceptadorAxios';
@@ -36,6 +47,7 @@ export default {
       email: '',
       password: '',
       errorMessage: '', // Mensagem de erro
+      passwordType: 'password', // Controla o tipo do input da senha
     };
   },
   methods: {
@@ -70,6 +82,9 @@ export default {
         console.error('Erro ao buscar propriedades da API:', error);
         return ''
       }
+    },
+    togglePasswordVisibility() {
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
     },
   }
 };

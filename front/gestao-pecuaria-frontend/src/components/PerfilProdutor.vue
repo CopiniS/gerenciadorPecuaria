@@ -43,6 +43,20 @@
             title="Telefone 2" autocomplete="off">
           </div>
         </div>
+        <div class="mb-4 input-group">
+          <span class="input-group-text"><i class="fas fa-lock"></i></span>
+          <input 
+            v-model="password" 
+            :type="passwordType" 
+            class="form-control" 
+            id="password" 
+            placeholder="Senha" 
+            required
+          >
+          <span class="input-group-text" @click="togglePasswordVisibility">
+            <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+          </span>
+        </div>
         <div class="button-group justify-content-end">
             <button type="button" class="btn btn-secondary" @click="voltar">Cancelar</button>
             <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
@@ -79,6 +93,7 @@ export default {
       cpfPlaceholder: 'CPF*',
       telefone1Placeholder: 'Telefone 1*',
       telefone2Placeholder: 'Telefone 2*',
+      passwordType: 'password', // Controla o tipo do input da senha
     };
   },
 
@@ -220,7 +235,10 @@ export default {
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     voltar() {
       this.$router.push('/inicio');
-    }
+    },
+    togglePasswordVisibility() {
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    },
   }
 };
 </script>

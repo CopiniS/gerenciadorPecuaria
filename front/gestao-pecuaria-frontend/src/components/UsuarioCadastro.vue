@@ -36,11 +36,19 @@
             <input v-model="formData.email" type="email" :class="{'is-invalid': !isEmailValido}" class="form-control" id="email" :placeholder="emailPlaceholder" >
           </div>
         </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            <input v-model="formData.password" :class="{'is-invalid': !isPasswordValida}" type="password" class="form-control" id="senha" :placeholder="passwordPlaceholder" >
-          </div>
+        <div class="mb-4 input-group">
+          <span class="input-group-text"><i class="fas fa-lock"></i></span>
+          <input 
+            v-model="password" 
+            :type="passwordType" 
+            class="form-control" 
+            id="password" 
+            placeholder="Senha" 
+            required
+          >
+          <span class="input-group-text" @click="togglePasswordVisibility">
+            <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+          </span>
         </div>
 
         <button type="button" class="btn btn-primary btn-block" @click="submitForm">
@@ -84,6 +92,7 @@ export default {
       telefone2Placeholder: 'Telefone 2*',
       emailPlaceholder: 'Email*',
       passwordPlaceholder: 'Senha*',
+      passwordType: 'password', // Controla o tipo do input da senha
     };
   },
   methods: {
@@ -237,7 +246,10 @@ export default {
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     voltar() {
       this.$router.push('/login');
-    }
+    },
+    togglePasswordVisibility() {
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    },
   }
 };
 </script>

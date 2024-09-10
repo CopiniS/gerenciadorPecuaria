@@ -37,29 +37,21 @@ export default {
   methods: {
     gerarRelatorioPdf() {
       const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const logoYPosition = 10;
+      const headerMargin = 80; // Margem esquerda do cabeçalho
+      const tableMarginRight = 10; // Margem direita da tabela
       
       // Adicionar logo
-      const logoYPosition = 10;
-      doc.addImage(logo, 'PNG', 10, logoYPosition, 30, 30); 
-
-      // Adicionar cabeçalhos dinâmicos no canto superior direito
-      doc.setFontSize(12);
-      const pageWidth = doc.internal.pageSize.getWidth();
-      let yPosition = logoYPosition + 10; // Começar logo após a logo
-      const rightMargin = pageWidth - 80; // Ajustar o X para o lado direito
-
-      this.cabecalho.forEach((linha) => {
-        doc.text(linha, rightMargin, yPosition, { align: 'right' });
-        yPosition += 10;
-      });
+      doc.addImage(logo, 'JPEG', 10, logoYPosition, 30, 30); 
 
       // Adicionar título centralizado
       doc.setFontSize(16);
       const titleX = pageWidth / 2;
-      doc.text(this.titulo, titleX, yPosition + 20, { align: 'center' });
+      doc.text(this.titulo, titleX, logoYPosition + 40, { align: 'center' });
       
       // Ajustar a posição para começar a tabela
-      yPosition += 30;
+      let yPosition = logoYPosition + 50;
 
       // Gerar tabela de dados
       const bodyData = [...this.dados];
@@ -77,19 +69,42 @@ export default {
         headStyles: { fillColor: [200], textColor: [50] },
         bodyStyles: { fillColor: [245], textColor: [50] },
         alternateRowStyles: { fillColor: [230] },
-      });
+        didDrawPage: (data) => {
+          // Adicionar cabeçalhos dinâmicos no canto superior direito
+          doc.setFontSize(12);
+          const headerX = headerMargin;
+          let headerY = logoYPosition + 10; // Começar logo após a logo
+          const rightMargin = pageWidth - tableMarginRight; // Margem direita da tabela
+          const headerHeight = this.cabecalho.length * 10 + 10; // Altura total do cabeçalho com borda
+          const borderRadius = 2; // Raio da borda arredondada
+          const borderWidth = 0.3; // Largura da borda
 
-      // Adicionar data, hora e número da página no rodapé
-      const pageCount = doc.internal.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        const date = new Date();
-        const emissionDate = date.toLocaleDateString();
-        const emissionTime = date.toLocaleTimeString();
-        doc.setFontSize(10);
-        doc.text(`Emitido em: ${emissionDate} às ${emissionTime}`, 14, doc.internal.pageSize.height - 10);
-        doc.text(`Página ${i} de ${pageCount}`, pageWidth - 40, doc.internal.pageSize.height - 10);
-      }
+          // Desenhar a borda arredondada ao redor do cabeçalho
+          doc.setDrawColor(255, 255, 255); // Cor da borda branca
+          doc.setLineWidth(borderWidth);
+          doc.roundedRect(headerX - 2, logoYPosition + 5, rightMargin - headerX + 2, headerHeight, borderRadius, borderRadius); // Desenhar o retângulo com bordas arredondadas
+
+          this.cabecalho.forEach((linha) => {
+            doc.text(linha, rightMargin, headerY, { align: 'right' });
+            headerY += 10;
+          });
+
+          // Adicionar data, hora e número da página no rodapé
+          const totalPagesExp = "{total_pages_count_string}";
+          const pageCount = doc.internal.getNumberOfPages();
+          doc.setPage(data.pageNumber);
+          const date = new Date();
+          const emissionDate = date.toLocaleDateString();
+          const emissionTime = date.toLocaleTimeString();
+          doc.setFontSize(10);
+          doc.text(`Emitido em: ${emissionDate} às ${emissionTime}`, 14, doc.internal.pageSize.height - 10);
+          doc.text(`Página ${data.pageNumber} de ${pageCount}`, pageWidth - 40, doc.internal.pageSize.height - 10);
+
+          if (typeof doc.putTotalPages === 'function') {
+            doc.putTotalPages(totalPagesExp);
+          }
+        }
+      });
 
       // Salvar o PDF
       const date = new Date();

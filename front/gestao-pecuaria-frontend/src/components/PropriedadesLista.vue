@@ -48,7 +48,7 @@
             <RelatorioPdf
       titulo="Relatório de Propriedades"
       :produtor="nomeProdutor"
-      :colunas="['Nome', 'Cidade', 'Estado', 'Endereço', 'Latitude', 'Longitude', 'Área']"
+      :colunas="['Nome', 'Endereço', 'Cidade', 'Estado', 'Latitude', 'Longitude', 'Área']"
       :dados="propriedades.map(propriedade => [
         propriedade.nome,
         propriedade.cidade,

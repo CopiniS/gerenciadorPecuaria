@@ -45,11 +45,13 @@
     <div>
       <div class="table-container">
         <div class="button-container">
-          <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Produto</button>
-          <button @click="() => { this.$router.push('/compraprodutos'); }" type="button"
-            class="btn btn-success">Histórico de
-            Compras</button>
-        </div>
+        <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Produto</button>
+        <button @click="() => { this.$router.push('/compraprodutos'); }" type="button" class="btn btn-success">Histórico de Compras</button>
+        
+<button @click="mostrarPopupEscolhaRelatorio" type="button" class="btn btn-success" data-bs-toggle="modal"
+data-bs-target="#escolhaRelatorioModal">Gerar Relatório</button>
+
+      </div>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -85,6 +87,60 @@
 
       </div>
 
+     <!-- Modal para escolher o tipo de relatório -->
+<div class="modal fade" id="escolhaRelatorioModal" tabindex="-1" aria-labelledby="escolhaRelatorioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="escolhaRelatorioModalLabel">Escolha o Tipo de Relatório</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form @submit.prevent="mostrarRelatorio">
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tipoRelatorio" id="relatorioGeral" value="geral" v-model="tipoRelatorio">
+              <label class="form-check-label" for="relatorioGeral">
+                Relatório de Estoque de Produto Geral
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tipoRelatorio" id="relatorioPorPropriedade" value="porPropriedade" v-model="tipoRelatorio">
+              <label class="form-check-label" for="relatorioPorPropriedade">
+                Relatório de Estoque de Produto por Propriedade
+              </label>
+            </div>
+          </div>
+        </form>
+
+        <!-- Relatório de Estoque de Produto Geral -->
+        <div v-if="tipoRelatorio === 'geral'">
+          <RelatorioPdf
+            titulo="Relatório de Estoque de Produto Geral"
+            :cabecalho="['Nome do produtor: ' + nomeProdutor]"
+            :colunas="['Nome do Produto', 'Categoria', 'Quantidade em Estoque']"
+            :dados="estoqueGeral.map(produto => [produto.nome, produto.categoria, produto.quantidade])"
+            :mostrarSoma="true"
+          />
+        </div>
+
+        <!-- Relatório de Estoque de Produto por Propriedade -->
+        <div v-if="tipoRelatorio === 'porPropriedade'">
+          <RelatorioPdf
+            titulo="Relatório de Estoque de Produto por Propriedade"
+            :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+            :colunas="['Nome do Produto', 'Categoria', 'Quantidade em Estoque']"
+            :dados="estoquePorPropriedade.map(produto => [produto.nome, produto.categoria, produto.quantidade])"
+            :mostrarSoma="false"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
       <!-- Modal de Confirmação de Exclusão -->
       <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
         aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
@@ -110,13 +166,22 @@
 
 <script>
 import api from '/src/interceptadorAxios'
+import RelatorioPdf from './RelatorioPdf.vue';
 
 export default {
+  components: {
+    RelatorioPdf
+  },
   data() {
     return {
       produtos: [],
       produtosDaApi: [],
       estoque: [],
+      tipoRelatorio: null,
+      estoqueGeral: [],
+      estoquePorPropriedade: [],
+      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
         nome: '',
@@ -135,6 +200,8 @@ export default {
   mounted() {
     this.buscarProdutosDaApi();
     this.buscarEstoqueDaApi();
+    this.buscarEstoqueGeral();
+    this.buscarEstoquePorPropriedade();
   },
   methods: {
     //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
@@ -180,6 +247,34 @@ export default {
       }
       this.fecharModal("confirmacaoExclusaoModal");
     },
+
+     // Função para buscar os dados do estoque geral
+  async buscarEstoqueGeral() {
+    try {
+      const response = await api.get('http://127.0.0.1:8000/estoque/geral/', {
+        params: {
+          produtorNome: localStorage.getItem('produtorNome'),
+        },
+      });
+      this.estoqueGeral = response.data;
+    } catch (error) {
+      console.error('Erro ao buscar estoque geral da API:', error);
+    }
+  },
+
+  // Função para buscar os dados do estoque por propriedade
+  async buscarEstoquePorPropriedade() {
+    try {
+      const response = await api.get('http://127.0.0.1:8000/estoque/propriedade/', {
+        params: {
+          propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada'),
+        },
+      });
+      this.estoquePorPropriedade = response.data;
+    } catch (error) {
+      console.error('Erro ao buscar estoque por propriedade da API:', error);
+    }
+  },
 
 
     //FILTROS---------------------------------------------------------------------------------------------------------------------
@@ -335,4 +430,5 @@ export default {
 .btn {
   margin-bottom: 0; 
 }
+
 </style>

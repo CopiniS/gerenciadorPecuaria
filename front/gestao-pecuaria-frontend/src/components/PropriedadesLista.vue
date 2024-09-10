@@ -46,19 +46,21 @@
           <button @click="() => { this.$router.push('/piquetes'); }" type="button" class="btn btn-success">Lista de
             Piquetes</button>
             <RelatorioPdf
-      titulo="Relatório de Propriedades"
-      :produtor="nomeProdutor"
-      :colunas="['Nome', 'Endereço', 'Cidade', 'Estado', 'Latitude', 'Longitude', 'Área']"
-      :dados="propriedades.map(propriedade => [
-        propriedade.nome,
-        propriedade.cidade,
-        propriedade.estado,
-        propriedade.endereco,
-        replacePontoVirgula(propriedade.latitude),
-        replacePontoVirgula(propriedade.longitude),
-        replacePontoVirgula(propriedade.area)
-      ])"
-    />
+  titulo="Relatório de Propriedades"
+  :cabecalho="['Produtor: ' + nomeProdutor]"
+  :colunas="['Nome', 'Endereço', 'Cidade', 'Estado', 'Latitude', 'Longitude', 'Área']"
+  :dados="propriedades.map(propriedade => [
+    propriedade.nome,
+    propriedade.endereco,
+    propriedade.cidade,
+    propriedade.estado,
+    replacePontoVirgula(propriedade.latitude),
+    replacePontoVirgula(propriedade.longitude),
+    replacePontoVirgula(propriedade.area)
+  ])"
+  :mostrarSoma="true" 
+/>
+
         </div>
         <table class="table table-bordered">
           <thead>

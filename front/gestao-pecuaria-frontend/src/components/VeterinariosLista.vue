@@ -33,6 +33,14 @@
     <div class="table-container">
     <div class="button-container">
       <button @click="acessarCadastro()" class="btn btn-success">Cadastrar Veterinário</button>
+      <RelatorioPdf
+  titulo="Relatório de Veterinário"
+  :cabecalho="['Produtor: ' + nomeProdutor]"
+  :colunas="['Nome', 'Telefone', 'Email', 'CRMV']"
+  :dados="veterinarios.map(veterinario => [veterinario.nome, veterinario.telefone, veterinario.email, veterinario.crmv])"
+  :mostrarSoma="false"
+/>
+
     </div>
       <table class="table table-bordered">
         <thead>
@@ -89,13 +97,18 @@
 
 <script>
 import api from '/src/interceptadorAxios'
+import RelatorioPdf from './RelatorioPdf.vue';
 
 export default {
+  components: {
+    RelatorioPdf
+  },
   name: 'TelaVeterinarios',
   data() {
     return {
       veterinarios: [],
       veterinariosDaApi: [],
+      nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
         nome: '',
@@ -249,4 +262,11 @@ export default {
     width: 200px; 
 }
 
+.button-container {
+  display: flex;
+  flex-wrap: nowrap; /* Garante que os botões não vão para a linha seguinte */
+  gap: 10px; /* Espaço entre os botões */
+  margin-bottom: 20px; 
+  white-space: nowrap; /* Evita quebras de linha nos botões */
+}
 </style>

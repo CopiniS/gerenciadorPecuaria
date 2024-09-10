@@ -48,6 +48,14 @@
     <div class="table-container">
     <div class="button-container">
       <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Aplicação</button>
+      <RelatorioPdf
+  titulo="Relatório de Aplicação de Produtos"
+  :cabecalho="['Produtor: ' + nomeProdutor]"
+  :colunas="['Nome do Produto', 'Data da Aplicação']"
+  :dados="aplicacoes.map(aplicacao => [aplicacao.nomeProduto, aplicacao.dataAplicacao])"
+  :mostrarSoma="false"
+/>
+
     </div>
       <table class="table table-bordered">
           <thead>
@@ -108,12 +116,12 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import DateRangePicker from './DateRangePicker.vue';
+import RelatorioPdf from './RelatorioPdf.vue';
 
 export default {
   mixins: [masksMixin],
-
-  name: 'TelaAplicacoesProdutos',
   components: {
+    RelatorioPdf,
     DateRangePicker
   },
   data() {
@@ -121,6 +129,7 @@ export default {
       activeTab: 'aplicacoes',
         aplicacoes: [],
         aplicacoesDaApi: [],
+      nomeProdutor: localStorage.getItem('produtorNome'),
         formData: {
             id: null,
             produto: '',
@@ -282,8 +291,11 @@ export default {
 }
 
 .button-container {
-  text-align: left; 
+  display: flex;
+  flex-wrap: nowrap; /* Garante que os botões não vão para a linha seguinte */
+  gap: 10px; /* Espaço entre os botões */
   margin-bottom: 20px; 
+  white-space: nowrap; /* Evita quebras de linha nos botões */
 }
 
 .table-container table thead tr th {

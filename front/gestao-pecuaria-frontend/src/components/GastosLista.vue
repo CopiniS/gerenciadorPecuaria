@@ -43,6 +43,14 @@
     <div class="table-container">
         <div class="button-container">
             <button @click="acessarCadastro()" type="button" class="btn btn-success" >Cadastrar Gasto</button>
+            <RelatorioPdf
+  titulo="Relatório de Gastos"
+  :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtual]"
+  :colunas="['Data', 'Tipo', 'Descrição', 'Valor']"
+  :dados="gastos.map(gasto => [gasto.data, gasto.tipo, gasto.descricao, gasto.valor])"
+  :mostrarSoma="true"
+/>
+
         </div>
         <table class="table table-bordered">
             <thead>
@@ -102,16 +110,19 @@
 <script>
 import api from '/src/interceptadorAxios'
 import DateRangePicker from './DateRangePicker.vue';
+import RelatorioPdf from './RelatorioPdf.vue';
 
 export default {
-  name: 'TelaProdutos',
   components: {
+    RelatorioPdf,
     DateRangePicker
   },
   data() {
     return {
       gastos: [],
       gastosDaApi: [],
+      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
         dataGasto: '',
@@ -302,8 +313,11 @@ export default {
 }
 
 .button-container {
-  text-align: left; 
+  display: flex;
+  flex-wrap: nowrap; /* Garante que os botões não vão para a linha seguinte */
+  gap: 10px; /* Espaço entre os botões */
   margin-bottom: 20px; 
+  white-space: nowrap; /* Evita quebras de linha nos botões */
 }
 
 .table-container table tbody tr td {

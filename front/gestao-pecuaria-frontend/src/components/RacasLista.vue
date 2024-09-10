@@ -40,6 +40,14 @@
             <div class="table-container">
               <div class="button-container">
                 <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Raca</button>
+                <RelatorioPdf
+  titulo="Relatório de Raças"
+  :cabecalho="['Nome do produtor: ' + nomeProdutor]"
+  :colunas="['Nome da Raça']"
+  :dados="racas.map(raca => [raca.nome])"
+  :mostrarSoma="false"
+/>
+
               </div>
               <table class="table table-bordered">
                 <thead>
@@ -95,13 +103,18 @@
 
 <script>
 import api from '/src/interceptadorAxios'
+import RelatorioPdf from './RelatorioPdf.vue';
 
 export default {
+  components: {
+    RelatorioPdf
+  },
   data() {
     return {
       activeTab: 'racas',
       racas: [],
       racasDaApi: [],
+      nomeProdutor: localStorage.getItem('produtorNome'),
       mostrarFormulario: false,
       formData: {
         id: null,
@@ -263,4 +276,11 @@ export default {
     width: 200px; 
 }
 
+.button-container {
+  display: flex;
+  flex-wrap: nowrap; /* Garante que os botões não vão para a linha seguinte */
+  gap: 10px; /* Espaço entre os botões */
+  margin-bottom: 20px; 
+  white-space: nowrap; /* Evita quebras de linha nos botões */
+}
 </style>

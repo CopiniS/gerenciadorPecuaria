@@ -54,6 +54,14 @@
       <div class="table-container">
         <div class="button-container">
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Compra</button>
+          <RelatorioPdf
+  titulo="Relatório de Compra de Produto"
+  :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtual]"
+  :colunas="['Nome do Produto', 'Data', 'Validade', 'Quantidade Comprada', 'Valor Unitário', 'Valor Total']"
+  :dados="compras.map(compra => [compra.nomeProduto, compra.data, compra.validade, compra.quantidadeComprada, compra.valorUnitario, compra.valorTotal])"
+  :mostrarSoma="false"
+/>
+
         </div>
         <table class="table table-bordered">
           <thead>
@@ -117,9 +125,11 @@
 <script>
 import api from '/src/interceptadorAxios'
 import DateRangePicker from './DateRangePicker.vue';
+import RelatorioPdf from './RelatorioPdf.vue';
 
 export default {
   components: {
+    RelatorioPdf,
     DateRangePicker
   },
   data() {
@@ -127,6 +137,8 @@ export default {
       activeTab: 'compras',
       compras: [],
       comprasDaApi: [],
+      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
         dataCompra: '',
@@ -320,5 +332,13 @@ export default {
 .input-consistente,
 .select-consistente {
   width: 200px;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: nowrap; /* Garante que os botões não vão para a linha seguinte */
+  gap: 10px; /* Espaço entre os botões */
+  margin-bottom: 20px; 
+  white-space: nowrap; /* Evita quebras de linha nos botões */
 }
 </style>

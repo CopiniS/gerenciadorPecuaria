@@ -47,6 +47,7 @@
             Piquetes</button>
             <RelatorioPdf
       titulo="Relatório de Propriedades"
+      :produtor="nomeProdutor"
       :colunas="['Nome', 'Cidade', 'Estado', 'Endereço', 'Latitude', 'Longitude', 'Área']"
       :dados="propriedades.map(propriedade => [
         propriedade.nome,
@@ -137,6 +138,7 @@ export default {
       propriedades: [],
       propriedadesDaApi: [],
       propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
         nome: '',

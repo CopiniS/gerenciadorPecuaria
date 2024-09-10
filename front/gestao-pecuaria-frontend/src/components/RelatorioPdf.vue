@@ -13,6 +13,10 @@
         type: String,
         required: true
       },
+      produtor: {
+        type: String,
+        required: true
+      },
       colunas: {
         type: Array,
         required: true
@@ -40,6 +44,7 @@
           const date = new Date();
           const emissionDate = date.toLocaleDateString();
           const emissionTime = date.toLocaleTimeString();
+          const produtor =  this.produtor;
   
           // Renderiza a informação na primeira página e define o template para as outras páginas
           const footer = function (data) {
@@ -52,6 +57,7 @@
           doc.text(str, data.settings.margin.left + 150, 20);
           doc.text(`Emissão: ${emissionDate}`, data.settings.margin.left + 150, 25);
           doc.text(`Hora: ${emissionTime}`, data.settings.margin.left + 150, 30);
+          doc.text(`Produtor: ${produtor}`, data.settings.margin.left + 150, 35);
         };
   
         // Adiciona o título do relatório abaixo da logo

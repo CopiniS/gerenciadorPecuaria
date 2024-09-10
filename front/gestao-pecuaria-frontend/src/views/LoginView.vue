@@ -29,6 +29,7 @@
 </template>
 <script>
 import axios from 'axios'; 
+import api from '/src/interceptadorAxios';
 export default {
   data() {
     return {
@@ -49,6 +50,8 @@ export default {
 
         localStorage.setItem('access_token', response.data.access);
         localStorage.setItem('refresh_token', response.data.refresh);
+        const nome = await this.retornaNomeProdutor();
+        localStorage.setItem('produtorNome', nome);
         
         this.$router.push('/propriedades-escolha');
       } catch (error) {
@@ -57,7 +60,17 @@ export default {
     },
     registrar() {
       this.$router.push('/cadastro');
-    }
+    },
+    
+    async retornaNomeProdutor(){
+      try {
+        const response = await api.get('http://127.0.0.1:8000/meuperfil/', {});
+        return response.data.nome;
+      } catch (error) {
+        console.error('Erro ao buscar propriedades da API:', error);
+        return ''
+      }
+    },
   }
 };
 </script>

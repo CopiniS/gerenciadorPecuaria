@@ -58,7 +58,7 @@
   titulo="Relatório de Compra de Produto"
   :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtual]"
   :colunas="['Nome do Produto', 'Data', 'Validade', 'Quantidade Comprada', 'Valor Unitário', 'Valor Total']"
-  :dados="compras.map(compra => [compra.nomeProduto, compra.data, compra.validade, compra.quantidadeComprada, compra.valorUnitario, compra.valorTotal])"
+  :dados="compras.map(compra => [compra.produto.nome, compra.dataCompra, compra.validade, compra.quantidadeComprada, compra.valorUnitario, (compra.valorUnitario*compra.quantidadeComprada).toFixed(2)])"
   :mostrarSoma="false"
 />
 

@@ -39,12 +39,12 @@
         <div class="mb-4 input-group">
           <span class="input-group-text"><i class="fas fa-lock"></i></span>
           <input 
-            v-model="password" 
+            v-model="formData.password" 
             :type="passwordType" 
             class="form-control" 
             id="password" 
-            placeholder="Senha" 
-            required
+            :placeholder="passwordPlaceholder" 
+            :class="{'is-invalid': !isPasswordValida}"
           >
           <span class="input-group-text" @click="togglePasswordVisibility">
             <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>

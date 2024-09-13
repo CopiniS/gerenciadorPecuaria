@@ -43,15 +43,20 @@
             title="Telefone 2" autocomplete="off">
           </div>
         </div>
+        <div class="mb-3">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+            <input v-model="formData.email" type="email" :class="{'is-invalid': !isEmailValido}" class="form-control" id="email" :placeholder="emailPlaceholder" >
+          </div>
+        </div>
         <div class="mb-4 input-group">
           <span class="input-group-text"><i class="fas fa-lock"></i></span>
           <input 
-            v-model="password" 
+            v-model="formData.password" 
             :type="passwordType" 
             class="form-control" 
             id="password" 
-            placeholder="Senha" 
-            required
+            :placeholder="passwordPlaceholder" 
           >
           <span class="input-group-text" @click="togglePasswordVisibility">
             <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
@@ -84,15 +89,21 @@ export default {
         cpf: '',
         telefone1: '',
         telefone2: null,
+        email: '',
+        password: '',
       },
       isNomeValido: true,
       isCpfValido: true,
       isTelefone1Valido: true,
       isTelefone2Valido: true,
+      isEmailValido: true,
+      isPasswordValido: true,
       nomePlaceholder: 'Nome*',
       cpfPlaceholder: 'CPF*',
       telefone1Placeholder: 'Telefone 1*',
       telefone2Placeholder: 'Telefone 2*',
+      emailPlaceholder: 'Email',
+      passwordPlaceholder: 'Senha',
       passwordType: 'password', // Controla o tipo do input da senha
     };
   },
@@ -128,6 +139,7 @@ export default {
         this.formData.cpf = usuario.cpf;
         this.formData.telefone1 = usuario.telefone1;
         this.formData.telefone2 = usuario.telefone2;
+        this.formData.email = usuario.email;
       } catch (error) {
         console.error('Erro ao carregar dados da usuario:', error);
       }
@@ -185,8 +197,17 @@ export default {
         this.formData.telefone2 = null;
         this.telefone2Placeholder = 'Telefone 2 Inválido';
       }
-      
-      return (this.isCpfValido && this.isTelefone1Valido && this.isTelefone2Valido);
+      //EMAIL
+      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
+          this.isEmailValido = true;
+          this.emailPlaceholder = 'Email*';
+      }
+      else{
+        this.isEmailValido = false;
+         this.formData.email = null;
+         this.emailPlaceholder = 'Email Inválido';
+      }
+      return (this.isCpfValido && this.isTelefone1Valido && this.isEmailValido && this.isTelefone2Valido);
     },
     
     verificaVazio(){
@@ -224,11 +245,22 @@ export default {
         if(this.formData.telefone2 != null && this.formData.telefone2.trim() == ''){
             this.formData.telefone2 = null;
         }
+
+        //EMAIL
+        if(this.formData.email != null && this.formData.email != ''){
+            this.isEmailValido = true;
+            this.emailPlaceholder = 'Email*';
+        }
+        else{
+          this.isEmailValido = false;
+          this.emailPlaceholder = 'Email é um Campo Obrigatório';
+        }
         
         return (
           this.isNomeValido &&
           this.isCpfValido &&
-          this.isTelefone1Valido
+          this.isTelefone1Valido &&
+          this.isEmailValido
         );
     },
 

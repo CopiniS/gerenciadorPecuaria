@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ProdutorSerializer
-from .serializers import UpdateProdutorSerializer
+from .serializers import UpdateProdutorSerializer, GetProdutorSerializer
 from .models import Produtor
 
 # Create your views here.
@@ -34,5 +34,5 @@ class MeuPerfilView(APIView):
         except Produtor.DoesNotExist:
             raise NotFound('Usuário não encontrado.')
         
-        serializer = UpdateProdutorSerializer(user)
+        serializer = GetProdutorSerializer(user)
         return Response(serializer.data)

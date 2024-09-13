@@ -21,4 +21,9 @@ class ProdutorSerializer(serializers.ModelSerializer):
 class UpdateProdutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produtor
-        fields = ['nome', 'cpf', 'telefone1', 'telefone2']
+        fields = ['nome', 'cpf', 'telefone1', 'telefone2', 'email', 'password']
+
+class GetProdutorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Produtor
+        fields = ['nome', 'cpf', 'telefone1', 'telefone2', 'email']

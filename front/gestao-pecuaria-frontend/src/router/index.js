@@ -34,7 +34,7 @@ import AplicacaoProdutoEdicao from '@/components/AplicacaoProdutoEdicao.vue';
 import TelaVendasAnimais from '@/views/TelaVendasAnimais.vue';
 import VendaAnimalCadastro from '@/components/VendaAnimalCadastro.vue';
 import VendaAnimalEdicao from '@/components/VendaAnimalEdicao.vue';
-import AnimalVisualizacao from '@/components/AnimalVizualizacao.vue';
+import AnimalVisualizacao from '@/views/TelaAnimalDetalhes.vue';
 import TelaInseminacoes from '@/views/TelaInseminacoes.vue';
 import InseminacaoCadastro from '@/components/InseminacaoCadastro.vue';
 import InseminacaoEdicao from '@/components/InseminacaoEdicao.vue';

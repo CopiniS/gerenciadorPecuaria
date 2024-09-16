@@ -25,24 +25,25 @@
             <h1>Detalhes do Animal</h1>
             <div class="actions d-flex flex-wrap">
                 <button @click="acessarEdicao(animal)" class="btn btn-success mx-1">Editar</button>
-                <button class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
+                <button class="btn btn-success mx-1" data-bs-toggle="modal"
+                    data-bs-target="#confirmacaoExclusaoModal">Excluir</button>
                 <button class="btn btn-success mx-1" @click="acessarFotoCadastro">Cadastrar Foto</button>
                 <button @click="acessarFotoVisualizacao(animal)" class="btn btn-success mx-1">Visualizar Fotos</button>
-                <button @click="acessarOcorrenciaCadastro(animal)" class="btn btn-success mx-1" >Incluir Ocorrência</button>
+                <button @click="acessarOcorrenciaCadastro(animal)" class="btn btn-success mx-1">Incluir
+                    Ocorrência</button>
+
             </div>
 
             <div class="d-flex align-items-start table-container flex-column">
                 <form class="row g-3 align-items-center">
                     <div class="col-auto d-flex align-items-center">
                         <label for="brinco" class="form-label me-2">Brinco</label>
-                        <input v-model="formDataAnimal.brinco" type="text" class="form-control" id="brinco"
-                        disabled>
+                        <input v-model="formDataAnimal.brinco" type="text" class="form-control" id="brinco" disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
-                        <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                            class="form-control" id="dataNascimento"
-                            v-model="formDataAnimal.dataNascimento" disabled>
+                        <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control"
+                            id="dataNascimento" v-model="formDataAnimal.dataNascimento" disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="sexo" class="form-label me-2">Sexo</label>
@@ -71,7 +72,7 @@
                             disabled>
                             <option :value="null" disabled>Piquete</option>
                             <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">{{
-                    piquete.nome }}</option>
+                                piquete.nome }}</option>
                         </select>
                     </div>
                     <div class="col-auto d-flex align-items-center">
@@ -88,7 +89,7 @@
                     <div class="col-auto d-flex align-items-center">
                         <label for="brincoMae" class="form-label me-2">Brinco mãe</label>
                         <input v-model="formDataAnimal.brincoMae" @input="filterFemeas()" type="text"
-                            class="form-control"  disabled>
+                            class="form-control" disabled>
                     </div>
                     <div class="list-group" v-if="formDataAnimal.brincoMae && femeasFiltradas.length">
                         <button type="button" class="list-group-item list-group-item-action"
@@ -98,31 +99,34 @@
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="rfid" class="form-label me-2">RfId</label>
-                        <input v-model="formDataAnimal.rfid" type="text" class="form-control" id="rfid"
-                            disabled>
+                        <input v-model="formDataAnimal.rfid" type="text" class="form-control" id="rfid" disabled>
                     </div>
                     <div class="col-auto d-flex align-items-center">
                         <label for="observacoes" class="form-label me-2">Observações</label>
-                        <input v-model="formDataAnimal.observacoes" class="form-control" id="observacoes"
-                             disabled>
+                        <input v-model="formDataAnimal.observacoes" class="form-control" id="observacoes" disabled>
                     </div>
                     <div v-if="formDataAnimal.dataCompra" class="col-auto d-flex align-items-center">
                         <label for="dataCompra" class="form-label me-2">DataCompra</label>
-                        <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                             class="form-control" id="dataDaCompra"
-                            v-model="formDataAnimal.dataCompra" disabled>
+                        <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control"
+                            id="dataDaCompra" v-model="formDataAnimal.dataCompra" disabled>
                     </div>
                     <div v-if="formDataAnimal.valorCompra" class="col-auto d-flex align-items-center">
                         <label for="valor" class="form-label me-2">Valor Compra</label>
                         <input v-model="formDataAnimal.valorCompra" type="text" class="form-control" id="valorCompra"
-                             disabled>
+                            disabled>
                     </div>
                 </form>
             </div>
-            
+
             <!-- Ocorrências -->
             <div class="d-flex align-items-start table-container flex-column">
                 <h2>Ocorrências</h2>
+                <div class="button-container">
+                    <RelatorioPdf titulo="Relatório de Ocorrências"
+                        :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                        :colunas="['Brinco', 'Data da ocorrência', 'Tipo', 'Descrição']"
+                        :dados="ocorrencias.map(ocorrencia => [formDataAnimal.brinco, ocorrencia.dataOcorrencia, ocorrencia.tipo, ocorrencia.descricao])" />
+                </div>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -138,8 +142,8 @@
                             <td>{{ ocorrencia.tipo }}</td>
                             <td>{{ ocorrencia.descricao }}</td>
                             <td>
-                                <button @click="acessarOcorrenciaEdicao(ocorrencia)" 
-                                class="btn-acoes btn-sm" title="Editar Ocorrência"><i class="fas fa-edit"></i></button>
+                                <button @click="acessarOcorrenciaEdicao(ocorrencia)" class="btn-acoes btn-sm"
+                                    title="Editar Ocorrência"><i class="fas fa-edit"></i></button>
                                 <button @click="excluirOcorrencia(ocorrencia.id)" class="btn-acoes btn-sm"
                                     data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoOcorrenciaModal"><i
                                         class="fas fa-trash-alt" title="Excluir Ocorrência"></i></button>
@@ -197,11 +201,17 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import RelatorioPdf from '../components/RelatorioPdf.vue';
 
 export default {
+    components: {
+        RelatorioPdf
+    },
     data() {
         return {
             activeTab: 'visualizacao',
+            propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+            nomeProdutor: localStorage.getItem('produtorNome'),
             ocorrenciaId: null,
             animal: null,
             listaFemeas: [],
@@ -238,7 +248,7 @@ export default {
     },
 
     methods: {
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+        //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
         async fetchAnimal(animalId) {
             try {
                 const response = await api.get(`http://127.0.0.1:8000/animais/animal/${animalId}/`);
@@ -251,7 +261,7 @@ export default {
                 console.error('Erro ao buscar animal da API:', error);
             }
         },
-        
+
         async buscarOcorrenciasDoAnimal() {
             try {
                 const response = await api.get(`http://127.0.0.1:8000/ocorrencias/`, {
@@ -325,52 +335,52 @@ export default {
         },
 
 
-//ACESSAR OUTRAS PÁGINAS----------------------------------------------------------------------------------------------------------------------------------------------------------
+        //ACESSAR OUTRAS PÁGINAS----------------------------------------------------------------------------------------------------------------------------------------------------------
         acessarEdicao(animal) {
             this.$router.push({
-            name: 'AnimalEdicao', 
-            params: { animalId: animal.id } 
+                name: 'AnimalEdicao',
+                params: { animalId: animal.id }
             })
         },
 
         acessarOcorrenciaCadastro(animal) {
             this.$router.push({
-            name: 'OcorrenciaCadastro', 
-            params: { animalId: animal.id } 
+                name: 'OcorrenciaCadastro',
+                params: { animalId: animal.id }
             })
         },
 
         acessarOcorrenciaEdicao(ocorrencia) {
             this.$router.push({
-            name: 'OcorrenciaEdicao', 
-            params: { ocorrenciaId: ocorrencia.id } 
+                name: 'OcorrenciaEdicao',
+                params: { ocorrenciaId: ocorrencia.id }
             })
         },
 
-        acessarFotoCadastro(animal){
+        acessarFotoCadastro(animal) {
             this.$router.push({
-            name: 'FotoCadastro', 
-            params: { animalId: animal.id } 
+                name: 'FotoCadastro',
+                params: { animalId: animal.id }
             })
         },
 
-        acessarFotoVisualizacao(animal){
+        acessarFotoVisualizacao(animal) {
             this.$router.push({
-            name: 'FotoVisualizacao', 
-            params: { animalId: animal.id } 
+                name: 'FotoVisualizacao',
+                params: { animalId: animal.id }
             })
         },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+        //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
         selectTab(tab) {
             this.activeTab = tab;
             if (tab === 'animais') {
                 this.$router.push('/animais');
             }
         },
-        
-        preencheFormAnimal(){
+
+        preencheFormAnimal() {
             this.formDataAnimal.id = this.animal.id;
             this.formDataAnimal.brinco = this.animal.brinco;
             this.formDataAnimal.dataNascimento = this.animal.dataNascimento;
@@ -384,7 +394,7 @@ export default {
             this.formDataAnimal.observacoes = this.animal.observacoes;
             this.formDataAnimal.dataCompra = this.animal.dataCompra;
             this.formDataAnimal.valorCompra = this.animal.valorCompra;
-            if(this.animal.racaPredominante){
+            if (this.animal.racaPredominante) {
                 this.formDataAnimal.racaPredominante = this.animal.racaPredominante.nome;
             }
         },
@@ -401,7 +411,7 @@ export default {
         excluirOcorrencia(ocorrenciaId) {
             this.ocorrenciaPraExclusao = ocorrenciaId;
         },
-        
+
         formatarData(data) {
             const date = new Date(data);
             const utcDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());

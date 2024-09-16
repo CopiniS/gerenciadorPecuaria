@@ -29,6 +29,10 @@ export default {
       type: Boolean,
       default: false
     },
+    orientacaoPaisagem: {
+      type: Boolean,
+      default: false
+    },
     botaoTexto: {
       type: String,
       default: "Gerar Relatório PDF"
@@ -36,7 +40,9 @@ export default {
   },
   methods: {
     gerarRelatorioPdf() {
-      const doc = new jsPDF();
+      // Definir a orientação com base na prop orientacaoPaisagem
+      const orientation = this.orientacaoPaisagem ? 'landscape' : 'portrait';
+      const doc = new jsPDF(orientation); // Usar a orientação dinâmica
       const pageWidth = doc.internal.pageSize.getWidth();
       const logoYPosition = 10;
       const headerMargin = 80; // Margem esquerda do cabeçalho

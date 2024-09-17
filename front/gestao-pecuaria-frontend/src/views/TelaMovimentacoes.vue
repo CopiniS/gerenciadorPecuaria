@@ -72,7 +72,7 @@
                 <th scope="col">Piquete de Origem</th>
                 <th scope="col">Piquete de Destino</th>
                 <th scope="col">Tipo</th>
-                <th scope="col">Ações</th>
+                <!-- <th scope="col">Ações</th> -->
               </tr>
             </thead>
             <tbody>
@@ -82,19 +82,19 @@
                 <td>{{ movimentacao.piqueteOrigem.nome }} - {{ movimentacao.piqueteOrigem.propriedade.nome }}</td>
                 <td>{{ movimentacao.piqueteDestino.nome }} - {{ movimentacao.piqueteDestino.propriedade.nome }}</td>
                 <td>{{ achaTipo(movimentacao)}}</td>
-                <td>
+                <!-- <td>
                   <button @click="confirmarExclusaoMovimentacao(movimentacao)" class="btn-acoes btn-sm" data-bs-toggle="modal" 
                   data-bs-target="#confirmacaoExclusaoModal" title="Excluir Movimentação">
                     <i class="fas fa-trash-alt"></i>
                   </button>
-                </td>
+                </td> -->
               </tr>
             </tbody>
           </table>
       </div>
   
       <!-- Modal de Confirmação de Exclusão -->
-      <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
+      <!-- <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1" aria-labelledby="confirmacaoExclusaoModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
@@ -111,7 +111,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
   </template>

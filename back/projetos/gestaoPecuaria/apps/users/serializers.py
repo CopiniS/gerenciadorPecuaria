@@ -21,9 +21,13 @@ class ProdutorSerializer(serializers.ModelSerializer):
 class UpdateProdutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produtor
-        fields = ['nome', 'cpf', 'telefone1', 'telefone2', 'email', 'password']
+        fields = ['nome', 'cpf', 'telefone1', 'telefone2', 'email']
 
 class GetProdutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produtor
         fields = ['nome', 'cpf', 'telefone1', 'telefone2', 'email']
+
+
+class VerifyPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(required=True)

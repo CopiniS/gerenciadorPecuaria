@@ -2,71 +2,199 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
-          aria-selected="false">Meu Perfil</button>
+        <button
+          class="nav-link"
+          :class="{ active: activeTab === 'edicao' }"
+          id="nav-edicao-tab"
+          @click="selectTab('edicao')"
+          type="button"
+          role="tab"
+          aria-controls="nav-edicao"
+          aria-selected="false"
+        >
+          Meu Perfil
+        </button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
-        aria-labelledby="nav-edicao-tab">
-        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+      <div
+        class="tab-pane fade"
+        :class="{ 'show active': activeTab === 'edicao' }"
+        id="nav-edicao"
+        role="tabpanel"
+        aria-labelledby="nav-edicao-tab"
+      >
+        <div
+          class="table-container"
+          id="edicao"
+          tabindex="-1"
+          aria-labelledby="edicaoLabel"
+          aria-hidden="true"
+        >
           <h1 class="title fs-5" id="edicaoLabel">Meu Perfil</h1>
+          <button type="button" class="btn-acoes btn-sm" data-bs-toggle="modal" 
+          data-bs-target="#confirmacaoSenhaModal">Trocar de senha</button>
           <form @submit.prevent="submitForm">
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text" title="Nome"><i class="fas fa-user"></i></span>
-            <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
-            class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome" autocomplete="off">
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text" title="Nome"
+                  ><i class="fas fa-user"></i
+                ></span>
+                <input
+                  v-model="formData.nome"
+                  :class="{ 'is-invalid': !isNomeValido }"
+                  type="text"
+                  class="form-control"
+                  id="nome"
+                  :placeholder="nomePlaceholder"
+                  title="Nome"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text" title="CPF"
+                  ><i class="fas fa-id-card"></i
+                ></span>
+                <input
+                  v-model="formData.cpf"
+                  type="text"
+                  class="form-control"
+                  id="cpf"
+                  @input="aplicarCpfMask"
+                  :class="{ 'is-invalid': !isCpfValido }"
+                  :placeholder="cpfPlaceholder"
+                  title="CPF"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text" title="Telefone 1"
+                  ><i class="fas fa-phone"></i
+                ></span>
+                <input
+                  v-model="formData.telefone1"
+                  type="tel"
+                  class="form-control"
+                  @input="aplicarTelefone1Mask"
+                  :class="{ 'is-invalid': !isTelefone1Valido }"
+                  id="telefone1"
+                  :placeholder="telefone1Placeholder"
+                  title="Telefone 1"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text" title="Telefone 2"
+                  ><i class="fas fa-phone"></i
+                ></span>
+                <input
+                  v-model="formData.telefone2"
+                  type="tel"
+                  class="form-control"
+                  id="telefone2"
+                  :placeholder="telefone2Placeholder"
+                  @input="aplicarTelefone2Mask"
+                  :class="{ 'is-invalid': !isTelefone2Valido }"
+                  title="Telefone 2"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-envelope"></i
+                ></span>
+                <input
+                  v-model="formData.email"
+                  type="email"
+                  :class="{ 'is-invalid': !isEmailValido }"
+                  class="form-control"
+                  id="email"
+                  :placeholder="emailPlaceholder"
+                />
+              </div>
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="voltar">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-success" @click="submitForm">
+                Salvar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmação de Senha -->
+    <div
+      class="modal fade"
+      id="confirmacaoSenhaModal"
+      tabindex="-1"
+      aria-labelledby="confirmacaoSenhaModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmacaoSenhaModalLabel">
+              Confirmação de Senha
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text" title="CPF"><i class="fas fa-id-card"></i></span>
-            <input v-model="formData.cpf" type="text" class="form-control" id="cpf" @input="aplicarCpfMask"
-            :class="{'is-invalid': !isCpfValido}" :placeholder="cpfPlaceholder" title="CPF" autocomplete="off">
+          <div class="modal-body">
+            <form @submit.prevent="submitForm">
+              <div class="mb-4 input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-lock"></i
+                ></span>
+                <input
+                  v-model="formData.password"
+                  :type="passwordType"
+                  class="form-control"
+                  id="password"
+                  :placeholder="passwordPlaceholder"
+                />
+                <span
+                  class="input-group-text"
+                  @click="togglePasswordVisibility"
+                >
+                  <i
+                    :class="
+                      passwordType === 'password'
+                        ? 'fas fa-eye'
+                        : 'fas fa-eye-slash'
+                    "
+                  ></i>
+                </span>
+              </div>
+              <div class="button-group justify-content-end">
+                <button type="button" class="btn btn-secondary" @click="voltar">
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  @click="acessarTrocaSenha"
+                >
+                  Enviar
+                </button>
+              </div>
+            </form>
           </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text" title="Telefone 1"><i class="fas fa-phone"></i></span>
-            <input v-model="formData.telefone1" type="tel" class="form-control" @input="aplicarTelefone1Mask"
-            :class="{'is-invalid': !isTelefone1Valido}" id="telefone1" :placeholder="telefone1Placeholder"
-            title="Telefone 1" autocomplete="off">
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text" title="Telefone 2"><i class="fas fa-phone"></i></span>
-            <input v-model="formData.telefone2" type="tel" class="form-control" id="telefone2" 
-            :placeholder="telefone2Placeholder" @input="aplicarTelefone2Mask" :class="{'is-invalid': !isTelefone2Valido}"
-            title="Telefone 2" autocomplete="off">
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-            <input v-model="formData.email" type="email" :class="{'is-invalid': !isEmailValido}" class="form-control" id="email" :placeholder="emailPlaceholder" >
-          </div>
-        </div>
-        <div class="mb-4 input-group">
-          <span class="input-group-text"><i class="fas fa-lock"></i></span>
-          <input 
-            v-model="formData.password" 
-            :type="passwordType" 
-            class="form-control" 
-            id="password" 
-            :placeholder="passwordPlaceholder" 
-          >
-          <span class="input-group-text" @click="togglePasswordVisibility">
-            <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
-          </span>
-        </div>
-        <div class="button-group justify-content-end">
-            <button type="button" class="btn btn-secondary" @click="voltar">Cancelar</button>
-            <button type="button" class="btn btn-success" @click="submitForm">Salvar</button>
-        </div>
-      </form>
         </div>
       </div>
     </div>
@@ -74,23 +202,23 @@
 </template>
 
 <script>
-import api from '/src/interceptadorAxios';
-import { masksMixin } from '../mixins/maks';
+import api from "/src/interceptadorAxios";
+import { masksMixin } from "../mixins/maks";
 
 export default {
   mixins: [masksMixin],
 
   data() {
     return {
-      activeTab: 'edicao',
+      activeTab: "edicao",
       formData: {
-        id: '',
-        nome: '',
-        cpf: '',
-        telefone1: '',
+        id: "",
+        nome: "",
+        cpf: "",
+        telefone1: "",
         telefone2: null,
-        email: '',
-        password: '',
+        email: "",
+        password: "",
       },
       isNomeValido: true,
       isCpfValido: true,
@@ -98,27 +226,27 @@ export default {
       isTelefone2Valido: true,
       isEmailValido: true,
       isPasswordValido: true,
-      nomePlaceholder: 'Nome*',
-      cpfPlaceholder: 'CPF*',
-      telefone1Placeholder: 'Telefone 1*',
-      telefone2Placeholder: 'Telefone 2*',
-      emailPlaceholder: 'Email',
-      passwordPlaceholder: 'Senha',
-      passwordType: 'password', // Controla o tipo do input da senha
+      nomePlaceholder: "Nome*",
+      cpfPlaceholder: "CPF*",
+      telefone1Placeholder: "Telefone 1*",
+      telefone2Placeholder: "Telefone 2*",
+      emailPlaceholder: "Email",
+      passwordPlaceholder: "Senha",
+      passwordType: "password", // Controla o tipo do input da senha
     };
   },
 
   mounted() {
     this.fetchUsuario();
   },
-  
+
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarCpfMask(event) {
       const value = event.target.value;
       this.formData.cpf = this.cpfMask(value);
     },
-    
+
     aplicarTelefone1Mask(event) {
       const value = event.target.value;
       this.formData.telefone1 = this.telefoneMask(value);
@@ -129,7 +257,7 @@ export default {
       this.formData.telefone2 = this.telefoneMask(value);
     },
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async fetchUsuario() {
       try {
         const response = await api.get(`http://127.0.0.1:8000/meuperfil/`);
@@ -141,142 +269,203 @@ export default {
         this.formData.telefone2 = usuario.telefone2;
         this.formData.email = usuario.email;
       } catch (error) {
-        console.error('Erro ao carregar dados da usuario:', error);
+        console.error("Erro ao carregar dados da usuario:", error);
       }
     },
-    
+
     async submitForm() {
-      if(this.verificaVazio() && this.validarFormulario()){
+      if (this.verificaVazio() && this.validarFormulario()) {
         try {
-          const response = await api.put('http://127.0.0.1:8000/meuperfil/', this.formData);
+          const response = await api.put(
+            "http://127.0.0.1:8000/meuperfil/",
+            this.formData
+          );
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
+            alert("Alterações salvas com sucesso!");
             this.fetchUsuario();
           } else {
-            alert('Erro ao alterar produtor. Tente novamente mais tarde.');
+            alert("Erro ao alterar produtor. Tente novamente mais tarde.");
           }
         } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+          console.error("Erro ao enviar requisição:", error);
+          alert(
+            "Erro ao enviar requisição. Verifique o console para mais detalhes."
+          );
         }
       }
     },
 
+    async acessarTrocaSenha(){
+      if (this.verificaVazioPassword()) {
+        try {
+          const response = await api.post(
+            "http://127.0.0.1:8000/verificar-senha/",
+            {'password': this.formData.password}
+          );
+          if (response.status === 200) {
+            this.fecharModal('confirmacaoSenhaModal')
+            this.$router.push('/trocar-senha');
+          } else {
+            alert("Erro ao alterar produtor. Tente novamente mais tarde.");
+          }
+        } catch (error) {
+          console.error("Erro ao enviar requisição:", error);
+          alert(
+            "Erro ao enviar requisição. Verifique o console para mais detalhes."
+          );
+        }
+      }
+    },
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     validarFormulario() {
       //CPF
-      if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(this.formData.cpf)){
+      if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(this.formData.cpf)) {
         this.isCpfValido = true;
-        this.cpfPlaceholder = 'CPF*';
-      }
-      else{
+        this.cpfPlaceholder = "CPF*";
+      } else {
         this.isCpfValido = false;
         this.formData.cpf = null;
-        this.cpfPlaceholder = 'CPF Inválido';
+        this.cpfPlaceholder = "CPF Inválido";
       }
 
       //TELEFONE 1
-      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone1)){
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone1)) {
         this.isTelefone1Valido = true;
-        this.telefone1Placeholder = 'Telefone 1*';
-      }
-      else{
+        this.telefone1Placeholder = "Telefone 1*";
+      } else {
         this.isTelefone1Valido = false;
         this.formData.telefone1 = null;
-        this.telefone1Placeholder = 'Telefone 1 Inválido';
+        this.telefone1Placeholder = "Telefone 1 Inválido";
       }
 
       //TELEFONE 2
-      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone2) || this.formData.telefone2 == null){
+      if (
+        /^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone2) ||
+        this.formData.telefone2 == null
+      ) {
         this.isTelefone2Valido = true;
-        this.telefone2Placeholder = 'Telefone 2*';
-      }
-      else{
+        this.telefone2Placeholder = "Telefone 2*";
+      } else {
         this.isTelefone2Valido = false;
         this.formData.telefone2 = null;
-        this.telefone2Placeholder = 'Telefone 2 Inválido';
+        this.telefone2Placeholder = "Telefone 2 Inválido";
       }
       //EMAIL
-      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
-          this.isEmailValido = true;
-          this.emailPlaceholder = 'Email*';
-      }
-      else{
+      if (
+        this.formData.email == null ||
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)
+      ) {
+        this.isEmailValido = true;
+        this.emailPlaceholder = "Email*";
+      } else {
         this.isEmailValido = false;
-         this.formData.email = null;
-         this.emailPlaceholder = 'Email Inválido';
+        this.formData.email = null;
+        this.emailPlaceholder = "Email Inválido";
       }
-      return (this.isCpfValido && this.isTelefone1Valido && this.isEmailValido && this.isTelefone2Valido);
-    },
-    
-    verificaVazio(){
-        //NOME
-        if(this.formData.nome != null && this.formData.nome.trim() != ''){
-            this.isNomeValido = true;
-            this.nomePlaceholder = 'Nome*';
-        }
-        else{
-          this.isNomeValido = false;
-          this.nomePlaceholder = 'Nome é um Campo Obrigatório';
-        }
-
-        //CPF
-        if(this.formData.cpf != null && this.formData.cpf.trim() != ''){
-            this.isCpfValido = true;
-            this.cpfPlaceholder = 'CPF*';
-        }
-        else{
-          this.isCpfValido = false;
-          this.cpfPlaceholder = 'CPF é um Campo Obrigatório';
-        }
-
-        //Telefone 1
-        if(this.formData.telefone1 != null && this.formData.telefone1.trim() != ''){
-            this.isTelefone1Valido = true;
-            this.telefone1Placeholder = 'Telefone 1*';
-        }
-        else{
-          this.isTelefone1Valido = false;
-          this.telefone1Placeholder = 'Telefone 1 é um Campo Obrigatório';
-        }
-
-        //Telefone 2
-        if(this.formData.telefone2 != null && this.formData.telefone2.trim() == ''){
-            this.formData.telefone2 = null;
-        }
-
-        //EMAIL
-        if(this.formData.email != null && this.formData.email != ''){
-            this.isEmailValido = true;
-            this.emailPlaceholder = 'Email*';
-        }
-        else{
-          this.isEmailValido = false;
-          this.emailPlaceholder = 'Email é um Campo Obrigatório';
-        }
-        
-        return (
-          this.isNomeValido &&
-          this.isCpfValido &&
-          this.isTelefone1Valido &&
-          this.isEmailValido
-        );
+      return (
+        this.isCpfValido &&
+        this.isTelefone1Valido &&
+        this.isEmailValido &&
+        this.isTelefone2Valido
+      );
     },
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    verificaVazio() {
+      //NOME
+      if (this.formData.nome != null && this.formData.nome.trim() != "") {
+        this.isNomeValido = true;
+        this.nomePlaceholder = "Nome*";
+      } else {
+        this.isNomeValido = false;
+        this.nomePlaceholder = "Nome é um Campo Obrigatório";
+      }
+
+      //CPF
+      if (this.formData.cpf != null && this.formData.cpf.trim() != "") {
+        this.isCpfValido = true;
+        this.cpfPlaceholder = "CPF*";
+      } else {
+        this.isCpfValido = false;
+        this.cpfPlaceholder = "CPF é um Campo Obrigatório";
+      }
+
+      //Telefone 1
+      if (
+        this.formData.telefone1 != null &&
+        this.formData.telefone1.trim() != ""
+      ) {
+        this.isTelefone1Valido = true;
+        this.telefone1Placeholder = "Telefone 1*";
+      } else {
+        this.isTelefone1Valido = false;
+        this.telefone1Placeholder = "Telefone 1 é um Campo Obrigatório";
+      }
+
+      //Telefone 2
+      if (
+        this.formData.telefone2 != null &&
+        this.formData.telefone2.trim() == ""
+      ) {
+        this.formData.telefone2 = null;
+      }
+
+      //EMAIL
+      if (this.formData.email != null && this.formData.email != "") {
+        this.isEmailValido = true;
+        this.emailPlaceholder = "Email*";
+      } else {
+        this.isEmailValido = false;
+        this.emailPlaceholder = "Email é um Campo Obrigatório";
+      }
+
+      return (
+        this.isNomeValido &&
+        this.isCpfValido &&
+        this.isTelefone1Valido &&
+        this.isEmailValido
+      );
+    },
+
+    verificaVazioPassword() {
+      //PASSWORD
+      if (this.formData.password != null && this.formData.password != "") {
+        this.isPasswordValido = true;
+        this.passwordPlaceholder = "Nova Senha*";
+      } else {
+        this.isPasswordValido = false;
+        this.passwordPlaceholder = "Nova Senha é um Campo Obrigatório";
+      }
+
+      return (
+        this.isPasswordValido
+      );
+    },
+
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     voltar() {
-      this.$router.push('/inicio');
+      this.$router.push("/inicio");
     },
+
+    async fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+    },
+
     togglePasswordVisibility() {
-      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+      this.passwordType =
+        this.passwordType === "password" ? "text" : "password";
     },
-  }
+  },
 };
 </script>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
 
 .background {
   background-color: #ededef;
@@ -330,7 +519,6 @@ export default {
   border-color: #dc3545;
 }
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
-
 </style>

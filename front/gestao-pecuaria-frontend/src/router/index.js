@@ -12,6 +12,7 @@ import PropriedadeCadastro from '@/components/PropriedadeCadastro.vue';
 import PropriedadeEdicao from '@/components/PropriedadeEdicao.vue';
 import InicialView from '@/views/InicialView.vue';
 import PerfilProdutor from '@/components/PerfilProdutor.vue';
+import PerfilTrocarSenha from '@/components/PerfilTrocarSenha.vue';
 import TelaVeterinarios from '@/views/TelaVeterinarios.vue';
 import VeterinarioCadastro from '@/components/VeterinarioCadastro.vue';
 import VeterinarioEdicao from '@/components/VeterinarioEdicao.vue';
@@ -163,6 +164,12 @@ const routes = [
     path: '/meuperfil',
     name: 'PerfilProdutor',
     component: PerfilProdutor, 
+  },
+
+  {
+    path: '/trocar-senha',
+    name: 'PerfilTrocarSenha',
+    component: PerfilTrocarSenha, 
   },
 
   {

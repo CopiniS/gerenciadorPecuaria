@@ -31,3 +31,12 @@ class GetProdutorSerializer(serializers.ModelSerializer):
 
 class VerifyPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
+
+class ChangePasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError("As senhas não coincidem.")
+        return data

@@ -2,10 +2,10 @@
   <div class="background">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'Meu Perfil' }" id="nav-vet-tab"
+        <button class="nav-link" :class="{ active: activeTab === 'meu-perfil' }" id="nav-vet-tab"
           @click="selectTab('meu-perfil')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Meu Perfil
             </button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+        <button class="nav-link" :class="{ active: activeTab === 'trocar-senha' }" id="nav-cadastro-tab"
           @click="selectTab('trocar-senha')" type="button" role="tab" aria-controls="nav-cadastro"
           aria-selected="false">Trocar Senha</button>
       </div>
@@ -27,6 +27,7 @@
                   v-model="formData.password"
                   :type="passwordType"
                   class="form-control"
+                  :class="{ 'is-invalid': !isPasswordValido }"
                   id="password"
                   :placeholder="passwordPlaceholder"
                 />
@@ -37,6 +38,32 @@
                   <i
                     :class="
                       passwordType === 'password'
+                        ? 'fas fa-eye'
+                        : 'fas fa-eye-slash'
+                    "
+                  ></i>
+                </span>
+              </div>
+
+              <div class="mb-4 input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-lock"></i
+                ></span>
+                <input
+                  v-model="formData.confirm_password"
+                  :type="confirmPasswordType"
+                  class="form-control"
+                  :class="{ 'is-invalid': !isConfirmPasswordValido }"
+                  id="confirmPassword"
+                  :placeholder="confirmPasswordPlaceholder"
+                />
+                <span
+                  class="input-group-text"
+                  @click="toggleConfirmPasswordVisibility"
+                >
+                  <i
+                    :class="
+                      confirmPasswordType === 'password'
                         ? 'fas fa-eye'
                         : 'fas fa-eye-slash'
                     "
@@ -72,11 +99,15 @@ export default {
     return {
       activeTab: "trocar-senha",
       formData: {
-        password: "",
+        new_password: null,
+        confirm_password: null,
       },
       isPasswordValido: true,
-      passwordPlaceholder: "Senha",
+      isConfirmPasswordValido: true,
+      passwordPlaceholder: "Nova Senha",
       passwordType: "password", // Controla o tipo do input da senha
+      confirmPasswordPlaceholder: "Repita a Senha",
+      confirmPasswordType: "confirmPassword",
     };
   },
 
@@ -86,15 +117,15 @@ export default {
     async submitForm() {
       if (this.verificaVazio()) {
         try {
-          const response = await api.put(
-            "http://127.0.0.1:8000/meuperfil/",
+          const response = await api.post(
+            "http://127.0.0.1:8000/alterar-senha/",
             this.formData
           );
           if (response.status === 200) {
-            alert("Alterações salvas com sucesso!");
-            this.fetchUsuario();
+            alert("Senha alterada com sucesso!");
+            this.selectTab('meu-perfil')
           } else {
-            alert("Erro ao alterar produtor. Tente novamente mais tarde.");
+            alert("Erro ao alterar a senha. Tente novamente mais tarde.");
           }
         } catch (error) {
           console.error("Erro ao enviar requisição:", error);
@@ -134,6 +165,11 @@ export default {
       this.passwordType =
         this.passwordType === "password" ? "text" : "password";
     },
+
+    toggleConfirmPasswordVisibility() {
+      this.confirmPasswordType =
+        this.confirmPasswordType === "password" ? "text" : "password";
+    },
   },
 };
 </script>
@@ -141,7 +177,7 @@ export default {
 
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
 
 .background {
   background-color: #ededef;
@@ -194,9 +230,7 @@ export default {
 .is-invalid {
   border-color: #dc3545;
 }
-
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
-
 </style>

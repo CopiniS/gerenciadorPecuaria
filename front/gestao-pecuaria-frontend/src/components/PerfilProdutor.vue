@@ -164,6 +164,7 @@
                 <input
                   v-model="formData.password"
                   :type="passwordType"
+                  :class="{ 'is-invalid': !isPasswordValido }"
                   class="form-control"
                   id="password"
                   :placeholder="passwordPlaceholder"
@@ -231,7 +232,7 @@ export default {
       telefone1Placeholder: "Telefone 1*",
       telefone2Placeholder: "Telefone 2*",
       emailPlaceholder: "Email",
-      passwordPlaceholder: "Senha",
+      passwordPlaceholder: "Senha atual",
       passwordType: "password", // Controla o tipo do input da senha
     };
   },
@@ -306,12 +307,11 @@ export default {
             this.fecharModal('confirmacaoSenhaModal')
             this.$router.push('/trocar-senha');
           } else {
-            alert("Erro ao alterar produtor. Tente novamente mais tarde.");
+            alert("Senha incorreta");
           }
         } catch (error) {
-          console.error("Erro ao enviar requisição:", error);
           alert(
-            "Erro ao enviar requisição. Verifique o console para mais detalhes."
+            "Senha incorreta"
           );
         }
       }
@@ -431,10 +431,10 @@ export default {
       //PASSWORD
       if (this.formData.password != null && this.formData.password != "") {
         this.isPasswordValido = true;
-        this.passwordPlaceholder = "Nova Senha*";
+        this.passwordPlaceholder = "Senha atual*";
       } else {
         this.isPasswordValido = false;
-        this.passwordPlaceholder = "Nova Senha é um Campo Obrigatório";
+        this.passwordPlaceholder = "Senha atual é um Campo Obrigatório";
       }
 
       return (

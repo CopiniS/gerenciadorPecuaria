@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ProdutorSerializer
-from .serializers import UpdateProdutorSerializer, GetProdutorSerializer, VerifyPasswordSerializer
+from .serializers import UpdateProdutorSerializer, GetProdutorSerializer, VerifyPasswordSerializer, ChangePasswordSerializer
 from .models import Produtor
 
 # Create your views here.
@@ -53,5 +53,20 @@ class VerifyPasswordView(APIView):
 
             # Se a senha estiver correta, retorna um status 200
             return Response({"detail": "Senha verificada com sucesso."}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = request.user
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+
+            return Response({"detail": "Senha alterada com sucesso."}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

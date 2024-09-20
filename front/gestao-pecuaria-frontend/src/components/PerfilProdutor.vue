@@ -32,7 +32,6 @@
           aria-hidden="true"
         >
           <h1 class="title fs-5" id="edicaoLabel">Meu Perfil</h1>
-          <button type="button" class="btn-acoes btn-sm" @click="acessarTrocaSenha">Trocar de senha</button>
           <form @submit.prevent="submitForm">
             <div class="mb-3">
               <div class="input-group">
@@ -121,6 +120,9 @@
               </div>
             </div>
             <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-primary" @click="acessarTrocaSenha">
+                Trocar de senha
+              </button>
               <button type="button" class="btn btn-secondary" @click="voltar">
                 Cancelar
               </button>
@@ -129,72 +131,6 @@
               </button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal de Confirmação de Senha -->
-    <div
-      class="modal fade"
-      id="confirmacaoSenhaModal"
-      tabindex="-1"
-      aria-labelledby="confirmacaoSenhaModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="confirmacaoSenhaModalLabel">
-              Confirmação de Senha
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form @submit.prevent="submitForm">
-              <div class="mb-4 input-group">
-                <span class="input-group-text"
-                  ><i class="fas fa-lock"></i
-                ></span>
-                <input
-                  v-model="formData.password"
-                  :type="passwordType"
-                  :class="{ 'is-invalid': !isPasswordValido }"
-                  class="form-control"
-                  id="password"
-                  :placeholder="passwordPlaceholder"
-                />
-                <span
-                  class="input-group-text"
-                  @click="togglePasswordVisibility"
-                >
-                  <i
-                    :class="
-                      passwordType === 'password'
-                        ? 'fas fa-eye'
-                        : 'fas fa-eye-slash'
-                    "
-                  ></i>
-                </span>
-              </div>
-              <div class="button-group justify-content-end">
-                <button type="button" class="btn btn-secondary" @click="voltar">
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-success"
-                  @click="acessarTrocaSenha"
-                >
-                  Enviar
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
       </div>
     </div>
@@ -218,7 +154,6 @@ export default {
         telefone1: "",
         telefone2: null,
         email: "",
-        password: "",
       },
       isNomeValido: true,
       isCpfValido: true,
@@ -231,8 +166,6 @@ export default {
       telefone1Placeholder: "Telefone 1*",
       telefone2Placeholder: "Telefone 2*",
       emailPlaceholder: "Email",
-      passwordPlaceholder: "Senha atual",
-      passwordType: "password", // Controla o tipo do input da senha
     };
   },
 
@@ -295,26 +228,8 @@ export default {
       }
     },
 
-    async acessarTrocaSenha(){
-      this.$router.push('/trocar-senha');
-      // if (this.verificaVazioPassword()) {
-      //   try {
-      //     const response = await api.post(
-      //       "http://127.0.0.1:8000/verificar-senha/",
-      //       {'password': this.formData.password}
-      //     );
-      //     if (response.status === 200) {
-      //       this.fecharModal('confirmacaoSenhaModal')
-      //       this.$router.push('/trocar-senha');
-      //     } else {
-      //       alert("Senha incorreta");
-      //     }
-      //   } catch (error) {
-      //     alert(
-      //       "Senha incorreta"
-      //     );
-      //   }
-      // }
+    async acessarTrocaSenha() {
+      this.$router.push("/trocar-senha");
     },
 
     //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -437,9 +352,7 @@ export default {
         this.passwordPlaceholder = "Senha atual é um Campo Obrigatório";
       }
 
-      return (
-        this.isPasswordValido
-      );
+      return this.isPasswordValido;
     },
 
     //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -448,11 +361,13 @@ export default {
     },
 
     async fecharModal(modalId) {
-      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      var closeButton = document
+        .getElementById(modalId)
+        .querySelector(".btn-close");
       if (closeButton) {
         closeButton.click();
       } else {
-        console.error('Botão de fechar não encontrado no modal:', modalId);
+        console.error("Botão de fechar não encontrado no modal:", modalId);
       }
     },
 

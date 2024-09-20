@@ -32,8 +32,7 @@
           aria-hidden="true"
         >
           <h1 class="title fs-5" id="edicaoLabel">Meu Perfil</h1>
-          <button type="button" class="btn-acoes btn-sm" data-bs-toggle="modal" 
-          data-bs-target="#confirmacaoSenhaModal">Trocar de senha</button>
+          <button type="button" class="btn-acoes btn-sm" @click="acessarTrocaSenha">Trocar de senha</button>
           <form @submit.prevent="submitForm">
             <div class="mb-3">
               <div class="input-group">
@@ -297,24 +296,25 @@ export default {
     },
 
     async acessarTrocaSenha(){
-      if (this.verificaVazioPassword()) {
-        try {
-          const response = await api.post(
-            "http://127.0.0.1:8000/verificar-senha/",
-            {'password': this.formData.password}
-          );
-          if (response.status === 200) {
-            this.fecharModal('confirmacaoSenhaModal')
-            this.$router.push('/trocar-senha');
-          } else {
-            alert("Senha incorreta");
-          }
-        } catch (error) {
-          alert(
-            "Senha incorreta"
-          );
-        }
-      }
+      this.$router.push('/trocar-senha');
+      // if (this.verificaVazioPassword()) {
+      //   try {
+      //     const response = await api.post(
+      //       "http://127.0.0.1:8000/verificar-senha/",
+      //       {'password': this.formData.password}
+      //     );
+      //     if (response.status === 200) {
+      //       this.fecharModal('confirmacaoSenhaModal')
+      //       this.$router.push('/trocar-senha');
+      //     } else {
+      //       alert("Senha incorreta");
+      //     }
+      //   } catch (error) {
+      //     alert(
+      //       "Senha incorreta"
+      //     );
+      //   }
+      // }
     },
 
     //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------

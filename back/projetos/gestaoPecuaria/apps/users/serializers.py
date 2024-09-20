@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Produtor
 
-
 class ProdutorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produtor
@@ -29,14 +28,17 @@ class GetProdutorSerializer(serializers.ModelSerializer):
         fields = ['nome', 'cpf', 'telefone1', 'telefone2', 'email']
 
 
-class VerifyPasswordSerializer(serializers.Serializer):
-    password = serializers.CharField(required=True)
-
 class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
-    confirm_password = serializers.CharField(required=True)
 
-    def validate(self, data):
-        if data['new_password'] != data['confirm_password']:
-            raise serializers.ValidationError("As senhas não coincidem.")
-        return data
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Senha atual incorreta.")
+        return value
+
+    def validate(self, attrs):
+        if attrs['old_password'] == attrs['new_password']:
+            raise serializers.ValidationError("A nova senha não pode ser igual à senha atual.")
+        return attrs

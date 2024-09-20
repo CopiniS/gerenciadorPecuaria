@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ProdutorSerializer
-from .serializers import UpdateProdutorSerializer, GetProdutorSerializer, VerifyPasswordSerializer, ChangePasswordSerializer
+from .serializers import UpdateProdutorSerializer, GetProdutorSerializer, ChangePasswordSerializer
 from .models import Produtor
 
 # Create your views here.
@@ -38,35 +38,33 @@ class MeuPerfilView(APIView):
         serializer = GetProdutorSerializer(user)
         return Response(serializer.data)
     
-class VerifyPasswordView(APIView):
-    permission_classes = [IsAuthenticated]
+# class VerifyPasswordView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
-        serializer = VerifyPasswordSerializer(data=request.data)
+#     def post(self, request, *args, **kwargs):
+#         serializer = VerifyPasswordSerializer(data=request.data)
 
-        if serializer.is_valid():
-            user = request.user
+#         if serializer.is_valid():
+#             user = request.user
 
-            # Verifica se a senha está correta
-            if not user.check_password(serializer.validated_data['password']):
-                return Response({"detail": "Senha incorreta."}, status=status.HTTP_400_BAD_REQUEST)
+#             # Verifica se a senha está correta
+#             if not user.check_password(serializer.validated_data['password']):
+#                 return Response({"detail": "Senha incorreta."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Se a senha estiver correta, retorna um status 200
-            return Response({"detail": "Senha verificada com sucesso."}, status=status.HTTP_200_OK)
+#             # Se a senha estiver correta, retorna um status 200
+#             return Response({"detail": "Senha verificada com sucesso."}, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ChangePasswordView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        serializer = ChangePasswordSerializer(data=request.data)
-
+        print (request.data)
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             user = request.user
             user.set_password(serializer.validated_data['new_password'])
             user.save()
-
             return Response({"detail": "Senha alterada com sucesso."}, status=status.HTTP_200_OK)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

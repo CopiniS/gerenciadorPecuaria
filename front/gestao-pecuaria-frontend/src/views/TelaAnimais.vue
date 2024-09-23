@@ -156,7 +156,7 @@
                 <RelatorioPdf titulo="Relatório de Animal Resumido"
                   :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
                   :colunas="['Brinco', 'Data de nascimento', 'Sexo', 'Piquete']"
-                  :dados="animais.map(animal => [animal.brinco, animal.dataNascimento, animal.sexo, animal.piquete.nome])" />
+                  :dados="animais.map(animal => [animal.brinco, formatarData(animal.dataNascimento), animal.sexo, animal.piquete.nome])" />
 
               </div>
 
@@ -165,7 +165,7 @@
                 <RelatorioPdf titulo="Relatório de Animal Detalhado"
                   :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
                   :colunas="['Brinco', 'Data de nascimento', 'Sexo', 'Piquete', 'Raça predominante', 'Raça observacao', 'Brinco pai', 'Brinco mãe']"
-                  :dados="animais.map(animal => [animal.brinco, animal.dataNascimento, animal.sexo, animal.piquete.nome, animal.racaPredominante.nome, animal.racaObservacao, animal.brincoPai, animal.brincoMae])"
+                  :dados="animais.map(animal => [animal.brinco, formatarData(animal.dataNascimento), animal.sexo, animal.piquete.nome, animal.racaPredominante.nome, animal.racaObservacao, animal.brincoPai, animal.brincoMae])"
                   :orientacaoPaisagem="true" />
               </div>
               <div v-if="tipoRelatorio === 'compraAnimais'">
@@ -173,7 +173,7 @@
                 <RelatorioPdf v-if="tipoRelatorio === 'compraAnimais'" titulo="Relatório de Compra de Animais"
                   :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
                   :colunas="['Brinco', 'Data da Compra', 'Valor da Compra']"
-                  :dados="animaisComprados.map(animal => [animal.brinco, animal.dataCompra, animal.valorCompra])"
+                  :dados="animaisComprados.map(animal => [animal.brinco, formatarData(animal.dataCompra), animal.valorCompra])"
                   :mostrarSoma="true" />
               </div>
             </div>

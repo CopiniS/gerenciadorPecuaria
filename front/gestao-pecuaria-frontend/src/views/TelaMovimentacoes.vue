@@ -60,7 +60,7 @@
   titulo="Relatório de Movimentação"
   :cabecalho="['Nome do produtor: ' + nomeProdutor]"
   :colunas="['Propriedade de origem', 'Piquete de origem', 'Propriedade de destino', 'Piquete de destino', 'Brinco', 'Data da movimentação']"
-  :dados="movimentacoes.map(movimentacao => [movimentacao.piqueteOrigem.propriedade.nome, movimentacao.piqueteOrigem.nome, movimentacao.piqueteDestino.propriedade.nome, movimentacao.piqueteDestino.nome, movimentacao.animal.brinco, movimentacao.dataMovimentacao])"
+  :dados="movimentacoes.map(movimentacao => [movimentacao.piqueteOrigem.propriedade.nome, movimentacao.piqueteOrigem.nome, movimentacao.piqueteDestino.propriedade.nome, movimentacao.piqueteDestino.nome, movimentacao.animal.brinco, formatarData(movimentacao.dataMovimentacao)])"
 />
 
           </div>

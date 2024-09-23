@@ -213,30 +213,6 @@ export default {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
 
-    //  //RELATÓRIO----------------------------------------------------------------------------------------------------------------------------------------------------------
-    //  gerarRelatorioPdf() {
-    //   const doc = new jsPDF();
-    //   doc.text('Relatório de Propriedades', 14, 16);
-      
-    //   const tableData = this.propriedades.map(propriedade => [
-    //     propriedade.nome,
-    //     propriedade.cidade,
-    //     propriedade.estado,
-    //     propriedade.endereco,
-    //     this.replacePontoVirgula(propriedade.latitude),
-    //     this.replacePontoVirgula(propriedade.longitude),
-    //     this.replacePontoVirgula(propriedade.area),
-    //   ]);
-
-    //   doc.autoTable({
-    //     head: [['Nome', 'Cidade', 'Estado', 'Endereço', 'Latitude', 'Longitude', 'Área']],
-    //     body: tableData,
-    //     startY: 30,
-    //   });
-
-    //   doc.save('relatorio_propriedades.pdf');
-    // },
-
     //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     acessarEdicao(propriedade) {
       this.$router.push({

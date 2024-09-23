@@ -52,7 +52,7 @@
     titulo="Relatório de Aplicação de Produtos"
     :cabecalho="['Produtor: ' + nomeProdutor]"
     :colunas="['Nome do Produto', 'Data da Aplicação']"
-    :dados="aplicacoes.map(aplicacao => [aplicacao.produto.nome, aplicacao.dataAplicacao])"
+    :dados="aplicacoes.map(aplicacao => [aplicacao.produto.nome, formatarData(aplicacao.dataAplicacao)])"
     :mostrarSoma="false"
   />
   

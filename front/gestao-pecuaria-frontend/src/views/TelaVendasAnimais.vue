@@ -64,7 +64,7 @@
   titulo="Relatório de Venda"
   :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
   :colunas="['Brinco', 'Data da venda', 'Peso', 'Preço por Kg', 'Valor Total']"
-  :dados="vendas.map(venda => [venda.animal.brinco, venda.dataVenda, venda.peso, venda.precoKg, venda.valorTotal])"
+  :dados="vendas.map(venda => [venda.animal.brinco, formatarData(venda.dataVenda), venda.peso, venda.precoKg, venda.valorTotal])"
   :mostrarSoma="true"
 />
 

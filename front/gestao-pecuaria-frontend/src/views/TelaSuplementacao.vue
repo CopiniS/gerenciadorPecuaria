@@ -61,7 +61,7 @@
           <RelatorioPdf titulo="Relatório de Suplementação"
             :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
             :colunas="['Piquete', 'Produto', 'Quantidade', 'Data Inicial', 'Data Final']"
-            :dados="suplementacoes.map(suplementacao => [suplementacao.piquete.nome, suplementacao.produto.nome, suplementacao.quantidade, suplementacao.dataInicial, suplementacao.dataFinal || '-'])" />
+            :dados="suplementacoes.map(suplementacao => [suplementacao.piquete.nome, suplementacao.produto.nome, suplementacao.quantidade, formatarData(suplementacao.dataInicial), formatarData(suplementacao.dataFinal) || '-'])" />
         </div>
         <table class="table table-bordered">
           <thead>

@@ -54,7 +54,7 @@
           <RelatorioPdf titulo="Relatório de Inseminação"
             :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
             :colunas="['Data da inseminação', 'Veterinário', 'Brinco']"
-            :dados="inseminacoes.map(inseminacao => [inseminacao.dataInseminacao, inseminacao.veterinario.nome, inseminacao.animal.brinco])" />
+            :dados="inseminacoes.map(inseminacao => [formatarData(inseminacao.dataInseminacao), inseminacao.veterinario.nome, inseminacao.animal.brinco])" />
 
         </div>
         <table class="table table-bordered">

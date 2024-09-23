@@ -125,7 +125,7 @@
                     <RelatorioPdf titulo="Relatório de Ocorrências"
                         :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
                         :colunas="['Brinco', 'Data da ocorrência', 'Tipo', 'Descrição']"
-                        :dados="ocorrencias.map(ocorrencia => [formDataAnimal.brinco, ocorrencia.dataOcorrencia, ocorrencia.tipo, ocorrencia.descricao])" />
+                        :dados="ocorrencias.map(ocorrencia => [formDataAnimal.brinco, formatarData(ocorrencia.dataOcorrencia), ocorrencia.tipo, ocorrencia.descricao])" />
                 </div>
                 <table class="table table-bordered">
                     <thead>

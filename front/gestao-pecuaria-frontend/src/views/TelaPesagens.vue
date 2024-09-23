@@ -58,7 +58,7 @@
           <RelatorioPdf titulo="Relatório de Pesagem"
             :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
             :colunas="['Brinco', 'Data da pesagem', 'Peso']"
-            :dados="pesagens.map(pesagem => [pesagem.animal.brinco, pesagem.dataPesagem, pesagem.peso])"
+            :dados="pesagens.map(pesagem => [pesagem.animal.brinco, formatarData(pesagem.dataPesagem), pesagem.peso])"
             :mostrarSoma="true" />
 
         </div>

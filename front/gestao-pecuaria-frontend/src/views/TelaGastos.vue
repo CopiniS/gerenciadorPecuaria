@@ -47,7 +47,7 @@
       titulo="Relatório de Gastos"
       :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtual]"
       :colunas="['Data', 'Tipo', 'Descrição', 'Valor']"
-      :dados="gastos.map(gasto => [gasto.data, gasto.tipo, gasto.descricao, gasto.valor])"
+      :dados="gastos.map(gasto => [formatarData(gasto.dataGasto), gasto.tipo, gasto.descricao, gasto.valor])"
       :mostrarSoma="true"
     />
     

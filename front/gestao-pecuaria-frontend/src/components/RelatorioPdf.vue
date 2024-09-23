@@ -5,7 +5,7 @@
 <script>
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import logo from '/src/assets/logo.jpeg'; 
+import logo from '/src/assets/logo.jpeg';
 
 export default {
   props: {
@@ -29,6 +29,10 @@ export default {
       type: Boolean,
       default: false
     },
+    mostrarMedia: {
+      type: Boolean,
+      default: false
+    },
     orientacaoPaisagem: {
       type: Boolean,
       default: false
@@ -47,15 +51,15 @@ export default {
       const logoYPosition = 10;
       const headerMargin = 80; // Margem esquerda do cabeçalho
       const tableMarginRight = 10; // Margem direita da tabela
-      
+
       // Adicionar logo
-      doc.addImage(logo, 'JPEG', 10, logoYPosition, 30, 30); 
+      doc.addImage(logo, 'JPEG', 10, logoYPosition, 30, 30);
 
       // Adicionar título centralizado
       doc.setFontSize(16);
       const titleX = pageWidth / 2;
       doc.text(this.titulo, titleX, logoYPosition + 40, { align: 'center' });
-      
+
       // Ajustar a posição para começar a tabela
       let yPosition = logoYPosition + 50;
 
@@ -67,6 +71,19 @@ export default {
         const soma = this.dados.reduce((acc, row) => acc + parseFloat(row[row.length - 1]), 0);
         bodyData.push([...Array(this.colunas.length - 1).fill(''), `Total: ${soma.toFixed(2)}`]);
       }
+
+      // Média opcional no final da tabela
+      if (this.mostrarMedia) {
+        // Somando os valores
+        const total = this.dados.reduce((acc, row) => acc + parseFloat(row[row.length - 1]), 0);
+
+        // Calculando a média (total dividido pelo número de elementos)
+        const media = total / this.dados.length;
+
+        // Adicionando a média à tabela
+        bodyData.push([...Array(this.colunas.length - 1).fill(''), `Média: ${media.toFixed(2)}`]);
+      }
+
 
       doc.autoTable({
         head: [this.colunas],

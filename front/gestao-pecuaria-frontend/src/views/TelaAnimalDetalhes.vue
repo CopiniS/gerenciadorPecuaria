@@ -426,11 +426,36 @@ export default {
 
 <style scoped>
 .background {
-    background-color: #ededef;
-    /* Um tom mais escuro que o branco */
-    min-height: 100vh;
-    /* Garante que o fundo cubra toda a altura da tela */
-    padding: 20px;
+  background-color: #ededef;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
+}
+
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.1;
+  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
+}
+
+nav, .tab-content {
+  position: relative;
+  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
+}
+
+.table-container, .button-container {
+  position: relative;
+  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
 }
 
 .table-container {
@@ -440,6 +465,7 @@ export default {
     border: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    z-index: 2;
 }
 
 .table-container table thead tr th {
@@ -450,17 +476,20 @@ export default {
 
 .animal-view {
     padding: 20px;
+    z-index: 1;
 }
 
 .actions {
     margin-top: 20px;
     margin-bottom: 20px;
+    z-index: 1;
 }
 
 .actions button {
     margin-right: 10px;
     margin-top: 5px;
     margin-bottom: 5px;
+    z-index: 1;
 }
 
 .actions .btn {
@@ -470,6 +499,7 @@ export default {
 table {
     width: 100%;
     border-collapse: collapse;
+    z-index: 1;
 }
 
 th,

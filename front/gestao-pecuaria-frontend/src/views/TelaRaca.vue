@@ -218,13 +218,31 @@ export default {
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
 .background {
   background-color: #ededef;
-  /* Um tom mais escuro que o branco */
   min-height: 100vh;
-  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
+  position: relative; /* Permite que os elementos filhos usem posição absoluta */
+}
+
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%; /* Ajuste o tamanho da imagem conforme necessário */
+  opacity: 0.1; /* Define a opacidade para criar o efeito de marca d'água */
+  z-index: 0; /* Garante que a imagem fique atrás do conteúdo */
+}
+
+nav, .tab-content {
+  position: relative;
+  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
 }
 
 .nav-link.active {
@@ -247,14 +265,13 @@ export default {
 }
 
 .table-container table tbody tr td {
-  background-color: #ededef !important;
-  /* Cor de fundo das células da tabela */
+  background-color: transparent !important;
 }
 
 .table-container table thead tr th {
   border-bottom: 2px solid #176d1a;
   /* Adiciona uma borda verde na parte inferior */
-  background-color: #f0f0f0;
+  background-color: transparent !important;
 }
 
 .btn-acoes {

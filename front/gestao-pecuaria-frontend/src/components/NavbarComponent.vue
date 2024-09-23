@@ -6,6 +6,9 @@
           aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+        <!-- <a class="navbar-brand" href="#">
+      <img src="../assets/logo-sem-fundo.png" alt="Logo" width="40" height="40">
+    </a> -->
         <a class="navbar-brand ms-2" href="#">Propriedade atual: {{ nomeProp }}</a>
         <div class="dropdown ms-auto">
           <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"

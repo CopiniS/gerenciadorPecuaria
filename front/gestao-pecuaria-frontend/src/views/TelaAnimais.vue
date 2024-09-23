@@ -97,12 +97,13 @@
           </thead>
           <tbody>
             <tr v-for="(animal, index) in animais" :key="index"
-              :class="{ 'status-Vivo': animal.status === 'Vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente' }">
+              >
               <td>{{ animal.brinco }}</td>
               <td>{{ formatarData(animal.dataNascimento) }}</td>
               <td>{{ animal.sexo }}</td>
               <td>{{ animal.piquete.nome }}</td>
-              <td>{{ animal.status }}</td>
+              <td :class="{ 'status-Vivo': animal.status === 'Vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente' }"
+              >{{ animal.status }}</td>
               <td>
                 <div class="d-flex justify-content-center button-group">
                   <button @click="acessarVisualizacao(animal)" class="btn-acoes btn-sm" data-bs-toggle="tooltip"
@@ -342,56 +343,68 @@ export default {
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
 .background {
   background-color: #ededef;
-  /* Um tom mais escuro que o branco */
   min-height: 100vh;
-  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
+  position: relative;
+  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
 }
 
-.table-container {
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-x: auto;
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.1;
+  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
+}
+
+nav, .tab-content {
+  position: relative;
+  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
+}
+
+.table-container, .button-container {
+  position: relative;
+  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
 }
 
 .table-container table tbody tr td {
-  background-color: #f0f0f0;
-  /* Cor de fundo das células da tabela */
+  background-color: transparent !important;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #176d1a;
+  /* Adiciona uma borda verde na parte inferior */
+  background-color: transparent !important;
 }
 
 .button-container {
   display: flex;
   flex-wrap: nowrap;
-  /* Garante que os botões não vão para a linha seguinte */
   gap: 10px;
-  /* Espaço entre os botões */
   margin-bottom: 20px;
   white-space: nowrap;
-  /* Evita quebras de linha nos botões */
 }
 
 .btn-success {
   margin-right: 10px;
   margin-bottom: 10px;
-}
-
-.table-container table thead tr th {
-  border-bottom: 2px solid #176d1a;
-  background-color: #f0f0f0;
-  /* Adiciona uma borda verde na parte inferior */
+  z-index: 2; /* Garante que o botão esteja acima da imagem */
 }
 
 .btn-acoes {
   background-color: transparent;
   border: none;
   padding: 0;
+  z-index: 2; /* Garante que o botão de ação esteja acima da imagem */
 }
 
 .btn-acoes i {
@@ -404,17 +417,17 @@ export default {
 }
 
 .status-Vivo {
-  background-color: #d4edda;
+  color: #28b649;
   /* Verde claro para 'Vivo' */
 }
 
 .status-morto {
-  background-color: #f8d7da;
+  color: #ff5260;
   /* Vermelho claro para 'morto' */
 }
 
 .status-doente {
-  background-color: #fff3cd;
+  color: #ff9800;
   /* Amarelo claro para 'doente' */
 }
 

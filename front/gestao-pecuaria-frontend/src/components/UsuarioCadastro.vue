@@ -1,64 +1,72 @@
 <template>
   <div class="vh-100 vw-100 cadastro-container">
-    <div sm="7" class="cadastro-form">
-      <h2 class="text-center mb-5 title-cadastro">Faça o cadastro</h2>
-      <form @submit.prevent="submitForm">
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-user"></i></span>
-            <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" >
+    <div class="cadastro-inner">
+      <!-- Quadrado da Logo -->
+      <div class="cadastro-logo">
+        <img src="@/assets/logo-sem-fundo.png" alt="Logo" class="logo-img" />
+      </div>
+      
+      <!-- Quadrado do Formulário -->
+      <div class="cadastro-form">
+        <h2 class="text-center mb-5 title-cadastro">Faça o cadastro</h2>
+        <form @submit.prevent="submitForm">
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+              <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" >
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-            <input v-model="formData.cpf" type="text" class="form-control" id="cpf" @input="aplicarCpfMask"
-            :class="{'is-invalid': !isCpfValido}" :placeholder="cpfPlaceholder" title="Insira um CPF válido">
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+              <input v-model="formData.cpf" type="text" class="form-control" id="cpf" @input="aplicarCpfMask"
+              :class="{'is-invalid': !isCpfValido}" :placeholder="cpfPlaceholder" title="Insira um CPF válido">
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-phone"></i></span>
-            <input v-model="formData.telefone1" type="tel" class="form-control" @input="aplicarTelefone1Mask"
-            :class="{'is-invalid': !isTelefone1Valido}" id="telefone1" :placeholder="telefone1Placeholder">
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+              <input v-model="formData.telefone1" type="tel" class="form-control" @input="aplicarTelefone1Mask"
+              :class="{'is-invalid': !isTelefone1Valido}" id="telefone1" :placeholder="telefone1Placeholder">
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-phone"></i></span>
-            <input v-model="formData.telefone2" type="tel" class="form-control" id="telefone2" 
-            :placeholder="telefone2Placeholder" @input="aplicarTelefone2Mask" :class="{'is-invalid': !isTelefone2Valido}">
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+              <input v-model="formData.telefone2" type="tel" class="form-control" id="telefone2" 
+              :placeholder="telefone2Placeholder" @input="aplicarTelefone2Mask" :class="{'is-invalid': !isTelefone2Valido}">
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-            <input v-model="formData.email" type="email" :class="{'is-invalid': !isEmailValido}" class="form-control" id="email" :placeholder="emailPlaceholder" >
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+              <input v-model="formData.email" type="email" :class="{'is-invalid': !isEmailValido}" class="form-control" id="email" :placeholder="emailPlaceholder" >
+            </div>
           </div>
-        </div>
-        <div class="mb-4 input-group">
-          <span class="input-group-text"><i class="fas fa-lock"></i></span>
-          <input 
-            v-model="formData.password" 
-            :type="passwordType" 
-            class="form-control" 
-            id="password" 
-            :placeholder="passwordPlaceholder" 
-            :class="{'is-invalid': !isPasswordValida}"
-          >
-          <span class="input-group-text" @click="togglePasswordVisibility">
-            <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
-          </span>
-        </div>
+          <div class="mb-4 input-group">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+            <input 
+              v-model="formData.password" 
+              :type="passwordType" 
+              class="form-control" 
+              id="password" 
+              :placeholder="passwordPlaceholder" 
+              :class="{'is-invalid': !isPasswordValida}"
+            >
+            <span class="input-group-text" @click="togglePasswordVisibility">
+              <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+            </span>
+          </div>
 
-        <button type="button" class="btn btn-primary btn-block" @click="submitForm">
-          <i class="fas fa-sign-in-alt"></i> Cadastrar
-        </button>
-        <hr />
-        <button type="button" class="btn btn-outline-secondary" @click="voltar">
-          <i class="fas fa-arrow-left"></i> Voltar
-        </button>
-      </form>
+          <button type="button" class="btn btn-primary btn-block" @click="submitForm">
+            <i class="fas fa-sign-in-alt"></i> Cadastrar
+          </button>
+          <hr />
+          <button type="button" class="btn btn-outline-secondary" @click="voltar">
+            <i class="fas fa-arrow-left"></i> Voltar
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -262,21 +270,38 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  width: 100vw;
   background-image: url('../assets/fundo.jpg');
   background-size: cover;
   background-position: center;
-  padding: 20px; /* Adiciona algum espaçamento interno para evitar que o conteúdo toque as bordas da tela */
+}
+
+.cadastro-inner {
+  display: flex;
+  flex-direction: row; /* Mantém logo e formulário lado a lado */
+  max-width: 800px;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cadastro-logo {
+  flex: 1;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-img {
+  max-width: 100%;
+  height: auto;
 }
 
 .cadastro-form {
   flex: 1;
-  padding: 20px;
-  max-width: 400px;
-  border: 1px solid #c2e0a6;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra suave ao formulário */
-  margin: 0 auto; /* Centraliza o formulário horizontalmente */
+  padding: 30px;
+  background-color: white;
 }
 
 .btn-primary {

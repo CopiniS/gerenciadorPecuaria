@@ -1,39 +1,47 @@
 <template>
   <div class="login-container">
-    <div class="login-form">
-      <h2 class="text-center mb-5 title-login">Login</h2>
-      <div v-if="errorMessage" class="alert alert-danger alert-custom mt-3">{{ errorMessage }}</div>
+    <div class="login-content">
+      <!-- Div para a logo -->
+      <div class="logo-section">
+        <img src="@/assets/logo-sem-fundo.png" alt="Logo" class="logo-img" />
+      </div>
 
-      <form @submit.prevent="submitForm">
-        <div class="mb-4 input-group">
-          <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-          <input v-model="email" type="email" class="form-control" id="email" placeholder="Email" required>
-        </div>
-        <div class="mb-4 input-group">
-          <span class="input-group-text"><i class="fas fa-lock"></i></span>
-          <input 
-            v-model="password" 
-            :type="passwordType" 
-            class="form-control" 
-            id="password" 
-            placeholder="Senha" 
-            required
-          >
-          <span class="input-group-text" @click="togglePasswordVisibility">
-            <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
-          </span>
-        </div>
+      <!-- Div para o formulário de login -->
+      <div class="login-form-section">
+        <h2 class="text-center mb-5 title-login">Login</h2>
+        <div v-if="errorMessage" class="alert alert-danger alert-custom mt-3">{{ errorMessage }}</div>
 
-        <button type="button" class="btn btn-primary btn-block" @click="login">
-          <i class="fas fa-sign-in-alt"></i> Entrar
-        </button>
+        <form @submit.prevent="submitForm">
+          <div class="mb-4 input-group">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+            <input v-model="email" type="email" class="form-control" id="email" placeholder="Email" required>
+          </div>
+          <div class="mb-4 input-group">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+            <input 
+              v-model="password" 
+              :type="passwordType" 
+              class="form-control" 
+              id="password" 
+              placeholder="Senha" 
+              required
+            >
+            <span class="input-group-text" @click="togglePasswordVisibility">
+              <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+            </span>
+          </div>
 
-        <hr>
+          <button type="button" class="btn btn-primary btn-block" @click="login">
+            <i class="fas fa-sign-in-alt"></i> Entrar
+          </button>
 
-        <button type="button" class="btn btn-outline-secondary btn-block" @click="registrar">
-          <i class="fas fa-user-plus"></i> Não tenho conta
-        </button>
-      </form>
+          <hr>
+
+          <button type="button" class="btn btn-outline-secondary btn-block" @click="registrar">
+            <i class="fas fa-user-plus"></i> Não tenho conta
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -91,28 +99,42 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  width: 100vw;
   background-image: url('../assets/fundo.jpg');
   background-size: cover;
   background-position: center;
-  padding: 20px; /* Adiciona algum espaçamento interno para evitar que o conteúdo toque as bordas da tela */
 }
 
-.login-form {
+.login-content {
+  display: flex;
+  width: 800px;
+  height: 400px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.logo-section {
   flex: 1;
-  padding: 20px;
-  max-width: 400px;
-  border: 1px solid #c2e0a6;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra suave ao formulário */
-  margin: 0 auto; /* Centraliza o formulário horizontalmente */
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.login-form-section {
+  flex: 1;
+  padding: 40px;
 }
 
 .btn-primary {
@@ -136,7 +158,7 @@ export default {
 }
 
 .alert-custom {
-  padding: 0.5rem 1rem; /* Diminui o padding do alerta */
+  padding: 0.5rem 1rem;
   font-size: 0.875rem;
 }
 
@@ -156,5 +178,4 @@ export default {
     flex-wrap: wrap; /* Permite que os inputs ocupem a largura total em dispositivos menores */
   }
 }
-
 </style>

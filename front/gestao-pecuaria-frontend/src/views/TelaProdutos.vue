@@ -369,9 +369,9 @@ export default {
   min-height: 100vh;
   padding: 20px;
   position: relative;
-  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
+  /* z-index: 0;  */
 }
-
+/* 
 .background::before {
   content: "";
   position: absolute;
@@ -384,18 +384,18 @@ export default {
   background-position: center;
   background-size: 40%;
   opacity: 0.1;
-  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
-}
+  z-index: 0; 
+} */
 
-nav, .tab-content {
+/* nav, .tab-content {
   position: relative;
-  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
+  z-index: 1; 
 }
 
 .table-container, .button-container {
   position: relative;
-  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
-}
+  z-index: 1; 
+} */
 
 .table-container table tbody tr td {
   background-color: transparent !important;
@@ -418,14 +418,14 @@ nav, .tab-content {
 .btn-success {
   margin-right: 10px;
   margin-bottom: 10px;
-  z-index: 2; /* Garante que o botão esteja acima da imagem */
+  /* z-index: 2;  */
 }
 
 .btn-acoes {
   background-color: transparent;
   border: none;
   padding: 0;
-  z-index: 2; /* Garante que o botão de ação esteja acima da imagem */
+  /* z-index: 2;  */
 }
 
 .btn-acoes i {

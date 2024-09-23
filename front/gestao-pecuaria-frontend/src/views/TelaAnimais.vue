@@ -348,9 +348,9 @@ export default {
   min-height: 100vh;
   padding: 20px;
   position: relative;
-  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
+  /* z-index: 0;  */
 }
-
+/* 
 .background::before {
   content: "";
   position: absolute;
@@ -363,17 +363,17 @@ export default {
   background-position: center;
   background-size: 40%;
   opacity: 0.1;
-  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
-}
+  z-index: 0; 
+} */
 
 nav, .tab-content {
   position: relative;
-  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
+  /* z-index: 1;  */
 }
 
 .table-container, .button-container {
   position: relative;
-  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
+  /* z-index: 1;  */
 }
 
 .table-container table tbody tr td {

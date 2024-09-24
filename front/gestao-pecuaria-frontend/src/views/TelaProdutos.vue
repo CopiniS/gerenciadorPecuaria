@@ -50,7 +50,7 @@
           <button @click="() => { this.$router.push('/compraprodutos'); }" type="button"
             class="btn btn-success">Histórico de Compras</button>
 
-          <button @click="mostrarPopupEscolhaRelatorio" type="button" class="btn btn-success" data-bs-toggle="modal"
+          <button @click="buscarEstoqueGeral" type="button" class="btn btn-success" data-bs-toggle="modal"
             data-bs-target="#escolhaRelatorioModal">Gerar Relatório</button>
 
         </div>
@@ -70,8 +70,8 @@
               <td>{{ produto.nome }}</td>
               <td>{{ produto.tipo }}</td>
               <td>{{ produto.categoria }}</td>
-              <td :class="{ 'is-invalid': achaEstoque(produto.id) <= 0 }">{{
-                replacePontoVirgula(achaEstoque(produto.id).toString()) }}</td>
+              <td :class="{ 'is-invalid': achaEstoque(produto.id, estoque) <= 0 }">{{
+                replacePontoVirgula(achaEstoque(produto.id, estoque).toString()) }}</td>
               <td>{{ produto.unidade }}</td>
               <td>
                 <button @click="acessarEdicao(produto)" class="btn-acoes btn-sm" title="Editar Produto">
@@ -123,7 +123,7 @@
                 <RelatorioPdf titulo="Relatório de Estoque de Produto Geral"
                   :cabecalho="['Nome do produtor: ' + nomeProdutor]"
                   :colunas="['Nome do Produto', 'Categoria', 'Quantidade em Estoque']"
-                  :dados="estoqueGeral.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id)])"
+                  :dados="produtos.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id, estoqueGeral)])"
                   :mostrarSoma="true" />
               </div>
 
@@ -132,7 +132,7 @@
                 <RelatorioPdf titulo="Relatório de Estoque de Produto por Propriedade"
                   :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
                   :colunas="['Nome do Produto', 'Categoria', 'Quantidade em Estoque']"
-                  :dados="estoque.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id)])"
+                  :dados="produtos.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id, estoque)])"
                   :mostrarSoma="false" />
               </div>
             </div>
@@ -200,7 +200,6 @@ export default {
   mounted() {
     this.buscarProdutosDaApi();
     this.buscarEstoqueDaApi();
-    this.buscarEstoqueGeral();
   },
   methods: {
     //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
@@ -229,6 +228,15 @@ export default {
       }
     },
 
+    async buscarEstoqueGeral() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/estoque/geral', {});
+        this.estoqueGeral = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar estoque da API:', error);
+      }
+    },
+
     async apagarProduto() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, {
@@ -245,44 +253,6 @@ export default {
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
       this.fecharModal("confirmacaoExclusaoModal");
-    },
-
-    async buscarEstoqueGeral() {
-      try {
-        // 1. Buscar todas as propriedades
-        const propriedadesResponse = await api.get('http://127.0.0.1:8000/propriedades/');
-        const propriedades = propriedadesResponse.data;
-
-        const estoqueGeral = {};
-
-        // 2. Buscar o estoque de cada propriedade
-        for (const propriedade of propriedades) {
-          const estoqueResponse = await api.get(`http://127.0.0.1:8000/estoque/${propriedade.id}/`);
-          const estoquePropriedade = estoqueResponse.data;
-
-          // 3. Agrupar e somar o estoque
-          estoquePropriedade.forEach(item => {
-            if (!estoqueGeral[item.produto]) {
-              estoqueGeral[item.produto] = {
-                nome: item.nome,
-                categoria: item.categoria,
-                quantidade: 0
-              };
-            }
-            estoqueGeral[item.produto].quantidade += item.quantidade;
-          });
-        }
-
-        // Convertendo o objeto estoqueGeral em uma array para exibição
-        this.estoqueGeral = Object.keys(estoqueGeral).map(produtoId => ({
-          nome: estoqueGeral[produtoId].nome,
-          categoria: estoqueGeral[produtoId].categoria,
-          quantidade: estoqueGeral[produtoId].quantidade
-        }));
-
-      } catch (error) {
-        console.error('Erro ao buscar estoque geral:', error);
-      }
     },
 
     //FILTROS---------------------------------------------------------------------------------------------------------------------
@@ -312,11 +282,11 @@ export default {
 
 
     //FUNÇÕES AUXILIARES---------------------------------------------------------------------------------------------------------------------
-    achaEstoque(produtoId) {
-      let quantidade;
-      this.estoque.forEach(e => {
-        if (e.produto === produtoId) {
-          quantidade = e.quantidade;
+    achaEstoque(produtoId, estoque) {
+      let quantidade = 0;
+      estoque.forEach(e => {
+        if (e.produto == produtoId) {
+          quantidade = quantidade + e.quantidade;
         }
       });
       if (!quantidade) {

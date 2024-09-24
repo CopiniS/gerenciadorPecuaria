@@ -201,6 +201,12 @@ class EstoqueViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(propriedade=propriedade_selecionada)
         serializer = serializers.EstoqueSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='geral')
+    def estoqueGeral(self, request, *args, **kwargs):
+        queryset = models.Estoque.objects.filter(propriedade__produtor=self.request.user)
+        serializer = serializers.EstoqueSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class PesagemViewSet(viewsets.ModelViewSet):

@@ -424,4 +424,24 @@ export default {
 .btn {
   margin-bottom: 0;
 }
+
+.form-check-label:hover {
+  cursor: pointer;
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto para destacar (você pode escolher qualquer cor) */
+}
+
+.form-check-input:hover {
+  cursor: pointer;
+}
+
+.form-check-input:hover ~ .form-check-label {
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto */
+}
+
+.form-check-input:checked ~ .form-check-label {
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto */
+}
 </style>

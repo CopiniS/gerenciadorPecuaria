@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <NavbarComponent v-if="notIsLoginAndCadastroPage" />
+    <LoginView v-if="isLoginPage" />
 
     <PopUpPropriedade v-if="isPropriedadePage"/>
 
-    <LoginView v-if="isLoginPage" />
-
     <Cadastro v-if="isCadastroPage" />
+
+    <NavbarComponent v-if="notIsLoginAndCadastroPage" />
 
   </div>
 </template>

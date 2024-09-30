@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loading" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'gastos' }" id="nav-vet-tab"
@@ -84,13 +85,19 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
 
+  components: {
+    LoadSpinner,
+  },
+
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      loading: false,
       formData: {
         id: null,
         dataGasto: null,
@@ -124,7 +131,7 @@ export default {
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
       if (this.verificaVazio()) {
-        
+        this.loading = true;
         try {
           //FORMATA VALOR
           this.formData.valor = this.replaceVirgulaPonto(this.formData.valor);

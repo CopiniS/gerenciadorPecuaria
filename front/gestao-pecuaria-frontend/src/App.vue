@@ -27,15 +27,19 @@ export default {
   },
   computed: {
     notIsLoginAndCadastroPage() {
+      console.log(this.$route.name);
       return this.$route.name !== "login" && this.$route.name !== "cadastro" && this.$route.name !== "PopUpPropriedade"
     },
     isLoginPage() {
+      console.log(this.$route.name);
       return this.$route.name === "login";
     },
     isCadastroPage() {
+      console.log(this.$route.name);
       return this.$route.name === "cadastro";
     },
     isPropriedadePage() {
+      console.log(this.$route.name);
       return this.$route.name === "PopUpPropriedade";
     },
   }

@@ -9,6 +9,7 @@ export default {
   name: 'PopUpPropriedade',
   components: {
     ListarPropriedade,
-  }
+  },
+  
 }
 </script>

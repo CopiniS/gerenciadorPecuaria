@@ -70,14 +70,12 @@ export default {
 
         localStorage.setItem('access_token', response.data.access);
         localStorage.setItem('refresh_token', response.data.refresh);
-        console.log('aqui ta de boa: acesso: ', localStorage.getItem('access_token'));
         
         const nome = await this.retornaNomeProdutor();
-        console.log('erro aqui depois:', nome);
         
         localStorage.setItem('produtorNome', nome);
-        
         this.$router.push('/propriedades-escolha');
+        
       } catch (error) {
         this.errorMessage = 'Email ou senha incorretos.'; // Define a mensagem de erro
       }

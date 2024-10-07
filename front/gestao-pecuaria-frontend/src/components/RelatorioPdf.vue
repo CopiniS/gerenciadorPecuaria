@@ -89,8 +89,8 @@ export default {
         head: [this.colunas],
         body: bodyData,
         startY: yPosition,
-        headStyles: { fillColor: [200], textColor: [50] },
-        bodyStyles: { fillColor: [245], textColor: [50] },
+        headStyles: { fillColor: [200], textColor: [50], halign: 'center' },
+        bodyStyles: { fillColor: [245], textColor: [50], halign: 'center' },
         alternateRowStyles: { fillColor: [230] },
         didDrawPage: (data) => {
           // Adicionar cabeçalhos dinâmicos no canto superior direito

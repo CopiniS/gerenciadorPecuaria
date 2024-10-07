@@ -52,7 +52,7 @@
         <div class="button-container">
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Inseminação</button>
           <RelatorioPdf titulo="Relatório de Inseminação"
-            :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+            :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
             :colunas="['Data da inseminação', 'Veterinário', 'Brinco']"
             :dados="inseminacoes.map(inseminacao => [formatarData(inseminacao.dataInseminacao), inseminacao.veterinario.nome, inseminacao.animal.brinco])" />
 
@@ -125,7 +125,7 @@ export default {
   data() {
     return {
       inseminacoes: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       inseminacoesDaApi: [],
       formData: {

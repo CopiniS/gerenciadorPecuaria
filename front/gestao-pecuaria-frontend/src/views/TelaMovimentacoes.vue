@@ -130,7 +130,7 @@
     },
     data() {
       return {
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
         movimentacoes: [],
         movimentacoesDaApi: [],
@@ -200,7 +200,7 @@
   
   //FILTROS----------------------------------------------------------------------------------------------------------------------------------------------------
       aplicarFiltro() {
-        const propriedadeAtual = localStorage.getItem('propriedadeSelecionada');
+        const propriedadeAtualNome = localStorage.getItem('propriedadeSelecionada');
         this.movimentacoes = this.movimentacoesDaApi.filter(movimentacao => {
           return  (new Date(movimentacao.dataMovimentacao) >= new Date(this.filtro.dataMovimentacaoInicio || '1970-01-01')) &&
                   (new Date(movimentacao.dataMovimentacao) <= new Date(this.filtro.dataMovimentacaoFim || '9999-12-31')) &&
@@ -208,12 +208,12 @@
                   movimentacao.piqueteOrigem.nome.includes(this.filtro.piqueteOrigem) &&
                   movimentacao.piqueteDestino.nome.includes(this.filtro.piqueteDestino) &&
                   (
-                    (this.filtro.tipo == 'entrada' && movimentacao.piqueteOrigem.propriedade.id != propriedadeAtual && 
-                    movimentacao.piqueteDestino.propriedade.id == propriedadeAtual) || 
-                    (this.filtro.tipo == 'saida' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
-                    movimentacao.piqueteDestino.propriedade.id != propriedadeAtual) || 
-                    (this.filtro.tipo == 'interna' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
-                    movimentacao.piqueteDestino.propriedade.id == propriedadeAtual ||
+                    (this.filtro.tipo == 'entrada' && movimentacao.piqueteOrigem.propriedade.id != propriedadeAtualNome && 
+                    movimentacao.piqueteDestino.propriedade.id == propriedadeAtualNome) || 
+                    (this.filtro.tipo == 'saida' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtualNome && 
+                    movimentacao.piqueteDestino.propriedade.id != propriedadeAtualNome) || 
+                    (this.filtro.tipo == 'interna' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtualNome && 
+                    movimentacao.piqueteDestino.propriedade.id == propriedadeAtualNome ||
                     this.filtro.tipo == '')
                   );
         });

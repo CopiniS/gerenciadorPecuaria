@@ -143,7 +143,7 @@
   
     data() {
       return {
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtual: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
         vendas: [],
         vendasDaApi: [],

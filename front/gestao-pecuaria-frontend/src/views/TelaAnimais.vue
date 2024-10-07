@@ -155,7 +155,7 @@
               <!-- Relatório de Animal resumido -->
               <div v-if="tipoRelatorio === 'resumido'">
                 <RelatorioPdf titulo="Relatório de Animal Resumido"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Brinco', 'Data de nascimento', 'Sexo', 'Piquete']"
                   :dados="animais.map(animal => [animal.brinco, formatarData(animal.dataNascimento), animal.sexo, animal.piquete.nome])" />
 
@@ -164,7 +164,7 @@
               <!-- Relatório de Animal detalhado -->
               <div v-if="tipoRelatorio === 'detalhado'">
                 <RelatorioPdf titulo="Relatório de Animal Detalhado"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Brinco', 'Data de nascimento', 'Sexo', 'Piquete', 'Raça predominante', 'Raça observacao', 'Brinco pai', 'Brinco mãe']"
                   :dados="animais.map(animal => [animal.brinco, formatarData(animal.dataNascimento), animal.sexo, animal.piquete.nome, animal.racaPredominante?.nome, animal.racaObservacao, animal.brincoPai, animal.brincoMae])"
                   :orientacaoPaisagem="true" />
@@ -172,7 +172,7 @@
               <div v-if="tipoRelatorio === 'compraAnimais'">
                 <!-- Relatório de Compra de Animais -->
                 <RelatorioPdf v-if="tipoRelatorio === 'compraAnimais'" titulo="Relatório de Compra de Animais"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Brinco', 'Data da Compra', 'Valor da Compra']"
                   :dados="animaisComprados.map(animal => [animal.brinco, formatarData(animal.dataCompra), animal.valorCompra])"
                   :mostrarSoma="true" />
@@ -220,7 +220,7 @@ export default {
         status: '',
       },
       tipoRelatorio: null,
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
     }
   },
@@ -348,9 +348,9 @@ export default {
   min-height: 100vh;
   padding: 20px;
   position: relative;
-  /* z-index: 0;  */
+  z-index: 0;  
 }
-/* 
+
 .background::before {
   content: "";
   position: absolute;
@@ -364,16 +364,20 @@ export default {
   background-size: 40%;
   opacity: 0.1;
   z-index: 0; 
-} */
+} 
+
+.modal {
+  z-index: 2000; /* Z-index padrão do Bootstrap para modais */
+}
 
 nav, .tab-content {
   position: relative;
-  /* z-index: 1;  */
+  z-index: 1;  
 }
 
 .table-container, .button-container {
   position: relative;
-  /* z-index: 1;  */
+ z-index: 1;  
 }
 
 .table-container table tbody tr td {

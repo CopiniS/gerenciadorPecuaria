@@ -130,7 +130,7 @@
               <!-- Relatório de Estoque de Produto por Propriedade -->
               <div v-if="tipoRelatorio === 'porPropriedade'">
                 <RelatorioPdf titulo="Relatório de Estoque de Produto por Propriedade"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Nome do Produto', 'Categoria', 'Quantidade em Estoque']"
                   :dados="produtos.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id, estoque)])"
                   :mostrarSoma="false" />
@@ -180,7 +180,7 @@ export default {
       estoque: [],
       tipoRelatorio: null,
       estoqueGeral: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,

@@ -97,7 +97,7 @@
               titulo="Relatório de Gastos"
               :cabecalho="[
                 'Produtor: ' + nomeProdutor,
-                'Propriedade: ' + propriedadeAtual,
+                'Propriedade: ' + propriedadeAtualNome,
               ]"
               :colunas="['Data', 'Tipo', 'Descrição', 'Valor']"
               :dados="
@@ -216,7 +216,7 @@ export default {
     return {
       gastos: [],
       gastosDaApi: [],
-      propriedadeAtual: localStorage.getItem("propriedadeSelecionada"),
+      propriedadeAtualNome: localStorage.getItem("propriedadeSelecionadaNome"),
       nomeProdutor: localStorage.getItem("produtorNome"),
       formData: {
         id: null,

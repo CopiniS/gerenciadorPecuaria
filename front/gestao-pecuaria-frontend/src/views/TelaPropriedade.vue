@@ -85,15 +85,15 @@
               <td>{{ replacePontoVirgula(propriedade.longitude) }}</td>
               <td>{{ replacePontoVirgula(propriedade.area) }}</td>
               <td>
-                <button v-if="propriedadeAtual == propriedade.id" @click="acessarEdicao(propriedade)"
+                <button v-if="propriedadeAtualId == propriedade.id" @click="acessarEdicao(propriedade)"
                   class="btn-acoes btn-sm" title="Editar Propriedade">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button v-if="propriedadeAtual == propriedade.id" @click="confirmarExclusao(propriedade)"
+                <button v-if="propriedadeAtualId == propriedade.id" @click="confirmarExclusao(propriedade)"
                   class="btn-acoes btn-sm" data-bs-toggle="modal" title="Excluir Propriedade"
                   data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i>
                 </button>
-                <button v-if="propriedadeAtual != propriedade.id" @click="trocaPropriedade(propriedade.id)"
+                <button v-if="propriedadeAtualId != propriedade.id" @click="trocaPropriedade(propriedade.id)"
                   class="btn-acoes btn-sm" title="Trocar Propriedade">
                   <i class="fas fa-exchange-alt"></i>
                 </button>
@@ -139,7 +139,7 @@ export default {
     return {
       propriedades: [],
       propriedadesDaApi: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualId: localStorage.getItem('propriedadeSelecionada'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,

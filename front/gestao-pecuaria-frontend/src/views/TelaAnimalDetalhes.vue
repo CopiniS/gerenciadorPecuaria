@@ -123,7 +123,7 @@
                 <h2>Ocorrências</h2>
                 <div class="button-container">
                     <RelatorioPdf titulo="Relatório de Ocorrências"
-                        :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                        :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                         :colunas="['Brinco', 'Data da ocorrência', 'Tipo', 'Descrição']"
                         :dados="ocorrencias.map(ocorrencia => [formDataAnimal.brinco, formatarData(ocorrencia.dataOcorrencia), ocorrencia.tipo, ocorrencia.descricao])" />
                 </div>
@@ -210,7 +210,7 @@ export default {
     data() {
         return {
             activeTab: 'visualizacao',
-            propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+            propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
             nomeProdutor: localStorage.getItem('produtorNome'),
             ocorrenciaId: null,
             animal: null,

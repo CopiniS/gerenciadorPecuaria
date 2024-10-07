@@ -32,7 +32,7 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 40%;
-  opacity: 0.1;
+  /* opacity: 0.1; */
   z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
 }
 

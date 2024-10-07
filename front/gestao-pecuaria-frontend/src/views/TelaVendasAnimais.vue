@@ -88,9 +88,9 @@
                 <td>{{ venda.animal.brinco}}</td>
                 <td>{{ venda.animal.piquete.nome}}</td>
                 <td>{{ venda.finalidade}}</td>
-                <td>{{ replacePontoVirgula(venda.peso)}}</td>
-                <td>{{ replacePontoVirgula(venda.precoKg)}}</td>
-                <td>{{ replacePontoVirgula(venda.valorTotal)}}</td>
+                <td>{{ formatarValor(venda.peso)}}</td>
+                <td>{{ formatarValor(venda.precoKg)}}</td>
+                <td>{{ formatarValor(venda.valorTotal)}}</td>
                 <td>
                   <button @click="acessarEdicao(venda)" class="btn-acoes btn-sm" title="Editar Venda">
                     <i class="fas fa-edit"></i>
@@ -291,16 +291,13 @@
       confirmarExclusaoVenda(venda) {
         this.formData.id = venda.id;
       },
-  
-      replacePontoVirgula(valorString){
-        if(valorString != null){
-          valorString = valorString.replace(".", ",");
-        }
-        else{
-          valorString = '-'
-        }
-        return valorString;
-      },
+      formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
+      
     }
   };
   </script>

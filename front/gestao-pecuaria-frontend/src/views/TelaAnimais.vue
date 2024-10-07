@@ -174,7 +174,7 @@
                 <RelatorioPdf v-if="tipoRelatorio === 'compraAnimais'" titulo="Relatório de Compra de Animais"
                   :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Brinco', 'Data da Compra', 'Valor da Compra']"
-                  :dados="animaisComprados.map(animal => [animal.brinco, formatarData(animal.dataCompra), animal.valorCompra])"
+                  :dados="animaisComprados.map(animal => [animal.brinco, formatarData(animal.dataCompra), formatarValor(animal.valorCompra)])"
                   :mostrarSoma="true" />
               </div>
             </div>
@@ -336,6 +336,13 @@ export default {
       const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' };
       return utcDate.toLocaleDateString('pt-BR', options);
     },
+
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
 
   }
 }

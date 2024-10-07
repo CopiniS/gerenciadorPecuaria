@@ -54,9 +54,9 @@
     propriedade.endereco,
     propriedade.cidade,
     propriedade.estado,
-    replacePontoVirgula(propriedade.latitude),
-    replacePontoVirgula(propriedade.longitude),
-    replacePontoVirgula(propriedade.area)
+    formatarValor(replacePontoVirgula(propriedade.latitude)),
+    formatarValor(replacePontoVirgula(propriedade.longitude)),
+    formatarValor(replacePontoVirgula(propriedade.area))
   ])"
   :mostrarSoma="true" 
 />
@@ -81,9 +81,9 @@
               <td>{{ propriedade.cidade }}</td>
               <td>{{ propriedade.estado }}</td>
               <td>{{ propriedade.endereco }}</td>
-              <td>{{ replacePontoVirgula(propriedade.latitude) }}</td>
-              <td>{{ replacePontoVirgula(propriedade.longitude) }}</td>
-              <td>{{ replacePontoVirgula(propriedade.area) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.latitude)) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.longitude)) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.area)) }}</td>
               <td>
                 <button v-if="propriedadeAtualId == propriedade.id" @click="acessarEdicao(propriedade)"
                   class="btn-acoes btn-sm" title="Editar Propriedade">
@@ -255,6 +255,13 @@ export default {
       }
       return valorString;
     },
+
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
   }
 };
 </script>

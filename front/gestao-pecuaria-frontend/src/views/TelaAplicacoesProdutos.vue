@@ -51,8 +51,8 @@
         <RelatorioPdf
     titulo="Relatório de Aplicação de Produtos"
     :cabecalho="['Produtor: ' + nomeProdutor]"
-    :colunas="['Nome do Produto', 'Data da Aplicação']"
-    :dados="aplicacoes.map(aplicacao => [aplicacao.produto.nome, formatarData(aplicacao.dataAplicacao)])"
+    :colunas="['Nome do Produto', 'Data da Aplicação', 'Brinco', 'Piquete', 'Dosagem']"
+    :dados="aplicacoes.map(aplicacao => [aplicacao.produto.nome, formatarData(aplicacao.dataAplicacao), aplicacao.animal.brinco, aplicacao.animal.piquete.nome, replacePontoVirgula(aplicacao.dosagem)])"
     :mostrarSoma="false"
   />
   

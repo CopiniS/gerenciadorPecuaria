@@ -348,7 +348,6 @@ export default {
   min-height: 100vh;
   padding: 20px;
   position: relative;
-  z-index: 0;  
 }
 
 .background::before {
@@ -363,11 +362,6 @@ export default {
   background-position: center;
   background-size: 40%;
   opacity: 0.1;
-  z-index: 0; 
-} 
-
-.modal {
-  z-index: 2000; /* Z-index padrão do Bootstrap para modais */
 }
 
 nav, .tab-content {

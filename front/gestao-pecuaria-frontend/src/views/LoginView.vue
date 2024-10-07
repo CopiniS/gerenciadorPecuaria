@@ -114,7 +114,7 @@ export default {
 .login-content {
   display: flex;
   width: 800px;
-  height: 400px;
+  height: 450px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;

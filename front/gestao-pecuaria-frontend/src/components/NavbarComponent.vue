@@ -96,6 +96,7 @@ export default {
   },
   mounted() {
     const propriedadeSelecionada = localStorage.getItem('propriedadeSelecionada');
+    console.log('propriedadeSelecionada: ', localStorage.getItem('propriedadeSelecionada'));
     if (propriedadeSelecionada) {
       this.buscarPropriedadeDaApi(propriedadeSelecionada);
     }

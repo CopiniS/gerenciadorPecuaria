@@ -1,0 +1,29 @@
+1.  Click em 'Cadastrar':
+        Possibilidades:
+            -Campos Vazios:
+                -resultado esperado: Mensagem de erro
+                -resultado obtido: Mensagem de erro
+            -Campo Email preenchido e senha vazios:
+                -resultado esperado: Mensagem de erro
+                -resultado obtido: Mesagem de erro
+            -Campo Email vazio e senha preenchido:
+                -resultado esperado: Mensagem de erro
+                -resultado obtido: Mensagem de erro
+            -Campo email e senha preenchidos, mas com email incorreto:
+                -resultado esperado: Mensagem de erro
+                -resultado obtido: Mensagem de erro
+            -Campo email e senha preenchidos, mas com senha incorreta:
+                -resultado esperado: Mensagem de erro
+                -resultado obtido: Mensagem de erro
+            -Email e senha corretos:
+                -resultado esperado: Acesso a tela de escolha de propriedade
+                -resultado obtido: Acesso a tela de escolha de propriedade
+2.  Click no 'botão do olho':
+        -Resultado esperado: Mostrar os caracteres digitado na senha
+        -Resultado obtido: Mostrar os caracteres digitado na senha
+3.  Click no 'botao do olho riscado':
+        -Resultado esperado: Ocultar os caracteres digitado na senha
+        -Resultado obtido: Ocultar os caracteres digitado na senha    
+4.  Click em 'Voltar':
+        -resultado esperado: Acessar tela de login
+        -resultado obtido: Acessar tela de login

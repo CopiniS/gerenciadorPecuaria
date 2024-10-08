@@ -11,17 +11,14 @@
         </div>
         <div class="mb-4 input-group">
           <span class="input-group-text"><i class="fas fa-lock"></i></span>
-          <input 
-            v-model="password" 
-            :type="passwordType" 
-            class="form-control" 
-            id="password" 
-            placeholder="Senha" 
-            required
-          >
+          <input v-model="password" :type="passwordType" class="form-control" id="password" placeholder="Senha" required>
           <span class="input-group-text" @click="togglePasswordVisibility">
             <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
           </span>
+        </div>
+
+        <div class="text-right mb-3">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#recuperarSenhaModal">Esqueceu sua senha?</a>
         </div>
 
         <button type="button" class="btn btn-primary btn-block" @click="login">
@@ -35,57 +32,149 @@
         </button>
       </form>
     </div>
+
+    <!-- Modal de Recuperação de Senha -->
+    <div class="modal fade" id="recuperarSenhaModal" tabindex="-1" aria-labelledby="recuperarSenhaModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="recuperarSenhaModalLabel">Recuperar Senha</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div v-if="recuperacaoMessage" :class="`alert ${recuperacaoMessageType}`">{{ recuperacaoMessage }}</div>
+            <form @submit.prevent="enviarRecuperacaoSenha">
+              <div class="mb-4 input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input v-model="emailRecuperacao" type="email" class="form-control" id="emailRecuperacao" placeholder="Digite seu email" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-paper-plane"></i> Enviar link de recuperação
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'; 
-import api from '/src/interceptadorAxios';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal } from 'bootstrap';
+
 export default {
   data() {
     return {
       email: '',
       password: '',
-      errorMessage: '', // Mensagem de erro
-      passwordType: 'password', // Controla o tipo do input da senha
+      errorMessage: '',
+      emailRecuperacao: '',
+      recuperacaoMessage: '',
+      recuperacaoMessageType: '',
+      emailRecuperacaoValido: false,
+      verificandoEmail: false,
+      passwordType: 'password',
     };
   },
   methods: {
     async login() {
-      this.errorMessage = ''; // Limpa a mensagem de erro antes de fazer o login
+      this.errorMessage = '';
 
       try {
-        const response = await axios.post('http://127.0.0.1:8000/token/', { 
-          email: this.email, 
-          password: this.password 
+        const response = await axios.post('http://127.0.0.1:8000/token/', {
+          email: this.email,
+          password: this.password
         });
 
         localStorage.setItem('access_token', response.data.access);
         localStorage.setItem('refresh_token', response.data.refresh);
         const nome = await this.retornaNomeProdutor();
         localStorage.setItem('produtorNome', nome);
-        
+
         this.$router.push('/propriedades-escolha');
       } catch (error) {
-        this.errorMessage = 'Email ou senha incorretos.'; // Define a mensagem de erro
+        this.errorMessage = 'Email ou senha incorretos.';
       }
     },
     registrar() {
       this.$router.push('/cadastro');
     },
-    
-    async retornaNomeProdutor(){
+    async retornaNomeProdutor() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/meuperfil/', {});
+        const response = await axios.get('http://127.0.0.1:8000/meuperfil/');
         return response.data.nome;
       } catch (error) {
         console.error('Erro ao buscar propriedades da API:', error);
-        return ''
+        return '';
       }
     },
     togglePasswordVisibility() {
       this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
     },
+    async verificarEmailRecuperacao() {
+      if (!this.emailRecuperacao || this.verificandoEmail) return;
+      
+      this.verificandoEmail = true;
+      this.recuperacaoMessage = '';
+      this.emailRecuperacaoValido = false;
+
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/verificar-email/', {
+          email: this.emailRecuperacao
+        });
+
+        if (response.data.existe) {
+          this.recuperacaoMessage = 'Email encontrado! Você pode prosseguir com a recuperação.';
+          this.recuperacaoMessageType = 'alert-success';
+          this.emailRecuperacaoValido = true;
+        } else {
+          this.recuperacaoMessage = 'Email não cadastrado. Por favor, verifique o email digitado.';
+          this.recuperacaoMessageType = 'alert-danger';
+          this.emailRecuperacao = ''; // Limpa o campo de email
+          this.emailRecuperacaoValido = false;
+        }
+      } catch (error) {
+        this.recuperacaoMessage = 'Erro ao verificar email. Tente novamente.';
+        this.recuperacaoMessageType = 'alert-danger';
+        this.emailRecuperacaoValido = false;
+      } finally {
+        this.verificandoEmail = false;
+      }
+    },
+    async enviarRecuperacaoSenha() {
+      await this.verificarEmailRecuperacao();
+
+      if (!this.emailRecuperacaoValido) {
+        this.recuperacaoMessage = 'Por favor, verifique o email antes de continuar.';
+        this.recuperacaoMessageType = 'alert-warning';
+        return;
+      }
+
+      try {
+        await axios.post('http://127.0.0.1:8000/recuperar-senha/', {
+          email: this.emailRecuperacao
+        });
+
+        this.recuperacaoMessage = 'Se este email estiver registrado, você receberá um link de recuperação.';
+        this.recuperacaoMessageType = 'alert-success';
+        
+        this.emailRecuperacao = '';
+        this.emailRecuperacaoValido = false;
+
+        setTimeout(() => {
+          const modal = Modal.getInstance(document.getElementById('recuperarSenhaModal'));
+          if (modal) {
+            modal.hide();
+          }
+        }, 3000);
+      } catch (error) {
+        this.recuperacaoMessage = 'Erro ao enviar email de recuperação. Tente novamente.';
+        this.recuperacaoMessageType = 'alert-danger';
+      }
+    }
   }
 };
 </script>
@@ -98,63 +187,43 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  width: 100vw;
-  background-image: url('../assets/fundo.jpg');
-  background-size: cover;
-  background-position: center;
-  padding: 20px; /* Adiciona algum espaçamento interno para evitar que o conteúdo toque as bordas da tela */
+  background-color: #f8f9fa;
 }
 
 .login-form {
-  flex: 1;
-  padding: 20px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   max-width: 400px;
-  border: 1px solid #c2e0a6;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adiciona uma sombra suave ao formulário */
-  margin: 0 auto; /* Centraliza o formulário horizontalmente */
+  width: 100%;
 }
 
-.btn-primary {
-  background-color: #125601;
-  border-color: #125601;
-}
-
-.btn-outline-secondary {
-  border-color: #125601;
-  color: #125601;
-}
-
-.btn-primary:hover, .btn-outline-secondary:hover {
-  background-color: #259406;
-  border-color: #259406;
-  color: white;
+.title-login {
+  font-size: 24px;
+  font-weight: bold;
+  color: #343a40;
 }
 
 .btn-block {
   width: 100%;
+  padding: 10px;
 }
 
 .alert-custom {
-  padding: 0.5rem 1rem; /* Diminui o padding do alerta */
-  font-size: 0.875rem;
+  font-size: 14px;
 }
 
-/* Ajustes para telas menores */
-@media (max-width: 550px) {
-  .login-container {
-    padding: 10px;
-  }
-
-  .login-form {
-    width: 100%;
-    max-width: 100%; /* Garante que o formulário não exceda a largura da tela */
-    margin: 0; /* Remove as margens laterais */
-  }
-
-  .input-group {
-    flex-wrap: wrap; /* Permite que os inputs ocupem a largura total em dispositivos menores */
-  }
+.text-right {
+  text-align: right;
 }
 
+.modal-body .alert {
+  margin-bottom: 15px;
+}
+
+.modal-content {
+  padding: 20px;
+}
 </style>
+

@@ -97,12 +97,13 @@
           </thead>
           <tbody>
             <tr v-for="(animal, index) in animais" :key="index"
-              :class="{ 'status-Vivo': animal.status === 'Vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente' }">
+              >
               <td>{{ animal.brinco }}</td>
               <td>{{ formatarData(animal.dataNascimento) }}</td>
               <td>{{ animal.sexo }}</td>
               <td>{{ animal.piquete.nome }}</td>
-              <td>{{ animal.status }}</td>
+              <td :class="{ 'status-Vivo': animal.status === 'Vivo', 'status-morto': animal.status === 'morto', 'status-doente': animal.status === 'doente' }"
+              >{{ animal.status }}</td>
               <td>
                 <div class="d-flex justify-content-center button-group">
                   <button @click="acessarVisualizacao(animal)" class="btn-acoes btn-sm" data-bs-toggle="tooltip"
@@ -151,29 +152,29 @@
                 </div>
               </form>
 
-              <!-- Relatório de Estoque de Produto Geral -->
+              <!-- Relatório de Animal resumido -->
               <div v-if="tipoRelatorio === 'resumido'">
                 <RelatorioPdf titulo="Relatório de Animal Resumido"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Brinco', 'Data de nascimento', 'Sexo', 'Piquete']"
-                  :dados="animais.map(animal => [animal.brinco, animal.dataNascimento, animal.sexo, animal.piquete.nome])" />
+                  :dados="animais.map(animal => [animal.brinco, formatarData(animal.dataNascimento), animal.sexo, animal.piquete.nome])" />
 
               </div>
 
-              <!-- Relatório de Estoque de Produto por Propriedade -->
+              <!-- Relatório de Animal detalhado -->
               <div v-if="tipoRelatorio === 'detalhado'">
                 <RelatorioPdf titulo="Relatório de Animal Detalhado"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Brinco', 'Data de nascimento', 'Sexo', 'Piquete', 'Raça predominante', 'Raça observacao', 'Brinco pai', 'Brinco mãe']"
-                  :dados="animais.map(animal => [animal.brinco, animal.dataNascimento, animal.sexo, animal.piquete.nome, animal.racaPredominante.nome, animal.racaObservacao, animal.brincoPai, animal.brincoMae])"
+                  :dados="animais.map(animal => [animal.brinco, formatarData(animal.dataNascimento), animal.sexo, animal.piquete.nome, animal.racaPredominante?.nome, animal.racaObservacao, animal.brincoPai, animal.brincoMae])"
                   :orientacaoPaisagem="true" />
               </div>
               <div v-if="tipoRelatorio === 'compraAnimais'">
                 <!-- Relatório de Compra de Animais -->
                 <RelatorioPdf v-if="tipoRelatorio === 'compraAnimais'" titulo="Relatório de Compra de Animais"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Brinco', 'Data da Compra', 'Valor da Compra']"
-                  :dados="animaisComprados.map(animal => [animal.brinco, animal.dataCompra, animal.valorCompra])"
+                  :dados="animaisComprados.map(animal => [animal.brinco, formatarData(animal.dataCompra), formatarValor(animal.valorCompra)])"
                   :mostrarSoma="true" />
               </div>
             </div>
@@ -219,7 +220,7 @@ export default {
         status: '',
       },
       tipoRelatorio: null,
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
     }
   },
@@ -336,62 +337,79 @@ export default {
       return utcDate.toLocaleDateString('pt-BR', options);
     },
 
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
+
   }
 }
 </script>
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
 .background {
   background-color: #ededef;
-  /* Um tom mais escuro que o branco */
   min-height: 100vh;
-  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
+  position: relative;
 }
 
-.table-container {
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-x: auto;
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.1;
+}
+
+nav, .tab-content {
+  position: relative;
+  z-index: 1;  
+}
+
+.table-container, .button-container {
+  position: relative;
+ z-index: 1;  
 }
 
 .table-container table tbody tr td {
-  background-color: #f0f0f0;
-  /* Cor de fundo das células da tabela */
+  background-color: transparent !important;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #176d1a;
+  /* Adiciona uma borda verde na parte inferior */
+  background-color: transparent !important;
 }
 
 .button-container {
   display: flex;
   flex-wrap: nowrap;
-  /* Garante que os botões não vão para a linha seguinte */
   gap: 10px;
-  /* Espaço entre os botões */
   margin-bottom: 20px;
   white-space: nowrap;
-  /* Evita quebras de linha nos botões */
 }
 
 .btn-success {
   margin-right: 10px;
   margin-bottom: 10px;
-}
-
-.table-container table thead tr th {
-  border-bottom: 2px solid #176d1a;
-  background-color: #f0f0f0;
-  /* Adiciona uma borda verde na parte inferior */
+  z-index: 2; /* Garante que o botão esteja acima da imagem */
 }
 
 .btn-acoes {
   background-color: transparent;
   border: none;
   padding: 0;
+  z-index: 2; /* Garante que o botão de ação esteja acima da imagem */
 }
 
 .btn-acoes i {
@@ -404,17 +422,17 @@ export default {
 }
 
 .status-Vivo {
-  background-color: #d4edda;
+  color: #28b649;
   /* Verde claro para 'Vivo' */
 }
 
 .status-morto {
-  background-color: #f8d7da;
+  color: #ff5260;
   /* Vermelho claro para 'morto' */
 }
 
 .status-doente {
-  background-color: #fff3cd;
+  color: #ff9800;
   /* Amarelo claro para 'doente' */
 }
 
@@ -430,5 +448,29 @@ export default {
 
 .btn {
   margin-bottom: 0;
+}
+
+.form-check {
+  cursor: pointer;
+}
+
+.form-check-label:hover {
+  cursor: pointer;
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto para destacar (você pode escolher qualquer cor) */
+}
+
+.form-check-input:hover {
+  cursor: pointer;
+}
+
+.form-check-input:hover ~ .form-check-label {
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto */
+}
+
+.form-check-input:checked ~ .form-check-label {
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto */
 }
 </style>

@@ -56,9 +56,9 @@
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Compra</button>
           <RelatorioPdf
   titulo="Relatório de Compra de Produto"
-  :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtual]"
+  :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtualNome]"
   :colunas="['Nome do Produto', 'Data', 'Validade', 'Quantidade Comprada', 'Valor Unitário', 'Valor Total']"
-  :dados="compras.map(compra => [compra.produto.nome, compra.dataCompra, compra.validade, compra.quantidadeComprada, compra.valorUnitario, (compra.valorUnitario*compra.quantidadeComprada).toFixed(2)])"
+  :dados="compras.map(compra => [compra.produto.nome, formatarData(compra.dataCompra), formatarData(compra.validade), compra.quantidadeComprada, formatarValor(compra.valorUnitario), formatarValor((compra.valorUnitario*compra.quantidadeComprada).toFixed(2))])"
   :mostrarSoma="false"
 />
 
@@ -79,7 +79,7 @@
             <tr v-for="(compra, index) in compras" :key="index">
               <td>{{ formatarData(compra.dataCompra) }}</td>
               <td>{{ compra.produto.nome }}</td>
-              <td>{{ replacePontoVirgula(compra.valorUnitario) }}</td>
+              <td>{{ formatarValor(compra.valorUnitario) }}</td>
               <td>{{ compra.quantidadeComprada }}</td>
               <td>{{ formatarData(compra.validade) }}</td>
               <td>{{ compra.lote }}</td>
@@ -137,7 +137,7 @@ export default {
       activeTab: 'compras',
       compras: [],
       comprasDaApi: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
@@ -263,61 +263,80 @@ export default {
       }
     },
 
-    replacePontoVirgula(valorString) {
-      valorString = valorString.replace(".", ",");
-
-      return valorString;
-    },
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
   }
 };
 </script>
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
 .background {
   background-color: #ededef;
-  /* Um tom mais escuro que o branco */
   min-height: 100vh;
-  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
+  position: relative;
+  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
 }
 
-.nav-link.active {
-  background-color: #d0d0d0 !important;
-  /* Cor um pouco mais escura quando a aba está ativa */
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.1;
+  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
 }
 
-.table-container {
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-x: auto;
+nav, .tab-content {
+  position: relative;
+  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
 }
 
-.button-container {
-  text-align: left;
-  margin-bottom: 20px;
+.table-container, .button-container {
+  position: relative;
+  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
 }
 
 .table-container table tbody tr td {
-  background-color: #ededef !important;
-  /* Cor de fundo das células da tabela */
+  background-color: transparent !important;
 }
 
 .table-container table thead tr th {
   border-bottom: 2px solid #176d1a;
   /* Adiciona uma borda verde na parte inferior */
-  background-color: #f0f0f0;
+  background-color: transparent !important;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  white-space: nowrap;
+}
+
+.btn-success {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  z-index: 2; /* Garante que o botão esteja acima da imagem */
 }
 
 .btn-acoes {
   background-color: transparent;
   border: none;
   padding: 0;
+  z-index: 2; /* Garante que o botão de ação esteja acima da imagem */
 }
 
 .btn-acoes i {

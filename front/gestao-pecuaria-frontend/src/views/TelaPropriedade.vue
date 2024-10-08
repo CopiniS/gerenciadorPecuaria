@@ -54,9 +54,9 @@
     propriedade.endereco,
     propriedade.cidade,
     propriedade.estado,
-    replacePontoVirgula(propriedade.latitude),
-    replacePontoVirgula(propriedade.longitude),
-    replacePontoVirgula(propriedade.area)
+    formatarValor(replacePontoVirgula(propriedade.latitude)),
+    formatarValor(replacePontoVirgula(propriedade.longitude)),
+    formatarValor(replacePontoVirgula(propriedade.area))
   ])"
   :mostrarSoma="true" 
 />
@@ -81,19 +81,19 @@
               <td>{{ propriedade.cidade }}</td>
               <td>{{ propriedade.estado }}</td>
               <td>{{ propriedade.endereco }}</td>
-              <td>{{ replacePontoVirgula(propriedade.latitude) }}</td>
-              <td>{{ replacePontoVirgula(propriedade.longitude) }}</td>
-              <td>{{ replacePontoVirgula(propriedade.area) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.latitude)) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.longitude)) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.area)) }}</td>
               <td>
-                <button v-if="propriedadeAtual == propriedade.id" @click="acessarEdicao(propriedade)"
+                <button v-if="propriedadeAtualId == propriedade.id" @click="acessarEdicao(propriedade)"
                   class="btn-acoes btn-sm" title="Editar Propriedade">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button v-if="propriedadeAtual == propriedade.id" @click="confirmarExclusao(propriedade)"
+                <button v-if="propriedadeAtualId == propriedade.id" @click="confirmarExclusao(propriedade)"
                   class="btn-acoes btn-sm" data-bs-toggle="modal" title="Excluir Propriedade"
                   data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i>
                 </button>
-                <button v-if="propriedadeAtual != propriedade.id" @click="trocaPropriedade(propriedade.id)"
+                <button v-if="propriedadeAtualId != propriedade.id" @click="trocaPropriedade(propriedade.id)"
                   class="btn-acoes btn-sm" title="Trocar Propriedade">
                   <i class="fas fa-exchange-alt"></i>
                 </button>
@@ -139,7 +139,7 @@ export default {
     return {
       propriedades: [],
       propriedadesDaApi: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualId: localStorage.getItem('propriedadeSelecionada'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
@@ -213,30 +213,6 @@ export default {
       this.mostrarFormulario = !this.mostrarFormulario;
     },
 
-    //  //RELATÓRIO----------------------------------------------------------------------------------------------------------------------------------------------------------
-    //  gerarRelatorioPdf() {
-    //   const doc = new jsPDF();
-    //   doc.text('Relatório de Propriedades', 14, 16);
-      
-    //   const tableData = this.propriedades.map(propriedade => [
-    //     propriedade.nome,
-    //     propriedade.cidade,
-    //     propriedade.estado,
-    //     propriedade.endereco,
-    //     this.replacePontoVirgula(propriedade.latitude),
-    //     this.replacePontoVirgula(propriedade.longitude),
-    //     this.replacePontoVirgula(propriedade.area),
-    //   ]);
-
-    //   doc.autoTable({
-    //     head: [['Nome', 'Cidade', 'Estado', 'Endereço', 'Latitude', 'Longitude', 'Área']],
-    //     body: tableData,
-    //     startY: 30,
-    //   });
-
-    //   doc.save('relatorio_propriedades.pdf');
-    // },
-
     //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     acessarEdicao(propriedade) {
       this.$router.push({
@@ -279,6 +255,13 @@ export default {
       }
       return valorString;
     },
+
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
   }
 };
 </script>
@@ -288,58 +271,66 @@ export default {
 
 .background {
   background-color: #ededef;
-  /* Um tom mais escuro que o branco */
   min-height: 100vh;
-  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
+  position: relative;
+  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
 }
 
-.nav-link.active {
-  background-color: #d0d0d0 !important;
-  /* Cor um pouco mais escura quando a aba está ativa */
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.1;
+  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
 }
 
-.table-container {
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-x: auto;
+nav, .tab-content {
+  position: relative;
+  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
 }
 
-.button-container {
-  display: flex;
-  flex-wrap: nowrap; /* Garante que os botões não vão para a linha seguinte */
-  gap: 10px; /* Espaço entre os botões */
-  margin-bottom: 20px; 
-  white-space: nowrap; /* Evita quebras de linha nos botões */
-}
-
-.btn-success {
-  margin-right: 10px;
-  margin-bottom: 10px;
-}
-.table{
-  min-width: 600px;
+.table-container, .button-container {
+  position: relative;
+  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
 }
 
 .table-container table tbody tr td {
-  background-color: #ededef !important;
-  /* Cor de fundo das células da tabela */
+  background-color: transparent !important;
 }
 
 .table-container table thead tr th {
   border-bottom: 2px solid #176d1a;
   /* Adiciona uma borda verde na parte inferior */
-  background-color: #f0f0f0;
+  background-color: transparent !important;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  white-space: nowrap;
+}
+
+.btn-success {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  z-index: 2; /* Garante que o botão esteja acima da imagem */
 }
 
 .btn-acoes {
   background-color: transparent;
   border: none;
   padding: 0;
+  z-index: 2; /* Garante que o botão de ação esteja acima da imagem */
 }
 
 .btn-acoes i {

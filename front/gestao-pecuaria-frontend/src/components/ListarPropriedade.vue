@@ -82,6 +82,7 @@ mounted() {
     async selecionarPropriedade(propriedade) {
       // Salvar o ID da propriedade selecionada no localStorage
       localStorage.setItem('propriedadeSelecionada', propriedade.id);
+      localStorage.setItem('propriedadeSelecionadaNome', propriedade.nome);
       this.propriedades = [];
       // Fechar o modal de propriedades
       this.fecharModal("listModal")

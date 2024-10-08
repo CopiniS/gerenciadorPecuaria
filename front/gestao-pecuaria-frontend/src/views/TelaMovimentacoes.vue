@@ -60,7 +60,7 @@
   titulo="Relatório de Movimentação"
   :cabecalho="['Nome do produtor: ' + nomeProdutor]"
   :colunas="['Propriedade de origem', 'Piquete de origem', 'Propriedade de destino', 'Piquete de destino', 'Brinco', 'Data da movimentação']"
-  :dados="movimentacoes.map(movimentacao => [movimentacao.piqueteOrigem.propriedade.nome, movimentacao.piqueteOrigem.nome, movimentacao.piqueteDestino.propriedade.nome, movimentacao.piqueteDestino.nome, movimentacao.animal.brinco, movimentacao.dataMovimentacao])"
+  :dados="movimentacoes.map(movimentacao => [movimentacao.piqueteOrigem.propriedade.nome, movimentacao.piqueteOrigem.nome, movimentacao.piqueteDestino.propriedade.nome, movimentacao.piqueteDestino.nome, movimentacao.animal.brinco, formatarData(movimentacao.dataMovimentacao)])"
 />
 
           </div>
@@ -130,7 +130,7 @@
     },
     data() {
       return {
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
         movimentacoes: [],
         movimentacoesDaApi: [],
@@ -200,7 +200,7 @@
   
   //FILTROS----------------------------------------------------------------------------------------------------------------------------------------------------
       aplicarFiltro() {
-        const propriedadeAtual = localStorage.getItem('propriedadeSelecionada');
+        const propriedadeAtualNome = localStorage.getItem('propriedadeSelecionada');
         this.movimentacoes = this.movimentacoesDaApi.filter(movimentacao => {
           return  (new Date(movimentacao.dataMovimentacao) >= new Date(this.filtro.dataMovimentacaoInicio || '1970-01-01')) &&
                   (new Date(movimentacao.dataMovimentacao) <= new Date(this.filtro.dataMovimentacaoFim || '9999-12-31')) &&
@@ -208,12 +208,12 @@
                   movimentacao.piqueteOrigem.nome.includes(this.filtro.piqueteOrigem) &&
                   movimentacao.piqueteDestino.nome.includes(this.filtro.piqueteDestino) &&
                   (
-                    (this.filtro.tipo == 'entrada' && movimentacao.piqueteOrigem.propriedade.id != propriedadeAtual && 
-                    movimentacao.piqueteDestino.propriedade.id == propriedadeAtual) || 
-                    (this.filtro.tipo == 'saida' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
-                    movimentacao.piqueteDestino.propriedade.id != propriedadeAtual) || 
-                    (this.filtro.tipo == 'interna' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtual && 
-                    movimentacao.piqueteDestino.propriedade.id == propriedadeAtual ||
+                    (this.filtro.tipo == 'entrada' && movimentacao.piqueteOrigem.propriedade.id != propriedadeAtualNome && 
+                    movimentacao.piqueteDestino.propriedade.id == propriedadeAtualNome) || 
+                    (this.filtro.tipo == 'saida' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtualNome && 
+                    movimentacao.piqueteDestino.propriedade.id != propriedadeAtualNome) || 
+                    (this.filtro.tipo == 'interna' && movimentacao.piqueteOrigem.propriedade.id == propriedadeAtualNome && 
+                    movimentacao.piqueteDestino.propriedade.id == propriedadeAtualNome ||
                     this.filtro.tipo == '')
                   );
         });
@@ -284,56 +284,73 @@
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
   
   .background {
-    background-color:  #ededef; /* Um tom mais escuro que o branco */
-    min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
-    padding: 20px;
-  }
-  
-  .nav-link.active {
-    background-color: #d0d0d0 !important;
-    /* Cor um pouco mais escura quando a aba está ativa */
-  }
-  
-  .table-container {
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px; 
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    overflow-x: auto;
-  }
-  
-  .button-container {
+  background-color: #ededef;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
+}
+
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.1;
+  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
+}
+
+nav, .tab-content {
+  position: relative;
+  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
+}
+
+.table-container, .button-container {
+  position: relative;
+  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
+}
+
+.table-container table tbody tr td {
+  background-color: transparent !important;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #176d1a;
+  /* Adiciona uma borda verde na parte inferior */
+  background-color: transparent !important;
+}
+
+.button-container {
   display: flex;
   flex-wrap: nowrap;
-  /* Garante que os botões não vão para a linha seguinte */
   gap: 10px;
-  /* Espaço entre os botões */
   margin-bottom: 20px;
   white-space: nowrap;
-  /* Evita quebras de linha nos botões */
 }
-  
-  .table-container table tbody tr td {
-    background-color: #ededef !important; /* Cor de fundo das células da tabela */
-  }
-  
-  .table-container table thead tr th {
-    border-bottom: 2px solid #176d1a; /* Adiciona uma borda verde na parte inferior */
-    background-color: #f0f0f0;
-  }
-  
-  .btn-acoes {
-    background-color: transparent;
-    border: none;
-    padding: 0;
-  }
-  
-  .btn-acoes i {
-    color: #176d1a;
-  }
-  
+
+.btn-success {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  z-index: 2; /* Garante que o botão esteja acima da imagem */
+}
+
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  z-index: 2; /* Garante que o botão de ação esteja acima da imagem */
+}
+
+.btn-acoes i {
+  color: #176d1a;
+}
+
   .button-group {
     display: flex;
     gap: 10px; 

@@ -1,8 +1,10 @@
 <template>
   <div class="login-container">
-    <div class="login-form">
-      <h2 class="text-center mb-5 title-login">Login</h2>
-      <div v-if="errorMessage" class="alert alert-danger alert-custom mt-3">{{ errorMessage }}</div>
+    <div class="login-content">
+      <!-- Div para a logo -->
+      <div class="logo-section">
+        <img src="@/assets/logo-sem-fundo.png" alt="Logo" class="logo-img" />
+      </div>
 
       <form @submit.prevent="submitForm">
         <div class="mb-4 input-group">
@@ -25,12 +27,17 @@
           <i class="fas fa-sign-in-alt"></i> Entrar
         </button>
 
-        <hr>
+          <button type="button" class="btn btn-primary btn-block" @click="login">
+            <i class="fas fa-sign-in-alt"></i> Entrar
+          </button>
 
-        <button type="button" class="btn btn-outline-secondary btn-block" @click="registrar">
-          <i class="fas fa-user-plus"></i> Não tenho conta
-        </button>
-      </form>
+          <hr>
+
+          <button type="button" class="btn btn-outline-secondary btn-block" @click="registrar">
+            <i class="fas fa-user-plus"></i> Não tenho conta
+          </button>
+        </form>
+      </div>
     </div>
 
     <!-- Modal de Recuperação de Senha -->
@@ -57,7 +64,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -95,6 +101,7 @@ export default {
         localStorage.setItem('produtorNome', nome);
 
         this.$router.push('/propriedades-escolha');
+        
       } catch (error) {
         this.errorMessage = 'Email ou senha incorretos.';
       }
@@ -180,8 +187,6 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
 .login-container {
   display: flex;
   justify-content: center;

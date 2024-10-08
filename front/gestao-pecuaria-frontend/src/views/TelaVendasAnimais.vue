@@ -64,7 +64,7 @@
   titulo="Relatório de Venda"
   :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
   :colunas="['Brinco', 'Data da venda', 'Peso', 'Preço por Kg', 'Valor Total']"
-  :dados="vendas.map(venda => [venda.animal.brinco, venda.dataVenda, venda.peso, venda.precoKg, venda.valorTotal])"
+  :dados="vendas.map(venda => [venda.animal.brinco, formatarData(venda.dataVenda), venda.peso, venda.precoKg, venda.valorTotal])"
   :mostrarSoma="true"
 />
 
@@ -88,9 +88,9 @@
                 <td>{{ venda.animal.brinco}}</td>
                 <td>{{ venda.animal.piquete.nome}}</td>
                 <td>{{ venda.finalidade}}</td>
-                <td>{{ replacePontoVirgula(venda.peso)}}</td>
-                <td>{{ replacePontoVirgula(venda.precoKg)}}</td>
-                <td>{{ replacePontoVirgula(venda.valorTotal)}}</td>
+                <td>{{ formatarValor(venda.peso)}}</td>
+                <td>{{ formatarValor(venda.precoKg)}}</td>
+                <td>{{ formatarValor(venda.valorTotal)}}</td>
                 <td>
                   <button @click="acessarEdicao(venda)" class="btn-acoes btn-sm" title="Editar Venda">
                     <i class="fas fa-edit"></i>
@@ -143,7 +143,7 @@
   
     data() {
       return {
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtual: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
         vendas: [],
         vendasDaApi: [],
@@ -291,16 +291,13 @@
       confirmarExclusaoVenda(venda) {
         this.formData.id = venda.id;
       },
-  
-      replacePontoVirgula(valorString){
-        if(valorString != null){
-          valorString = valorString.replace(".", ",");
-        }
-        else{
-          valorString = '-'
-        }
-        return valorString;
-      },
+      formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
+      
     }
   };
   </script>
@@ -309,56 +306,73 @@
   @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
   
   .background {
-    background-color:  #ededef; /* Um tom mais escuro que o branco */
-    min-height: 100vh; /* Garante que o fundo cubra toda a altura da tela */
-    padding: 20px;
-  }
-  
-  .nav-link.active {
-    background-color: #d0d0d0 !important;
-    /* Cor um pouco mais escura quando a aba está ativa */
-  }
-  
-  .table-container {
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px; 
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    overflow-x: auto;
-  }
-  
-  .button-container {
+  background-color: #ededef;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
+}
+
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.1;
+  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
+}
+
+nav, .tab-content {
+  position: relative;
+  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
+}
+
+.table-container, .button-container {
+  position: relative;
+  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
+}
+
+.table-container table tbody tr td {
+  background-color: transparent !important;
+}
+
+.table-container table thead tr th {
+  border-bottom: 2px solid #176d1a;
+  /* Adiciona uma borda verde na parte inferior */
+  background-color: transparent !important;
+}
+
+.button-container {
   display: flex;
   flex-wrap: nowrap;
-  /* Garante que os botões não vão para a linha seguinte */
   gap: 10px;
-  /* Espaço entre os botões */
   margin-bottom: 20px;
   white-space: nowrap;
-  /* Evita quebras de linha nos botões */
 }
-  
-  .table-container table tbody tr td {
-    background-color: #ededef !important; /* Cor de fundo das células da tabela */
-  }
-  
-  .table-container table thead tr th {
-    border-bottom: 2px solid #176d1a; /* Adiciona uma borda verde na parte inferior */
-    background-color: #f0f0f0;
-  }
-  
-  .btn-acoes {
-    background-color: transparent;
-    border: none;
-    padding: 0;
-  }
-  
-  .btn-acoes i {
-    color: #176d1a;
-  }
-  
+
+.btn-success {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  z-index: 2; /* Garante que o botão esteja acima da imagem */
+}
+
+.btn-acoes {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  z-index: 2; /* Garante que o botão de ação esteja acima da imagem */
+}
+
+.btn-acoes i {
+  color: #176d1a;
+}
+
   .button-group {
     display: flex;
     gap: 10px; 

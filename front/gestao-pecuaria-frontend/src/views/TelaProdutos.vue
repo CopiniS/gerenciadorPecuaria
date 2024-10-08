@@ -50,7 +50,7 @@
           <button @click="() => { this.$router.push('/compraprodutos'); }" type="button"
             class="btn btn-success">Histórico de Compras</button>
 
-          <button @click="mostrarPopupEscolhaRelatorio" type="button" class="btn btn-success" data-bs-toggle="modal"
+          <button @click="buscarEstoqueGeral" type="button" class="btn btn-success" data-bs-toggle="modal"
             data-bs-target="#escolhaRelatorioModal">Gerar Relatório</button>
 
         </div>
@@ -70,8 +70,8 @@
               <td>{{ produto.nome }}</td>
               <td>{{ produto.tipo }}</td>
               <td>{{ produto.categoria }}</td>
-              <td :class="{ 'is-invalid': achaEstoque(produto.id) <= 0 }">{{
-                replacePontoVirgula(achaEstoque(produto.id).toString()) }}</td>
+              <td :class="{ 'is-invalid': achaEstoque(produto.id, estoque) <= 0 }">{{
+                replacePontoVirgula(achaEstoque(produto.id, estoque).toString()) }}</td>
               <td>{{ produto.unidade }}</td>
               <td>
                 <button @click="acessarEdicao(produto)" class="btn-acoes btn-sm" title="Editar Produto">
@@ -123,16 +123,16 @@
                 <RelatorioPdf titulo="Relatório de Estoque de Produto Geral"
                   :cabecalho="['Nome do produtor: ' + nomeProdutor]"
                   :colunas="['Nome do Produto', 'Categoria', 'Quantidade em Estoque']"
-                  :dados="estoqueGeral.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id)])"
+                  :dados="produtos.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id, estoqueGeral)])"
                   :mostrarSoma="true" />
               </div>
 
               <!-- Relatório de Estoque de Produto por Propriedade -->
               <div v-if="tipoRelatorio === 'porPropriedade'">
                 <RelatorioPdf titulo="Relatório de Estoque de Produto por Propriedade"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Nome do Produto', 'Categoria', 'Quantidade em Estoque']"
-                  :dados="estoque.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id)])"
+                  :dados="produtos.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id, estoque)])"
                   :mostrarSoma="false" />
               </div>
             </div>
@@ -180,7 +180,7 @@ export default {
       estoque: [],
       tipoRelatorio: null,
       estoqueGeral: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
@@ -200,7 +200,6 @@ export default {
   mounted() {
     this.buscarProdutosDaApi();
     this.buscarEstoqueDaApi();
-    this.buscarEstoqueGeral();
   },
   methods: {
     //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
@@ -229,6 +228,15 @@ export default {
       }
     },
 
+    async buscarEstoqueGeral() {
+      try {
+        const response = await api.get('http://127.0.0.1:8000/estoque/geral', {});
+        this.estoqueGeral = response.data;
+      } catch (error) {
+        console.error('Erro ao buscar estoque da API:', error);
+      }
+    },
+
     async apagarProduto() {
       try {
         const response = await api.delete(`http://127.0.0.1:8000/produtos/${this.formData.id}/`, {
@@ -245,44 +253,6 @@ export default {
         alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
       }
       this.fecharModal("confirmacaoExclusaoModal");
-    },
-
-    async buscarEstoqueGeral() {
-      try {
-        // 1. Buscar todas as propriedades
-        const propriedadesResponse = await api.get('http://127.0.0.1:8000/propriedades/');
-        const propriedades = propriedadesResponse.data;
-
-        const estoqueGeral = {};
-
-        // 2. Buscar o estoque de cada propriedade
-        for (const propriedade of propriedades) {
-          const estoqueResponse = await api.get(`http://127.0.0.1:8000/estoque/${propriedade.id}/`);
-          const estoquePropriedade = estoqueResponse.data;
-
-          // 3. Agrupar e somar o estoque
-          estoquePropriedade.forEach(item => {
-            if (!estoqueGeral[item.produto]) {
-              estoqueGeral[item.produto] = {
-                nome: item.nome,
-                categoria: item.categoria,
-                quantidade: 0
-              };
-            }
-            estoqueGeral[item.produto].quantidade += item.quantidade;
-          });
-        }
-
-        // Convertendo o objeto estoqueGeral em uma array para exibição
-        this.estoqueGeral = Object.keys(estoqueGeral).map(produtoId => ({
-          nome: estoqueGeral[produtoId].nome,
-          categoria: estoqueGeral[produtoId].categoria,
-          quantidade: estoqueGeral[produtoId].quantidade
-        }));
-
-      } catch (error) {
-        console.error('Erro ao buscar estoque geral:', error);
-      }
     },
 
     //FILTROS---------------------------------------------------------------------------------------------------------------------
@@ -312,11 +282,11 @@ export default {
 
 
     //FUNÇÕES AUXILIARES---------------------------------------------------------------------------------------------------------------------
-    achaEstoque(produtoId) {
-      let quantidade;
-      this.estoque.forEach(e => {
-        if (e.produto === produtoId) {
-          quantidade = e.quantidade;
+    achaEstoque(produtoId, estoque) {
+      let quantidade = 0;
+      estoque.forEach(e => {
+        if (e.produto == produtoId) {
+          quantidade = quantidade + e.quantidade;
         }
       });
       if (!quantidade) {
@@ -364,56 +334,67 @@ export default {
 
 <style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
 .background {
   background-color: #ededef;
-  /* Um tom mais escuro que o branco */
   min-height: 100vh;
-  /* Garante que o fundo cubra toda a altura da tela */
   padding: 20px;
+  position: relative;
 }
 
-.nav-link.active {
-  background-color: #d0d0d0 !important;
-  /* Cor um pouco mais escura quando a aba está ativa */
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../assets/logo-sem-fundo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.1;
 }
 
-.table-container {
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-x: auto;
+
+nav, .tab-content {
+  position: relative;
+  z-index: 1; 
 }
 
-.button-container {
-  display: flex;
-  flex-wrap: nowrap;
-  /* Garante que os botões não vão para a linha seguinte */
-  gap: 10px;
-  /* Espaço entre os botões */
-  margin-bottom: 20px;
-  white-space: nowrap;
-  /* Evita quebras de linha nos botões */
+.table-container, .button-container {
+  position: relative;
+  z-index: 1; 
 }
 
 .table-container table tbody tr td {
-  background-color: #ededef !important;
-  /* Cor de fundo das células da tabela */
+  background-color: transparent !important;
 }
 
 .table-container table thead tr th {
   border-bottom: 2px solid #176d1a;
   /* Adiciona uma borda verde na parte inferior */
-  background-color: #f0f0f0;
+  background-color: transparent !important;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  white-space: nowrap;
+}
+
+.btn-success {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  /* z-index: 2;  */
 }
 
 .btn-acoes {
   background-color: transparent;
   border: none;
   padding: 0;
+  /* z-index: 2;  */
 }
 
 .btn-acoes i {
@@ -441,5 +422,25 @@ export default {
 
 .btn {
   margin-bottom: 0;
+}
+
+.form-check-label:hover {
+  cursor: pointer;
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto para destacar (você pode escolher qualquer cor) */
+}
+
+.form-check-input:hover {
+  cursor: pointer;
+}
+
+.form-check-input:hover ~ .form-check-label {
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto */
+}
+
+.form-check-input:checked ~ .form-check-label {
+  font-weight: bold; /* Deixa o texto em negrito */
+  color: #007bff; /* Altera a cor do texto */
 }
 </style>

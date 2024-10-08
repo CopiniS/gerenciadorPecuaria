@@ -54,9 +54,9 @@
     propriedade.endereco,
     propriedade.cidade,
     propriedade.estado,
-    replacePontoVirgula(propriedade.latitude),
-    replacePontoVirgula(propriedade.longitude),
-    replacePontoVirgula(propriedade.area)
+    formatarValor(replacePontoVirgula(propriedade.latitude)),
+    formatarValor(replacePontoVirgula(propriedade.longitude)),
+    formatarValor(replacePontoVirgula(propriedade.area))
   ])"
   :mostrarSoma="true" 
 />
@@ -81,19 +81,19 @@
               <td>{{ propriedade.cidade }}</td>
               <td>{{ propriedade.estado }}</td>
               <td>{{ propriedade.endereco }}</td>
-              <td>{{ replacePontoVirgula(propriedade.latitude) }}</td>
-              <td>{{ replacePontoVirgula(propriedade.longitude) }}</td>
-              <td>{{ replacePontoVirgula(propriedade.area) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.latitude)) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.longitude)) }}</td>
+              <td>{{ formatarValor(replacePontoVirgula(propriedade.area)) }}</td>
               <td>
-                <button v-if="propriedadeAtual == propriedade.id" @click="acessarEdicao(propriedade)"
+                <button v-if="propriedadeAtualId == propriedade.id" @click="acessarEdicao(propriedade)"
                   class="btn-acoes btn-sm" title="Editar Propriedade">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button v-if="propriedadeAtual == propriedade.id" @click="confirmarExclusao(propriedade)"
+                <button v-if="propriedadeAtualId == propriedade.id" @click="confirmarExclusao(propriedade)"
                   class="btn-acoes btn-sm" data-bs-toggle="modal" title="Excluir Propriedade"
                   data-bs-target="#confirmacaoExclusaoModal"><i class="fas fa-trash-alt"></i>
                 </button>
-                <button v-if="propriedadeAtual != propriedade.id" @click="trocaPropriedade(propriedade.id)"
+                <button v-if="propriedadeAtualId != propriedade.id" @click="trocaPropriedade(propriedade.id)"
                   class="btn-acoes btn-sm" title="Trocar Propriedade">
                   <i class="fas fa-exchange-alt"></i>
                 </button>
@@ -139,7 +139,7 @@ export default {
     return {
       propriedades: [],
       propriedadesDaApi: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualId: localStorage.getItem('propriedadeSelecionada'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
@@ -255,6 +255,13 @@ export default {
       }
       return valorString;
     },
+
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
   }
 };
 </script>

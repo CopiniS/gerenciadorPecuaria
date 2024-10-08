@@ -56,9 +56,9 @@
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Compra</button>
           <RelatorioPdf
   titulo="Relatório de Compra de Produto"
-  :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtual]"
+  :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtualNome]"
   :colunas="['Nome do Produto', 'Data', 'Validade', 'Quantidade Comprada', 'Valor Unitário', 'Valor Total']"
-  :dados="compras.map(compra => [compra.produto.nome, formatarData(compra.dataCompra), formatarData(compra.validade), compra.quantidadeComprada, compra.valorUnitario, (compra.valorUnitario*compra.quantidadeComprada).toFixed(2)])"
+  :dados="compras.map(compra => [compra.produto.nome, formatarData(compra.dataCompra), formatarData(compra.validade), compra.quantidadeComprada, formatarValor(compra.valorUnitario), formatarValor((compra.valorUnitario*compra.quantidadeComprada).toFixed(2))])"
   :mostrarSoma="false"
 />
 
@@ -79,7 +79,7 @@
             <tr v-for="(compra, index) in compras" :key="index">
               <td>{{ formatarData(compra.dataCompra) }}</td>
               <td>{{ compra.produto.nome }}</td>
-              <td>{{ replacePontoVirgula(compra.valorUnitario) }}</td>
+              <td>{{ formatarValor(compra.valorUnitario) }}</td>
               <td>{{ compra.quantidadeComprada }}</td>
               <td>{{ formatarData(compra.validade) }}</td>
               <td>{{ compra.lote }}</td>
@@ -137,7 +137,7 @@ export default {
       activeTab: 'compras',
       compras: [],
       comprasDaApi: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
@@ -263,11 +263,12 @@ export default {
       }
     },
 
-    replacePontoVirgula(valorString) {
-      valorString = valorString.replace(".", ",");
-
-      return valorString;
-    },
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
   }
 };
 </script>

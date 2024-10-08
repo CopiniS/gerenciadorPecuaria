@@ -97,7 +97,7 @@
               titulo="Relatório de Gastos"
               :cabecalho="[
                 'Produtor: ' + nomeProdutor,
-                'Propriedade: ' + propriedadeAtual,
+                'Propriedade: ' + propriedadeAtualNome,
               ]"
               :colunas="['Data', 'Tipo', 'Descrição', 'Valor']"
               :dados="
@@ -105,7 +105,7 @@
                   formatarData(gasto.dataGasto),
                   gasto.tipo,
                   gasto.descricao,
-                  gasto.valor,
+                  formatarValor(gasto.valor),
                 ])
               "
               :mostrarSoma="true"
@@ -126,7 +126,7 @@
               <tr v-for="(gasto, index) in gastos" :key="index">
                 <td>{{ formatarData(gasto.dataGasto) }}</td>
                 <td>{{ gasto.tipo }}</td>
-                <td>{{ replacePontoVirgula(gasto.valor) }}</td>
+                <td>{{ formatarValor(gasto.valor) }}</td>
                 <td>{{ gasto.descricao }}</td>
                 <td>{{ retornaCategoria(gasto.categoria) }}</td>
                 <td>
@@ -216,7 +216,7 @@ export default {
     return {
       gastos: [],
       gastosDaApi: [],
-      propriedadeAtual: localStorage.getItem("propriedadeSelecionada"),
+      propriedadeAtualNome: localStorage.getItem("propriedadeSelecionadaNome"),
       nomeProdutor: localStorage.getItem("produtorNome"),
       formData: {
         id: null,
@@ -370,11 +370,12 @@ export default {
       return utcDate.toLocaleDateString("pt-BR", options);
     },
 
-    replacePontoVirgula(valorString) {
-      valorString = valorString.replace(".", ",");
-
-      return valorString;
-    },
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
 
     retornaCategoria(string) {
       switch (string) {

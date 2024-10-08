@@ -58,7 +58,7 @@
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Piquete</button>
         <RelatorioPdf
   titulo="Relatório de Piquetes"
-  :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtual]"
+  :cabecalho="['Produtor: ' + nomeProdutor, 'Propriedade: ' +propriedadeAtualNome]"
   :colunas="['Nome do Piquete', 'Tipo de Cultivo', 'Área']"
   :dados="piquetes.map(piquete => [piquete.nome, piquete.tipoCultivo, piquete.area])"
   :mostrarSoma="true"
@@ -129,7 +129,7 @@ export default {
       activeTab: 'piquetes',
       piquetes: [],
       piquetesDaApi: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,

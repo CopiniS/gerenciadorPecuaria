@@ -56,7 +56,7 @@
         <div class="button-container">
           <button @click="acessarCadastro()" type="button" class="btn btn-success">Cadastrar Pesagem</button>
           <RelatorioPdf titulo="Relatório de Pesagem"
-            :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+            :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
             :colunas="['Brinco', 'Data da pesagem', 'Peso']"
             :dados="pesagens.map(pesagem => [pesagem.animal.brinco, formatarData(pesagem.dataPesagem), pesagem.peso])"
             :mostrarMedia="true" />
@@ -132,7 +132,7 @@ export default {
     return {
       pesagens: [],
       pesagensDaApi: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,

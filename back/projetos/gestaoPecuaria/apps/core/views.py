@@ -9,6 +9,79 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q
 from django.http import JsonResponse
 
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.models import User
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.conf import settings
+
+# Create your views here.
+
+User = get_user_model()
+
+
+
+class PasswordResetRequestView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        if email:
+            user = User.objects.filter(email=email).first()
+            if user:
+                # Gerar token
+                token = default_token_generator.make_token(user)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                
+                # Construir link de redefinição
+                reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}"
+                
+                # Enviar e-mail
+                send_mail(
+                    'Redefinição de Senha',
+                    f'Use este link para redefinir sua senha: {reset_link}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+                
+                return Response({"message": "E-mail de redefinição enviado."}, status=status.HTTP_200_OK)
+        return Response({"message": "Usuário não encontrado."}, status=status.HTTP_400_BAD_REQUEST)
+
+class PasswordResetConfirmView(APIView):
+    def post(self, request):
+        uid = request.data.get('uid')
+        token = request.data.get('token')
+        new_password = request.data.get('new_password')
+        
+        if not (uid and token and new_password):
+            return Response({"message": "Dados inválidos."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            uid = force_str(urlsafe_base64_decode(uid))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        
+        if user and default_token_generator.check_token(user, token):
+            user.set_password(new_password)
+            user.save()
+            return Response({"message": "Senha redefinida com sucesso."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Link inválido ou expirado."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
 
 class PropriedadeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

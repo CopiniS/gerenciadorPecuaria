@@ -79,7 +79,7 @@
             <tr v-for="(suplementacao, index) in suplementacoes" :key="index">
               <td>{{ suplementacao.produto.nome }}</td>
               <td>{{ suplementacao.piquete.nome }}</td>
-              <td>{{ replacePontoVirgula(suplementacao.quantidade) }}</td>
+              <td>{{ formatarValor(suplementacao.quantidade) }}</td>
               <td>{{ formatarData(suplementacao.dataInicial) }}</td>
               <td>{{ formatarData(suplementacao.dataFinal) || '-' }}</td>
               <td
@@ -141,7 +141,7 @@ export default {
   },
   data() {
     return {
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtual: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       suplementacoes: [],
       suplementacoesDaApi: [],
@@ -291,11 +291,12 @@ export default {
       }
     },
 
-    replacePontoVirgula(valorString) {
-      valorString = valorString.replace(".", ",");
-
-      return valorString;
-    },
+    formatarValor(valor) {
+    if (typeof valor !== 'number') {
+      valor = parseFloat(valor);
+    }
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  },
   }
 };
 </script>

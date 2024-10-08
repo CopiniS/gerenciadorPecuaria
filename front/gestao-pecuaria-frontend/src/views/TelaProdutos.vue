@@ -130,7 +130,7 @@
               <!-- Relatório de Estoque de Produto por Propriedade -->
               <div v-if="tipoRelatorio === 'porPropriedade'">
                 <RelatorioPdf titulo="Relatório de Estoque de Produto por Propriedade"
-                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtual]"
+                  :cabecalho="['Nome do produtor: ' + nomeProdutor, 'Propriedade: ' + propriedadeAtualNome]"
                   :colunas="['Nome do Produto', 'Categoria', 'Quantidade em Estoque']"
                   :dados="produtos.map(produto => [produto.nome, produto.categoria, achaEstoque(produto.id, estoque)])"
                   :mostrarSoma="false" />
@@ -180,7 +180,7 @@ export default {
       estoque: [],
       tipoRelatorio: null,
       estoqueGeral: [],
-      propriedadeAtual: localStorage.getItem('propriedadeSelecionada'),
+      propriedadeAtualNome: localStorage.getItem('propriedadeSelecionadaNome'),
       nomeProdutor: localStorage.getItem('produtorNome'),
       formData: {
         id: null,
@@ -339,9 +339,8 @@ export default {
   min-height: 100vh;
   padding: 20px;
   position: relative;
-  /* z-index: 0;  */
 }
-/* 
+
 .background::before {
   content: "";
   position: absolute;
@@ -354,10 +353,10 @@ export default {
   background-position: center;
   background-size: 40%;
   opacity: 0.1;
-  z-index: 0; 
-} */
+}
 
-/* nav, .tab-content {
+
+nav, .tab-content {
   position: relative;
   z-index: 1; 
 }
@@ -365,7 +364,7 @@ export default {
 .table-container, .button-container {
   position: relative;
   z-index: 1; 
-} */
+}
 
 .table-container table tbody tr td {
   background-color: transparent !important;

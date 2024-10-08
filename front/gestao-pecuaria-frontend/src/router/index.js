@@ -54,6 +54,7 @@ import OcorrenciaEdicao from '@/components/OcorrenciaEdicao.vue';
 import FotoAnimalCadastro from '@/components/FotoAnimalCadastro.vue';
 import FotoAnimalVisualizacao from '@/components/FotoAnimalVisualizacao.vue';
 import PrimeiraPropriedade from '@/views/PrimeiraPropriedade.vue'
+import ResetPassword from '@/components/ResetPassword.vue';
 
 const routes = [
   
@@ -380,7 +381,17 @@ const routes = [
     props: true,
   },
 
-
+  {
+    path: '/redefinir-senha/:uid/:token',
+    name: 'ResetPassword',
+    component: ResetPassword
+  },
+  {
+    path: '/reset-password/:uid/:token',
+    name: 'ResetPassword',
+    component: ResetPassword
+  },
+  
 
 ];
 

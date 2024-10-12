@@ -1,6 +1,7 @@
 
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialCidade || loadingInicialEstado || loadingInicialProp"/>
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'propriedades' }" id="nav-vet-tab"
@@ -97,9 +98,14 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
   
     data() {
         return {
@@ -112,6 +118,10 @@ export default {
             cidadesFiltradas: [],
             dropdownCidadeOpen: false,
             highlightedIndexCidade: -1,
+            loadingSubmit:  false,
+            loadingInicialProp: true,
+            loadingInicialCidade: true,
+            loadingInicialEstado: true,
             formData: {
                 id: null,
                 nome: '',
@@ -121,7 +131,6 @@ export default {
                 latitude: '',
                 longitude: '',
                 area: '',
-                produtor: [],
             },
             isNomeValido: true,
             isCidadeValida: true,
@@ -184,6 +193,7 @@ export default {
         this.formData.produtor = propriedade.produtor;
 
         this.buscarCidadesPorEstado(this.formData.estado);
+        this.loadingInicialProp = false;
       } catch (error) {
         console.error('Erro ao carregar dados da propriedade:', error);
       }
@@ -201,6 +211,7 @@ export default {
         try {
             const response = await api.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`);
             this.cidades = response.data;
+            this.loadingInicialCidade = false;  
         } catch (error) {
             console.error('Erro ao buscar cidades da API:', error);
         }
@@ -210,6 +221,7 @@ export default {
       try {
           const response = await api.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
           this.estados = response.data;
+          this.loadingInicialEstado = false;
       } catch (error) {
           console.error('Erro ao buscar cidades da API:', error);
       }
@@ -217,22 +229,28 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        this.loadingSubmit = true;
        try {
         //FORMATA AREA
         this.formData.longitude = this.replaceVirgulaPonto(this.formData.longitude);
         this.formData.latitude = this.replaceVirgulaPonto(this.formData.latitude);
         this.formData.area = this.replaceVirgulaPonto(this.formData.area);
-
+        console.log('form data: ', this.formData);  
           const response = await api.patch(`http://127.0.0.1:8000/propriedades/${this.formData.id}/`, this.formData , {
         });
 
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.$router.push('/propriedades');
+            this.loadingSubmit = false;
+            setTimeout(() => {
+              alert('Alterações salvas com sucesso!');
+              this.$router.push('/propriedades');
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
@@ -584,13 +602,16 @@ selectTab(tab) {
     },
 
     replacePontoVirgula(valorString){
-      valorString = valorString.replace(".", ",");
-
+      if(valorString){
+        valorString = valorString.replace(".", ",");
+      }
       return valorString;
     },
 
     replaceVirgulaPonto(valorString){
+      if(valorString){
       valorString = valorString.replace(",", ".");
+      }
 
       return valorString;
     },

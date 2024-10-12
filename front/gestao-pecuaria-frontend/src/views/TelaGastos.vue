@@ -251,14 +251,9 @@ export default {
             ),
           },
         });
-        setTimeout(() => {
-          this.gastosDaApi = response.data;
-          this.gastos = this.gastosDaApi;
-          this.loading = false;
-        }, 5000);
-        // this.gastosDaApi = response.data;
-        // this.gastos = this.gastosDaApi;
-        // this.loading = false;
+        this.gastosDaApi = response.data;
+        this.gastos = this.gastosDaApi;
+        this.loading = false;
       } catch (error) {
         console.error("Erro ao buscar gastos da API:", error);
         this.loading = false;

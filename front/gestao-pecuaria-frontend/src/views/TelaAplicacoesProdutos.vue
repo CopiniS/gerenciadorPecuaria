@@ -11,6 +11,12 @@
    </div>
   
     <h2>Lista de Aplicações</h2>
+
+
+    <!-- Exibe o skeleton enquanto carrega os dados -->
+    <SkeletonListagem v-if="loading" />
+
+    <div v-else>
       <div class="d-flex align-items-start table-container flex-column">
         <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -107,7 +113,7 @@
           </div>
         </div>
       </div>
-  
+    </div>
     </div>
   </div>
   </template>
@@ -117,12 +123,14 @@
   import { masksMixin } from '../mixins/maks';
   import DateRangePicker from '../components/DateRangePicker.vue';
   import RelatorioPdf from '../components/RelatorioPdf.vue';
+  import SkeletonListagem from "../components/SkeletonListagem.vue";
   
   export default {
     mixins: [masksMixin],
     components: {
       RelatorioPdf,
-      DateRangePicker
+      DateRangePicker,
+      SkeletonListagem,
     },
     data() {
       return {
@@ -146,6 +154,7 @@
           piquete: '',
           produto: ''
         },
+        loading: true,
         modalTitle: 'Cadastro de Aplicacao',
       }
   
@@ -171,6 +180,7 @@
               });
               this.aplicacoesDaApi = response.data;
               this.aplicacoes = this.aplicacoesDaApi;
+              this.loading = false;
           } catch (error) {
           console.error('Erro ao buscar aplicações de produtos da API:', error);
           }

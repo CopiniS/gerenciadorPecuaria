@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'propriedades' }" id="nav-propriedades-tab"
@@ -63,13 +64,21 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
+
 
 export default {
   mixins: [masksMixin],
 
+  components: {
+    LoadSpinner,
+  },
+
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
+      loadingSubmit: false,
+      loadingInicial: true,
       piquetesDaApi: null,
       formData: {
         id: null,
@@ -102,6 +111,7 @@ export default {
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        this.loadingSubmit = true;
         try {
           //FORMATA AREA
           this.formData.area = this.replaceVirgulaPonto(this.formData.area);
@@ -109,12 +119,18 @@ export default {
           const response = await api.post('http://127.0.0.1:8000/piquetes/', this.formData);
 
           if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/piquetes');
+            this.loadingSubmit = false;
+            setTimeout(() => {
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/piquetes');
+            }, 100);
+            
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao cadastrar piquete. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
@@ -129,6 +145,7 @@ export default {
           },
         });
         this.piquetesDaApi = response.data;
+        this.loadingInicial = false;
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);
       }

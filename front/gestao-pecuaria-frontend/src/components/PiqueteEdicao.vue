@@ -1,6 +1,7 @@
 
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialPiqueteId || loadingInicialPiquetesDaApi" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'propriedades' }" id="nav-propriedades-tab" @click="selectTab('propriedades')" 
@@ -59,15 +60,23 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 
 export default {
   mixins: [masksMixin],
 
+  components: {
+    LoadSpinner,
+  },
+
   data() {
     return {
       activeTab: 'edicao',  // Aba inicial é 'edicao'
       piquetesDaApi: null,
+      loadingSubmit: false,
+      loadingInicialPiqueteId: true,
+      loadingInicialPiquetesDaApi: true,
       formData: {
         id: null,
         nome: '',
@@ -109,6 +118,8 @@ export default {
         this.formData.nome = piquete.nome;
         this.formData.tipoCultivo = piquete.tipoCultivo;
         this.formData.area = this.replacePontoVirgula(piquete.area);
+
+        this.loadingInicialPiqueteId = false;
       } catch (error) {
         console.error('Erro ao carregar dados da piquete:', error);
       }
@@ -116,6 +127,7 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        this.loadingSubmit = true;
        try {
           //FORMATA AREA
           this.formData.area = this.replaceVirgulaPonto(this.formData.area);
@@ -124,12 +136,18 @@ export default {
         });
 
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.$router.push('/piquetes');
+            this.loadingSubmit = false;
+            setTimeout(() => {
+              alert('Alterações salvas com sucesso!');
+              this.$router.push('/piquetes');
+            }, 100);
+            
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
@@ -144,6 +162,7 @@ export default {
           },
         });
         this.piquetesDaApi = response.data;
+        this.loadingInicialPiquetesDaApi = false;
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);
       }

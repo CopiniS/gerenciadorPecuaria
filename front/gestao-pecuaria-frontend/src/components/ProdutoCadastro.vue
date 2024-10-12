@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-vet-tab"
@@ -89,14 +90,21 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
       activeTab: 'cadastro',  // Aba inicial é 'cadastro'
       produtosDaApi: [],
+      loadingSubmit: false,
+      loadingInicial: true,
       formData: {
         id: null,
         nome: '',
@@ -122,17 +130,23 @@ export default {
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        this.loadingSubmit = true;
         try {
           const response = await api.post('http://127.0.0.1:8000/produtos/', this.formData, {
           });
 
           if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/produtos');
+            this.loadingSubmit = false;
+            setTimeout(() => {
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/produtos');
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao cadastrar produto. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
@@ -144,6 +158,7 @@ export default {
         const response = await api.get('http://127.0.0.1:8000/produtos/' , {
         });
         this.produtosDaApi = response.data;
+        this.loadingInicial = false;
       } catch (error) {
         console.error('Erro ao buscar produtos da API:', error);
       }

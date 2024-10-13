@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialVeterinarioId || loadingInicialVeterinarios" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'veterinarios' }" id="nav-vet-tab"
@@ -63,15 +64,23 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   name: 'TelaVeterinarios',
   data() {
     return {
       activeTab: 'edicao', // Começa na aba de edição
       veterinariosDaApi: null,
+      loadingSubmit: false,
+      loadingInicialVeterinarioId: true,
+      loadingInicialVeterinarios: true,
       formData: {
         id: null,
         nome: '',
@@ -114,6 +123,8 @@ export default {
         this.formData.telefone = veterinario.telefone;
         this.formData.email = veterinario.email;
         this.formData.crmv = veterinario.crmv;
+
+        this.loadingInicialVeterinarioId = false;
       } catch (error) {
         console.error('Erro ao carregar dados do veterinário:', error);
       }
@@ -121,15 +132,22 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        this.loadingSubmit = true;
         try {
           const response = await api.patch(`http://127.0.0.1:8000/veterinarios/${this.formData.id}/`, this.formData, {});
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.$router.push('/veterinarios');
+            this.loadingSubmit = false;
+            setTimeout(() => {
+              alert('Alterações salvas com sucesso!');
+              this.$router.push('/veterinarios');
+            }, 100)
+            
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao atualizar veterinário. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
@@ -142,6 +160,7 @@ export default {
           // Parâmetros da requisição (se houver)
         });
         this.veterinariosDaApi = response.data;
+        this.loadingInicialVeterinarios = false;
       } catch (error) {
         console.error('Erro ao buscar veterinários da API:', error);
       }

@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialPiquetes || loadingInicialRacas || loadingInicialAnimalId" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
@@ -148,9 +149,15 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
+
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   name: 'TelaAnimais',
   data() {
@@ -176,6 +183,11 @@ export default {
       dropdownPaiOpen: false,
       highlightedIndexMae: -1,
       dropdownMaeOpen: false,
+      loadingSubmit: false,
+      loadingInicialAnimalId: true,
+      loadingInicialAnimais: true,
+      loadingInicialPiquetes: true,
+      loadingInicialRacas: true,
       formData: {
         id: null,
         brinco: '',
@@ -184,8 +196,8 @@ export default {
         racaPredominante: null,
         racaObservacao: null,
         piquete: '',
-        brincoPai: '',
-        brincoMae: '',
+        brincoPai: null,
+        brincoMae: null,
         status: 'Vivo',
         rfid: '',
         observacoes: '',
@@ -274,6 +286,8 @@ export default {
           this.comprado = true;
         }
 
+        this.loadingInicialAnimalId = false;
+
       } catch (error) {
         console.error('Erro ao buscar animal da API:', error);
       }
@@ -287,6 +301,7 @@ export default {
           },
         });
         this.piquetes = response.data;
+        this.loadingInicialPiquetes = false;
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);
       }
@@ -297,6 +312,7 @@ export default {
         const response = await api.get('http://127.0.0.1:8000/racas/', {
         });
         this.racas = response.data;
+        this.loadingInicialRacas = false;
       } catch (error) {
         console.error('Erro ao buscar raças da API:', error);
       }
@@ -310,6 +326,7 @@ export default {
           },
         });
         this.animaisDaApi = response.data;
+        this.loadingInicialAnimais = false;
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
       }
@@ -317,6 +334,8 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        console.log('formData: ', this.formData);
+        this.loadingSubmit = true;
         try {
           //FORMATA VALOR COMPRA
           this.formData.valorCompra = this.replaceVirgulaPonto(this.formData.valorCompra);
@@ -324,12 +343,18 @@ export default {
           const response = await api.patch(`http://127.0.0.1:8000/animais/${this.formData.id}/`, this.formData, {
           });
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.selectTab('visualizacao');
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              alert('Alterações salvas com sucesso!');
+              this.selectTab('visualizacao');
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }

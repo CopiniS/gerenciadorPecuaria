@@ -49,7 +49,7 @@
       <h1>Detalhes do Animal</h1>
 
       <!-- Exibe o skeleton enquanto carrega os dados -->
-      <SkeletonListagem v-if="loadingAnimal || loadingOcorrencia || loadingFoto" />
+      <SkeletonListagem v-if="loadingAnimal || loadingOcorrencia || loadingPiquetes || loadingRaca" />
 
       <div v-else>
         <div class="actions d-flex flex-wrap">

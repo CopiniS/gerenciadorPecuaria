@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
@@ -61,14 +62,21 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import LoadSpinner from './LoadSpiner.vue';
+
 
 export default {
+    components: {
+        LoadSpinner,
+    },
+    
     data() {
         return {
             activeTab: 'visualizacao-foto',  // Aba inicial é 'visualizacao-foto'
             brinco: null,
             fotos: null,
             animal: null,
+            loadingInicial: true,
         };
     },
 
@@ -103,30 +111,10 @@ export default {
             });
             this.fotos = response.data;
             this.fotos = this.fotos.sort((a, b) => new Date(b.dataFoto) - new Date(a.dataFoto));
+            this.loadingInicial = false;
         } catch (error) {
             console.error('Erro ao buscar fotos da API:', error);
         }
-    },
-    
-    async submitForm() {
-      if (this.verificaVazio()) {
-        try {
-            const response = await api.post('http://127.0.0.1:8000/fotos-animais/', this.formData , {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-            if (response.status === 201) {
-                alert('Cadastro realizado com sucesso!');
-                this.selectTab('visualizacao');
-            } else {
-                alert('Erro ao cadastrar aplicacao. Tente novamente mais tarde.');
-            }
-        } catch (error) {
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
-        }
-      } 
     },
     
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------

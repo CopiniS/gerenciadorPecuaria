@@ -138,14 +138,11 @@ export default {
           
           const response = await api.post('http://127.0.0.1:8000/gastos/', this.formData, {});
           if (response.status === 201) {
+            this.loading = false;
             setTimeout(() => {
-              this.loading = false;
               alert('Cadastro realizado com sucesso!');
               this.$router.push('/gastos');
-            }, 5000);
-            // this.loading = false;
-            // alert('Cadastro realizado com sucesso!');
-            // this.$router.push('/gastos');
+            }, 100);
           } else {
             this.loading = false;
             alert('Erro ao cadastrar veterinário. Tente novamente mais tarde.');

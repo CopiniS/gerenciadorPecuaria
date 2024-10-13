@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialPesagens || loadingInicialAnimais" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'pesagens' }" id="nav-vet-tab" @click="selectTab('pesagens')" 
@@ -66,9 +67,15 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
+
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
@@ -78,6 +85,9 @@ export default {
       brinco: '',
       highlightedIndex: -1,
       dropdownOpen: false,
+      loadingSubmit: false,
+      loadingInicialPesagens: true,
+      loadingInicialAnimais: true,
       formData: {
         id: null,
         dataPesagem: '',
@@ -130,6 +140,8 @@ export default {
 
         this.brinco = pesagem[0].animal.brinco;
         this.dataSelecionada = pesagem[0].dataPesagem;
+
+        this.loadingInicialPesagens = false;
       } catch (error) {
         console.error('Erro ao carregar dados da pesagem:', error);
       }
@@ -143,6 +155,7 @@ export default {
           },
         });
         this.animais = response.data;
+        this.loadingInicialAnimais = false;
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
       }
@@ -150,6 +163,7 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio()) {
+        this.loadingSubmit = true;
         try {
           //FORMATA PESO
           this.formData.peso = this.replaceVirgulaPonto(this.formData.peso);
@@ -158,12 +172,17 @@ export default {
           });
 
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.$router.push('/pesagens');
+            this.loadingSubmit = false;
+            setTimeout(() => {
+              alert('Alterações salvas com sucesso!');
+              this.$router.push('/pesagens');
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }

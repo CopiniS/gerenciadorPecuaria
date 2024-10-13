@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
@@ -59,14 +60,21 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
         activeTab: 'edicao',
         brinco: null,
+        loadingSubmit: false,
+        loadingInicial: true,
         formData: {
             id: null,
             dataOcorrencia: null,
@@ -101,6 +109,8 @@ export default {
         this.formData.descricao = ocorrencia[0].descricao;
 
         this.brinco = ocorrencia[0].animal.brinco;
+
+        this.loadingInicial = false;
       } catch (error) {
         console.error('Erro ao carregar dados da ocorrencia:', error);
       }
@@ -108,17 +118,24 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio()) {
+        this.loadingSubmit = true;
         try {
           const response = await api.patch(`http://127.0.0.1:8000/ocorrencias/${this.formData.id}/`, this.formData, {
           });
 
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.selectTab('visualizacao');
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              alert('Alterações salvas com sucesso!');
+              this.selectTab('visualizacao');
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }

@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialAplicacao || loadingInicialProdutos" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'aplicacoes' }" id="nav-vet-tab" @click="selectTab('aplicacoes')" 
@@ -79,9 +80,15 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
+
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
@@ -97,6 +104,10 @@ export default {
       dropdownProdutoOpen: false,
       highlightedIndexAnimal: -1,
       dropdownAnimalOpen: false,
+      loadingSubmit: false,
+      loadingInicialAplicacao: true,
+      loadingInicialAnimais: true,
+      loadingInicialProdutos: true,
       formData: {
         id: null,
         produto: '',
@@ -153,6 +164,8 @@ export default {
 
         this.brinco = aplicacao[0].animal.brinco;
         this.nomeProduto = aplicacao[0].produto.nome;
+
+        this.loadingInicialAplicacao = false;
       } catch (error) {
         console.error('Erro ao carregar dados da aplicacao:', error);
       }
@@ -166,6 +179,7 @@ export default {
           },
         });
         this.animais = response.data;
+        this.loadingInicialAnimais = false;
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
       }
@@ -175,13 +189,20 @@ export default {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/sanitarios', {});
         this.produtos = response.data;
+
+        this.loadingInicialProdutos = false;
       } catch (error) {
         console.error('Erro ao buscar produtos da API:', error);
       }
     },
 
     async submitForm() {
+      console.log('aqui');
+      
       if (this.verificaVazio()) {
+        console.log('aqui 2');
+        
+        this.loadingSubmit = true;
         //FORMATA DOSAGEM
         this.formData.dosagem = this.replaceVirgulaPonto(this.formData.dosagem);
 
@@ -190,12 +211,18 @@ export default {
           });
 
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.$router.push('/aplicacoes-produtos');
+            this.loadingSubmit = false;
+            setTimeout(() => {
+              alert('Alterações salvas com sucesso!');
+              this.$router.push('/aplicacoes-produtos');
+            }, 100)
+            
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
@@ -459,7 +486,6 @@ export default {
       return (
         this.isDataValida &&
         this.isAnimalValido && 
-        this.isPiqueteValido && 
         this.isProdutoValido && 
         this.isDosagemValida
       );

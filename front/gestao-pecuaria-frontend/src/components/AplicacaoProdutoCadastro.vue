@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialPiquetes || loadingInicialProdutos" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'aplicacoes' }" id="nav-vet-tab"
@@ -103,9 +104,15 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
+
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
@@ -124,6 +131,10 @@ export default {
       dropdownProdutoOpen: false,
       highlightedIndexPiquete: -1,
       dropdownPiqueteOpen: false,
+      loadingSubmit: false,
+      loadingInicialAnimais: true,
+      loadingInicialPiquetes: true,
+      loadingInicialProdutos: true,
       formData: {
         id: null,
         produto: null,
@@ -184,6 +195,7 @@ export default {
           },
         });
         this.animais = response.data;
+        this.loadingInicialAnimais = false;
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
       }
@@ -197,6 +209,7 @@ export default {
           },
         });
         this.piquetes = response.data;
+        this.loadingInicialPiquetes = false;
       } catch (error) {
         console.error('Erro ao buscar piquetes da API:', error);
       }
@@ -206,6 +219,7 @@ export default {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/sanitarios', {});
         this.produtos = response.data;
+        this.loadingInicialProdutos = false;
       } catch (error) {
         console.error('Erro ao buscar produtos da API:', error);
       }
@@ -214,6 +228,7 @@ export default {
     async submitForm() {
       if (this.verificaVazio()) {
         if(this.verificaVazioAnimais()){
+          this.loadingSubmit = true;
           //FORMATA DOSAGEM
           this.formData.dosagem = this.replaceVirgulaPonto(this.formData.dosagem)
 
@@ -222,12 +237,17 @@ export default {
             });
 
             if (response.status === 201) {
-              alert('Cadastro realizado com sucesso!');
-              this.$router.push('/aplicacoes-produtos');
+              this.loadingSubmit = false;
+              setTimeout(() => {
+                  alert('Cadastro realizado com sucesso!');
+                  this.$router.push('/aplicacoes-produtos');
+              }, 100)
             } else {
+              this.loadingSubmit = false;
               alert('Erro ao cadastrar aplicacao. Tente novamente mais tarde.');
             }
           } catch (error) {
+            this.loadingSubmit = false;
             console.error('Erro ao enviar requisição:', error);
             alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
           }

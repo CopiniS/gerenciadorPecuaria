@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-produtos-tab"
@@ -90,9 +91,14 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
+
+  components:{
+    LoadSpinner,
+  },
 
   data() {
     return {
@@ -102,6 +108,8 @@ export default {
       nomeDigitado: '',
       highlightedIndex: -1,
       dropdownOpen: false,
+      loadingSubmit: false,
+      loadingInicial: true,
       formData: {
         id: null,
         dataCompra: '',
@@ -149,6 +157,7 @@ export default {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/');
         this.produtos = response.data;
+        this.loadingInicial = false;
       } catch (error) {
         console.error('Erro ao buscar produtos da API:', error);
       }
@@ -156,6 +165,7 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio()) {
+        this.loadingSubmit = true;
         try {
           //FORMATA VALOR
           this.formData.valorUnitario = this.replaceVirgulaPonto(this.formData.valorUnitario);
@@ -165,12 +175,17 @@ export default {
 
           const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData);
           if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.selectTab('compras');
+            this.loadingSubmit = false;
+            setTimeout(() => {
+              alert('Cadastro realizado com sucesso!');
+              this.selectTab('compras');
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao cadastrar Compra. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar dados para a API:', error);
         }
       } 

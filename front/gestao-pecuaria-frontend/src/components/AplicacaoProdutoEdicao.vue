@@ -82,7 +82,6 @@ import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
 
-
 export default {
   mixins: [masksMixin],
 

@@ -27,13 +27,13 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Compra</h1>
           <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
-              <input type="text" :class="{ 'is-invalid': !isDataCompraValida }" onfocus="(this.type='date')"
-                onblur="(this.type='text')" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataCompraCadastro" v-model="formData.dataCompra" title="Data" autocomplete="off">
+              <DateComponent type="text" :class="{ 'is-invalid': !isDataCompraValida }"
+                :placeholder="dataCompraPlaceholder" class="form-control" id="dataCompraCadastro"
+                v-model="formData.dataCompra" title="Data" autocomplete="off" @update:selectedDate="updateDataCompra" />
             </div>
             <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedProduto">
@@ -48,33 +48,33 @@
                 <ul class="options">
                   <li v-for="(produto, index) in produtosFiltrados" :key="produto.id" :value="produto.id"
                     @click="selectProduto(produto)" :class="{ 'highlighted': index === highlightedIndex }">{{
-          produto.nome }}</li>
+                      produto.nome }}</li>
                 </ul>
               </div>
             </div>
 
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Valor do Produto"><i class="fas fa-dollar-sign"></i></span>
-              <input ref="valor" v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }" type="text"
-                @input="aplicarValorMask" class="form-control" id="valorUnitario" autocomplete="off"
+              <input ref="valor" v-model="formData.valorUnitario" :class="{ 'is-invalid': !isValorUnitarioValido }"
+                type="text" @input="aplicarValorMask" class="form-control" id="valorUnitario" autocomplete="off"
                 :placeholder="valorUnitarioPlaceholder" title="Valor do Produto">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Quantidade do Produto"><i class="fas fa-boxes"></i></span>
+              <span class="input-group-text" title="Quantidade do Produto"><i class="fas fa-boxes"></i></span>
               <input v-model="formData.quantidadeComprada" :class="{ 'is-invalid': !isQuantidadeCompradaValida }"
-                type="text" @input="aplicarQuantidadeMask" class="form-control" id="quantidadeComprada" 
+                type="text" @input="aplicarQuantidadeMask" class="form-control" id="quantidadeComprada"
                 :placeholder="quantidadeCompradaPlaceholder" title="Quantidade do Produto" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Validade do Produto"><i class="fas fa-calendar-alt"></i></span>
-              <input type="text" :class="{ 'is-invalid': !isValidadeValida }" onfocus="(this.type='date')"
-                onblur="(this.type='text')" :placeholder="validadePlaceholder" class="form-control" autocomplete="off"
-                id="validadeCadastro" v-model="formData.validade" title="Validade do Produto">
+              <span class="input-group-text" title="Validade do Produto"><i class="fas fa-calendar-alt"></i></span>
+              <DateComponent type="text" :class="{ 'is-invalid': !isValidadeValida }" :placeholder="validadePlaceholder"
+                class="form-control" autocomplete="off" id="validadeCadastro" v-model="formData.validade"
+                title="Validade do Produto" @update:selectedDate="updateDataValidade" />
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Lote do Produto"><i class="fas fa-layer-group"></i></span>
-              <input v-model="formData.lote" type="text" class="form-control" autocomplete="off"
-                id="lote" :placeholder="lotePlaceholder" title="Lote do Produto">
+              <input v-model="formData.lote" type="text" class="form-control" autocomplete="off" id="lote"
+                :placeholder="lotePlaceholder" title="Lote do Produto">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('compras')">Cancelar</button>
@@ -92,12 +92,14 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
 
-  components:{
+  components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -140,19 +142,19 @@ export default {
   },
 
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarValorMask(event) {
       const value = event.target.value;
-      this.formData.valorUnitario =  this.valorMask(value);
+      this.formData.valorUnitario = this.valorMask(value);
     },
-    
+
     aplicarQuantidadeMask(event) {
       const value = event.target.value;
-      this.formData.quantidadeComprada =  this.digitosMask(value);
+      this.formData.quantidadeComprada = this.digitosMask(value);
     },
 
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarProdutos() {
       try {
         const response = await api.get('http://127.0.0.1:8000/produtos/');
@@ -170,8 +172,8 @@ export default {
           //FORMATA VALOR
           this.formData.valorUnitario = this.replaceVirgulaPonto(this.formData.valorUnitario);
 
-          console.log('form data: ' ,this.formData);
-          
+          console.log('form data: ', this.formData);
+
 
           const response = await api.post('http://127.0.0.1:8000/compras-produtos/', this.formData);
           if (response.status === 201) {
@@ -188,11 +190,11 @@ export default {
           this.loadingSubmit = false;
           console.error('Erro ao enviar dados para a API:', error);
         }
-      } 
+      }
     },
 
-    
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+
+    //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterProdutos() {
       this.produtosFiltrados = this.produtos.filter(produto => produto.nome.toLowerCase().includes(this.nomeDigitado.toLowerCase()));
     },
@@ -208,16 +210,16 @@ export default {
       this.dropdownOpen = !this.dropdownOpen;
       let nomeCorreto = false;
 
-      if(!this.dropdownOpen){
+      if (!this.dropdownOpen) {
         this.produtosFiltrados.forEach(produto => {
-          if(produto.nome.toLowerCase() === this.nomeDigitado.toLowerCase()){
+          if (produto.nome.toLowerCase() === this.nomeDigitado.toLowerCase()) {
             this.nomeDigitado = produto.nome;
             this.formData.produto = produto.id;
             this.produtosFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomeDigitado = '';
         }
       }
@@ -228,22 +230,22 @@ export default {
         this.dropdownOpen = false;
       }
       let nomeCorreto = false;
-      if(!this.dropdownOpen){
+      if (!this.dropdownOpen) {
         this.produtos.forEach(produto => {
-          if(produto.nome.toLowerCase() === this.nomeDigitado.toLowerCase()){
+          if (produto.nome.toLowerCase() === this.nomeDigitado.toLowerCase()) {
             this.nomeDigitado = produto.nome;
             this.formData.produto = produto.id;
             this.produtosFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomeDigitado = '';
         }
       }
     },
 
-    inputProduto(){
+    inputProduto() {
       this.filterProdutos();
       this.dropdownOpen = true;
     },
@@ -261,114 +263,120 @@ export default {
         this.selectProduto(this.produtosFiltrados[this.highlightedIndex]);
       }
     },
-    
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    verificaVazio(){
+
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    verificaVazio() {
       //DATA DA COMPRA
-      if(this.formData.dataCompra != null){
-        if(this.formData.dataCompra.trim() != ''){
+      if (this.formData.dataCompra != null) {
+        if (this.formData.dataCompra.trim() != '') {
           this.isDataCompraValida = true;
           this.dataCompraPlaceholder = 'Data*';
         }
-        else{
+        else {
           this.isDataCompraValida = false;
           this.dataCompraPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isDataCompraValida = false;
         this.dataCompraPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //PRODUTO DA COMPRADO
-      if(this.nomeDigitado != null){
-        if(this.nomeDigitado.trim() != ''){
+      if (this.nomeDigitado != null) {
+        if (this.nomeDigitado.trim() != '') {
           this.isProdutoValido = true;
           this.produtoPlaceholder = 'Produto*';
         }
-        else{
+        else {
           this.isProdutoValido = false;
           this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isProdutoValido = false;
         this.produtoPlaceholder = 'Produto é um Campo Obrigatório';
       }
 
       //VALOR DO PRODUTO
-      if(this.formData.valorUnitario != null){
-        if(this.formData.valorUnitario.trim() != ''){
+      if (this.formData.valorUnitario != null) {
+        if (this.formData.valorUnitario.trim() != '') {
           this.isValorUnitarioValido = true;
           this.valorUnitarioPlaceholder = 'Valor do Produto*';
         }
-        else{
+        else {
           this.isValorUnitarioValido = false;
           this.valorUnitarioPlaceholder = 'Valor do Produto é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isValorUnitarioValido = false;
         this.valorUnitarioPlaceholder = 'Valor do Produto é um Campo Obrigatório';
       }
 
       //QUANTIDADE COMPRADA
-      if(this.formData.quantidadeComprada != null){
-        if(this.formData.quantidadeComprada.trim() != ''){
+      if (this.formData.quantidadeComprada != null) {
+        if (this.formData.quantidadeComprada.trim() != '') {
           this.isQuantidadeCompradaValida = true;
           this.quantidadeCompradaPlaceholder = 'Quantidade do Produto*';
         }
-        else{
+        else {
           this.isQuantidadeCompradaValida = false;
           this.quantidadeCompradaPlaceholder = 'Quantidade do Produto é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isQuantidadeCompradaValida = false;
         this.quantidadeCompradaPlaceholder = 'Quantidade do Produto é um Campo Obrigatório';
       }
 
       //VALIDADE DO PRODUTO
-      if(this.formData.validade != null){
-        if(this.formData.validade.trim() != ''){
+      if (this.formData.validade != null) {
+        if (this.formData.validade.trim() != '') {
           this.isValidadeValida = true;
           this.validadePlaceholder = 'Validade do Produto*';
         }
-        else{
+        else {
           this.isValidadeValida = false;
           this.validadePlaceholder = 'Validade do Produto é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isValidadeValida = false;
         this.validadePlaceholder = 'Validade do Produto é um Campo Obrigatório';
       }
 
       //LOTE DO PRODUTO
-      if(this.formData.lote != null){
-        if(this.formData.lote.trim() == ''){
+      if (this.formData.lote != null) {
+        if (this.formData.lote.trim() == '') {
           this.formData.lote = null;
         }
       }
 
-      return(
+      return (
         this.isDataCompraValida &&
         this.isProdutoValido &&
-        this.isValorUnitarioValido && 
-        this.isQuantidadeCompradaValida && 
+        this.isValorUnitarioValido &&
+        this.isQuantidadeCompradaValida &&
         this.isValidadeValida
       );
     },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-checkEnter(event) {
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    updateDataCompra(data) {
+      this.formData.dataCompra = data;
+    },
+    updateDataValidade(data) {
+      this.formData.validade = data;
+    },
+    checkEnter(event) {
       if (event.key === 'Enter') {
         this.submitForm();
       }
-    },    
-selectTab(tab) {
+    },
+    selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'compras') {
         this.$router.push('/compraprodutos');
@@ -378,7 +386,7 @@ selectTab(tab) {
       }
     },
 
-    replaceVirgulaPonto(valorString){
+    replaceVirgulaPonto(valorString) {
       valorString = valorString.replace(",", ".");
 
       return valorString;
@@ -483,10 +491,10 @@ selectTab(tab) {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
 
-.select{
+.select {
   margin-bottom: 0px !important;
 }
 </style>

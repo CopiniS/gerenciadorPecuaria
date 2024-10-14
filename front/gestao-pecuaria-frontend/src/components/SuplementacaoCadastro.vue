@@ -25,9 +25,8 @@
             </div>
             <div class="mb-3 input-group">
               <label for="dataInicial" class="input-group-text" title="Data Inicial"><i class="fas fa-calendar-alt"></i></label>
-              <input type="text" :class="{ 'is-invalid': !isDataInicialValida }" onfocus="(this.type='date')"
-                onblur="(this.type='text')" :placeholder="dataInicialPlaceholder" class="form-control"
-                id="dataInicialCadastro" v-model="formData.dataInicial" title="Data Inicial">
+              <DateComponent type="text" :class="{ 'is-invalid': !isDataInicialValida }" :placeholder="dataInicialPlaceholder" class="form-control"
+                id="dataInicialCadastro" v-model="formData.dataInicial" title="Data Inicial" @update:selectedDate="updateDataInicial"/>
             </div>
             <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
               @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
@@ -85,12 +84,14 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
 
   components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -454,6 +455,9 @@ export default {
 
 
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+updateDataInicial(data) {
+      this.formData.dataInicial = data;
+    },
 checkEnter(event) {
       if (event.key === 'Enter') {
         this.submitForm();

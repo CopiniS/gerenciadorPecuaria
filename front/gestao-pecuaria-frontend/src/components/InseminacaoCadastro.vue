@@ -25,24 +25,27 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
-              <input v-model="formData.dataInseminacao" :class="{ 'is-invalid': !isDataValida }" type="text"
-                onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
-                class="form-control" id="dataInseminacaoCadastro" title="Data">
+              <DateComponent v-model="formData.dataInseminacao" :class="{ 'is-invalid': !isDataValida }" type="text"
+                :placeholder="dataPlaceholder" class="form-control" id="dataInseminacaoCadastro" title="Data"
+                @update:selectedDate="updateDataInseminacao" />
             </div>
-            <div ref="dropdownVeterinario" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsVeterinario('up')"
-              @keydown.down.prevent="navigateOptionsVeterinario('down')" @keydown.enter.prevent="selectHighlightedVeterinario">
+            <div ref="dropdownVeterinario" class="select mb-3 input-group"
+              @keydown.up.prevent="navigateOptionsVeterinario('up')"
+              @keydown.down.prevent="navigateOptionsVeterinario('down')"
+              @keydown.enter.prevent="selectHighlightedVeterinario">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownVeterinario">
                 <span class="input-group-text" title="Veterinario"><i class="fas fa-box"></i></span>
-                <input v-model="nomeVeterinario" :class="{ 'is-invalid': !isVeterinarioValido }" @input="inputVeterinario"
-                  @keydown.up.prevent="navigateOptionsVeterinario('up')" autocomplete="off"
+                <input v-model="nomeVeterinario" :class="{ 'is-invalid': !isVeterinarioValido }"
+                  @input="inputVeterinario" @keydown.up.prevent="navigateOptionsVeterinario('up')" autocomplete="off"
                   @keydown.down.prevent="navigateOptionsVeterinario('down')" type="text" class="form-control"
                   :placeholder="veterinarioPlaceholder" id="caixa-select" title="Veterinario">
               </div>
               <div class="itens" v-show="dropdownVeterinarioOpen">
                 <ul class="options">
-                  <li v-for="(veterinario, index) in veterinariosFiltrados" :key="veterinario.id" :value="veterinario.id"
-                    @click="selectVeterinario(veterinario)" :class="{ 'highlighted': index === highlightedIndexVeterinario }">{{
-                    veterinario.nome }}</li>
+                  <li v-for="(veterinario, index) in veterinariosFiltrados" :key="veterinario.id"
+                    :value="veterinario.id" @click="selectVeterinario(veterinario)"
+                    :class="{ 'highlighted': index === highlightedIndexVeterinario }">{{
+                      veterinario.nome }}</li>
                 </ul>
               </div>
             </div>
@@ -60,7 +63,7 @@
                 :class="{ 'is-invalid': !isIdentificadorTouroValido }" autocomplete="off">
             </div>
             <div ref="dropdownFemea" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsFemea('up')"
-            @keydown.down.prevent="navigateOptionsFemea('down')" @keydown.enter.prevent="selectHighlightedFemea">
+              @keydown.down.prevent="navigateOptionsFemea('down')" @keydown.enter.prevent="selectHighlightedFemea">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownFemea">
                 <span class="input-group-text" title="Fêmea"><i class="fas fa-box"></i></span>
                 <input v-model="brinco" :class="{ 'is-invalid': !isFemeaValida }" @input="inputFemea"
@@ -72,14 +75,14 @@
                 <ul class="options">
                   <li v-for="(femea, index) in femeasFiltradas" :key="femea.id" :value="femea.id"
                     @click="selectFemea(femea)" :class="{ 'highlighted': index === highlightedIndexFemea }">{{
-                    femea.brinco }}</li>
+                      femea.brinco }}</li>
                 </ul>
               </div>
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.observacao" type="text" class="form-control" autocomplete="off"
-                id="observacao" placeholder="Observação" title="Observação">
+              <input v-model="formData.observacao" type="text" class="form-control" autocomplete="off" id="observacao"
+                placeholder="Observação" title="Observação">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('inseminacoes')">Cancelar</button>
@@ -96,12 +99,14 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
 
   components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -190,7 +195,7 @@ export default {
             setTimeout(() => {
               alert('Cadastro realizado com sucesso!');
               this.$router.push('/inseminacoes');
-              
+
             }, 100);
           } else {
             this.loadingSubmit = false;
@@ -205,7 +210,7 @@ export default {
     },
 
 
-//LÓGICA DOS SELECT VETERINARIO----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT VETERINARIO----------------------------------------------------------------------------------------------------------------------------------------------------
     filterVeterinarios() {
       this.veterinariosFiltrados = this.veterinarios.filter(veterinario => veterinario.nome.toLowerCase().includes(this.nomeVeterinario.toLowerCase()));
     },
@@ -222,30 +227,30 @@ export default {
       let nomeCorreto = false;
       let brincoCorreto = false;
 
-      if(!this.dropdownVeterinarioOpen){
+      if (!this.dropdownVeterinarioOpen) {
         this.veterinariosFiltrados.forEach(veterinario => {
-          if(veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()){
+          if (veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()) {
             this.nomeVeterinario = veterinario.nome;
             this.formData.veterinario = veterinario.id;
             this.veterinariosFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomeVeterinario = '';
         }
       }
 
-      else if(this.dropdownFemeaOpen){
+      else if (this.dropdownFemeaOpen) {
         this.femeas.forEach(femea => {
-          if(femea.brinco === this.brinco){
+          if (femea.brinco === this.brinco) {
             this.formData.animal = femea.id;
             this.femeasFiltradas = [];
             brincoCorreto = true;
-            
+
           }
         });
-        if(!brincoCorreto){
+        if (!brincoCorreto) {
           this.formData.animal = null;
           this.brinco = ''
         }
@@ -253,7 +258,7 @@ export default {
         this.filterVeterinarios();
       }
 
-      else{
+      else {
         this.filterVeterinarios();
       }
     },
@@ -262,14 +267,14 @@ export default {
       if (this.dropdownVeterinarioOpen && this.$refs.dropdownVeterinario && !this.$refs.dropdownVeterinario.contains(event.target)) {
         let nomeCorreto = false;
         this.veterinarios.forEach(veterinario => {
-          if(veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()){
+          if (veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()) {
             this.nomeVeterinario = veterinario.nome;
             this.formData.veterinario = veterinario.id;
             this.veterinariosFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.veterinario = null;
           this.nomeVeterinario = '';
         }
@@ -277,7 +282,7 @@ export default {
       }
     },
 
-    inputVeterinario(){
+    inputVeterinario() {
       this.filterVeterinarios();
       this.dropdownVeterinarioOpen = true;
     },
@@ -297,7 +302,7 @@ export default {
     },
 
 
-//LÓGICA DOS SELECT FEMEA----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT FEMEA----------------------------------------------------------------------------------------------------------------------------------------------------
     filterFemeas() {
       this.femeasFiltradas = this.femeas.filter(femea => femea.brinco.includes(this.brinco));
     },
@@ -315,29 +320,29 @@ export default {
       let brincoCorreto = false;
       let nomeCorreto = false;
 
-      if(!this.dropdownFemeaOpen){
+      if (!this.dropdownFemeaOpen) {
         this.femeasFiltradas.forEach(femea => {
-          if(femea.brinco === this.brinco){
+          if (femea.brinco === this.brinco) {
             this.brinco = femea.brinco;
             this.formData.animal = femea.id;
             this.femeasFiltradas = [];
             brincoCorreto = true;
           }
         });
-        if(!brincoCorreto){
+        if (!brincoCorreto) {
           this.brinco = '';
         }
       }
-      else if(this.dropdownVeterinarioOpen){
+      else if (this.dropdownVeterinarioOpen) {
         this.veterinarios.forEach(veterinario => {
-          if(veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()){
+          if (veterinario.nome.toLowerCase() === this.nomeVeterinario.toLowerCase()) {
             this.formData.veterinario = veterinario.id;
             this.veterinariosFiltrados = [];
             nomeCorreto = true;
-            
+
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.veterinario = null;
           this.nomeVeterinario = ''
         }
@@ -345,7 +350,7 @@ export default {
         this.filterFemeas();
       }
 
-      else{
+      else {
         this.filterFemeas();
       }
     },
@@ -354,12 +359,12 @@ export default {
       let brincoCorreto = false;
       if (this.dropdownFemeaOpen && this.$refs.dropdownFemea && !this.$refs.dropdownFemea.contains(event.target)) {
         this.femeas.forEach(femea => {
-          if(femea.brinco === this.brinco){
+          if (femea.brinco === this.brinco) {
             this.selectFemea(femea);
             brincoCorreto = true;
           }
         });
-        if(!brincoCorreto){
+        if (!brincoCorreto) {
           this.brinco = '';
           this.formData.animal = null;
         }
@@ -376,18 +381,18 @@ export default {
     },
 
     navigateOptionsFemea(direction) {
-    if (direction === 'up' && this.highlightedIndexFemea > 0) {
-      this.highlightedIndexFemea--;
-    } else if (direction === 'down' && this.highlightedIndexFemea < this.femeasFiltradas.length - 1) {
-      this.highlightedIndexFemea++;
-    }
-  },
+      if (direction === 'up' && this.highlightedIndexFemea > 0) {
+        this.highlightedIndexFemea--;
+      } else if (direction === 'down' && this.highlightedIndexFemea < this.femeasFiltradas.length - 1) {
+        this.highlightedIndexFemea++;
+      }
+    },
 
-  selectHighlightedFemea() {
-    if (this.highlightedIndexFemea >= 0 && this.highlightedIndexFemea < this.femeasFiltradas.length) {
-      this.selectFemea(this.femeasFiltradas[this.highlightedIndexFemea]);
-    }
-  },
+    selectHighlightedFemea() {
+      if (this.highlightedIndexFemea >= 0 && this.highlightedIndexFemea < this.femeasFiltradas.length) {
+        this.selectFemea(this.femeasFiltradas[this.highlightedIndexFemea]);
+      }
+    },
 
 
     //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -471,6 +476,9 @@ export default {
 
 
     //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    updateDataInseminacao(data) {
+      this.formData.dataInseminacao = data;
+    },
     checkEnter(event) {
       if (event.key === 'Enter') {
         this.submitForm();
@@ -582,7 +590,7 @@ export default {
   background-color: #f0f0f0;
 }
 
-.select{
+.select {
   margin-bottom: 0px !important;
 }
 

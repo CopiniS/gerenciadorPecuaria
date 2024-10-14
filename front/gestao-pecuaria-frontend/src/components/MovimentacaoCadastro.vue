@@ -1,56 +1,25 @@
 <template>
   <div class="background">
-    <LoadSpinner :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialPiquetesOrigem || loadingInicialPiquetesDestino" />
+    <LoadSpinner
+      :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialPiquetesOrigem || loadingInicialPiquetesDestino" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button
-          class="nav-link"
-          :class="{ active: activeTab === 'movimentacoes' }"
-          id="nav-vet-tab"
-          @click="selectTab('movimentacoes')"
-          type="button"
-          role="tab"
-          aria-controls="nav-vet"
-          aria-selected="true"
-        >
+        <button class="nav-link" :class="{ active: activeTab === 'movimentacoes' }" id="nav-vet-tab"
+          @click="selectTab('movimentacoes')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">
           Lista de Movimentação
         </button>
-        <button
-          class="nav-link"
-          :class="{ active: activeTab === 'cadastro' }"
-          id="nav-cadastro-tab"
-          @click="selectTab('cadastro')"
-          type="button"
-          role="tab"
-          aria-controls="nav-cadastro"
-          aria-selected="false"
-        >
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">
           Cadastro de Movimentação
         </button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div
-        class="tab-pane fade"
-        :class="{ 'show active': activeTab === 'movimentacoes' }"
-        id="nav-vet"
-        role="tabpanel"
-        aria-labelledby="nav-vet-tab"
-      ></div>
-      <div
-        class="tab-pane fade"
-        :class="{ 'show active': activeTab === 'cadastro' }"
-        id="nav-cadastro"
-        role="tabpanel"
-        aria-labelledby="nav-cadastro-tab"
-      >
-        <div
-          class="table-container"
-          id="cadastro"
-          tabindex="-1"
-          aria-labelledby="cadastroLabel"
-          aria-hidden="true"
-        >
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'movimentacoes' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab"></div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
+        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">
             Cadastro de Movimentação
           </h1>
@@ -59,61 +28,30 @@
               <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Data"
-                ><i class="fas fa-calendar-alt"></i
-              ></span>
-              <input
-                type="text"
-                onfocus="(this.type='date')"
-                onblur="(this.type='text')"
-                :placeholder="dataPlaceholder"
-                class="form-control"
-                id="dataMovimentacaoCadastro"
-                v-model="formData.dataMovimentacao"
-                :class="{ 'is-invalid': !isDataValida }"
-                title="Data"
-              />
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
+              <DateComponent type="text" :placeholder="dataPlaceholder" class="form-control"
+                id="dataMovimentacaoCadastro" v-model="formData.dataMovimentacao"
+                :class="{ 'is-invalid': !isDataValida }" title="Data" @update:selectedDate="updateDataMovimentacao" />
             </div>
 
-            <div
-              ref="dropdownPiqueteDestino"
-              class="select mb-3 input-group"
+            <div ref="dropdownPiqueteDestino" class="select mb-3 input-group"
               @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
               @keydown.down.prevent="navigateOptionsPiqueteDestino('down')"
-              @keydown.enter.prevent="selectHighlightedPiqueteDestino"
-            >
-              <div
-                class="select-option mb-3 input-group"
-                @click.stop="toggleDropdownPiqueteDestino"
-              >
-                <span class="input-group-text" title="Piquete de Destino"
-                  ><i class="fas fa-box"></i
-                ></span>
-                <input
-                  v-model="nomePiqueteDestino"
-                  :class="{ 'is-invalid': !isPiqueteDestinoValido }"
-                  @input="inputPiqueteDestino"
-                  @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
-                  autocomplete="off"
-                  @keydown.down.prevent="navigateOptionsPiqueteDestino('down')"
-                  type="text"
-                  class="form-control"
-                  :placeholder="piqueteDestinoPlaceholder"
-                  id="caixa-select"
-                  title="Piquete de Destino"
-                />
+              @keydown.enter.prevent="selectHighlightedPiqueteDestino">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteDestino">
+                <span class="input-group-text" title="Piquete de Destino"><i class="fas fa-box"></i></span>
+                <input v-model="nomePiqueteDestino" :class="{ 'is-invalid': !isPiqueteDestinoValido }"
+                  @input="inputPiqueteDestino" @keydown.up.prevent="navigateOptionsPiqueteDestino('up')"
+                  autocomplete="off" @keydown.down.prevent="navigateOptionsPiqueteDestino('down')" type="text"
+                  class="form-control" :placeholder="piqueteDestinoPlaceholder" id="caixa-select"
+                  title="Piquete de Destino" />
               </div>
               <div class="itens" v-show="dropdownPiqueteDestinoOpen">
                 <ul class="options">
-                  <li
-                    v-for="(piqueteDestino, index) in piquetesDestinoFiltrados"
-                    :key="piqueteDestino.id"
-                    :value="piqueteDestino.id"
-                    @click="selectPiqueteDestino(piqueteDestino)"
-                    :class="{
+                  <li v-for="(piqueteDestino, index) in piquetesDestinoFiltrados" :key="piqueteDestino.id"
+                    :value="piqueteDestino.id" @click="selectPiqueteDestino(piqueteDestino)" :class="{
                       highlighted: index === highlightedIndexPiqueteDestino,
-                    }"
-                  >
+                    }">
                     {{ piqueteDestino.nome }} -
                     {{ piqueteDestino.propriedade.nome }}
                   </li>
@@ -122,59 +60,29 @@
             </div>
 
             <div class="mb-3 input-group position-relative">
-              <span class="input-group-text" title="Motivo"
-                ><i class="fas fa-comment"></i
-              ></span>
-              <input
-                v-model="formData.motivo"
-                type="text"
-                class="form-control"
-                id="motivo"
-                placeholder="Motivo"
-                title="Motivo"
-                autocomplete="off"
-              />
+              <span class="input-group-text" title="Motivo"><i class="fas fa-comment"></i></span>
+              <input v-model="formData.motivo" type="text" class="form-control" id="motivo" placeholder="Motivo"
+                title="Motivo" autocomplete="off" />
             </div>
 
-            <div
-              ref="dropdownPiqueteOrigem"
-              class="select mb-3 input-group"
+            <div ref="dropdownPiqueteOrigem" class="select mb-3 input-group"
               @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
               @keydown.down.prevent="navigateOptionsPiqueteOrigem('down')"
-              @keydown.enter.prevent="selectHighlightedPiqueteOrigem"
-            >
-              <div
-                class="select-option mb-3 input-group"
-                @click.stop="toggleDropdownPiqueteOrigem"
-              >
-                <span class="input-group-text" title="Piquete de Origem"
-                  ><i class="fas fa-box"></i
-                ></span>
-                <input
-                  v-model="nomePiqueteOrigem"
-                  :class="{ 'is-invalid': !isPiqueteOrigemValido }"
-                  @input="inputPiqueteOrigem"
-                  @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
-                  autocomplete="off"
-                  @keydown.down.prevent="navigateOptionsPiqueteOrigem('down')"
-                  type="text"
-                  class="form-control"
-                  :placeholder="piqueteOrigemPlaceholder"
-                  id="caixa-select"
-                  title="Piquete de Origem"
-                />
+              @keydown.enter.prevent="selectHighlightedPiqueteOrigem">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiqueteOrigem">
+                <span class="input-group-text" title="Piquete de Origem"><i class="fas fa-box"></i></span>
+                <input v-model="nomePiqueteOrigem" :class="{ 'is-invalid': !isPiqueteOrigemValido }"
+                  @input="inputPiqueteOrigem" @keydown.up.prevent="navigateOptionsPiqueteOrigem('up')"
+                  autocomplete="off" @keydown.down.prevent="navigateOptionsPiqueteOrigem('down')" type="text"
+                  class="form-control" :placeholder="piqueteOrigemPlaceholder" id="caixa-select"
+                  title="Piquete de Origem" />
               </div>
               <div class="itens" v-show="dropdownPiqueteOrigemOpen">
                 <ul class="options">
-                  <li
-                    v-for="(piqueteOrigem, index) in piquetesOrigemFiltrados"
-                    :key="piqueteOrigem.id"
-                    :value="piqueteOrigem.id"
-                    @click="selectPiqueteOrigem(piqueteOrigem)"
-                    :class="{
+                  <li v-for="(piqueteOrigem, index) in piquetesOrigemFiltrados" :key="piqueteOrigem.id"
+                    :value="piqueteOrigem.id" @click="selectPiqueteOrigem(piqueteOrigem)" :class="{
                       highlighted: index === highlightedIndexPiqueteOrigem,
-                    }"
-                  >
+                    }">
                     {{ piqueteOrigem.nome }} -
                     {{ piqueteOrigem.propriedade.nome }}
                   </li>
@@ -185,34 +93,18 @@
             <div class="mb-3 input-group" v-if="animaisFiltrados.length != 0">
               <div class="checkbox-container">
                 <label v-if="animaisFiltrados.length != 0">
-                  <input
-                    type="checkbox"
-                    v-model="selecionaTodos"
-                    @change="ativaSelecaoTodos"
-                  />
+                  <input type="checkbox" v-model="selecionaTodos" @change="ativaSelecaoTodos" />
                   Selecionar todos
                 </label>
                 <hr />
-                <label
-                  @change="desativaSelecaoTodos"
-                  v-for="animal in animaisOrdenados"
-                  :key="animal.id"
-                >
-                  <input
-                    type="checkbox"
-                    :value="animal.id"
-                    v-model="formData.animal"
-                  />
+                <label @change="desativaSelecaoTodos" v-for="animal in animaisOrdenados" :key="animal.id">
+                  <input type="checkbox" :value="animal.id" v-model="formData.animal" />
                   {{ animal.brinco }}
                 </label>
               </div>
             </div>
             <div class="button-group justify-content-end">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                @click="selectTab('movimentacoes')"
-              >
+              <button type="button" class="btn btn-secondary" @click="selectTab('movimentacoes')">
                 Cancelar
               </button>
               <button type="submit" class="btn btn-success">Enviar</button>
@@ -228,12 +120,14 @@
 import api from "/src/interceptadorAxios";
 import { masksMixin } from "../mixins/maks";
 import LoadSpinner from "./LoadSpiner.vue";
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
 
   components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -367,7 +261,7 @@ export default {
             if (response.status === 201) {
               this.loadingSubmit = false;
               setTimeout(() => {
-                
+
                 alert("Cadastro realizado com sucesso!");
                 this.$router.push("/movimentacoes");
               }, 100);
@@ -486,7 +380,7 @@ export default {
       } else if (
         direction === "down" &&
         this.highlightedIndexPiqueteDestino <
-          this.piquetesDestinoFiltrados.length - 1
+        this.piquetesDestinoFiltrados.length - 1
       ) {
         this.highlightedIndexPiqueteDestino++;
       }
@@ -496,7 +390,7 @@ export default {
       if (
         this.highlightedIndexPiqueteDestino >= 0 &&
         this.highlightedIndexPiqueteDestino <
-          this.piquetesDestinoFiltrados.length
+        this.piquetesDestinoFiltrados.length
       ) {
         this.selectPiqueteDestino(
           this.piquetesDestinoFiltrados[this.highlightedIndexPiqueteDestino]
@@ -605,7 +499,7 @@ export default {
       } else if (
         direction === "down" &&
         this.highlightedIndexPiqueteOrigem <
-          this.piquetesOrigemFiltrados.length - 1
+        this.piquetesOrigemFiltrados.length - 1
       ) {
         this.highlightedIndexPiqueteOrigem++;
       }
@@ -687,6 +581,9 @@ export default {
     },
 
     //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    updateDataMovimentacao(data) {
+      this.formData.dataMovimentacao = data;
+    },
     confirmarCadastroMov() {
       if (confirm("Movimentações não podem ser alteradas ou apagadas do sistema. Tem certeza que deseja continuar com o cadastro?")) {
         this.submitForm();
@@ -829,9 +726,12 @@ export default {
   border: 1px solid #6c757d;
   border-radius: 5px;
   padding: 20px;
-  width: 40%; /* Largura do contêiner */
-  height: 150px; /* Altura do contêiner */
-  overflow-y: auto; /* Adiciona uma barra de rolagem se necessário */
+  width: 40%;
+  /* Largura do contêiner */
+  height: 150px;
+  /* Altura do contêiner */
+  overflow-y: auto;
+  /* Adiciona uma barra de rolagem se necessário */
 }
 
 .checkbox-container label {

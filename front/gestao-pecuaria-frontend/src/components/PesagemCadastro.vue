@@ -3,30 +3,34 @@
     <LoadSpinner :isLoading="loadingSubmit || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link" :class="{ active: activeTab === 'pesagens' }" id="nav-vet-tab" @click="selectTab('pesagens')" 
-        type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de Pesagem</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Pesagem</button>
+        <button class="nav-link" :class="{ active: activeTab === 'pesagens' }" id="nav-vet-tab"
+          @click="selectTab('pesagens')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista de
+          Pesagem</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Pesagem</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'pesagens' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'pesagens' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Pesagem</h1>
-            <form @submit.prevent="submitForm" @keydown="checkEnter">
-              <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+          <form @submit.prevent="submitForm" @keydown="checkEnter">
+            <div class="mb-3 input-group">
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
-                <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"  
-                class="form-control" id="dataPesagemCadastro" v-model="formData.dataPesagem" 
-                :class="{'is-invalid': !isDataValida}" title="Data" autocomplete="off">
-              </div>
-              <hr>
-              <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
+            <div class="mb-3 input-group">
+              <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
+              <DateComponent type="text" :placeholder="dataPlaceholder" class="form-control" id="dataPesagemCadastro"
+                v-model="formData.dataPesagem" :class="{ 'is-invalid': !isDataValida }" title="Data" autocomplete="off"
+                @update:selectedDate="updateDataPesagem" />
+            </div>
+            <hr>
+            <div ref="dropdown" class="select mb-3 input-group" @keydown.up.prevent="navigateOptions('up')"
               @keydown.down.prevent="navigateOptions('down')" @keydown.enter.prevent="selectHighlightedAnimal">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdown">
                 <span class="input-group-text" title="Animal"><i class="fas fa-user-tag"></i></span>
@@ -39,25 +43,26 @@
                 <ul class="options">
                   <li v-for="(animal, index) in animaisFiltrados" :key="animal.id" :value="animal.id"
                     @click="selectAnimal(animal)" :class="{ 'highlighted': index === highlightedIndex }">{{
-                    animal.brinco }}</li>
+                      animal.brinco }}</li>
                 </ul>
               </div>
             </div>
-              <div class="mb-3 input-group">
-                <span class="input-group-text" title="Peso"><i class="fas fa-weight"></i></span>
-                <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control" autocomplete="off"
-                id="peso" :placeholder="pesoPlaceholder" :class="{'is-invalid': !isPesoValido}" title="Peso">
-              </div>
-              <div class="mb-3 input-group position-relative">
-                <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
-                <input v-model="formData.observacao" type="text" autocomplete="off"
-                class="form-control" id="observacao" placeholder="Observação" title="Observação">
-              </div>
-              <div class="button-group justify-content-end">
-                    <button type="button" class="btn btn-secondary" @click="selectTab('pesagens')">Cancelar</button>
-                    <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
-              </div>
-            </form>
+            <div class="mb-3 input-group">
+              <span class="input-group-text" title="Peso"><i class="fas fa-weight"></i></span>
+              <input v-model="formData.peso" type="text" @input="aplicarPesoMask" class="form-control"
+                autocomplete="off" id="peso" :placeholder="pesoPlaceholder" :class="{ 'is-invalid': !isPesoValido }"
+                title="Peso">
+            </div>
+            <div class="mb-3 input-group position-relative">
+              <span class="input-group-text" title="Observação"><i class="fas fa-sticky-note"></i></span>
+              <input v-model="formData.observacao" type="text" autocomplete="off" class="form-control" id="observacao"
+                placeholder="Observação" title="Observação">
+            </div>
+            <div class="button-group justify-content-end">
+              <button type="button" class="btn btn-secondary" @click="selectTab('pesagens')">Cancelar</button>
+              <button type="button" class="btn btn-success" @click="submitForm">Enviar</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -68,13 +73,14 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
-
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
 
   components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -109,30 +115,30 @@ export default {
   },
 
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarPesoMask(event){
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarPesoMask(event) {
       const value = event.target.value;
       this.formData.peso = this.valorMask(value);
     },
 
-    aplicarBrincoMask(value){
+    aplicarBrincoMask(value) {
       this.brinco = this.brincoFiltroMask(value);
     },
 
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarAnimaisDaApi() {
-        try {
-            const response = await api.get('http://127.0.0.1:8000/animais/vivos' , {
-            params: {
-                propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
-            },
-            });
-            this.animais = response.data;
-            this.loadingInicial = false;
-        } catch (error) {
-            console.error('Erro ao buscar animais da API:', error);
-        }
+      try {
+        const response = await api.get('http://127.0.0.1:8000/animais/vivos', {
+          params: {
+            propriedadeSelecionada: localStorage.getItem('propriedadeSelecionada')
+          },
+        });
+        this.animais = response.data;
+        this.loadingInicial = false;
+      } catch (error) {
+        console.error('Erro ao buscar animais da API:', error);
+      }
     },
 
     async submitForm() {
@@ -142,12 +148,12 @@ export default {
           //FORMATA PESO
           this.formData.peso = this.replaceVirgulaPonto(this.formData.peso);
 
-          const response = await api.post('http://127.0.0.1:8000/pesagens/', this.formData , {
-        });
+          const response = await api.post('http://127.0.0.1:8000/pesagens/', this.formData, {
+          });
 
           if (response.status === 201) {
             this.loadingSubmit = false;
-            setTimeout(() => {  
+            setTimeout(() => {
               alert('Cadastro realizado com sucesso!');
               this.$router.push('/pesagens');
             }, 100);
@@ -160,40 +166,40 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } 
+      }
     },
 
 
-//LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECTS----------------------------------------------------------------------------------------------------------------------------------------------------
     filterAnimais() {
-        this.animaisFiltrados = this.animais.filter(animal => animal.brinco.includes(this.brinco));
+      this.animaisFiltrados = this.animais.filter(animal => animal.brinco.includes(this.brinco));
     },
 
     selectAnimal(animal) {
-        this.brinco = animal.brinco;
-        this.formData.animal = animal.id;
-        this.animaisFiltrados = [];
-        this.dropdownOpen = false;
+      this.brinco = animal.brinco;
+      this.formData.animal = animal.id;
+      this.animaisFiltrados = [];
+      this.dropdownOpen = false;
     },
 
     toggleDropdown() {
       this.dropdownOpen = !this.dropdownOpen;
       let nomeCorreto = false;
 
-      if(!this.dropdownOpen){
+      if (!this.dropdownOpen) {
         this.animaisFiltrados.forEach(animal => {
-          if(animal.brinco === this.brinco){
+          if (animal.brinco === this.brinco) {
             this.brinco = animal.brinco;
             this.formData.animal = animal.id;
             this.animaisFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.brinco = '';
         }
       }
-      else{
+      else {
         this.filterAnimais();
       }
     },
@@ -203,22 +209,22 @@ export default {
         this.dropdownOpen = false;
       }
       let nomeCorreto = false;
-      if(!this.dropdownOpen){
+      if (!this.dropdownOpen) {
         this.animais.forEach(animal => {
-          if(animal.brinco === this.brinco){
+          if (animal.brinco === this.brinco) {
             this.brinco = animal.brinco;
             this.formData.animal = animal.id;
             this.animaisFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.brinco = '';
         }
       }
     },
 
-    inputBrinco(event){
+    inputBrinco(event) {
       const value = event.target.value;
       this.aplicarBrincoMask(value);
       this.filterAnimais();
@@ -240,54 +246,54 @@ export default {
     },
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    verificaVazio(){
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    verificaVazio() {
       //DATA DA PESAGEM
-      if(this.formData.dataPesagem != null){
-        if(this.formData.dataPesagem.trim() != ''){
+      if (this.formData.dataPesagem != null) {
+        if (this.formData.dataPesagem.trim() != '') {
           this.isDataValida = true;
           this.dataPlaceholder = 'Data*';
         }
-        else{
+        else {
           this.isDataValida = false;
           this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isDataValida = false;
         this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //BRINCO
-      if(this.brinco != null){
-        if(this.brinco.trim() != ''){
+      if (this.brinco != null) {
+        if (this.brinco.trim() != '') {
           this.isAnimalValido = true;
           this.animalPlaceholder = 'Animal*';
         }
-        else{
+        else {
           this.isAnimalValido = false;
           this.animalPlaceholder = 'Animal é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isAnimalValido = false;
         this.animalPlaceholder = 'Animal é um Campo Obrigatório';
       }
 
       //PESO DO ANIMAL
-      if(this.formData.peso != null){
-        if(this.formData.peso.trim() != ''){
+      if (this.formData.peso != null) {
+        if (this.formData.peso.trim() != '') {
           this.isPesoValido = true;
           this.pesoPlaceholder = 'Peso*';
         }
-        else{
+        else {
           this.isPesoValido = false;
           this.pesoPlaceholder = 'Peso é um Campo Obrigatório';
         }
       }
 
       //OBSERVAÇÕES
-      if(this.formData.observacao != null && this.formData.observacao.trim() == ''){
+      if (this.formData.observacao != null && this.formData.observacao.trim() == '') {
         this.formData.observacao = null;
       }
 
@@ -299,20 +305,23 @@ export default {
     },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-checkEnter(event) {
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    updateDataPesagem(data) {
+      this.formData.dataPesagem = data;
+    },
+    checkEnter(event) {
       if (event.key === 'Enter') {
         this.submitForm();
       }
-    },    
-selectTab(tab) {
+    },
+    selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'pesagens') {
         this.$router.push('/pesagens');
       }
     },
 
-    replaceVirgulaPonto(valorString){
+    replaceVirgulaPonto(valorString) {
       valorString = valorString.replace(",", ".");
 
       return valorString;
@@ -413,10 +422,10 @@ selectTab(tab) {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
 
-.select{
+.select {
   margin-bottom: 0px !important;
 }
 

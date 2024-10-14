@@ -4,31 +4,34 @@
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
-        @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais"
-        aria-selected="true">Lista de Animais</button>
+          @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
+          de Animais</button>
         <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-visualizacao-tab"
-          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-visualizacao" 
+          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-visualizacao"
           aria-selected="true">Visualização do Animal</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab" @click="selectTab('cadastro')" 
-        type="button" role="tab" aria-controls="nav-cadastro" aria-selected="false">Cadastro de Ocorrência</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Ocorrência</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'ocorrencias' }" id="nav-vet" role="tabpanel" aria-labelledby="nav-vet-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'ocorrencias' }" id="nav-vet" role="tabpanel"
+        aria-labelledby="nav-vet-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel" aria-labelledby="nav-cadastro-tab">
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
         <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Ocorrência</h1>
           <h2 class="title fs-5" id="cadastroLabel">Animal: {{ brinco }}</h2>
           <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
-            <div class="mb-3 input-group" >
+            <div class="mb-3 input-group">
               <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                :placeholder="dataPlaceholder" class="form-control" id="dataOcorrencia" autocomplete="off"
-                v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }" title="Data">
+              <DateComponent type="text" :placeholder="dataPlaceholder" class="form-control" id="dataOcorrencia"
+                autocomplete="off" v-model="formData.dataOcorrencia" :class="{ 'is-invalid': !isDataValida }"
+                title="Data" @update:selectedDate="updateDataocorrencia" />
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Tipo"><i class="fas fa-venus-mars"></i></span>
@@ -50,7 +53,7 @@
               <button type="button" class="btn btn-secondary" @click="selectTab('visualizacao')">Cancelar</button>
               <button type="submit" class="btn btn-success">Enviar</button>
             </div>
-          
+
           </form>
         </div>
       </div>
@@ -63,13 +66,14 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
-
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
 
   components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -92,7 +96,7 @@ export default {
     };
   },
 
-  mounted(){
+  mounted() {
     const animalId = this.$route.params.animalId;
     if (animalId) {
       this.fetchAnimal(animalId);
@@ -100,8 +104,8 @@ export default {
   },
 
   methods: {
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
-   async fetchAnimal(animalId) {
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    async fetchAnimal(animalId) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/animais/animal/${animalId}/`);
         const animal = response.data;
@@ -109,18 +113,18 @@ export default {
         this.brinco = animal[0].brinco;
 
         this.loadingInicial = false;
-        
+
       } catch (error) {
         console.error('Erro ao buscar animal da API:', error);
       }
     },
-   
-   async submitForm() {
+
+    async submitForm() {
       if (this.verificaVazio()) {
         this.loadingSubmit = true;
         try {
-          const response = await api.post('http://127.0.0.1:8000/ocorrencias/', this.formData , {
-        });
+          const response = await api.post('http://127.0.0.1:8000/ocorrencias/', this.formData, {
+          });
 
           if (response.status === 201) {
             this.loadingSubmit = false;
@@ -137,46 +141,46 @@ export default {
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
-      } 
+      }
     },
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    verificaVazio(){
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    verificaVazio() {
       //DATA DA OCORRENCIA
-      if(this.formData.dataOcorrencia != null){
-        if(this.formData.dataOcorrencia.trim() != ''){
+      if (this.formData.dataOcorrencia != null) {
+        if (this.formData.dataOcorrencia.trim() != '') {
           this.isDataValida = true;
           this.dataPlaceholder = 'Data*';
         }
-        else{
+        else {
           this.isDataValida = false;
           this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isDataValida = false;
         this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //TIPO
-      if(this.formData.tipo != null){
-        if(this.formData.tipo.trim() != ''){
+      if (this.formData.tipo != null) {
+        if (this.formData.tipo.trim() != '') {
           this.isTipoValido = true;
           this.tipoPlaceholder = 'Tipo*';
         }
-        else{
+        else {
           this.isTipoValido = false;
           this.tipoPlaceholder = 'Tipo é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isTipoValido = false;
         this.tipoPlaceholder = 'Tipo é um Campo Obrigatório';
       }
 
       //DESCRIÇÃO
-      if(this.formData.descricao != null && this.formData.descricao.trim() == ''){
+      if (this.formData.descricao != null && this.formData.descricao.trim() == '') {
         this.formData.descricao = null;
       }
 
@@ -187,7 +191,10 @@ export default {
     },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    updateDataocorrencia(data) {
+      this.formData.dataOcorrencia = data;
+    },
     checkEnter(event) {
       if (event.key === 'Enter') {
         this.submitForm();
@@ -198,10 +205,10 @@ export default {
       if (tab === 'animais') {
         this.$router.push('/animais');
       }
-      else if(tab==='visualizacao'){
+      else if (tab === 'visualizacao') {
         this.$router.push({
-            name: 'VizualizarAnimal', 
-            params: { animalId: this.formData.animal } 
+          name: 'VizualizarAnimal',
+          params: { animalId: this.formData.animal }
         })
       }
     },
@@ -265,7 +272,7 @@ export default {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .highlighted {

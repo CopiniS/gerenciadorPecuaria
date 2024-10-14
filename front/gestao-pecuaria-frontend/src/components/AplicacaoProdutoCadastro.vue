@@ -25,9 +25,9 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataPlaceholder"
+              <DateComponent type="text" :placeholder="dataPlaceholder"
                 class="form-control" id="dataAplicacaoCadastro" v-model="formData.dataAplicacao"
-                :class="{ 'is-invalid': !isDataValida }" title="Data">
+                :class="{ 'is-invalid': !isDataValida }" title="Data" @update:selectedDate="updateDataAplicacao"/>
             </div>
             <div ref="dropdownProduto" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsProduto('up')"
               @keydown.down.prevent="navigateOptionsProduto('down')" @keydown.enter.prevent="selectHighlightedProduto">
@@ -105,13 +105,14 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
-
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
 
   components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -536,6 +537,10 @@ export default {
     },
     preencheCheckBox(){
       this.animaisFiltrados = this.animais.filter(animal => animal.piquete === this.piqueteId);
+    },
+    
+    updateDataAplicacao(data) {
+      this.formData.dataAplicacao = data;
     },
 
     ativaSelecaoTodos(){

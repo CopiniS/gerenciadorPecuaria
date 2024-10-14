@@ -25,8 +25,9 @@
               <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
 
-            <div ref="dropdownPiquete" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPiquete('up')"
-            @keydown.down.prevent="navigateOptionsPiquete('down')" @keydown.enter.prevent="selectHighlightedPiquete">
+            <div ref="dropdownPiquete" class="select mb-3 input-group"
+              @keydown.up.prevent="navigateOptionsPiquete('up')" @keydown.down.prevent="navigateOptionsPiquete('down')"
+              @keydown.enter.prevent="selectHighlightedPiquete">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
                 <span class="input-group-text" title="Piquete"><i class="fas fa-box"></i></span>
                 <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
@@ -38,7 +39,7 @@
                 <ul class="options">
                   <li v-for="(piquete, index) in piquetesFiltrados" :key="piquete.id" :value="piquete.id"
                     @click="selectPiquete(piquete)" :class="{ 'highlighted': index === highlightedIndexPiquete }">{{
-                    piquete.nome}}</li>
+                      piquete.nome }}</li>
                 </ul>
               </div>
             </div>
@@ -51,11 +52,11 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Data de Nascimento"><i class="fas fa-calendar-alt"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
-                :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
+              <DateComponent :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
                 class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento"
-                title="Data de nascimento" autocomplete="off">
+                title="Data de nascimento" autocomplete="off"  @update:selectedDate="updateDataNascimento" />
             </div>
+
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Sexo"><i class="fas fa-venus-mars"></i></span>
               <select v-model="formData.sexo" :class="{ 'is-invalid': !isSexoValido }" class="form-select" id="sexo"
@@ -66,84 +67,80 @@
               </select>
             </div>
             <div ref="dropdownRaca" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsRaca('up')"
-            @keydown.down.prevent="navigateOptionsRaca('down')" @keydown.enter.prevent="selectHighlightedRaca">
+              @keydown.down.prevent="navigateOptionsRaca('down')" @keydown.enter.prevent="selectHighlightedRaca">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownRaca">
                 <span class="input-group-text" title="Raca Predominante"><i class="fas fa-box"></i></span>
-                <input v-model="nomeRaca" @input="inputRaca"
-                  @keydown.up.prevent="navigateOptionsRaca('up')" autocomplete="off"
-                  @keydown.down.prevent="navigateOptionsRaca('down')" type="text" class="form-control"
-                  placeholder="Raça Predominante" id="caixa-select" title="Raca Predominante">
+                <input v-model="nomeRaca" @input="inputRaca" @keydown.up.prevent="navigateOptionsRaca('up')"
+                  autocomplete="off" @keydown.down.prevent="navigateOptionsRaca('down')" type="text"
+                  class="form-control" placeholder="Raça Predominante" id="caixa-select" title="Raca Predominante">
               </div>
               <div class="itens" v-show="dropdownRacaOpen">
                 <ul class="options">
-                  <li v-for="(raca, index) in racasFiltradas" :key="raca.id" :value="raca.id"
-                    @click="selectRaca(raca)" :class="{ 'highlighted': index === highlightedIndexRaca }">{{
-                    raca.nome}}</li>
+                  <li v-for="(raca, index) in racasFiltradas" :key="raca.id" :value="raca.id" @click="selectRaca(raca)"
+                    :class="{ 'highlighted': index === highlightedIndexRaca }">{{
+                      raca.nome }}</li>
                 </ul>
               </div>
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Observação da Raça"><i
-                  class="fas fa-sticky-note"></i></span>
+              <span class="input-group-text" title="Observação da Raça"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.racaObservacao" type="text" class="form-control" id="racaObservacao"
                 placeholder="Observação da Raça" title="Observação da Raça" autocomplete="off" />
             </div>
 
             <div ref="dropdownPai" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPai('up')"
-            @keydown.down.prevent="navigateOptionsPai('down')" @keydown.enter.prevent="selectHighlightedPai">
+              @keydown.down.prevent="navigateOptionsPai('down')" @keydown.enter.prevent="selectHighlightedPai">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPai">
                 <span class="input-group-text" title="Brinco do Pai"><i class="fas fa-box"></i></span>
-                <input v-model="formData.brincoPai" @input="inputPai"
-                  @keydown.up.prevent="navigateOptionsPai('up')" autocomplete="off"
-                  @keydown.down.prevent="navigateOptionsPai('down')" type="text" class="form-control"
+                <input v-model="formData.brincoPai" @input="inputPai" @keydown.up.prevent="navigateOptionsPai('up')"
+                  autocomplete="off" @keydown.down.prevent="navigateOptionsPai('down')" type="text" class="form-control"
                   placeholder="Brinco do Pai" id="caixa-select" title="Brinco do Pai">
               </div>
               <div class="itens" v-show="dropdownPaiOpen">
                 <ul class="options">
                   <li v-for="(macho, index) in machosFiltrados" :key="macho.id" :value="macho.id"
                     @click="selectPai(macho)" :class="{ 'highlighted': index === highlightedIndexPai }">{{
-                    macho.brinco }}</li>
+                      macho.brinco }}</li>
                 </ul>
               </div>
             </div>
-            
+
             <div ref="dropdownMae" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsMae('up')"
-            @keydown.down.prevent="navigateOptionsMae('down')" @keydown.enter.prevent="selectHighlightedMae">
+              @keydown.down.prevent="navigateOptionsMae('down')" @keydown.enter.prevent="selectHighlightedMae">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownMae">
                 <span class="input-group-text" title="Brinco da Mãe"><i class="fas fa-box"></i></span>
-                <input v-model="formData.brincoMae" @input="inputMae"
-                  @keydown.up.prevent="navigateOptionsMae('up')" autocomplete="off"
-                  @keydown.down.prevent="navigateOptionsMae('down')" type="text" class="form-control"
+                <input v-model="formData.brincoMae" @input="inputMae" @keydown.up.prevent="navigateOptionsMae('up')"
+                  autocomplete="off" @keydown.down.prevent="navigateOptionsMae('down')" type="text" class="form-control"
                   placeholder="Brinco da Mãe" id="caixa-select" title="Brinco da Mãe">
               </div>
               <div class="itens" v-show="dropdownMaeOpen">
                 <ul class="options">
                   <li v-for="(femea, index) in femeasFiltradas" :key="femea.id" :value="femea.id"
                     @click="selectMae(femea)" :class="{ 'highlighted': index === highlightedIndexMae }">{{
-                    femea.brinco }}</li>
+                      femea.brinco }}</li>
                 </ul>
               </div>
             </div>
 
             <div class="mb-3 input-group">
               <span class="input-group-text" title="RFID do Animal"><i class="fas fa-barcode"></i></span>
-              <input v-model="formData.rfid" type="text" class="form-control"
-                id="rfid" placeholder="RFID do Animal" title="RFID do Animal" autocomplete="off">
+              <input v-model="formData.rfid" type="text" class="form-control" id="rfid" placeholder="RFID do Animal"
+                title="RFID do Animal" autocomplete="off">
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observações"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-              placeholder="Observações" title="Observações" autocomplete="off">
-              
+                placeholder="Observações" title="Observações" autocomplete="off">
+
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
             </div>
             <div v-if="comprado" class="mb-3 input-group">
               <span class="input-group-text" title="Data da Compra"><i class="fas fa-calendar-alt"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+              <DateComponent type="text"
                 :class="{ 'is-invalid': !isDataCompraValido }" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataDaCompra" v-model="formData.dataCompra" title="Data da Compra" autocomplete="off">
+                id="dataDaCompra" v-model="formData.dataCompra" title="Data da Compra" autocomplete="off"  @update:selectedDate="updateDataCompra"/>
             </div>
             <div v-if="comprado" class="mb-3 input-group">
               <span class="input-group-text" title="Valor da Compra"><i class="fas fa-weight"></i></span>
@@ -166,13 +163,13 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
-
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
-
   components: {
     LoadSpinner,
+    DateComponent,
   },
 
   name: 'TelaAnimais',
@@ -243,12 +240,12 @@ export default {
     this.buscarRacasDaApi();
     this.buscarPiquetesDaApi();
     this.preencheListas();
-    document.addEventListener('click', this.handleClickOutsidePiquete);   
-    document.addEventListener('click', this.handleClickOutsideRaca);   
-    document.addEventListener('click', this.handleClickOutsidePai);   
-    document.addEventListener('click', this.handleClickOutsideMae);   
+    document.addEventListener('click', this.handleClickOutsidePiquete);
+    document.addEventListener('click', this.handleClickOutsideRaca);
+    document.addEventListener('click', this.handleClickOutsidePai);
+    document.addEventListener('click', this.handleClickOutsideMae);
   },
-  
+
   methods: {
     //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarBrincoMask(event) {
@@ -330,8 +327,8 @@ export default {
               this.$router.push('/animais');
               this.preencherListaFemeas();
               this.preencherListaMachos();
-            },100);
-            
+            }, 100);
+
           } else {
             this.loadingSubmit = false;
             alert('Erro ao cadastrar animal. Tente novamente mais tarde.');
@@ -345,7 +342,7 @@ export default {
     },
 
 
-//LÓGICA DOS SELECT PIQUETE ----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT PIQUETE ----------------------------------------------------------------------------------------------------------------------------------------------------
     filterPiquetes() {
       this.piquetesFiltrados = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.nomePiquete.toLowerCase()));
     },
@@ -362,27 +359,27 @@ export default {
       this.dropdownPiqueteOpen = !this.dropdownPiqueteOpen;
       let nomeCorreto = false;
 
-      if(!this.dropdownPiqueteOpen){
+      if (!this.dropdownPiqueteOpen) {
         this.piquetesFiltrados.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.selectPiquete(piquete);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomePiquete = '';
           this.formData.piquete = null;
         }
       }
-      else if(this.dropdownRacaOpen){
+      else if (this.dropdownRacaOpen) {
         this.racas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
-            
+
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.racaPredominante = null;
           this.nomeRaca = ''
         }
@@ -390,16 +387,16 @@ export default {
         this.filterPiquetes();
       }
 
-      else if(this.dropdownPaiOpen){
+      else if (this.dropdownPaiOpen) {
         this.dropdownPaiOpen = false;
         this.filterPiquetes();
       }
 
-      else if(this.dropdownMaeOpen){
+      else if (this.dropdownMaeOpen) {
         this.dropdownMaeOpen = false;
         this.filterPiquetes();
       }
-      else{
+      else {
         this.filterPiquetes();
       }
     },
@@ -408,12 +405,12 @@ export default {
       let nomeCorreto = false;
       if (this.dropdownPiqueteOpen && this.$refs.dropdownPiquete && !this.$refs.dropdownPiquete.contains(event.target)) {
         this.piquetes.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.selectPiquete(piquete);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomePiquete = '';
           this.formData.piquete = null;
         }
@@ -435,14 +432,14 @@ export default {
       }
     },
 
-  selectHighlightedPiquete() {
-    if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
-      this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
-    }
-  },
+    selectHighlightedPiquete() {
+      if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
+        this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
+      }
+    },
 
 
-  //LÓGICA DOS SELECT RACA ----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT RACA ----------------------------------------------------------------------------------------------------------------------------------------------------
     filterRacas() {
       this.racasFiltradas = this.racas.filter(raca => raca.nome.toLowerCase().includes(this.nomeRaca.toLowerCase()));
     },
@@ -459,27 +456,27 @@ export default {
       this.dropdownRacaOpen = !this.dropdownRacaOpen;
       let nomeCorreto = false;
 
-      if(!this.dropdownRacaOpen){
+      if (!this.dropdownRacaOpen) {
         this.racasFiltradas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomeRaca = '';
           this.formData.racaPredominante = null;
         }
       }
-      else if(this.dropdownPiqueteOpen){
+      else if (this.dropdownPiqueteOpen) {
         this.piquetes.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.formData.piquete = piquete.id;
             this.piquetesFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.piquete = null;
           this.nomePiquete = ''
         }
@@ -487,16 +484,16 @@ export default {
         this.filterRacas();
       }
 
-      else if(this.dropdownPaiOpen){
+      else if (this.dropdownPaiOpen) {
         this.dropdownPaiOpen = false;
         this.filterRacas();
       }
 
-      else if(this.dropdownMaeOpen){
+      else if (this.dropdownMaeOpen) {
         this.dropdownMaeOpen = false;
         this.filterRacas();
       }
-      else{
+      else {
         this.filterRacas();
       }
     },
@@ -505,12 +502,12 @@ export default {
       let nomeCorreto = false;
       if (this.dropdownRacaOpen && this.$refs.dropdownRaca && !this.$refs.dropdownRaca.contains(event.target)) {
         this.racas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomeRaca = '';
           this.formData.racaPredominante = null;
         }
@@ -532,14 +529,14 @@ export default {
       }
     },
 
-  selectHighlightedRaca() {
-    if (this.highlightedIndexRaca >= 0 && this.highlightedIndexRaca < this.racasFiltradas.length) {
-      this.selectRaca(this.racasFiltradas[this.highlightedIndexRaca]);
-    }
-  },
+    selectHighlightedRaca() {
+      if (this.highlightedIndexRaca >= 0 && this.highlightedIndexRaca < this.racasFiltradas.length) {
+        this.selectRaca(this.racasFiltradas[this.highlightedIndexRaca]);
+      }
+    },
 
 
-  //LÓGICA DOS SELECT PAI----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT PAI----------------------------------------------------------------------------------------------------------------------------------------------------
     filterMachos() {
       this.machosFiltrados = this.machos.filter(macho => macho.brinco.includes(this.formData.brincoPai));
     },
@@ -556,36 +553,36 @@ export default {
       let nomeCorreto = false;
       this.filterMachos();
 
-      if(this.dropdownPiqueteOpen){
+      if (this.dropdownPiqueteOpen) {
         this.piquetes.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.formData.piquete = piquete.id;
             this.piquetesFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.piquete = null;
           this.nomePiquete = ''
         }
         this.dropdownPiqueteOpen = false;
       }
 
-      else if(this.dropdownRacaOpen){
+      else if (this.dropdownRacaOpen) {
         this.racas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.racaPredominante = null;
           this.nomeRaca = ''
         }
         this.dropdownRacaOpen = false;
       }
 
-      else if(this.dropdownMaeOpen){
+      else if (this.dropdownMaeOpen) {
         this.dropdownMaeOpen = false;
       }
     },
@@ -603,22 +600,22 @@ export default {
     },
 
     navigateOptionsPai(direction) {
-    if (direction === 'up' && this.highlightedIndexPai > 0) {
-      this.highlightedIndexPai--;
-    } else if (direction === 'down' && this.highlightedIndexPai < this.machosFiltrados.length - 1) {
-      this.highlightedIndexPai++;
-    }
-  },
+      if (direction === 'up' && this.highlightedIndexPai > 0) {
+        this.highlightedIndexPai--;
+      } else if (direction === 'down' && this.highlightedIndexPai < this.machosFiltrados.length - 1) {
+        this.highlightedIndexPai++;
+      }
+    },
 
-  selectHighlightedPai() {
-    if (this.highlightedIndexPai >= 0 && this.highlightedIndexPai < this.machosFiltrados.length) {
-      this.selectPai(this.machosFiltrados[this.highlightedIndexPai]);
-    }
-  },
+    selectHighlightedPai() {
+      if (this.highlightedIndexPai >= 0 && this.highlightedIndexPai < this.machosFiltrados.length) {
+        this.selectPai(this.machosFiltrados[this.highlightedIndexPai]);
+      }
+    },
 
 
 
-  //LÓGICA DOS SELECT MAE----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT MAE----------------------------------------------------------------------------------------------------------------------------------------------------
     filterFemeas() {
       this.femeasFiltradas = this.femeas.filter(femea => femea.brinco.includes(this.formData.brincoMae));
     },
@@ -635,15 +632,15 @@ export default {
       let nomeCorreto = false;
 
 
-      if(this.dropdownPiqueteOpen){
+      if (this.dropdownPiqueteOpen) {
         this.piquetes.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.formData.piquete = piquete.id;
             this.piquetesFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.piquete = null;
           this.nomePiquete = ''
         }
@@ -651,14 +648,14 @@ export default {
         this.filterFemeas();
       }
 
-      else if(this.dropdownRacaOpen){
+      else if (this.dropdownRacaOpen) {
         this.racas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.racaPredominante = null;
           this.nomeRaca = ''
         }
@@ -666,12 +663,12 @@ export default {
         this.filterFemeas();
       }
 
-      else if(this.dropdownPaiOpen){
+      else if (this.dropdownPaiOpen) {
         this.dropdownPaiOpen = false;
         this.filterFemeas();
       }
 
-      else{
+      else {
         this.filterFemeas();
       }
     },
@@ -689,18 +686,18 @@ export default {
     },
 
     navigateOptionsMae(direction) {
-    if (direction === 'up' && this.highlightedIndexMae > 0) {
-      this.highlightedIndexMae--;
-    } else if (direction === 'down' && this.highlightedIndexMae < this.femeasFiltradas.length - 1) {
-      this.highlightedIndexMae++;
-    }
-  },
+      if (direction === 'up' && this.highlightedIndexMae > 0) {
+        this.highlightedIndexMae--;
+      } else if (direction === 'down' && this.highlightedIndexMae < this.femeasFiltradas.length - 1) {
+        this.highlightedIndexMae++;
+      }
+    },
 
-  selectHighlightedMae() {
-    if (this.highlightedIndexMae >= 0 && this.highlightedIndexMae < this.femeasFiltradas.length) {
-      this.selectMae(this.femeasFiltradas[this.highlightedIndexMae]);
-    }
-  },
+    selectHighlightedMae() {
+      if (this.highlightedIndexMae >= 0 && this.highlightedIndexMae < this.femeasFiltradas.length) {
+        this.selectMae(this.femeasFiltradas[this.highlightedIndexMae]);
+      }
+    },
 
 
     //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -866,7 +863,15 @@ export default {
         this.submitForm();
       }
     },
-    
+
+    updateDataNascimento(data) {
+      this.formData.dataNascimento = data;
+    },
+
+    updateDataCompra(data) {
+      this.formData.dataCompra = data;
+    },
+
     preencheForm(animalJSON) {
       this.formData = JSON.parse(animalJSON);
     },
@@ -1004,11 +1009,11 @@ export default {
   background-color: #f0f0f0;
 }
 
-.select{
+.select {
   margin-bottom: 0px !important;
 }
 
-.custon-hr{
+.custon-hr {
   margin-top: 0px !important;
 }
 

@@ -21,19 +21,19 @@
           <h1 class="title fs-5" id="cadastroLabel">Cadastro de Gasto</h1>
           <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Data"><i class="fas fa-calendar-alt"></i></span>
-              <input :class="{ 'is-invalid': !isDataValida }" type="text" onfocus="(this.type='date')"
-                onblur="(this.type='text')" :placeholder="dataPlaceholder" class="form-control" id="dataGasto"
-                v-model="formData.dataGasto" title="Data" autocomplete="off">
+              <DateComponent :class="{ 'is-invalid': !isDataValida }" type="text" :placeholder="dataPlaceholder"
+                class="form-control" id="dataGasto" v-model="formData.dataGasto" title="Data" autocomplete="off"
+                @update:selectedDate="updateDataGasto" />
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Tipo"><i class="fas fa-clipboard-list"></i></span>
+              <span class="input-group-text" title="Tipo"><i class="fas fa-clipboard-list"></i></span>
               <select v-model="formData.tipo" class="form-select" id="tipo" aria-label="Tipo"
-                @change="categoriaPlaceholder = 'Categoria*'; formData.categoria = null" :class="{'is-invalid': !isTipoValido}" 
-                title="Tipo">
+                @change="categoriaPlaceholder = 'Categoria*'; formData.categoria = null"
+                :class="{ 'is-invalid': !isTipoValido }" title="Tipo">
                 <option disabled :value="null">{{ tipoPlaceholder }}</option>
                 <option value="Despesa">Despesa</option>
                 <option value="Investimento">Investimento</option>
@@ -41,8 +41,9 @@
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Valor"><i class="fas fa-dollar-sign"></i></span>
-              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text" autocomplete="off"
-                @input="aplicarValorMask" class="form-control" id="valor" :placeholder="valorPlaceholder" title="Valor">
+              <input v-model="formData.valor" :class="{ 'is-invalid': !isValorValido }" ref="valor" type="text"
+                autocomplete="off" @input="aplicarValorMask" class="form-control" id="valor"
+                :placeholder="valorPlaceholder" title="Valor">
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Descrição"><i class="fas fa-sticky-note"></i></span>
@@ -50,14 +51,15 @@
                 :placeholder="descricaoPlaceholder" :class="{ 'is-invalid': !isDescricaoValida }" title="Descrição">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text"  title="Categoria"><i class="fas fa-clipboard-list"></i></span>
+              <span class="input-group-text" title="Categoria"><i class="fas fa-clipboard-list"></i></span>
               <select :disabled="formData.tipo == '' || formData.tipo == null" v-model="formData.categoria"
-              class="form-select" id="categoria" aria-label="Categoria"
-              :class="{'is-invalid': !isCategoriaValida}" title="Categoria">
+                class="form-select" id="categoria" aria-label="Categoria" :class="{ 'is-invalid': !isCategoriaValida }"
+                title="Categoria">
                 <option disabled :value="null">{{ categoriaPlaceholder }}</option>
                 <option v-if="formData.tipo == 'Despesa'" value="mao_de_obra">Mão de Obra</option>
                 <option v-if="formData.tipo == 'Despesa'" value="manutencao_maquinas">Manutenção de Máquinas</option>
-                <option v-if="formData.tipo == 'Despesa'" value="manutencao_benfeitorias">Manutenção de Benfeitorias</option>
+                <option v-if="formData.tipo == 'Despesa'" value="manutencao_benfeitorias">Manutenção de Benfeitorias
+                </option>
                 <option v-if="formData.tipo == 'Despesa'" value="medicamentos">Medicamentos</option>
                 <option v-if="formData.tipo == 'Despesa'" value="combustiveis">Combustiveis</option>
                 <option v-if="formData.tipo == 'Despesa'" value="despesa_administrativa">Despesa Administrativa</option>
@@ -65,8 +67,10 @@
                 <option v-if="formData.tipo == 'Despesa'" value="adubos">Adubos</option>
                 <option v-if="formData.tipo == 'Despesa'" value="outros">Outros</option>
                 <option v-if="formData.tipo == 'Investimento'" value="compra_maquinas">Compra de Máquinas</option>
-                <option v-if="formData.tipo == 'Investimento'" value="construcao_benfeitorias">Construção de Benfeitorias</option>
-                <option v-if="formData.tipo == 'Investimento'" value="implantacao_lavouras">Implantação de Lavouras</option>
+                <option v-if="formData.tipo == 'Investimento'" value="construcao_benfeitorias">Construção de
+                  Benfeitorias</option>
+                <option v-if="formData.tipo == 'Investimento'" value="implantacao_lavouras">Implantação de Lavouras
+                </option>
                 <option v-if="formData.tipo == 'Investimento'" value="aquisicao_terra">Aquisição de Terra</option>
                 <option v-if="formData.tipo == 'Investimento'" value="Outros">Outros</option>
               </select>
@@ -86,12 +90,14 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
 
   components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -121,21 +127,21 @@ export default {
   },
 
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarValorMask(event){
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarValorMask(event) {
       const value = event.target.value;
       this.formData.valor = this.valorMask(value);
     },
 
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
       if (this.verificaVazio()) {
         this.loading = true;
         try {
           //FORMATA VALOR
           this.formData.valor = this.replaceVirgulaPonto(this.formData.valor);
-          
+
           const response = await api.post('http://127.0.0.1:8000/gastos/', this.formData, {});
           if (response.status === 201) {
             this.loading = false;
@@ -155,84 +161,84 @@ export default {
     },
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    verificaVazio(){
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    verificaVazio() {
       //DATA DO GASTO
-      if(this.formData.dataGasto != null){
-        if(this.formData.dataGasto.trim() != ''){
+      if (this.formData.dataGasto != null) {
+        if (this.formData.dataGasto.trim() != '') {
           this.isDataValida = true;
           this.dataPlaceholder = 'Data*';
         }
-        else{
+        else {
           this.isDataValida = false;
           this.dataPlaceholder = 'Data é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isDataValida = false;
         this.dataPlaceholder = 'Data é um Campo Obrigatório';
       }
 
       //TIPO DO GASTO
-      if(this.formData.tipo != null){
-        if(this.formData.tipo != ''){
+      if (this.formData.tipo != null) {
+        if (this.formData.tipo != '') {
           this.isTipoValido = true;
           this.tipoPlaceholder = 'Tipo*';
         }
-        else{
+        else {
           this.isTipoValido = false;
           this.tipoPlaceholder = 'Tipo é um Campo Obrigatório'
         }
       }
-      else{
+      else {
         this.isTipoValido = false;
         this.tipoPlaceholder = 'Tipo é um Campo Obrigatório'
       }
 
       //VALOR
-      if(this.formData.valor != null){
-        if(this.formData.valor.trim() != ''){
+      if (this.formData.valor != null) {
+        if (this.formData.valor.trim() != '') {
           this.isValorValido = true;
           this.valorPlaceholder = 'Valor*';
         }
-        else{
+        else {
           this.isValorValido = false;
           this.valorPlaceholder = 'Valor é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isValorValido = false;
         this.valorPlaceholder = 'Valor é um Campo Obrigatório';
       }
 
       //DESCRIÇÃO
-      if(this.formData.descricao != null){
-        if(this.formData.descricao.trim() != ''){
+      if (this.formData.descricao != null) {
+        if (this.formData.descricao.trim() != '') {
           this.isDescricaoValida = true;
           this.descricaoPlaceholder = 'Descrição*';
         }
-        else{
+        else {
           this.isDescricaoValida = false;
           this.descricaoPlaceholder = 'Descrição é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isDescricaoValida = false;
         this.descricaoPlaceholder = 'Descrição é um Campo Obrigatório';
       }
 
       //CATEGORIA
-      if(this.formData.categoria != null){
-        if(this.formData.categoria.trim() != ''){
+      if (this.formData.categoria != null) {
+        if (this.formData.categoria.trim() != '') {
           this.isCategoriaValida = true;
           this.categoriaPlaceholder = 'Categoria*';
         }
-        else{
+        else {
           this.isCategoriaValida = false;
           this.categoriaPlaceholder = 'Categoria é um Campo Obrigatório';
         }
       }
-      else{
+      else {
         this.isCategoriaValida = false;
         this.categoriaPlaceholder = 'Categoria é um Campo Obrigatório';
       }
@@ -246,20 +252,23 @@ export default {
     },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-checkEnter(event) {
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    updateDataGasto(data) {
+      this.formData.dataGasto = data;
+    },
+    checkEnter(event) {
       if (event.key === 'Enter') {
         this.submitForm();
       }
-    },    
-selectTab(tab) {
+    },
+    selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'gastos') {
         this.$router.push('/gastos');
       }
     },
 
-    replaceVirgulaPonto(valorString){
+    replaceVirgulaPonto(valorString) {
       valorString = valorString.replace(",", ".");
 
       return valorString;
@@ -324,7 +333,6 @@ selectTab(tab) {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
-
 </style>

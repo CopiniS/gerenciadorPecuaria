@@ -1,17 +1,14 @@
 <template>
   <div class="background">
-    <LoadSpinner :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialPiquetes || loadingInicialRacas || loadingInicialAnimalId" />
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialPiquetes || loadingInicialRacas" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
           @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
           de Animais</button>
-        <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-visualizacao-tab"
-          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-visualizacao" 
-          aria-selected="true">Visualização de Animais</button>
-        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
-          aria-selected="false">Edição de Animais</button>
+        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
+          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
+          aria-selected="false">Cadastro de Animais</button>
       </div>
     </nav>
 
@@ -19,125 +16,142 @@
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais" role="tabpanel"
         aria-labelledby="nav-animais-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
-        aria-labelledby="nav-edicao-tab">
-        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="edicaoLabel">Edição de Animais</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
+        aria-labelledby="nav-cadastro-tab">
+        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Animais</h1>
           <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
-            <div class="select mb-3 input-group">
+
+            <div ref="dropdownPiquete" class="select mb-3 input-group"
+              @keydown.up.prevent="navigateOptionsPiquete('up')" @keydown.down.prevent="navigateOptionsPiquete('down')"
+              @keydown.enter.prevent="selectHighlightedPiquete">
+              <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPiquete">
                 <span class="input-group-text" title="Piquete"><i class="fas fa-box"></i></span>
-                <input disabled v-model="nomePiquete" class="form-control"
-                :placeholder="piquetePlaceholder" title="Piquete" autocomplete="off">
+                <input v-model="nomePiquete" :class="{ 'is-invalid': !isPiqueteValido }" @input="inputPiquete"
+                  @keydown.up.prevent="navigateOptionsPiquete('up')" autocomplete="off"
+                  @keydown.down.prevent="navigateOptionsPiquete('down')" type="text" class="form-control"
+                  :placeholder="piquetePlaceholder" id="caixa-select" title="Piquete">
+              </div>
+              <div class="itens" v-show="dropdownPiqueteOpen">
+                <ul class="options">
+                  <li v-for="(piquete, index) in piquetesFiltrados" :key="piquete.id" :value="piquete.id"
+                    @click="selectPiquete(piquete)" :class="{ 'highlighted': index === highlightedIndexPiquete }">{{
+                      piquete.nome }}</li>
+                </ul>
+              </div>
             </div>
-            <hr>
+            <hr class="custon-hr">
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Brinco do Animal"><i class="fas fa-user-tag"></i></span>
-              <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text" class="form-control"
-                @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder" title="Brinco do Animal" autocomplete="off">
+              <input v-model="formData.brinco" :class="{ 'is-invalid': !isBrincoValido }" type="text"
+                class="form-control" @input="aplicarBrincoMask" id="brinco" :placeholder="brincoPlaceholder"
+                title="Brinco do Animal" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
-              <span class="input-group-text" title="Data de nascimento"><i class="fas fa-calendar-alt"></i></span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" autocomplete="off"
-                :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
-                class="form-control" id="dataNascimentoEdicao" v-model="formData.dataNascimento" title="Data de nascimento">
+              <span class="input-group-text" title="Data de Nascimento"><i class="fas fa-calendar-alt"></i></span>
+              <DateComponent :class="{ 'is-invalid': !isDataNascimentoValido }" :placeholder="dataNascimentoPlaceholder"
+                class="form-control" id="dataNascimentoCadastro" v-model="formData.dataNascimento"
+                title="Data de nascimento" autocomplete="off" @update:selectedDate="updateDataNascimento" />
             </div>
+
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Sexo"><i class="fas fa-venus-mars"></i></span>
               <select v-model="formData.sexo" :class="{ 'is-invalid': !isSexoValido }" class="form-select" id="sexo"
                 aria-label="Sexo" :placeholder="sexoPlaceholder" title="Sexo">
-                <option disabled value="">Selecione o sexo</option>
+                <option disabled :value="null">{{ sexoPlaceholder }}</option>
                 <option value="macho">Macho</option>
                 <option value="femea">Fêmea</option>
               </select>
             </div>
             <div ref="dropdownRaca" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsRaca('up')"
-            @keydown.down.prevent="navigateOptionsRaca('down')" @keydown.enter.prevent="selectHighlightedRaca">
+              @keydown.down.prevent="navigateOptionsRaca('down')" @keydown.enter.prevent="selectHighlightedRaca">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownRaca">
                 <span class="input-group-text" title="Raca Predominante"><i class="fas fa-box"></i></span>
-                <input v-model="nomeRaca" @input="inputRaca"
-                  @keydown.up.prevent="navigateOptionsRaca('up')" autocomplete="off"
-                  @keydown.down.prevent="navigateOptionsRaca('down')" type="text" class="form-control"
-                  placeholder="Raça Predominante" id="caixa-select" title="Raca Predominante">
+                <input v-model="nomeRaca" @input="inputRaca" @keydown.up.prevent="navigateOptionsRaca('up')"
+                  autocomplete="off" @keydown.down.prevent="navigateOptionsRaca('down')" type="text"
+                  class="form-control" placeholder="Raça Predominante" id="caixa-select" title="Raca Predominante">
               </div>
               <div class="itens" v-show="dropdownRacaOpen">
                 <ul class="options">
-                  <li v-for="(raca, index) in racasFiltradas" :key="raca.id" :value="raca.id"
-                    @click="selectRaca(raca)" :class="{ 'highlighted': index === highlightedIndexRaca }">{{
-                    raca.nome}}</li>
+                  <li v-for="(raca, index) in racasFiltradas" :key="raca.id" :value="raca.id" @click="selectRaca(raca)"
+                    :class="{ 'highlighted': index === highlightedIndexRaca }">{{
+                      raca.nome }}</li>
                 </ul>
               </div>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Observação da Raça"><i class="fas fa-sticky-note"></i></span>
-              <input v-model="formData.racaObservacao" class="form-control" id="racaObservacao"
-                placeholder="Observação da Raça" title="Observação da Raça" autocomplete="off">
+              <input v-model="formData.racaObservacao" type="text" class="form-control" id="racaObservacao"
+                placeholder="Observação da Raça" title="Observação da Raça" autocomplete="off" />
             </div>
+
             <div ref="dropdownPai" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsPai('up')"
-            @keydown.down.prevent="navigateOptionsPai('down')" @keydown.enter.prevent="selectHighlightedPai">
+              @keydown.down.prevent="navigateOptionsPai('down')" @keydown.enter.prevent="selectHighlightedPai">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownPai">
                 <span class="input-group-text" title="Brinco do Pai"><i class="fas fa-box"></i></span>
-                <input v-model="formData.brincoPai" @input="inputPai" autocomplete="off"
-                  @keydown.up.prevent="navigateOptionsPai('up')"
-                  @keydown.down.prevent="navigateOptionsPai('down')" type="text" class="form-control"
-                  placeholder="Brindo do Pai" id="caixa-select" title="Brinco do Pai">
+                <input v-model="formData.brincoPai" @input="inputPai" @keydown.up.prevent="navigateOptionsPai('up')"
+                  autocomplete="off" @keydown.down.prevent="navigateOptionsPai('down')" type="text" class="form-control"
+                  placeholder="Brinco do Pai" id="caixa-select" title="Brinco do Pai">
               </div>
               <div class="itens" v-show="dropdownPaiOpen">
                 <ul class="options">
                   <li v-for="(macho, index) in machosFiltrados" :key="macho.id" :value="macho.id"
                     @click="selectPai(macho)" :class="{ 'highlighted': index === highlightedIndexPai }">{{
-                    macho.brinco }}</li>
+                      macho.brinco }}</li>
                 </ul>
               </div>
             </div>
-            
+
             <div ref="dropdownMae" class="select mb-3 input-group" @keydown.up.prevent="navigateOptionsMae('up')"
-            @keydown.down.prevent="navigateOptionsMae('down')" @keydown.enter.prevent="selectHighlightedMae">
+              @keydown.down.prevent="navigateOptionsMae('down')" @keydown.enter.prevent="selectHighlightedMae">
               <div class="select-option mb-3 input-group" @click.stop="toggleDropdownMae">
                 <span class="input-group-text" title="Brinco da Mãe"><i class="fas fa-box"></i></span>
-                <input v-model="formData.brincoMae" @input="inputMae"
-                  @keydown.up.prevent="navigateOptionsMae('up')" autocomplete="off"
-                  @keydown.down.prevent="navigateOptionsMae('down')" type="text" class="form-control"
+                <input v-model="formData.brincoMae" @input="inputMae" @keydown.up.prevent="navigateOptionsMae('up')"
+                  autocomplete="off" @keydown.down.prevent="navigateOptionsMae('down')" type="text" class="form-control"
                   placeholder="Brinco da Mãe" id="caixa-select" title="Brinco da Mãe">
               </div>
               <div class="itens" v-show="dropdownMaeOpen">
                 <ul class="options">
                   <li v-for="(femea, index) in femeasFiltradas" :key="femea.id" :value="femea.id"
                     @click="selectMae(femea)" :class="{ 'highlighted': index === highlightedIndexMae }">{{
-                    femea.brinco }}</li>
+                      femea.brinco }}</li>
                 </ul>
               </div>
             </div>
+
             <div class="mb-3 input-group">
               <span class="input-group-text" title="RFID do Animal"><i class="fas fa-barcode"></i></span>
-              <input v-model="formData.rfid" type="text" class="form-control" autocomplete="off"
-                id="rfid" placeholder="RFID do Animal" title="RFID do Animal">
+              <input v-model="formData.rfid" type="text" class="form-control" id="rfid" placeholder="RFID do Animal"
+                title="RFID do Animal" autocomplete="off">
             </div>
             <div class="mb-3 input-group position-relative">
               <span class="input-group-text" title="Observações"><i class="fas fa-sticky-note"></i></span>
               <input v-model="formData.observacoes" type="text" class="form-control" id="observacoes"
-              placeholder="Observações" title="Observações" autocomplete="off">
+                placeholder="Observações" title="Observações" autocomplete="off">
+
             </div>
             <div class="mb-3 input-group">
               <input v-model="comprado" type="checkbox" id="check-comprado"> Animal Comprado
             </div>
             <div v-if="comprado" class="mb-3 input-group">
-              <span class="input-group-text" title="Data da Compra"><i class="fas fa-calendar-alt"></i>*</span>
-              <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
+              <span class="input-group-text" title="Data da Compra"><i class="fas fa-calendar-alt"></i></span>
+              <DateComponent type="text" onfocus="(this.type='date')" onblur="(this.type='text')"
                 :class="{ 'is-invalid': !isDataCompraValido }" :placeholder="dataCompraPlaceholder" class="form-control"
-                id="dataDaCompra" v-model="formData.dataCompra" title="Data da Compra" autocomplete="off">
+                id="dataDaCompra" v-model="formData.dataCompra" title="Data da Compra" autocomplete="off"
+                @update:selectedDate="updateDataCompra" />
             </div>
             <div v-if="comprado" class="mb-3 input-group">
-              <span class="input-group-text" title="Valor da Compra"><i class="fas fa-weight"></i>*</span>
+              <span class="input-group-text" title="Valor da Compra"><i class="fas fa-weight"></i></span>
               <input v-model="formData.valorCompra" :class="{ 'is-invalid': !isValorCompraValido }" type="text"
-                @input="aplicarValorCompraMask" class="form-control" id="valorCompra" :placeholder="valorCompraPlaceholder"
-                title="Valor da Compra" autocomplete="off">
+                @input="aplicarValorCompraMask" class="form-control" id="valorCompra"
+                :placeholder="valorCompraPlaceholder" title="Valor da Compra" autocomplete="off">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('animais')">Cancelar</button>
-              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="submit" class="btn btn-success">Enviar</button>
             </div>
           </form>
         </div>
@@ -150,13 +164,13 @@
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
 import LoadSpinner from './LoadSpiner.vue';
-
+import DateComponent from './DateComponent.vue';
 
 export default {
   mixins: [masksMixin],
-
   components: {
     LoadSpinner,
+    DateComponent,
   },
 
   name: 'TelaAnimais',
@@ -228,34 +242,34 @@ export default {
     this.buscarPiquetesDaApi();
     this.buscarAnimaisDaApi();
     this.preencheListas();
-    document.addEventListener('click', this.handleClickOutsidePiquete);   
-    document.addEventListener('click', this.handleClickOutsideRaca);   
-    document.addEventListener('click', this.handleClickOutsidePai);   
-    document.addEventListener('click', this.handleClickOutsideMae);   
+    document.addEventListener('click', this.handleClickOutsidePiquete);
+    document.addEventListener('click', this.handleClickOutsideRaca);
+    document.addEventListener('click', this.handleClickOutsidePai);
+    document.addEventListener('click', this.handleClickOutsideMae);
   },
 
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
-    aplicarBrincoMask(event){
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    aplicarBrincoMask(event) {
       const value = event.target.value;
-      this.formData.brinco =  this.brincoMask(value);
+      this.formData.brinco = this.brincoMask(value);
     },
 
     aplicarValorCompraMask(event) {
       const value = event.target.value;
-      this.formData.valorCompra =  this.valorMask(value);
+      this.formData.valorCompra = this.valorMask(value);
     },
 
-    aplicarBrincoPaiMask(value){
-      this.formData.brincoPai =  this.brincoMask(value);
+    aplicarBrincoPaiMask(value) {
+      this.formData.brincoPai = this.brincoMask(value);
     },
 
-    aplicarBrincoMaeMask(value){
-      this.formData.brincoMae =  this.brincoMask(value);
+    aplicarBrincoMaeMask(value) {
+      this.formData.brincoMae = this.brincoMask(value);
     },
 
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async fetchAnimal(animalId) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/animais/animal/${animalId}/`);
@@ -265,14 +279,14 @@ export default {
         this.formData.piquete = animais[0].piquete.id;
         this.formData.dataNascimento = animais[0].dataNascimento;
         this.formData.sexo = animais[0].sexo;
-        if(this.formData.racaPredominante != null){
+        if (this.formData.racaPredominante != null) {
           this.formData.racaPredominante = animais[0].racaPredominante.id;
           this.nomeRaca = animais[0].racaPredominante.nome;
         }
-        if(animais[0].brincoPai != null){
+        if (animais[0].brincoPai != null) {
           this.formData.brincoPai = animais[0].brincoPai;
         }
-        if(animais[0].brincoMae != null){ 
+        if (animais[0].brincoMae != null) {
           this.formData.brincoMae = animais[0].brincoMae;
         }
         this.nomePiquete = animais[0].piquete.nome;
@@ -282,7 +296,7 @@ export default {
         this.formData.dataCompra = animais[0].dataCompra;
         this.formData.valorCompra = this.replacePontoVirgula(animais[0].valorCompra);
 
-        if(this.formData.dataCompra){
+        if (this.formData.dataCompra) {
           this.comprado = true;
         }
 
@@ -362,7 +376,7 @@ export default {
     },
 
 
-//LÓGICA DOS SELECT PIQUETE ----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT PIQUETE ----------------------------------------------------------------------------------------------------------------------------------------------------
     filterPiquetes() {
       this.piquetesFiltrados = this.piquetes.filter(piquete => piquete.nome.toLowerCase().includes(this.nomePiquete.toLowerCase()));
     },
@@ -379,27 +393,27 @@ export default {
       this.dropdownPiqueteOpen = !this.dropdownPiqueteOpen;
       let nomeCorreto = false;
 
-      if(!this.dropdownPiqueteOpen){
+      if (!this.dropdownPiqueteOpen) {
         this.piquetesFiltrados.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.selectPiquete(piquete);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomePiquete = '';
           this.formData.piquete = null;
         }
       }
-      else if(this.dropdownRacaOpen){
+      else if (this.dropdownRacaOpen) {
         this.racas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
-            
+
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.racaPredominante = null;
           this.nomeRaca = ''
         }
@@ -407,16 +421,16 @@ export default {
         this.filterPiquetes();
       }
 
-      else if(this.dropdownPaiOpen){
+      else if (this.dropdownPaiOpen) {
         this.dropdownPaiOpen = false;
         this.filterPiquetes();
       }
 
-      else if(this.dropdownMaeOpen){
+      else if (this.dropdownMaeOpen) {
         this.dropdownMaeOpen = false;
         this.filterPiquetes();
       }
-      else{
+      else {
         this.filterPiquetes();
       }
     },
@@ -425,12 +439,12 @@ export default {
       let nomeCorreto = false;
       if (this.dropdownPiqueteOpen && this.$refs.dropdownPiquete && !this.$refs.dropdownPiquete.contains(event.target)) {
         this.piquetes.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.selectPiquete(piquete);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomePiquete = '';
           this.formData.piquete = null;
         }
@@ -452,14 +466,14 @@ export default {
       }
     },
 
-  selectHighlightedPiquete() {
-    if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
-      this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
-    }
-  },
+    selectHighlightedPiquete() {
+      if (this.highlightedIndexPiquete >= 0 && this.highlightedIndexPiquete < this.piquetesFiltrados.length) {
+        this.selectPiquete(this.piquetesFiltrados[this.highlightedIndexPiquete]);
+      }
+    },
 
 
-  //LÓGICA DOS SELECT RACA ----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT RACA ----------------------------------------------------------------------------------------------------------------------------------------------------
     filterRacas() {
       this.racasFiltradas = this.racas.filter(raca => raca.nome.toLowerCase().includes(this.nomeRaca.toLowerCase()));
     },
@@ -476,27 +490,27 @@ export default {
       this.dropdownRacaOpen = !this.dropdownRacaOpen;
       let nomeCorreto = false;
 
-      if(!this.dropdownRacaOpen){
+      if (!this.dropdownRacaOpen) {
         this.racasFiltradas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomeRaca = '';
           this.formData.racaPredominante = null;
         }
       }
-      else if(this.dropdownPiqueteOpen){
+      else if (this.dropdownPiqueteOpen) {
         this.piquetes.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.formData.piquete = piquete.id;
             this.piquetesFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.piquete = null;
           this.nomePiquete = ''
         }
@@ -504,16 +518,16 @@ export default {
         this.filterRacas();
       }
 
-      else if(this.dropdownPaiOpen){
+      else if (this.dropdownPaiOpen) {
         this.dropdownPaiOpen = false;
         this.filterRacas();
       }
 
-      else if(this.dropdownMaeOpen){
+      else if (this.dropdownMaeOpen) {
         this.dropdownMaeOpen = false;
         this.filterRacas();
       }
-      else{
+      else {
         this.filterRacas();
       }
     },
@@ -522,12 +536,12 @@ export default {
       let nomeCorreto = false;
       if (this.dropdownRacaOpen && this.$refs.dropdownRaca && !this.$refs.dropdownRaca.contains(event.target)) {
         this.racas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.nomeRaca = '';
           this.formData.racaPredominante = null;
         }
@@ -549,14 +563,14 @@ export default {
       }
     },
 
-  selectHighlightedRaca() {
-    if (this.highlightedIndexRaca >= 0 && this.highlightedIndexRaca < this.racasFiltradas.length) {
-      this.selectRaca(this.racasFiltradas[this.highlightedIndexRaca]);
-    }
-  },
+    selectHighlightedRaca() {
+      if (this.highlightedIndexRaca >= 0 && this.highlightedIndexRaca < this.racasFiltradas.length) {
+        this.selectRaca(this.racasFiltradas[this.highlightedIndexRaca]);
+      }
+    },
 
 
-  //LÓGICA DOS SELECT PAI----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT PAI----------------------------------------------------------------------------------------------------------------------------------------------------
     filterMachos() {
       this.machosFiltrados = this.machos.filter(macho => macho.brinco.includes(this.formData.brincoPai));
     },
@@ -572,15 +586,15 @@ export default {
       this.dropdownPaiOpen = !this.dropdownPaiOpen;
       let nomeCorreto = false;
 
-      if(this.dropdownPiqueteOpen){
+      if (this.dropdownPiqueteOpen) {
         this.piquetes.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.formData.piquete = piquete.id;
             this.piquetesFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.piquete = null;
           this.nomePiquete = ''
         }
@@ -588,14 +602,14 @@ export default {
         this.filterMachos();
       }
 
-      else if(this.dropdownRacaOpen){
+      else if (this.dropdownRacaOpen) {
         this.racas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.racaPredominante = null;
           this.nomeRaca = ''
         }
@@ -603,12 +617,12 @@ export default {
         this.filterMachos();
       }
 
-      else if(this.dropdownMaeOpen){
+      else if (this.dropdownMaeOpen) {
         this.dropdownMaeOpen = false;
         this.filterMachos();
       }
 
-      else{
+      else {
         this.filterMachos();
       }
     },
@@ -626,22 +640,22 @@ export default {
     },
 
     navigateOptionsPai(direction) {
-    if (direction === 'up' && this.highlightedIndexPai > 0) {
-      this.highlightedIndexPai--;
-    } else if (direction === 'down' && this.highlightedIndexPai < this.machosFiltrados.length - 1) {
-      this.highlightedIndexPai++;
-    }
-  },
+      if (direction === 'up' && this.highlightedIndexPai > 0) {
+        this.highlightedIndexPai--;
+      } else if (direction === 'down' && this.highlightedIndexPai < this.machosFiltrados.length - 1) {
+        this.highlightedIndexPai++;
+      }
+    },
 
-  selectHighlightedPai() {
-    if (this.highlightedIndexPai >= 0 && this.highlightedIndexPai < this.machosFiltrados.length) {
-      this.selectPai(this.machosFiltrados[this.highlightedIndexPai]);
-    }
-  },
+    selectHighlightedPai() {
+      if (this.highlightedIndexPai >= 0 && this.highlightedIndexPai < this.machosFiltrados.length) {
+        this.selectPai(this.machosFiltrados[this.highlightedIndexPai]);
+      }
+    },
 
 
 
-  //LÓGICA DOS SELECT MAE----------------------------------------------------------------------------------------------------------------------------------------------------
+    //LÓGICA DOS SELECT MAE----------------------------------------------------------------------------------------------------------------------------------------------------
     filterFemeas() {
       this.femeasFiltradas = this.femeas.filter(femea => femea.brinco.includes(this.formData.brincoMae));
     },
@@ -657,15 +671,15 @@ export default {
       this.dropdownMaeOpen = !this.dropdownMaeOpen;
       let nomeCorreto = false;
 
-      if(this.dropdownPiqueteOpen){
+      if (this.dropdownPiqueteOpen) {
         this.piquetes.forEach(piquete => {
-          if(piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()){
+          if (piquete.nome.toLowerCase() === this.nomePiquete.toLowerCase()) {
             this.formData.piquete = piquete.id;
             this.piquetesFiltrados = [];
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.piquete = null;
           this.nomePiquete = ''
         }
@@ -673,14 +687,14 @@ export default {
         this.filterFemeas();
       }
 
-      else if(this.dropdownRacaOpen){
+      else if (this.dropdownRacaOpen) {
         this.racas.forEach(raca => {
-          if(raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()){
+          if (raca.nome.toLowerCase() === this.nomeRaca.toLowerCase()) {
             this.selectRaca(raca);
             nomeCorreto = true;
           }
         });
-        if(!nomeCorreto){
+        if (!nomeCorreto) {
           this.formData.racaPredominante = null;
           this.nomeRaca = ''
         }
@@ -688,12 +702,12 @@ export default {
         this.filterFemeas();
       }
 
-      else if(this.dropdownPaiOpen){
+      else if (this.dropdownPaiOpen) {
         this.dropdownPaiOpen = false;
         this.filterFemeas();
       }
 
-      else{
+      else {
         this.filterFemeas();
       }
     },
@@ -711,27 +725,27 @@ export default {
     },
 
     navigateOptionsMae(direction) {
-    if (direction === 'up' && this.highlightedIndexMae > 0) {
-      this.highlightedIndexMae--;
-    } else if (direction === 'down' && this.highlightedIndexMae < this.femeasFiltradas.length - 1) {
-      this.highlightedIndexMae++;
-    }
-  },
+      if (direction === 'up' && this.highlightedIndexMae > 0) {
+        this.highlightedIndexMae--;
+      } else if (direction === 'down' && this.highlightedIndexMae < this.femeasFiltradas.length - 1) {
+        this.highlightedIndexMae++;
+      }
+    },
 
-  selectHighlightedMae() {
-    if (this.highlightedIndexMae >= 0 && this.highlightedIndexMae < this.femeasFiltradas.length) {
-      this.selectMae(this.femeasFiltradas[this.highlightedIndexMae]);
-    }
-  },
+    selectHighlightedMae() {
+      if (this.highlightedIndexMae >= 0 && this.highlightedIndexMae < this.femeasFiltradas.length) {
+        this.selectMae(this.femeasFiltradas[this.highlightedIndexMae]);
+      }
+    },
 
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     validarFormulario() {
       let valido = true;
       this.isBrincoValido = true;
       this.brincoPlaceholder = 'Brinco do Animal*';
-      
+
       // Cria uma nova lista sem o item com o id atual
       let brincosComExclusao = this.animaisDaApi.filter(animal => animal.id !== this.formData.id);
 
@@ -745,93 +759,93 @@ export default {
           break;
         }
       }
-      
+
       return valido;
     },
 
-    verificaVazio(){
+    verificaVazio() {
       //PIQUETE
-      if(this.formData.piquete == null || this.formData.piquete == ''){
+      if (this.formData.piquete == null || this.formData.piquete == '') {
         this.isPiqueteValido = false
         this.piquetePlaceholder = "Piquete é um Campo Obrigatório"
       }
-      else{
-        this.isPiqueteValido = true 
+      else {
+        this.isPiqueteValido = true
         this.piquetePlaceholder = "Piquete*"
       }
 
       //BRINCO
-      if(this.formData.brinco != null){
-        if(this.formData.brinco == ''){
+      if (this.formData.brinco != null) {
+        if (this.formData.brinco == '') {
           this.isBrincoValido = false
-          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório' 
-        } 
-        else{
+          this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório'
+        }
+        else {
           this.isBrincoValido = true
-          this.brincoPlaceholder = 'Brinco do Animal*' 
+          this.brincoPlaceholder = 'Brinco do Animal*'
         }
       }
-      else{
+      else {
         this.isBrincoValido = false
-        this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório' 
+        this.brincoPlaceholder = 'Brinco do Animal é um Campo Obrigatório'
       }
 
       //DATA DE NASCIMENTO
-      if(this.formData.dataNascimento != null){
-        if(this.formData.dataNascimento.trim == ''){
+      if (this.formData.dataNascimento != null) {
+        if (this.formData.dataNascimento.trim == '') {
           this.isDataNascimentoValido = false
-          this.dataNascimentoPlaceholder = 'Data de nascimento é um Campo Obrigatório' 
-        } 
-        else{
+          this.dataNascimentoPlaceholder = 'Data de nascimento é um Campo Obrigatório'
+        }
+        else {
           this.isDataNascimentoValido = true
-          this.dataNascimentoPlaceholder = 'Data de nascimento*' 
+          this.dataNascimentoPlaceholder = 'Data de nascimento*'
         }
       }
-      else{
+      else {
         this.isDataNascimentoValido = false
-        this.dataNascimentoPlaceholder = 'Data de nascimento é um Campo Obrigatório'  
+        this.dataNascimentoPlaceholder = 'Data de nascimento é um Campo Obrigatório'
       }
-      
+
       //SEXO
-      if(this.formData.sexo == null){
+      if (this.formData.sexo == null) {
         this.isSexoValido = false
-        this.sexoPlaceholder = 'Sexo é um Campo Obrigatório' 
+        this.sexoPlaceholder = 'Sexo é um Campo Obrigatório'
       }
-      else{
+      else {
         this.isSexoValido = true
-        this.sexoPlaceholder = 'Sexo*' 
+        this.sexoPlaceholder = 'Sexo*'
       }
 
       //COMPRADO
-      if(this.comprado){
+      if (this.comprado) {
         //DATA DA COMPRA
-        if(this.formData.dataCompra != null){
-          if(this.formData.dataCompra.trim == ''){
+        if (this.formData.dataCompra != null) {
+          if (this.formData.dataCompra.trim == '') {
             this.isDataCompraValido = false;
             this.dataCompraPlaceholder = 'Data da compra é um Campo Obrigatório'
           }
-          else{
+          else {
             this.isDataCompraValido = true;
             this.dataCompraPlaceholder = 'Data da Compra*'
           }
         }
-        else{
+        else {
           this.isDataCompraValido = false;
           this.dataCompraPlaceholder = 'Data da compra é um Campo Obrigatório'
         }
-        
+
         //VALOR DA COMPRA
-        if(this.formData.valorCompra != null){
-          if(this.formData.valorCompra.trim == ''){
+        if (this.formData.valorCompra != null) {
+          if (this.formData.valorCompra.trim == '') {
             this.isValorCompraValido = false;
             this.valorCompraPlaceholder = 'Valor da compra é um Campo Obrigatório'
           }
-          else{
+          else {
             this.isValorCompraValido = true;
             this.dataCompraPlaceholder = 'Valor da compra*'
           }
         }
-        else{
+        else {
           this.isValorCompraValido = false;
           this.valorCompraPlaceholder = 'Valor da compra é um Campo Obrigatório'
         }
@@ -848,21 +862,28 @@ export default {
     },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-checkEnter(event) {
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    updateDataNascimento(data) {
+      this.formData.dataNascimento = data;
+    },
+
+    updateDataCompra(data) {
+      this.formData.dataCompra = data;
+    },
+    checkEnter(event) {
       if (event.key === 'Enter') {
         this.submitForm();
       }
-    },    
-selectTab(tab) {
+    },
+    selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'animais') {
         this.$router.push('/animais');
       }
       else if (tab === 'visualizacao') {
         this.$router.push({
-            name: 'VizualizarAnimal', 
-            params: { animalId: this.formData.id } 
+          name: 'VizualizarAnimal',
+          params: { animalId: this.formData.id }
         })
       }
     },
@@ -890,15 +911,15 @@ selectTab(tab) {
       this.machos = response.data;
     },
 
-    replacePontoVirgula(valorString){
-      if(valorString){
+    replacePontoVirgula(valorString) {
+      if (valorString) {
         valorString = valorString.replace(".", ",");
       }
       return valorString;
     },
 
-    replaceVirgulaPonto(valorString){
-      if(valorString){
+    replaceVirgulaPonto(valorString) {
+      if (valorString) {
         valorString = valorString.replace(",", ".");
       }
       return valorString;
@@ -942,7 +963,7 @@ selectTab(tab) {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .select-option {
@@ -984,5 +1005,4 @@ selectTab(tab) {
 .highlighted {
   background-color: #f0f0f0;
 }
-
 </style>

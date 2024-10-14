@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button
@@ -140,13 +141,20 @@
 <script>
 import api from "/src/interceptadorAxios";
 import { masksMixin } from "../mixins/maks";
+import LoadSpinner from "./LoadSpiner.vue";
 
 export default {
   mixins: [masksMixin],
 
+  components: {
+    LoadSpinner,
+  },
+
   data() {
     return {
       activeTab: "edicao",
+      loadingSubmit: false,
+      loadingInicial: true,
       formData: {
         id: "",
         nome: "",
@@ -201,6 +209,8 @@ export default {
         this.formData.telefone1 = usuario.telefone1;
         this.formData.telefone2 = usuario.telefone2;
         this.formData.email = usuario.email;
+
+        this.loadingInicial = false;
       } catch (error) {
         console.error("Erro ao carregar dados da usuario:", error);
       }
@@ -208,18 +218,25 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        this.loadingSubmit = true;
         try {
           const response = await api.put(
             "http://127.0.0.1:8000/meuperfil/",
             this.formData
           );
           if (response.status === 200) {
-            alert("Alterações salvas com sucesso!");
-            this.fetchUsuario();
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              alert("Alterações salvas com sucesso!");
+              this.fetchUsuario();
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert("Erro ao alterar produtor. Tente novamente mais tarde.");
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error("Erro ao enviar requisição:", error);
           alert(
             "Erro ao enviar requisição. Verifique o console para mais detalhes."

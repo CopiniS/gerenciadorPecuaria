@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button
@@ -140,14 +141,20 @@
 <script>
 import api from "/src/interceptadorAxios";
 import { masksMixin } from "../mixins/maks";
+import LoadSpinner from "./LoadSpiner.vue";
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
       activeTab: "trocar-senha",
       errorMessage: null,
+      loadingSubmit: false,
       formData: {
         old_password: null,
         new_password: null,
@@ -170,18 +177,26 @@ export default {
     //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
       if (this.verificaVazio() && this.validarSenhaRepetida()) {
+        this.loadingSubmit = true;
         try {
           const response = await api.post(
             "http://127.0.0.1:8000/alterar-senha/",
             this.formData
           );
           if (response.status === 200) {
-            alert("Senha alterada com sucesso!");
-            this.selectTab("meu-perfil");
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              
+              alert("Senha alterada com sucesso!");
+              this.selectTab("meu-perfil");
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert("Erro ao alterar a senha. Tente novamente mais tarde.");
           }
         } catch (error) {
+          this.loadingSubmit = false;
           if (error.response && error.response.status === 400) {
             const errors = error.response.data;
             

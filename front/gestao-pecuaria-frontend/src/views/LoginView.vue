@@ -31,6 +31,10 @@
             </span>
           </div>
 
+          <div class="text-right mb-3">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#recuperarSenhaModal">Esqueceu sua senha?</a>
+          </div>
+
           <button type="button" class="btn btn-primary btn-block" @click="login">
             <i class="fas fa-sign-in-alt"></i> Entrar
           </button>
@@ -43,19 +47,51 @@
         </form>
       </div>
     </div>
+
+    <!-- Modal de Recuperação de Senha -->
+    <div class="modal fade" id="recuperarSenhaModal" tabindex="-1" aria-labelledby="recuperarSenhaModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="recuperarSenhaModalLabel">Recuperar Senha</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div v-if="recuperacaoMessage" :class="`alert ${recuperacaoMessageType}`">{{ recuperacaoMessage }}</div>
+            <form @submit.prevent="enviarRecuperacaoSenha">
+              <div class="mb-4 input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input v-model="emailRecuperacao" type="email" class="form-control" id="emailRecuperacao" placeholder="Digite seu email" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-paper-plane"></i> Enviar link de recuperação
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'; 
 import api from '/src/interceptadorAxios';
+import { Modal } from 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 export default {
   data() {
     return {
       email: '',
       password: '',
-      errorMessage: '', // Mensagem de erro
-      passwordType: 'password', // Controla o tipo do input da senha
+      errorMessage: '',
+      emailRecuperacao: '',
+      recuperacaoMessage: '',
+      recuperacaoMessageType: '',
+      emailRecuperacaoValido: false,
+      verificandoEmail: false,
+      passwordType: 'password',
     };
   },
   methods: {
@@ -80,6 +116,7 @@ export default {
         this.errorMessage = 'Email ou senha incorretos.'; // Define a mensagem de erro
       }
     },
+
     registrar() {
       this.$router.push('/cadastro');
     },
@@ -93,9 +130,67 @@ export default {
         return ''
       }
     },
+
     togglePasswordVisibility() {
       this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
     },
+
+    async verificarEmailRecuperacao() {
+      if (!this.emailRecuperacao || this.verificandoEmail) return;
+      
+      this.verificandoEmail = true;
+      this.recuperacaoMessage = '';
+      this.emailRecuperacaoValido = false;
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/verificar-email/', {
+          email: this.emailRecuperacao
+        });
+        if (response.data.existe) {
+          this.recuperacaoMessage = 'Email encontrado! Você pode prosseguir com a recuperação.';
+          this.recuperacaoMessageType = 'alert-success';
+          this.emailRecuperacaoValido = true;
+        } else {
+          this.recuperacaoMessage = 'Email não cadastrado. Por favor, verifique o email digitado.';
+          this.recuperacaoMessageType = 'alert-danger';
+          this.emailRecuperacao = ''; // Limpa o campo de email
+          this.emailRecuperacaoValido = false;
+        }
+      } catch (error) {
+        this.recuperacaoMessage = 'Erro ao verificar email. Tente novamente.';
+        this.recuperacaoMessageType = 'alert-danger';
+        this.emailRecuperacaoValido = false;
+      } finally {
+        this.verificandoEmail = false;
+      }
+    },
+
+    async enviarRecuperacaoSenha() {
+      await this.verificarEmailRecuperacao();
+      if (!this.emailRecuperacaoValido) {
+        this.recuperacaoMessage = 'Por favor, verifique o email antes de continuar.';
+        this.recuperacaoMessageType = 'alert-warning';
+        return;
+      }
+      try {
+        await axios.post('http://127.0.0.1:8000/recuperar-senha/', {
+          email: this.emailRecuperacao
+        });
+        this.recuperacaoMessage = 'Se este email estiver registrado, você receberá um link de recuperação.';
+        this.recuperacaoMessageType = 'alert-success';
+        
+        this.emailRecuperacao = '';
+        this.emailRecuperacaoValido = false;
+        setTimeout(() => {
+          const modal = Modal.getInstance(document.getElementById('recuperarSenhaModal'));
+          if (modal) {
+            modal.hide();
+          }
+        }, 3000);
+      } catch (error) {
+        this.recuperacaoMessage = 'Erro ao enviar email de recuperação. Tente novamente.';
+        this.recuperacaoMessageType = 'alert-danger';
+      }
+    }
   }
 };
 </script>

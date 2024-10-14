@@ -53,7 +53,8 @@ import OcorrenciaCadastro from '@/components/OcorrenciaCadastro.vue';
 import OcorrenciaEdicao from '@/components/OcorrenciaEdicao.vue';
 import FotoAnimalCadastro from '@/components/FotoAnimalCadastro.vue';
 import FotoAnimalVisualizacao from '@/components/FotoAnimalVisualizacao.vue';
-import PrimeiraPropriedade from '@/views/PrimeiraPropriedade.vue'
+import PrimeiraPropriedade from '@/views/PrimeiraPropriedade.vue';
+import ResetPassword from '@/components/ResetPassword.vue';
 
 const routes = [
   
@@ -378,6 +379,12 @@ const routes = [
     name: 'FotoVisualizacao',
     component: FotoAnimalVisualizacao,
     props: true,
+  },
+
+  {
+    path: '/redefinir-senha/:uid/:token',
+    name: 'ResetPassword',
+    component: ResetPassword
   },
 
 

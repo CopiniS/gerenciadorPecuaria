@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialVenda" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab" @click="selectTab('vendas')" 
@@ -88,9 +89,12 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
+
+  components: { LoadSpinner },
 
   data() {
     return {
@@ -102,6 +106,9 @@ export default {
       dataSelecionada: null,
       highlightedIndex: -1,
       dropdownOpen: false,
+      loadingSubmit: false,
+      loadingInicialVenda: true,
+      loadingInicialAnimais: true,
       formData: {
         id: null,
         animal: '',
@@ -186,6 +193,8 @@ export default {
         this.brinco = venda[0].animal.brinco;
 
         this.buscarAnimaisDaApi();
+
+        this.loadingInicialVenda = false;
       } catch (error) {
         console.error('Erro ao carregar dados da venda:', error);
       }
@@ -202,6 +211,7 @@ export default {
         if(this.animalVendido != null){
           this.animais.push(this.animalVendido);
         }
+        this.loadingInicialAnimais = false;
       } catch (error) {
         console.error('Erro ao buscar animais da API:', error);
       }
@@ -209,6 +219,7 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio()) {
+        this.loadingSubmit = true;
         try {
           //FORMATA PESO, PRECOKG E VALORTOTAL
           if(this.formData.peso != null){
@@ -223,12 +234,19 @@ export default {
           });
 
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.$router.push('/vendas-animais');
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              
+              alert('Alterações salvas com sucesso!');
+              this.$router.push('/vendas-animais');
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }

@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'vendas' }" id="nav-vet-tab" @click="selectTab('vendas')" 
@@ -87,9 +88,14 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
@@ -99,6 +105,8 @@ export default {
       brinco: '',
       highlightedIndex: -1,
       dropdownOpen: false,
+      loadingSubmit: false,
+      loadingInicial: true,
       formData: {
         id: null,
         animal: '',
@@ -172,6 +180,7 @@ export default {
             },
             });
             this.animais = response.data;
+            this.loadingInicial = false;
         } catch (error) {
             console.error('Erro ao buscar animais da API:', error);
         }
@@ -179,6 +188,7 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio()) {
+        this.loadingSubmit = true;
         try {
           //FORMATA PESO, PRECOKG E VALORTOTAL
           if(this.formData.peso != null){
@@ -193,12 +203,19 @@ export default {
         });
 
           if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/vendas-animais');
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/vendas-animais');
+              
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao cadastrar venda. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }

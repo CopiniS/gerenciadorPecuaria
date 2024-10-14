@@ -83,10 +83,8 @@ export default {
   const columnStyles = this.colunas.reduce((styles, col, index) => {
     if (col.toLowerCase().includes('valor') || col.toLowerCase().includes('preço')) {
       styles[index] = { halign: 'right' }; // Alinhar colunas de valores à direita
-    } else if (col.toLowerCase().includes('data') || col.toLowerCase().includes('quantidade')) {
-      styles[index] = { halign: 'center' }; // Alinhar datas e quantidades ao centro
     } else {
-      styles[index] = { halign: 'left' }; // Alinhar textos à esquerda
+      styles[index] = { halign: 'center' }; // Alinhar textos no centro
     }
     return styles;
   }, {});

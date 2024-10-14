@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialAnimais || loadingInicialPiquetesOrigem || loadingInicialPiquetesDestino" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button
@@ -226,9 +227,14 @@
 <script>
 import api from "/src/interceptadorAxios";
 import { masksMixin } from "../mixins/maks";
+import LoadSpinner from "./LoadSpiner.vue";
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
@@ -248,6 +254,10 @@ export default {
       highlightedIndexPiqueteOrigem: -1,
       dropdownPiqueteOrigemOpen: false,
       selecionaTodos: false,
+      loadingSubmit: false,
+      loadingInicialAnimais: true,
+      loadingInicialPiquetesOrigem: true,
+      loadingInicialPiquetesDestino: true,
       formData: {
         animal: [],
         dataMovimentacao: null,
@@ -304,6 +314,7 @@ export default {
           }
         );
         this.animais = response.data;
+        this.loadingInicialAnimais = false;
       } catch (error) {
         console.error("Erro ao buscar animais da API:", error);
       }
@@ -316,6 +327,7 @@ export default {
         );
         this.piquetesDestino = response.data.slice();
         this.piquetesDestinoPossiveis = response.data.slice();
+        this.loadingInicialPiquetesDestino = false;
       } catch (error) {
         console.error("Erro ao buscar piquetes da API:", error);
       }
@@ -335,6 +347,7 @@ export default {
         );
         this.piquetesOrigem = response.data.slice();
         this.piquetesOrigemPossiveis = response.data.slice();
+        this.loadingInicialPiquetesOrigem = false;
       } catch (error) {
         console.error("Erro ao buscar piquetes da API:", error);
       }
@@ -343,6 +356,7 @@ export default {
     async submitForm() {
       if (this.verificaVazio()) {
         if (this.verificaVazioAnimais()) {
+          this.loadingSubmit = true;
           try {
             const response = await api.post(
               "http://127.0.0.1:8000/movimentacoes/",
@@ -351,14 +365,20 @@ export default {
             );
 
             if (response.status === 201) {
-              alert("Cadastro realizado com sucesso!");
-              this.$router.push("/movimentacoes");
+              this.loadingSubmit = false;
+              setTimeout(() => {
+                
+                alert("Cadastro realizado com sucesso!");
+                this.$router.push("/movimentacoes");
+              }, 100);
             } else {
+              this.loadingSubmit = false;
               alert(
                 "Erro ao cadastrar movimentacao. Tente novamente mais tarde."
               );
             }
           } catch (error) {
+            this.loadingSubmit = false;
             console.error("Erro ao enviar requisição:", error);
             alert(
               "Erro ao enviar requisição. Verifique o console para mais detalhes."

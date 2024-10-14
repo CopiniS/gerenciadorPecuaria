@@ -1,6 +1,7 @@
 
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialRacaId || loadingInicialRacas" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
@@ -44,12 +45,21 @@
 
 <script>
 import api from '/src/interceptadorAxios';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
+
+    components: {
+        LoadSpinner,
+    },
+
     data() {
         return {
             activeTab: 'edicao', // Começa na aba de edição
             racasDaApi: null,
+            loadingSubmit: false,
+            loadingInicialRacaId: true,
+            loadingInicialRacas: true,
             formData: {
                 id: null,
                 nome: ''
@@ -75,6 +85,8 @@ export default {
         const raca = response.data;
         this.formData.id = raca.id;
         this.formData.nome = raca.nome;
+
+        this.loadingInicialRacaId = false;
       } catch (error) {
         console.error('Erro ao carregar dados da raca:', error);
       }
@@ -82,17 +94,25 @@ export default {
 
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        this.loadingSubmit = true;
        try {
           const response = await api.patch(`http://127.0.0.1:8000/racas/${this.formData.id}/`, this.formData , {
         });
 
           if (response.status === 200) {
-            alert('Alterações salvas com sucesso!');
-            this.$router.push('/racas');
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              alert('Alterações salvas com sucesso!');
+              this.$router.push('/racas');
+            }, 100);
+            
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao salvar alterações. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }
@@ -103,6 +123,7 @@ export default {
       try {
         const response = await api.get('http://127.0.0.1:8000/racas/');
         this.racasDaApi = response.data;
+        this.loadingInicialRacas = false;
       } catch (error) {
         console.error('Erro ao buscar raças da API:', error);
       }

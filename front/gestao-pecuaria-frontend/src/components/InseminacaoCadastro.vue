@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingSubmit || loadingInicialFemeas || loadingInicialVeterinarios" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'inseminacoes' }" id="nav-vet-tab"
@@ -94,9 +95,14 @@
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
@@ -111,6 +117,9 @@ export default {
       dropdownVeterinarioOpen: false,
       highlightedIndexFemea: -1,
       dropdownFemeaOpen: false,
+      loadingSubmit: false,
+      loadingInicialFemeas: true,
+      loadingInicialVeterinarios: true,
       formData: {
         id: null,
         dataInseminacao: null,
@@ -153,6 +162,7 @@ export default {
           },
         });
         this.femeas = response.data;
+        this.loadingInicialFemeas = false;
       } catch (error) {
         console.error('Erro ao buscar inseminações da API:', error);
       }
@@ -162,6 +172,7 @@ export default {
       try {
         const response = await api.get('http://127.0.0.1:8000/veterinarios/');
         this.veterinarios = response.data;
+        this.loadingInicialVeterinarios = false;
       } catch (error) {
         console.error('Erro ao buscar veterinários da API:', error);
       }
@@ -170,15 +181,23 @@ export default {
     async submitForm() {
       // Submete o formulário
       if (this.verificaVazio()) {
+        this.loadingSubmit = true;
         try {
           const response = await api.post('http://127.0.0.1:8000/inseminacoes/', this.formData);
           if (response.status === 201) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/inseminacoes');
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/inseminacoes');
+              
+            }, 100);
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao cadastrar inseminação. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }

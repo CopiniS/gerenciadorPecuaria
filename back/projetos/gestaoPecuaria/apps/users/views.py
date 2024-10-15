@@ -17,6 +17,8 @@ import time
 from .models import Produtor
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 class VerificarEmailView(APIView):
     def post(self, request):
@@ -79,27 +81,31 @@ class RecuperarSenhaView(APIView):
             user = Produtor.objects.get(email=email)
         except Produtor.DoesNotExist:
             return Response({"detail": "Se este e-mail estiver registrado, você receberá um link de recuperação."}, 
-                          status=status.HTTP_200_OK)
+                            status=status.HTTP_200_OK)
 
         # Gerar token
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
 
         # Construir link de recuperação com a URL do frontend
-        reset_url = f"http://localhost:8081/redefinir-senha/{uid}/{token}"  # Ajuste a porta conforme seu frontend
+        reset_url = f"http://localhost:8080/redefinir-senha/{uid}/{token}"  # Ajuste a porta conforme seu frontend
+
+        # Renderizar o template HTML
+        html_message = render_to_string('recuperar_senha.html', {'user': user, 'reset_url': reset_url})
+        plain_message = strip_tags(html_message)  # Caso o cliente de e-mail não suporte HTML
 
         # Enviar e-mail
         send_mail(
             'Recuperação de Senha',
-            f'Use este link para redefinir sua senha: {reset_url}',
+            plain_message,
             'noreply@seudominio.com',
             [email],
+            html_message=html_message,  # Enviar a versão HTML
             fail_silently=False,
         )
 
         return Response({"detail": "Se este e-mail estiver registrado, você receberá um link de recuperação."}, 
-                      status=status.HTTP_200_OK)
-
+                        status=status.HTTP_200_OK)
 class RegisterView(APIView):
     def post(self, request):
         serializer = ProdutorSerializer(data=request.data)

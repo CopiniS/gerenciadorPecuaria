@@ -78,7 +78,6 @@
 <script>
 import axios from 'axios'; 
 import api from '/src/interceptadorAxios';
-import { Modal } from 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 export default {
   data() {
@@ -180,17 +179,21 @@ export default {
         
         this.emailRecuperacao = '';
         this.emailRecuperacaoValido = false;
-        setTimeout(() => {
-          const modal = Modal.getInstance(document.getElementById('recuperarSenhaModal'));
-          if (modal) {
-            modal.hide();
-          }
-        }, 3000);
       } catch (error) {
         this.recuperacaoMessage = 'Erro ao enviar email de recuperação. Tente novamente.';
         this.recuperacaoMessageType = 'alert-danger';
       }
-    }
+    },
+
+    async fecharModal(modalId) {
+      var closeButton = document.getElementById(modalId).querySelector('.btn-close');
+      if (closeButton) {
+        closeButton.click();
+      } else {
+        console.error('Botão de fechar não encontrado no modal:', modalId);
+      }
+      this.mostrarComponente();
+    },
   }
 };
 </script>

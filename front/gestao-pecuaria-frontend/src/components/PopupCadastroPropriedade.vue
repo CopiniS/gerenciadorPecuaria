@@ -1,4 +1,6 @@
 <template>
+  <div>
+  <LoadSpinner :isLoading="loadingSubmit || loadingInicialCidade || loadingInicialEstados" />
   <!-- Modal de Propriedades -->
   <div class="modal" id="listModal" tabindex="-1" role="dialog" style="display: block;">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -80,15 +82,22 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 
 <script>
 import api from '/src/interceptadorAxios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
+
 
 export default {
   mixins: [masksMixin],
+
+  components: {
+    LoadSpinner,
+  },
 
   data() {
     return {
@@ -101,6 +110,9 @@ export default {
         cidadesFiltradas: [],
         dropdownCidadeOpen: false,
         highlightedIndexCidade: -1,
+        loadingSubmit: false,
+        loadingInicialCidade: false,
+        loadingInicialEstados: true,
         formData: {
             id: null,
             nome: '',
@@ -154,9 +166,11 @@ export default {
 
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async buscarCidadesPorEstado(estadoId) {
+        this.loadingInicialCidade = true;
         try {
             const response = await api.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoId}/municipios`);
             this.cidades = response.data;
+            this.loadingInicialCidade = false;
         } catch (error) {
             console.error('Erro ao buscar cidades da API:', error);
         }
@@ -166,6 +180,7 @@ export default {
         try {
             const response = await api.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
             this.estados = response.data;
+            this.loadingInicialEstados = false;
         } catch (error) {
             console.error('Erro ao buscar cidades da API:', error);
         }
@@ -173,6 +188,7 @@ export default {
     
     async submitForm() {
       if (this.verificaVazio() && this.validarFormulario()) {
+        this.loadingSubmit = true;
         try {
           //FORMATA AREA LONGITUDE E LATITUDE
           this.formData.area = this.replaceVirgulaPonto(this.formData.area);
@@ -187,14 +203,20 @@ export default {
           const response = await api.post('http://127.0.0.1:8000/propriedades/', this.formData);
 
           if (response.status === 201) {
-              localStorage.setItem('propriedadeSelecionada', response.data.id)
-              
-              alert('Cadastro realizado com sucesso!');
-              this.$router.push('/propriedades');
+              this.loadingSubmit = false;
+
+              setTimeout(() => {
+                localStorage.setItem('propriedadeSelecionada', response.data.id)
+                
+                alert('Cadastro realizado com sucesso!');
+                this.$router.push('/propriedades');
+              }, 100);
           } else {
+              this.loadingSubmit = false;
               alert('Erro ao cadastrar propriedade. Tente novamente mais tarde');
           }
         } catch (error) {
+            this.loadingSubmit = false;
             console.error('Erro ao enviar requisição:', error);
             alert('Erro ao enviar requisição. Verifique o console para mais detalhes');
         }

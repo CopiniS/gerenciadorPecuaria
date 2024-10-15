@@ -1,4 +1,6 @@
 <template>
+  <div>
+  <LoadSpinner :isLoading="loadingSubmit" />
   <div class="login-container">
     <div class="login-content">
       <!-- Div para a logo -->
@@ -73,13 +75,20 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios'; 
 import api from '/src/interceptadorAxios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import LoadSpinner from '../components/LoadSpiner.vue';
+
 export default {
+  components: {
+    LoadSpinner
+  },
+
   data() {
     return {
       email: '',
@@ -91,12 +100,14 @@ export default {
       emailRecuperacaoValido: false,
       verificandoEmail: false,
       passwordType: 'password',
+      loadingSubmit: false,
     };
   },
   methods: {
     async login() {
       this.errorMessage = ''; // Limpa a mensagem de erro antes de fazer o login
-
+      
+      this.loadingSubmit = true;
       try {
         const response = await axios.post('http://127.0.0.1:8000/token/', { 
           email: this.email, 
@@ -107,12 +118,20 @@ export default {
         localStorage.setItem('refresh_token', response.data.refresh);
         
         const nome = await this.retornaNomeProdutor();
+        this.loadingSubmit = false;
+
+        setTimeout(() => {
+          localStorage.setItem('produtorNome', nome);
+          this.$router.push('/propriedades-escolha');
+        }, 100);
         
-        localStorage.setItem('produtorNome', nome);
-        this.$router.push('/propriedades-escolha');
         
       } catch (error) {
-        this.errorMessage = 'Email ou senha incorretos.'; // Define a mensagem de erro
+        this.loadingSubmit = false;
+
+        setTimeout(() => {
+          this.errorMessage = 'Email ou senha incorretos.'; // Define a mensagem de erro
+        }, 100);
       }
     },
 

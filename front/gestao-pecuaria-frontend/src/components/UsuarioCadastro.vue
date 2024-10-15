@@ -1,4 +1,6 @@
 <template>
+<div>
+  <LoadSpinner :isLoading="loadingSubmit" />
   <div class="vh-100 vw-100 cadastro-container">
     <div class="cadastro-inner">
       <!-- Quadrado da Logo -->
@@ -69,17 +71,25 @@
       </div>
     </div>
   </div>
+  </div>
+  
 </template>
 
 <script>
 import axios from 'axios';
 import { masksMixin } from '../mixins/maks';
+import LoadSpinner from './LoadSpiner.vue';
 
 export default {
   mixins: [masksMixin],
 
+  components: {
+    LoadSpinner,
+  },
+
   data() {
     return {
+      loadingSubmit: false,
       formData: {
         nome: '',
         cpf: '',
@@ -123,15 +133,23 @@ export default {
 //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
       if(this.verificaVazio() && this.validarFormulario()){
+        this.loadingSubmit = true;
         try {
           const response = await axios.post('http://127.0.0.1:8000/singup', this.formData);
           if (response.status === 200) {
-            alert('Cadastro realizado com sucesso!');
-            this.$router.push('/login')
+            this.loadingSubmit = false;
+
+            setTimeout(() => {
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/login')
+            }, 100);
+            
           } else {
+            this.loadingSubmit = false;
             alert('Erro ao cadastrar produtor. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingSubmit = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }

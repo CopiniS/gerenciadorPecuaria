@@ -234,7 +234,7 @@ export default {
 
 .login-form-section {
   flex: 1;
-  padding: 40px;
+  padding: 30px;
 }
 
 .btn-primary {

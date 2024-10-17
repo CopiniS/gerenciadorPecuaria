@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpiner :isLoading="loadingDelete || loadingAnimal || loadingOcorrencia || loadingPiquete || loadingRaca" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button
@@ -48,10 +49,6 @@
     <div class="animal-view">
       <h1>Detalhes do Animal</h1>
 
-      <!-- Exibe o skeleton enquanto carrega os dados -->
-      <SkeletonListagem v-if="loadingAnimal || loadingOcorrencia || loadingPiquete || loadingRaca" />
-
-      <div v-else>
         <div class="actions d-flex flex-wrap">
           <button @click="acessarEdicao(animal)" class="btn btn-success mx-1">
             Editar
@@ -419,18 +416,17 @@
       </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
 import api from "/src/interceptadorAxios";
 import RelatorioPdf from "../components/RelatorioPdf.vue";
-import SkeletonListagem from "../components/SkeletonListagem.vue";
+import LoadSpiner from "../components/LoadSpiner.vue";
 
 export default {
   components: {
     RelatorioPdf,
-    SkeletonListagem,
+    LoadSpiner,
   },
   data() {
     return {
@@ -467,6 +463,7 @@ export default {
       loadingOcorrencia: true,
       loadingPiquete: true,
       loadingRaca: true,
+      loadingDelete: false,
     };
   },
   mounted() {
@@ -535,6 +532,7 @@ export default {
     },
 
     async apagarAnimal() {
+      this.loadingDelete = true;
       try {
         const response = await api.delete(
           `http://127.0.0.1:8000/animais/${this.formDataAnimal.id}/`,
@@ -542,12 +540,17 @@ export default {
         );
 
         if (response.status === 204) {
-          alert("Exclusão realizada com sucesso!");
-          this.$router.push("/animais");
+          this.loadingDelete = false;
+          setTimeout(() => {
+            alert("Exclusão realizada com sucesso!");
+            this.$router.push("/animais");
+          }, 100);
         } else {
+          this.loadingDelete = false;
           alert("Erro ao apagar animal. Tente novamente mais tarde.");
         }
       } catch (error) {
+        this.loadingDelete = false;
         console.error("Erro ao enviar requisição:", error);
         alert(
           "Erro ao enviar requisição. Verifique o console para mais detalhes."

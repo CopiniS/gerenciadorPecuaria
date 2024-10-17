@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpiner :isLoading="loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button
@@ -28,10 +29,6 @@
 
     <h2>Lista de Animais</h2>
 
-    <!-- Exibe o skeleton enquanto carrega os dados -->
-    <SkeletonListagem v-if="loading" />
-
-    <div v-else>
       <div class="d-flex align-items-start table-container flex-column">
         <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -365,7 +362,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -373,7 +369,7 @@ import api from "/src/interceptadorAxios";
 import { masksMixin } from "../mixins/maks";
 import DateRangePicker from "../components/DateRangePicker.vue";
 import RelatorioPdf from "../components/RelatorioPdf.vue";
-import SkeletonListagem from "../components/SkeletonListagem.vue";
+import LoadSpiner from "../components/LoadSpiner.vue";
 
 export default {
   mixins: [masksMixin],
@@ -382,7 +378,7 @@ export default {
   components: {
     DateRangePicker,
     RelatorioPdf,
-    SkeletonListagem,
+    LoadSpiner,
   },
   data() {
     return {
@@ -401,7 +397,7 @@ export default {
         piquete: "",
         status: "",
       },
-      loading: true,
+      loadingInicial: true,
       tipoRelatorio: null,
       propriedadeAtualNome: localStorage.getItem("propriedadeSelecionadaNome"),
       nomeProdutor: localStorage.getItem("produtorNome"),
@@ -447,7 +443,7 @@ export default {
         });
         this.animaisDaApi = response.data;
         this.animais = this.animaisDaApi;
-        this.loading = false;
+        this.loadingInicial = false;
       } catch (error) {
         console.error("Erro ao buscar animais da API:", error);
       }

@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpinner :isLoading="loadingDelete || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" data-bs-target="#nav-vet" type="button"
@@ -15,10 +16,6 @@
 
     <h2>Lista de Propriedades</h2>
 
-    <!-- Exibe o skeleton enquanto carrega os dados -->
-    <SkeletonListagem v-if="loading" />
-
-    <div v-else>
       <div class="d-flex align-items-start table-container flex-column">
         <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -157,18 +154,17 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
 import api from "/src/interceptadorAxios";
 import RelatorioPdf from "../components/RelatorioPdf.vue";
-import SkeletonListagem from "../components/SkeletonListagem.vue";
+import LoadSpinner from "../components/LoadSpiner.vue";
 
 export default {
   components: {
     RelatorioPdf,
-    SkeletonListagem,
+    LoadSpinner,
   },
   data() {
     return {
@@ -192,7 +188,8 @@ export default {
         cidade: "",
         estado: "",
       },
-      loading: true,
+      loadingInicial: true,
+      loadingDelete: false,
     };
   },
   mounted() {
@@ -208,13 +205,15 @@ export default {
         );
         this.propriedadesDaApi = response.data;
         this.propriedades = this.propriedadesDaApi;
-        this.loading = false;
+        this.loadingInicial = false;
       } catch (error) {
         console.error("Erro ao buscar propriedades da API:", error);
       }
     },
 
     async apagarPropriedade() {
+      this.loadingDelete = true;
+      
       try {
         const response = await api.delete(
           `http://127.0.0.1:8000/propriedades/${this.formData.id}/`,
@@ -222,12 +221,17 @@ export default {
         );
 
         if (response.status === 204) {
-          alert("Exclusão realizada com sucesso!");
-          this.buscarPropriedadesDaApi();
+          this.loadingDelete = false;
+          setTimeout(() => {
+            alert("Exclusão realizada com sucesso!");
+            this.buscarPropriedadesDaApi();
+          }, 100);
         } else {
+          this.loadingDelete = false;
           alert("Erro ao apagar propriedade. Tente novamente mais tarde.");
         }
       } catch (error) {
+        this.loadingDelete = false;
         console.error("Erro ao enviar requisição:", error);
         alert(
           "Erro ao enviar requisição. Verifique o console para mais detalhes."

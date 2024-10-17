@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpiner :isLoading="loadingDelete || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button
@@ -28,10 +29,6 @@
 
     <h2>Lista de Gastos</h2>
 
-    <!-- Exibe o skeleton enquanto carrega os dados -->
-    <SkeletonListagem v-if="loading" />
-
-    <div v-else>
       <div class="d-flex align-items-start table-container flex-column">
         <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -197,21 +194,19 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
     
     <script>
 import api from "/src/interceptadorAxios";
 import DateRangePicker from "../components/DateRangePicker.vue";
 import RelatorioPdf from "../components/RelatorioPdf.vue";
-import SkeletonListagem from "../components/SkeletonListagem.vue";
-
+import LoadSpiner from "../components/LoadSpiner.vue";
 export default {
   components: {
     RelatorioPdf,
     DateRangePicker,
-    SkeletonListagem,
-  },
+    LoadSpiner,
+},
   data() {
     return {
       gastos: [],
@@ -234,7 +229,8 @@ export default {
         categoria: "",
       },
       modalTitle: "Cadastro de Gasto",
-      loading: true, // Estado de carregamento
+      loadingInicial: true, 
+      loadingDelete: false, 
     };
   },
   mounted() {
@@ -253,7 +249,7 @@ export default {
         });
         this.gastosDaApi = response.data;
         this.gastos = this.gastosDaApi;
-        this.loading = false;
+        this.loadingInicial = false;
       } catch (error) {
         console.error("Erro ao buscar gastos da API:", error);
         this.loading = false;
@@ -261,6 +257,7 @@ export default {
     },
 
     async apagarGasto() {
+      this.loadingDelete = true;
       try {
         const response = await api.delete(
           `http://127.0.0.1:8000/gastos/${this.formData.id}/`,
@@ -268,12 +265,18 @@ export default {
         );
 
         if (response.status === 204) {
-          alert("Exclusão realizada com sucesso!");
-          this.buscarGastosDaApi();
+          this.loadingDelete = false;
+
+          setTimeout(() => {
+            alert("Exclusão realizada com sucesso!");
+            this.buscarGastosDaApi();
+          }, 100);
         } else {
+          this.loadingDelete = false;
           alert("Erro ao apagar gasto. Tente novamente mais tarde.");
         }
       } catch (error) {
+        this.loadingDelete = false;
         console.error("Erro ao enviar requisição:", error);
         alert(
           "Erro ao enviar requisição. Verifique o console para mais detalhes."

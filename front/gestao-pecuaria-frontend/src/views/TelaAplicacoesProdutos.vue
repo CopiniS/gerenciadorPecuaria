@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpiner :isLoading="loadingDelete || loadingInicial" />
     <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
       <button class="nav-link active" id="nav-vet-tab" data-bs-toggle="tab" 
@@ -12,11 +13,6 @@
   
     <h2>Lista de Aplicações</h2>
 
-
-    <!-- Exibe o skeleton enquanto carrega os dados -->
-    <SkeletonListagem v-if="loading" />
-
-    <div v-else>
       <div class="d-flex align-items-start table-container flex-column">
         <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -115,7 +111,6 @@
       </div>
     </div>
     </div>
-  </div>
   </template>
   
   <script>
@@ -123,14 +118,14 @@
   import { masksMixin } from '../mixins/maks';
   import DateRangePicker from '../components/DateRangePicker.vue';
   import RelatorioPdf from '../components/RelatorioPdf.vue';
-  import SkeletonListagem from "../components/SkeletonListagem.vue";
+  import LoadSpiner from '../components/LoadSpiner.vue';
   
   export default {
     mixins: [masksMixin],
     components: {
       RelatorioPdf,
       DateRangePicker,
-      SkeletonListagem,
+      LoadSpiner,
     },
     data() {
       return {
@@ -154,7 +149,8 @@
           piquete: '',
           produto: ''
         },
-        loading: true,
+        loadingInicial: true,
+        loadingDelete: false,
         modalTitle: 'Cadastro de Aplicacao',
       }
   
@@ -180,23 +176,30 @@
               });
               this.aplicacoesDaApi = response.data;
               this.aplicacoes = this.aplicacoesDaApi;
-              this.loading = false;
+              this.loadingInicial = false;
           } catch (error) {
           console.error('Erro ao buscar aplicações de produtos da API:', error);
           }
       },
   
       async apagarAplicacao() {
+        this.loadingDelete = true;
         try {
           const response = await api.delete(`http://127.0.0.1:8000/aplicacoes-produtos/${this.formData.id}/`);
   
           if (response.status === 204) {
-            alert('Exclusão realizada com sucesso!');
-            this.buscarAplicacoesDaApi();
+            this.loadingDelete = false;
+            setTimeout(() => {
+              alert('Exclusão realizada com sucesso!');
+              this.buscarAplicacoesDaApi();
+              
+            }, 100);
           } else {
+            this.loadingDelete = false;
             alert('Erro ao excluir a aplicação. Tente novamente mais tarde.');
           }
         } catch (error) {
+          this.loadingDelete = false;
           console.error('Erro ao enviar requisição:', error);
           alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
         }

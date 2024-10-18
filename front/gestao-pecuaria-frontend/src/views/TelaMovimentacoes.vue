@@ -1,5 +1,6 @@
 <template>
   <div class="background">
+    <LoadSpiner :isLoading="loadingDelete || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button
@@ -28,10 +29,6 @@
 
     <h2>Lista de Movimentações</h2>
 
-    <!-- Exibe o skeleton enquanto carrega os dados -->
-    <SkeletonListagem v-if="loading" />
-
-    <div v-else>
       <div class="d-flex align-items-start table-container flex-column">
         <div class="d-flex align-items-start">
           <h2 class="me-3">Filtros</h2>
@@ -199,7 +196,6 @@
       </div> -->
       </div>
     </div>
-  </div>
 </template>
   
   <script>
@@ -207,14 +203,14 @@ import api from "/src/interceptadorAxios";
 import { masksMixin } from "../mixins/maks";
 import DateRangePicker from "../components/DateRangePicker.vue";
 import RelatorioPdf from "../components/RelatorioPdf.vue";
-import SkeletonListagem from "../components/SkeletonListagem.vue";
+import LoadSpiner from "../components/LoadSpiner.vue";
 
 export default {
   mixins: [masksMixin],
   components: {
     DateRangePicker,
     RelatorioPdf,
-    SkeletonListagem,
+    LoadSpiner,
   },
   data() {
     return {
@@ -238,7 +234,8 @@ export default {
         piqueteDestino: "",
         tipo: "",
       },
-      loading: true,
+      loadingInicial: true,
+      loadingDelete: false,
     };
   },
   mounted() {
@@ -263,13 +260,14 @@ export default {
         });
         this.movimentacoesDaApi = response.data;
         this.movimentacoes = this.movimentacoesDaApi;
-        this.loading = false;
+        this.loadingInicial = false;
       } catch (error) {
         console.error("Erro ao buscar movimentacoes da API:", error);
       }
     },
 
     async apagarMovimentacao() {
+      this.loadingDelete = true;
       try {
         const response = await api.delete(
           `http://127.0.0.1:8000/movimentacoes/${this.formData.id}/`,
@@ -277,12 +275,17 @@ export default {
         );
 
         if (response.status === 204) {
-          alert("Exclusão realizada com sucesso!");
-          this.buscarMovimentacoesDaApi();
+          this.loadingDelete = false;
+          setTimeout(() => {
+            alert("Exclusão realizada com sucesso!");
+            this.buscarMovimentacoesDaApi();
+          }, 100);
         } else {
+          this.loadingDelete = false;
           alert("Erro ao excluir movimentacoes. Tente novamente mais tarde.");
         }
       } catch (error) {
+        this.loadingDelete = false;
         console.error("Erro ao enviar requisição:", error);
         alert(
           "Erro ao enviar requisição. Verifique o console para mais detalhes."

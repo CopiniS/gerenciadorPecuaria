@@ -418,7 +418,7 @@ export default {
   min-height: 100vh;
   padding: 20px;
   position: relative;
-  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
+  /*z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
 }
 
 .background::before {

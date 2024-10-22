@@ -64,15 +64,28 @@
           </div>
           <div class="col-auto d-flex align-items-center">
             <label for="produto" class="form-label me-2">Categoria</label>
-            <input
-              type="text"
+            <select
               class="form-control input-consistente"
               id="categoria"
-              v-model="filtro.categoria"
-            />
+              v-model="filtro.categoria">
+            <option value="">Selecione a categoria</option>
+                <option value="mao_de_obra">Mão de Obra</option>
+                <option value="manutencao_maquinas">Manutenção de Máquinas</option>
+                <option value="manutencao_benfeitorias">Manutenção de Benfeitorias</option>
+                <option value="medicamentos">Medicamentos</option>
+                <option value="combustiveis">Combustiveis</option>
+                <option value="despesa_administrativa">Despesa Administrativa</option>
+                <option value="sementes">Sementes</option>
+                <option value="adubos">Adubos</option>
+                <option value="compra_maquinas">Compra de Máquinas</option>
+                <option value="construcao_benfeitorias">Construção de Benfeitorias</option>
+                <option value="implantacao_lavouras">Implantação de Lavouras</option>
+                <option value="aquisicao_terra">Aquisição de Terra</option>
+                <option value="Outros">Outros</option>
+              </select>
           </div>
           <div class="col-12 d-flex justify-content-start mt-3">
-            <button class="btn btn-secondary me-2" @click="limparFiltro">
+            <button class="btn btn-success me-2 btn-limpar" @click="limparFiltro">
               Limpar
             </button>
             <button type="submit" class="btn btn-success">Filtrar</button>
@@ -489,6 +502,21 @@ nav,
 .input-consistente,
 .select-consistente {
   width: 200px;
+}
+
+.btn-limpar {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.btn-limpar:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
 }
 </style>
     

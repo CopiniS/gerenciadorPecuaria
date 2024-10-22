@@ -23,8 +23,8 @@
           <form @submit.prevent="finalizarSuplementoSubmit">
               <div class="mb-3 input-group">
                 <label for="dataFinal" title="Data Final" class="input-group-text"><i class="fas fa-calendar-alt"></i></label>
-                <input type="text" title="Data Final" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataFinalPlaceholder" 
-                class="form-control" id="dataFinalFi" v-model="formData.dataFinal" :class="{'is-invalid': !isDataFinalValida}">
+                <DateComponent type="text" title="Data Final" onfocus="(this.type='date')" onblur="(this.type='text')" :placeholder="dataFinalPlaceholder" 
+                class="form-control" id="dataFinalFi" v-model="formData.dataFinal" :class="{'is-invalid': !isDataFinalValida}" @update:selectedDate="updateDataFinal"/>
               </div>
               <div class="button-group justify-content-end">
                     <button type="button" class="btn btn-secondary" @click="selectTab('suplementacoes')">Cancelar</button>
@@ -40,11 +40,13 @@
 <script>
 import api from '/src/interceptadorAxios';
 import LoadSpinner from './LoadSpiner.vue';
+import DateComponent from './DateComponent.vue';
 
 export default {
 
   components: {
     LoadSpinner,
+    DateComponent
   },
 
   data() {
@@ -119,7 +121,10 @@ export default {
 
 
 //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-    selectTab(tab) {
+updateDataFinal(data) {
+      this.formData.dataFinal = data;
+    },    
+selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'suplementacoes') {
         this.$router.push('/suplementacoes');

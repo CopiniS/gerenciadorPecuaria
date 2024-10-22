@@ -3,225 +3,146 @@
     <LoadSpiner :isLoading="loadingDelete || loadingInicial" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button
-          class="nav-link"
-          :class="{ active: activeTab === 'produtos' }"
-          id="nav-produtos-tab"
-          @click="selectTab('produtos')"
-          type="button"
-          role="tab"
-          aria-controls="nav-produtos"
-          aria-selected="true"
-        >
+        <button class="nav-link" :class="{ active: activeTab === 'produtos' }" id="nav-produtos-tab"
+          @click="selectTab('produtos')" type="button" role="tab" aria-controls="nav-produtos" aria-selected="true">
           Lista de Produtos
         </button>
 
-        <button
-          class="nav-link"
-          :class="{ active: activeTab === 'compras' }"
-          id="nav-compras-tab"
-          @click="selectTab('compras')"
-          type="button"
-          role="tab"
-          aria-controls="nav-compras"
-          aria-selected="false"
-        >
+        <button class="nav-link" :class="{ active: activeTab === 'compras' }" id="nav-compras-tab"
+          @click="selectTab('compras')" type="button" role="tab" aria-controls="nav-compras" aria-selected="false">
           Histórico de Compras
         </button>
       </div>
     </nav>
 
     <div class="tab-content" id="nav-tabContent">
-      <div
-        class="tab-pane fade"
-        :class="{ 'show active': activeTab === 'produtos' }"
-        id="nav-produtos"
-        role="tabpanel"
-        aria-labelledby="nav-produtos-tab"
-      ></div>
-      <div
-        class="tab-pane fade"
-        :class="{ 'show active': activeTab === 'compras' }"
-        id="nav-compras"
-        role="tabpanel"
-        aria-labelledby="nav-compras-tab"
-      ></div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'produtos' }" id="nav-produtos" role="tabpanel"
+        aria-labelledby="nav-produtos-tab"></div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'compras' }" id="nav-compras" role="tabpanel"
+        aria-labelledby="nav-compras-tab"></div>
     </div>
 
     <h2>Histórico de Compras</h2>
 
-      <div class="d-flex align-items-start table-container flex-column">
-        <div class="d-flex align-items-start">
-          <h2 class="me-3">Filtros</h2>
-          <button class="btn-acoes btn-sm" @click="toggleFormulario">
-            <i class="fas fa-chevron-down"></i>
-          </button>
-        </div>
-        <form
-          @submit.prevent="aplicarFiltro"
-          @keyup.enter="aplicarFiltro"
-          class="row g-3 align-items-center"
-          v-show="mostrarFormulario"
-        >
-          <div class="col-auto d-flex align-items-center">
-            <label for="dataCompra" class="form-label me-2"
-              >Data da Compra</label
-            >
-            <DateRangePicker
-              ref="dateRangePicker"
-              :startDate="filtro.dataCompraInicio"
-              :endDate="filtro.dataCompraFim"
-              @update:startDate="(val) => (filtro.dataCompraInicio = val)"
-              @update:endDate="(val) => (filtro.dataCompraFim = val)"
-            />
-          </div>
-          <div class="col-auto d-flex align-items-center">
-            <label for="produto" class="form-label me-2">Produto</label>
-            <input
-              type="text"
-              class="form-control input-consistente"
-              id="produto"
-              v-model="filtro.produto"
-            />
-          </div>
-          <div class="col-12 d-flex justify-content-start mt-3">
-            <button class="btn btn-secondary me-2" @click="limparFiltro">
-              Limpar
-            </button>
-            <button type="submit" class="btn btn-success">Filtrar</button>
-          </div>
-        </form>
+    <div class="d-flex align-items-start table-container flex-column">
+      <div class="d-flex align-items-start">
+        <h2 class="me-3">Filtros</h2>
+        <button class="btn-acoes btn-sm" @click="toggleFormulario">
+          <i class="fas fa-chevron-down"></i>
+        </button>
       </div>
+      <form @submit.prevent="aplicarFiltro" @keyup.enter="aplicarFiltro" class="row g-3 align-items-center"
+        v-show="mostrarFormulario">
+        <div class="col-auto d-flex align-items-center">
+          <label for="dataCompra" class="form-label me-2">Data da Compra</label>
+          <DateRangePicker ref="dateRangePicker" :startDate="filtro.dataCompraInicio" :endDate="filtro.dataCompraFim"
+            @update:startDate="(val) => (filtro.dataCompraInicio = val)"
+            @update:endDate="(val) => (filtro.dataCompraFim = val)" />
+        </div>
+        <div class="col-auto d-flex align-items-center">
+          <label for="produto" class="form-label me-2">Produto</label>
+          <input type="text" class="form-control input-consistente" id="produto" v-model="filtro.produto" />
+        </div>
+    <div class="col-12 d-flex justify-content-start mt-3">
+      <button class="btn btn-success me-2 btn-limpar" @click="limparFiltro">
+        Limpar
+      </button>
+      <button type="submit" class="btn btn-success">Filtrar</button>
+    </div>
+  </form>
+</div>
 
-      <div>
-        <div class="table-container">
-          <div class="button-container">
-            <button
-              @click="acessarCadastro()"
-              type="button"
-              class="btn btn-success"
-            >
-              Cadastrar Compra
-            </button>
-            <RelatorioPdf
-              titulo="Relatório de Compra de Produto"
-              :cabecalho="[
-                'Produtor: ' + nomeProdutor,
-                'Propriedade: ' + propriedadeAtualNome,
-              ]"
-              :colunas="[
+    <div>
+      <div class="table-container">
+        <div class="button-container">
+          <button @click="acessarCadastro()" type="button" class="btn btn-success">
+            Cadastrar Compra
+          </button>
+          <RelatorioPdf titulo="Relatório de Compra de Produto" :cabecalho="[
+            'Produtor: ' + nomeProdutor,
+            'Propriedade: ' + propriedadeAtualNome,
+          ]" :colunas="[
                 'Nome do Produto',
                 'Data',
                 'Validade',
                 'Quantidade Comprada',
                 'Valor Unitário',
                 'Valor Total',
-              ]"
-              :dados="
-                compras.map((compra) => [
-                  compra.produto.nome,
-                  formatarData(compra.dataCompra),
-                  formatarData(compra.validade),
-                  compra.quantidadeComprada,
-                  formatarValor(compra.valorUnitario),
-                  formatarValor(
-                    (compra.valorUnitario * compra.quantidadeComprada).toFixed(
-                      2
-                    )
-                  ),
-                ])
-              "
-              :mostrarSoma="false"
-            />
-          </div>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">Data da compra</th>
-                <th scope="col">Produto</th>
-                <th scope="col">Valor Unitário</th>
-                <th scope="col">Quantidade Comprada</th>
-                <th scope="col">Validade</th>
-                <th scope="col">Lote</th>
-                <th scope="col">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(compra, index) in compras" :key="index">
-                <td>{{ formatarData(compra.dataCompra) }}</td>
-                <td>{{ compra.produto.nome }}</td>
-                <td>{{ formatarValor(compra.valorUnitario) }}</td>
-                <td>{{ compra.quantidadeComprada }}</td>
-                <td>{{ formatarData(compra.validade) }}</td>
-                <td>{{ compra.lote }}</td>
-                <td>
-                  <button
-                    @click="acessarEdicao(compra)"
-                    class="btn-acoes btn-sm"
-                    title="Editar Compra"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button
-                    @click="confirmarExclusao(compra)"
-                    class="btn-acoes btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#confirmacaoExclusaoModal"
-                    title="Excluir Compra"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+              ]" :dados="compras.map((compra) => [
+                compra.produto.nome,
+                formatarData(compra.dataCompra),
+                formatarData(compra.validade),
+                compra.quantidadeComprada,
+                formatarValor(compra.valorUnitario),
+                formatarValor(
+                  (compra.valorUnitario * compra.quantidadeComprada).toFixed(
+                    2
+                  )
+                ),
+              ])
+                " :mostrarSoma="false" />
         </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Data da compra</th>
+              <th scope="col">Produto</th>
+              <th scope="col">Valor Unitário</th>
+              <th scope="col">Quantidade Comprada</th>
+              <th scope="col">Validade</th>
+              <th scope="col">Lote</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(compra, index) in compras" :key="index">
+              <td>{{ formatarData(compra.dataCompra) }}</td>
+              <td>{{ compra.produto.nome }}</td>
+              <td>{{ formatarValor(compra.valorUnitario) }}</td>
+              <td>{{ compra.quantidadeComprada }}</td>
+              <td>{{ formatarData(compra.validade) }}</td>
+              <td>{{ compra.lote }}</td>
+              <td>
+                <button @click="acessarEdicao(compra)" class="btn-acoes btn-sm" title="Editar Compra">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button @click="confirmarExclusao(compra)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                  data-bs-target="#confirmacaoExclusaoModal" title="Excluir Compra">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <!-- Modal de Confirmação de Exclusão -->
-        <div
-          class="modal fade"
-          id="confirmacaoExclusaoModal"
-          tabindex="-1"
-          aria-labelledby="confirmacaoExclusaoModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">
-                  Confirmação de Exclusão
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                Tem certeza de que deseja excluir esta Compra?
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  @click="apagarCompra()"
-                >
-                  Excluir
-                </button>
-              </div>
+      <!-- Modal de Confirmação de Exclusão -->
+      <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
+        aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">
+                Confirmação de Exclusão
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Tem certeza de que deseja excluir esta Compra?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-danger" @click="apagarCompra()">
+                Excluir
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -322,9 +243,9 @@ export default {
       this.compras = this.comprasDaApi.filter((compra) => {
         return (
           new Date(compra.dataCompra) >=
-            new Date(this.filtro.dataCompraInicio || "1970-01-01") &&
+          new Date(this.filtro.dataCompraInicio || "1970-01-01") &&
           new Date(compra.dataCompra) <=
-            new Date(this.filtro.dataCompraFim || "9999-12-31") &&
+          new Date(this.filtro.dataCompraFim || "9999-12-31") &&
           compra.produto.nome.includes(this.filtro.produto)
         );
       });
@@ -413,6 +334,7 @@ export default {
 
 <style scoped>
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
+
 .background {
   background-color: #ededef;
   min-height: 100vh;
@@ -433,19 +355,22 @@ export default {
   background-position: center;
   background-size: 40%;
   opacity: 0.1;
-  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
+  z-index: 0;
+  /* A imagem de fundo deve estar abaixo do conteúdo */
 }
 
 nav,
 .tab-content {
   position: relative;
-  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
+  z-index: 1;
+  /* Coloca o conteúdo acima da marca d'água */
 }
 
 .table-container,
 .button-container {
   position: relative;
-  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
+  z-index: 1;
+  /* Garante que as tabelas e botões estejam acima da imagem de fundo */
 }
 
 .table-container table tbody tr td {
@@ -469,14 +394,16 @@ nav,
 .btn-success {
   margin-right: 10px;
   margin-bottom: 10px;
-  z-index: 2; /* Garante que o botão esteja acima da imagem */
+  z-index: 2;
+  /* Garante que o botão esteja acima da imagem */
 }
 
 .btn-acoes {
   background-color: transparent;
   border: none;
   padding: 0;
-  z-index: 2; /* Garante que o botão de ação esteja acima da imagem */
+  z-index: 2;
+  /* Garante que o botão de ação esteja acima da imagem */
 }
 
 .btn-acoes i {
@@ -495,9 +422,28 @@ nav,
 
 .button-container {
   display: flex;
-  flex-wrap: nowrap; /* Garante que os botões não vão para a linha seguinte */
-  gap: 10px; /* Espaço entre os botões */
+  flex-wrap: nowrap;
+  /* Garante que os botões não vão para a linha seguinte */
+  gap: 10px;
+  /* Espaço entre os botões */
   margin-bottom: 20px;
-  white-space: nowrap; /* Evita quebras de linha nos botões */
+  white-space: nowrap;
+  /* Evita quebras de linha nos botões */
 }
+
+.btn-limpar {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.btn-limpar:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
 </style>

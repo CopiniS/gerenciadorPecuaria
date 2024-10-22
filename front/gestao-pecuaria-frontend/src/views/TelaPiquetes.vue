@@ -359,7 +359,6 @@ export default {
   min-height: 100vh;
   padding: 20px;
   position: relative;
-  /*z-index: 0;  /*Garante que a imagem de fundo fique na camada mais baixa */
 }
 
 .background::before {
@@ -374,7 +373,6 @@ export default {
   background-position: center;
   background-size: 40%;
   opacity: 0.1;
-  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
 }
 
 nav,

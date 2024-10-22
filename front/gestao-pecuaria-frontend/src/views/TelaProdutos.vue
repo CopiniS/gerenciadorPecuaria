@@ -30,57 +30,76 @@
     <h2>Lista de Produtos</h2>
 
     
-      <div class="d-flex align-items-start table-container flex-column">
-        <div class="d-flex align-items-start">
-          <h2 class="me-3">Filtros</h2>
-          <button class="btn-acoes btn-sm" @click="toggleFormulario">
-            <i class="fas fa-chevron-down"></i>
-          </button>
-        </div>
-        <form
-          @submit.prevent="aplicarFiltro"
-          @keyup.enter="aplicarFiltro"
-          class="row g-3 align-items-center"
-          v-show="mostrarFormulario"
-        >
-          <div class="col-auto d-flex align-items-center">
-            <label for="nome" class="form-label me-2">Nome</label>
-            <input
-              type="text"
-              class="form-control input-consistente"
-              id="nome"
-              v-model="filtro.nome"
-            />
-          </div>
-          <div class="col-auto d-flex align-items-center">
-            <label for="tipo" class="form-label me-2">Tipo</label>
-            <select
-              class="form-select select-consistente"
-              id="tipo"
-              v-model="filtro.tipo"
-            >
-              <option value="">Selecione o tipo</option>
-              <option value="alimenticio">Alimentício</option>
-              <option value="sanitario">Sanitário</option>
-            </select>
-          </div>
-          <div class="col-auto d-flex align-items-center">
-            <label for="categoria" class="form-label me-2">Categoria</label>
-            <input
-              type="text"
-              class="form-control input-consistente"
-              id="categoria"
-              v-model="filtro.categoria"
-            />
-          </div>
-          <div class="col-12 d-flex justify-content-start mt-3">
-            <button class="btn btn-secondary me-2" @click="limparFiltro">
-              Limpar
-            </button>
-            <button type="submit" class="btn btn-success">Filtrar</button>
-          </div>
-        </form>
-      </div>
+    <div class="d-flex align-items-start table-container flex-column">
+  <div class="d-flex align-items-start">
+    <h2 class="me-3">Filtros</h2>
+    <button class="btn-acoes btn-sm" @click="toggleFormulario">
+      <i class="fas fa-chevron-down"></i>
+    </button>
+  </div>
+  <form
+    @submit.prevent="aplicarFiltro"
+    @keyup.enter="aplicarFiltro"
+    class="row g-3 align-items-center"
+    v-show="mostrarFormulario"
+  >
+    <div class="col-auto d-flex align-items-center">
+      <label for="nome" class="form-label me-2">Nome</label>
+      <input
+        type="text"
+        class="form-control input-consistente"
+        id="nome"
+        v-model="filtro.nome"
+      />
+    </div>
+    <div class="col-auto d-flex align-items-center">
+      <label for="tipo" class="form-label me-2">Tipo</label>
+      <select
+        class="form-select select-consistente"
+        id="tipo"
+        v-model="filtro.tipo"
+      >
+        <option value="">Selecione o tipo</option>
+        <option value="alimenticio">Alimentício</option>
+        <option value="sanitario">Sanitário</option>
+      </select>
+    </div>
+    <div class="col-auto d-flex align-items-center">
+      <label for="categoria" class="form-label me-2">Categoria</label>
+      <select
+        class="form-select select-consistente"
+        id="categoria"
+        v-model="filtro.categoria"
+      >
+        <option value="">Selecione a categoria</option>
+
+        <!-- Categorias Alimentícias -->
+        <option v-if="!filtro.tipo || filtro.tipo === 'alimenticio'" value="Sal branco">Sal branco</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'alimenticio'" value="Sal mineral">Sal mineral</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'alimenticio'" value="Sal proteinado">Sal proteinado</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'alimenticio'" value="Racao">Ração</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'alimenticio'" value="Silagem">Silagem</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'alimenticio'" value="Milho">Milho</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'alimenticio'" value="Outros">Outros</option>
+
+        <!-- Categorias Sanitárias -->
+        <option v-if="!filtro.tipo || filtro.tipo === 'sanitario'" value="vacinas">Vacinas</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'sanitario'" value="vermifugos">Vermífugos</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'sanitario'" value="vitaminas">Vitaminas</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'sanitario'" value="antibioticos">Antibióticos</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'sanitario'" value="antiparasitarios">Antiparasitários</option>
+        <option v-if="!filtro.tipo || filtro.tipo === 'sanitario'" value="outros">Outros</option>
+      </select>
+    </div>
+    <div class="col-12 d-flex justify-content-start mt-3">
+      <button class="btn btn-secondary me-2" @click="limparFiltro">
+        Limpar
+      </button>
+      <button type="submit" class="btn btn-success">Filtrar</button>
+    </div>
+  </form>
+</div>
+
 
       <div>
         <div class="table-container">
@@ -435,12 +454,11 @@ export default {
         if (produto.categoria == null) {
           produto.categoria = "";
         }
+      const nomeCorreto = produto.nome.toLowerCase().includes(this.filtro.nome.toLowerCase());
+      const tipoCorreto = !this.filtro.tipo || produto.tipo.includes(this.filtro.tipo);
+      const categoriaCorreta = !this.filtro.categoria || produto.categoria.toLowerCase().includes(this.filtro.categoria.toLowerCase());
 
-        return (
-          produto.nome.toLowerCase().includes(this.filtro.nome) &&
-          produto.tipo.includes(this.filtro.tipo) &&
-          produto.categoria.toLowerCase().includes(this.filtro.categoria)
-        );
+      return nomeCorreto && tipoCorreto && categoriaCorreta;
       });
     },
 

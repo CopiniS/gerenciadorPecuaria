@@ -99,7 +99,7 @@
             />
           </div>
           <div class="col-12 d-flex justify-content-start mt-3">
-            <button class="btn btn-secondary me-2" @click="limparFiltro">
+            <button class="btn btn-success me-2 btn-limpar" @click="limparFiltro">
               Limpar
             </button>
             <button type="submit" class="btn btn-success">Filtrar</button>
@@ -485,6 +485,21 @@ nav,
 .input-consistente,
 .select-consistente {
   width: 200px;
+}
+
+.btn-limpar {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.btn-limpar:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
 }
 </style>
   

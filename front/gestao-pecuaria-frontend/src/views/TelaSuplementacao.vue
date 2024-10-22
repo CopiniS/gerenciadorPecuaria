@@ -95,7 +95,7 @@
             </select>
           </div>
           <div class="col-12 d-flex justify-content-start mt-3">
-            <button class="btn btn-secondary me-2" @click="limparFiltro">
+            <button class="btn btn-success me-2 btn-limpar" @click="limparFiltro">
               Limpar
             </button>
             <button type="submit" class="btn btn-success">Filtrar</button>
@@ -343,8 +343,8 @@ export default {
             new Date(this.filtro.dataFinalInicio || "1970-01-01") &&
           new Date(suplementacao.dataFinal) <=
             new Date(this.filtro.dataFinalFim || "9999-12-31") &&
-          suplementacao.produto.nome.includes(this.filtro.produto) &&
-          suplementacao.piquete.nome.includes(this.filtro.piquete) &&
+          suplementacao.produto.nome.toLowerCase().includes(this.filtro.produto.toLowerCase()) &&
+          suplementacao.piquete.nome.toLowerCase().includes(this.filtro.piquete.toLowerCase()) &&
           ((this.filtro.status == "andamento" &&
             suplementacao.dataFinal == null) ||
             this.filtro.status == "" ||
@@ -459,7 +459,6 @@ export default {
   min-height: 100vh;
   padding: 20px;
   position: relative;
-  z-index: 0; /* Garante que a imagem de fundo fique na camada mais baixa */
 }
 
 .background::before {
@@ -474,9 +473,7 @@ export default {
   background-position: center;
   background-size: 40%;
   opacity: 0.1;
-  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
 }
-
 nav,
 .tab-content {
   position: relative;
@@ -542,5 +539,20 @@ nav,
 .input-consistente,
 .select-consistente {
   width: 200px;
+}
+
+.btn-limpar {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.btn-limpar:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
 }
 </style>

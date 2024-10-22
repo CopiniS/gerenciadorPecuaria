@@ -110,7 +110,7 @@ export default {
       telefone2Placeholder: 'Telefone 2*',
       emailPlaceholder: 'Email*',
       passwordPlaceholder: 'Senha*',
-      passwordType: 'password', // Controla o tipo do input da senha
+      passwordType: 'password', 
     };
   },
   methods: {
@@ -295,7 +295,7 @@ export default {
 
 .cadastro-inner {
   display: flex;
-  flex-direction: row; /* Mantém logo e formulário lado a lado */
+  flex-direction: row; 
   max-width: 800px;
   width: 100%;
   border-radius: 8px;
@@ -343,7 +343,7 @@ export default {
 }
 
 .alert-custom {
-  padding: 0.5rem 1rem; /* Diminui o padding do alerta */
+  padding: 0.5rem 1rem; 
   font-size: 0.875rem;
 }
 
@@ -356,12 +356,12 @@ export default {
 
   .login-form {
     width: 100%;
-    max-width: 100%; /* Garante que o formulário não exceda a largura da tela */
-    margin: 0; /* Remove as margens laterais */
+    max-width: 100%; 
+    margin: 0;
   }
 
   .input-group {
-    flex-wrap: wrap; /* Permite que os inputs ocupem a largura total em dispositivos menores */
+    flex-wrap: wrap; 
   }
 }
 </style>

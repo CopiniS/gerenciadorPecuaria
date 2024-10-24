@@ -225,7 +225,14 @@ export default {
           setTimeout(() => {
             alert("Exclusão realizada com sucesso!");
             this.buscarPropriedadesDaApi();
-          }, 100);
+          });
+          console.log('prop: ', this.propriedadesDaApi);
+          
+          setTimeout(() => {
+            localStorage.setItem('propriedadeSelecionada', this.propriedadesDaApi[0].id);
+            window.location.reload();
+          }, 1000);
+          
         } else {
           this.loadingDelete = false;
           alert("Erro ao apagar propriedade. Tente novamente mais tarde.");

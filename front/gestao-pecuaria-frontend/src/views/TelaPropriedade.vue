@@ -222,16 +222,18 @@ export default {
 
         if (response.status === 204) {
           this.loadingDelete = false;
+          alert("Exclusão realizada com sucesso!");
+          await this.buscarPropriedadesDaApi();
+
           setTimeout(() => {
-            alert("Exclusão realizada com sucesso!");
-            this.buscarPropriedadesDaApi();
-          });
-          console.log('prop: ', this.propriedadesDaApi);
-          
-          setTimeout(() => {
-            localStorage.setItem('propriedadeSelecionada', this.propriedadesDaApi[0].id);
-            window.location.reload();
-          }, 1000);
+            if(this.propriedadesDaApi.length === 0){
+            this.$router.push('/propriedades-escolha');
+            }
+            else{
+              localStorage.setItem('propriedadeSelecionada', this.propriedadesDaApi[0].id);
+              window.location.reload();
+            }
+          }, 100);
           
         } else {
           this.loadingDelete = false;

@@ -59,8 +59,6 @@ export default {
   methods: {
     gerarRelatorioPdf() {
       this.loading = true;
-      setTimeout(() => {
-        console.log('algo');
         
       try{
       // Definir a orientação com base na prop orientacaoPaisagem
@@ -162,8 +160,6 @@ export default {
         // Finalizar loading
         this.loading = false;
       }
-      
-      }, 4000);
     }
   }
 }

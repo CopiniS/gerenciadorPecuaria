@@ -204,13 +204,9 @@ export default {
 
           if (response.status === 201) {
               this.loadingSubmit = false;
-
-              setTimeout(() => {
-                localStorage.setItem('propriedadeSelecionada', response.data.id)
-                
-                alert('Cadastro realizado com sucesso!');
-                this.$router.push('/propriedades');
-              }, 100);
+              localStorage.setItem('propriedadeSelecionada', response.data.id);
+              alert('Cadastro realizado com sucesso!');
+              this.$router.push('/propriedades');
           } else {
               this.loadingSubmit = false;
               alert('Erro ao cadastrar propriedade. Tente novamente mais tarde');

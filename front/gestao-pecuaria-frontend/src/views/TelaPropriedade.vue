@@ -222,10 +222,19 @@ export default {
 
         if (response.status === 204) {
           this.loadingDelete = false;
+          alert("Exclusão realizada com sucesso!");
+          await this.buscarPropriedadesDaApi();
+
           setTimeout(() => {
-            alert("Exclusão realizada com sucesso!");
-            this.buscarPropriedadesDaApi();
+            if(this.propriedadesDaApi.length === 0){
+            this.$router.push('/propriedades-escolha');
+            }
+            else{
+              localStorage.setItem('propriedadeSelecionada', this.propriedadesDaApi[0].id);
+              window.location.reload();
+            }
           }, 100);
+          
         } else {
           this.loadingDelete = false;
           alert("Erro ao apagar propriedade. Tente novamente mais tarde.");

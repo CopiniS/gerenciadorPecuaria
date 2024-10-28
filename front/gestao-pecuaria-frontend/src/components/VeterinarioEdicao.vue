@@ -169,40 +169,41 @@ export default {
 
 
 //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-    validarFormulario() {
-      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone)){
-        this.isTelefoneValido = true;
-        this.telefonePlaceholder = 'Telefone*';
-      }
-      else{
-        this.isTelefoneValido = false;
-        this.formData.telefone = null;
-        this.telefonePlaceholder = 'Telefone Inválido';
-      }
+validarFormulario() {
+  if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone)){
+    this.isTelefoneValido = true;
+    this.telefonePlaceholder = 'Telefone*';
+  } else {
+    this.isTelefoneValido = false;
+    this.formData.telefone = null;
+    this.telefonePlaceholder = 'Telefone Inválido';
+  }
 
-      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
-          this.isEmailValido = true;
-          this.emailPlaceholder = 'Email';
-      }
-      else{
-        this.isEmailValido = false;
-         this.formData.email = null;
-         this.emailPlaceholder = 'Email Inválido';
-      }
+  if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
+    this.isEmailValido = true;
+    this.emailPlaceholder = 'Email';
+  } else {
+    this.isEmailValido = false;
+    this.formData.email = null;
+    this.emailPlaceholder = 'Email Inválido';
+  }
 
-      this.isCrmvValido = true;
-      this.crmvPlaceholder = 'CRMV*';
+  this.isCrmvValido = true;
+  this.crmvPlaceholder = 'CRMV*';
 
-      for (let veterinario of this.veterinariosDaApi) {
-        if (veterinario.crmv === this.formData.crmv) {
-          this.isCrmvValido = false;
-          this.crmvPlaceholder = 'Este CRMV já está cadastrado';
-          this.formData.crmv = null;
-          break;
-        }
-      }
-      return (this.isTelefoneValido && this.isEmailValido && this.isCrmvValido);
-    },
+  // Validação de CRMV, agora permitindo o CRMV do veterinário atual
+  for (let veterinario of this.veterinariosDaApi) {
+    // Se o CRMV pertence a outro veterinário, a validação falha
+    if (veterinario.crmv === this.formData.crmv && veterinario.id !== this.formData.id) {
+      this.isCrmvValido = false;
+      this.crmvPlaceholder = 'Este CRMV já está cadastrado';
+      this.formData.crmv = null;
+      break;
+    }
+  }
+
+  return this.isTelefoneValido && this.isEmailValido && this.isCrmvValido;
+},
 
     verificaVazio(){
       //NOME

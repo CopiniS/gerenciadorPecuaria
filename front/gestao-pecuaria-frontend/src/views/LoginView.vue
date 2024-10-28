@@ -67,7 +67,7 @@
               </div>
 
               <button type="submit" class="btn btn-primary btn-block">
-                <i class="fas fa-paper-plane"></i> Enviar link de recuperação
+                <i class="fas fa-paper-plane"></i> {{ this.btnPlaceHolder }}
               </button>
             </form>
           </div>
@@ -101,6 +101,7 @@ export default {
       verificandoEmail: false,
       passwordType: 'password',
       loadingSubmit: false,
+      btnPlaceHolder: "Enviar link de recuperação"
     };
   },
   methods: {
@@ -164,8 +165,6 @@ export default {
           email: this.emailRecuperacao
         });
         if (response.data.existe) {
-          this.recuperacaoMessage = 'Email encontrado! Você pode prosseguir com a recuperação.';
-          this.recuperacaoMessageType = 'alert-success';
           this.emailRecuperacaoValido = true;
         } else {
           this.recuperacaoMessage = 'Email não cadastrado. Por favor, verifique o email digitado.';
@@ -193,11 +192,10 @@ export default {
         await axios.post('http://127.0.0.1:8000/recuperar-senha/', {
           email: this.emailRecuperacao
         });
-        this.recuperacaoMessage = 'Se este email estiver registrado, você receberá um link de recuperação.';
+        this.recuperacaoMessage = 'Você recebeu um link de recuperação no seu email.';
         this.recuperacaoMessageType = 'alert-success';
+        this.btnPlaceHolder = "Reenviar link de recuperação"
         
-        this.emailRecuperacao = '';
-        this.emailRecuperacaoValido = false;
       } catch (error) {
         this.recuperacaoMessage = 'Erro ao enviar email de recuperação. Tente novamente.';
         this.recuperacaoMessageType = 'alert-danger';

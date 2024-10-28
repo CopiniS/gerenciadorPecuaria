@@ -3,364 +3,192 @@
     <LoadSpiner :isLoading="loadingDelete || loadingAnimal || loadingOcorrencia || loadingPiquete || loadingRaca" />
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button
-          class="nav-link"
-          :class="{ active: activeTab === 'animais' }"
-          id="nav-animais-tab"
-          @click="selectTab('animais')"
-          type="button"
-          role="tab"
-          aria-controls="nav-animais"
-          aria-selected="true"
-        >
+        <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
+          @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">
           Lista de Animais
         </button>
-        <button
-          class="nav-link"
-          :class="{ active: activeTab === 'visualizacao' }"
-          id="nav-view-tab"
-          @click="selectTab('visualizacao')"
-          type="button"
-          role="tab"
-          aria-controls="nav-view"
-          aria-selected="true"
-        >
+        <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-view-tab"
+          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-view" aria-selected="true">
           Vizualização do Animal
         </button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
-      <div
-        class="tab-pane fade"
-        :class="{ 'show active': activeTab === 'animais' }"
-        id="nav-animais"
-        role="tabpanel"
-        aria-labelledby="nav-animais-tab"
-      ></div>
-      <div
-        class="tab-pane fade"
-        :class="{ 'show active': activeTab === 'visualizacao' }"
-        id="nav-view"
-        role="tabpanel"
-        aria-labelledby="nav-view-tab"
-      ></div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais" role="tabpanel"
+        aria-labelledby="nav-animais-tab"></div>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'visualizacao' }" id="nav-view" role="tabpanel"
+        aria-labelledby="nav-view-tab"></div>
     </div>
 
     <div class="animal-view">
       <h1>Detalhes do Animal</h1>
 
-        <div class="actions d-flex flex-wrap">
-          <button @click="acessarEdicao(animal)" class="btn btn-success mx-1">
-            Editar
-          </button>
-          <button
-            class="btn btn-success mx-1"
-            data-bs-toggle="modal"
-            data-bs-target="#confirmacaoExclusaoModal"
-          >
-            Excluir
-          </button>
-          <button class="btn btn-success mx-1" @click="acessarFotoCadastro">
-            Cadastrar Foto
-          </button>
-          <button
-            @click="acessarFotoVisualizacao(animal)"
-            class="btn btn-success mx-1"
-          >
-            Visualizar Fotos
-          </button>
-          <button
-            @click="acessarOcorrenciaCadastro(animal)"
-            class="btn btn-success mx-1"
-          >
-            Incluir Ocorrência
-          </button>
-        </div>
+      <div class="actions d-flex flex-wrap">
+        <button @click="acessarEdicao(animal)" class="btn btn-success mx-1">
+          Editar
+        </button>
+        <button class="btn btn-success mx-1" data-bs-toggle="modal" data-bs-target="#confirmacaoExclusaoModal">
+          Excluir
+        </button>
+        <button class="btn btn-success mx-1" @click="acessarFotoCadastro">
+          Cadastrar Foto
+        </button>
+        <button @click="acessarFotoVisualizacao(animal)" class="btn btn-success mx-1">
+          Visualizar Fotos
+        </button>
+        <button @click="acessarOcorrenciaCadastro(animal)" class="btn btn-success mx-1">
+          Incluir Ocorrência
+        </button>
+      </div>
 
-        <div class="d-flex align-items-start table-container flex-column">
-          <form class="row g-3 align-items-center">
-            <div class="col-auto d-flex align-items-center">
-              <label for="brinco" class="form-label me-2">Brinco</label>
-              <input
-                v-model="formDataAnimal.brinco"
-                type="text"
-                class="form-control"
-                id="brinco"
-                disabled
-              />
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="dataNascimento" class="form-label me-2"
-                >Data de Nascimento</label
-              >
-              <input
-                type="text"
-                onfocus="(this.type='date')"
-                onblur="(this.type='text')"
-                class="form-control"
-                id="dataNascimento"
-                v-model="formDataAnimal.dataNascimento"
-                disabled
-              />
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="sexo" class="form-label me-2">Sexo</label>
-              <select
-                v-model="formDataAnimal.sexo"
-                class="form-select"
-                id="sexo"
-                disabled
-              >
-                <option disabled value="">Selecione o sexo</option>
-                <option
-                  v-for="opcao in ['macho', 'femea']"
-                  :key="opcao"
-                  :value="opcao"
-                  v-bind:selected="formDataAnimal.sexo === opcao"
-                >
-                  {{ opcao }}
-                </option>
-              </select>
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="raca" class="form-label me-2">Raça</label>
-              <select
-                v-model="formDataAnimal.racaPredominante"
-                class="form-select"
-                id="racaPredominante"
-                aria-label="Raça Predominante"
-                disabled
-              >
-                <option disabled :value="null">Raça</option>
-                <option v-for="raca in racas" :key="raca.id" :value="raca.id">
-                  {{ raca.nome }}
-                </option>
-              </select>
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="observacaoRaca" class="form-label me-2"
-                >Observações da Raça</label
-              >
-              <input
-                v-model="formDataAnimal.racaObservacao"
-                class="form-control"
-                id="racaObservacao"
-                disabled
-              />
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="piquete" class="form-label me-2">Piquete</label>
-              <select
-                v-model="formDataAnimal.piquete"
-                class="form-select"
-                id="piquete"
-                aria-label="Piquete"
-                disabled
-              >
-                <option :value="null" disabled>Piquete</option>
-                <option
-                  v-for="piquete in piquetes"
-                  :key="piquete.id"
-                  :value="piquete.id"
-                >
-                  {{ piquete.nome }}
-                </option>
-              </select>
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="brincoPai" class="form-label me-2">Brinco pai</label>
-              <input
-                v-model="formDataAnimal.brincoPai"
-                @input="filterMachos()"
-                type="text"
-                class="form-control"
-                disabled
-              />
-            </div>
-            <div
-              class="list-group"
-              v-if="formDataAnimal.brincoPai && machosFiltrados.length"
-            >
-              <button
-                type="button"
-                class="list-group-item list-group-item-action"
-                v-for="animal in machosFiltrados"
-                :key="animal.id"
-                @click="selectPai(animal)"
-              >
-                {{ animal.brinco }}
-              </button>
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="brincoMae" class="form-label me-2">Brinco mãe</label>
-              <input
-                v-model="formDataAnimal.brincoMae"
-                @input="filterFemeas()"
-                type="text"
-                class="form-control"
-                disabled
-              />
-            </div>
-            <div
-              class="list-group"
-              v-if="formDataAnimal.brincoMae && femeasFiltradas.length"
-            >
-              <button
-                type="button"
-                class="list-group-item list-group-item-action"
-                v-for="animal in femeasFiltradas"
-                :key="animal.id"
-                @click="selectMae(animal)"
-              >
-                {{ animal.brinco }}
-              </button>
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="rfid" class="form-label me-2">RfId</label>
-              <input
-                v-model="formDataAnimal.rfid"
-                type="text"
-                class="form-control"
-                id="rfid"
-                disabled
-              />
-            </div>
-            <div class="col-auto d-flex align-items-center">
-              <label for="observacoes" class="form-label me-2"
-                >Observações</label
-              >
-              <input
-                v-model="formDataAnimal.observacoes"
-                class="form-control"
-                id="observacoes"
-                disabled
-              />
-            </div>
-            <div
-              v-if="formDataAnimal.dataCompra"
-              class="col-auto d-flex align-items-center"
-            >
-              <label for="dataCompra" class="form-label me-2">DataCompra</label>
-              <input
-                type="text"
-                onfocus="(this.type='date')"
-                onblur="(this.type='text')"
-                class="form-control"
-                id="dataDaCompra"
-                v-model="formDataAnimal.dataCompra"
-                disabled
-              />
-            </div>
-            <div
-              v-if="formDataAnimal.valorCompra"
-              class="col-auto d-flex align-items-center"
-            >
-              <label for="valor" class="form-label me-2">Valor Compra</label>
-              <input
-                v-model="formDataAnimal.valorCompra"
-                type="text"
-                class="form-control"
-                id="valorCompra"
-                disabled
-              />
-            </div>
-          </form>
-        </div>
-
-        <!-- Ocorrências -->
-        <div class="d-flex align-items-start table-container flex-column">
-          <h2>Ocorrências</h2>
-          <div class="button-container">
-            <RelatorioPdf
-              titulo="Relatório de Ocorrências"
-              :cabecalho="[
-                'Nome do produtor: ' + nomeProdutor,
-                'Propriedade: ' + propriedadeAtualNome,
-              ]"
-              :colunas="['Brinco', 'Data da ocorrência', 'Tipo', 'Descrição']"
-              :dados="
-                ocorrencias.map((ocorrencia) => [
-                  formDataAnimal.brinco,
-                  formatarData(ocorrencia.dataOcorrencia),
-                  ocorrencia.tipo,
-                  ocorrencia.descricao,
-                ])
-              "
-            />
+      <div class="d-flex align-items-start table-container flex-column">
+        <form class="row g-3 align-items-center">
+          <div class="col-auto d-flex align-items-center">
+            <label for="brinco" class="form-label me-2">Brinco</label>
+            <input v-model="formDataAnimal.brinco" type="text" class="form-control" id="brinco" disabled />
           </div>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Tipo</th>
-                <th>Descrição</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="ocorrencia in ocorrencias" :key="ocorrencia.id">
-                <td>{{ formatarData(ocorrencia.dataOcorrencia) }}</td>
-                <td>{{ ocorrencia.tipo }}</td>
-                <td>{{ ocorrencia.descricao }}</td>
-                <td>
-                  <button
-                    @click="acessarOcorrenciaEdicao(ocorrencia)"
-                    class="btn-acoes btn-sm"
-                    title="Editar Ocorrência"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button
-                    @click="excluirOcorrencia(ocorrencia.id)"
-                    class="btn-acoes btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#confirmacaoExclusaoOcorrenciaModal"
-                  >
-                    <i class="fas fa-trash-alt" title="Excluir Ocorrência"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="col-auto d-flex align-items-center">
+            <label for="dataNascimento" class="form-label me-2">Data de Nascimento</label>
+            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control"
+              id="dataNascimento" v-model="formDataAnimal.dataNascimento" disabled />
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <label for="sexo" class="form-label me-2">Sexo</label>
+            <select v-model="formDataAnimal.sexo" class="form-select" id="sexo" disabled>
+              <option disabled value="">Selecione o sexo</option>
+              <option v-for="opcao in ['macho', 'femea']" :key="opcao" :value="opcao"
+                v-bind:selected="formDataAnimal.sexo === opcao">
+                {{ opcao }}
+              </option>
+            </select>
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <label for="raca" class="form-label me-2">Raça</label>
+            <select v-model="formDataAnimal.racaPredominante" class="form-select" id="racaPredominante"
+              aria-label="Raça Predominante" disabled>
+              <option disabled :value="null">Raça</option>
+              <option v-for="raca in racas" :key="raca.id" :value="raca.id">
+                {{ raca.nome }}
+              </option>
+            </select>
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <label for="observacaoRaca" class="form-label me-2">Observações da Raça</label>
+            <input v-model="formDataAnimal.racaObservacao" class="form-control" id="racaObservacao" disabled />
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <label for="piquete" class="form-label me-2">Piquete</label>
+            <select v-model="formDataAnimal.piquete" class="form-select" id="piquete" aria-label="Piquete" disabled>
+              <option :value="null" disabled>Piquete</option>
+              <option v-for="piquete in piquetes" :key="piquete.id" :value="piquete.id">
+                {{ piquete.nome }}
+              </option>
+            </select>
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <label for="brincoPai" class="form-label me-2">Brinco pai</label>
+            <input v-model="formDataAnimal.brincoPai" @input="filterMachos()" type="text" class="form-control"
+              disabled />
+          </div>
+          <div class="list-group" v-if="formDataAnimal.brincoPai && machosFiltrados.length">
+            <button type="button" class="list-group-item list-group-item-action" v-for="animal in machosFiltrados"
+              :key="animal.id" @click="selectPai(animal)">
+              {{ animal.brinco }}
+            </button>
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <label for="brincoMae" class="form-label me-2">Brinco mãe</label>
+            <input v-model="formDataAnimal.brincoMae" @input="filterFemeas()" type="text" class="form-control"
+              disabled />
+          </div>
+          <div class="list-group" v-if="formDataAnimal.brincoMae && femeasFiltradas.length">
+            <button type="button" class="list-group-item list-group-item-action" v-for="animal in femeasFiltradas"
+              :key="animal.id" @click="selectMae(animal)">
+              {{ animal.brinco }}
+            </button>
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <label for="rfid" class="form-label me-2">RfId</label>
+            <input v-model="formDataAnimal.rfid" type="text" class="form-control" id="rfid" disabled />
+          </div>
+          <div class="col-auto d-flex align-items-center">
+            <label for="observacoes" class="form-label me-2">Observações</label>
+            <input v-model="formDataAnimal.observacoes" class="form-control" id="observacoes" disabled />
+          </div>
+          <div v-if="formDataAnimal.dataCompra" class="col-auto d-flex align-items-center">
+            <label for="dataCompra" class="form-label me-2">DataCompra</label>
+            <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control"
+              id="dataDaCompra" v-model="formDataAnimal.dataCompra" disabled />
+          </div>
+          <div v-if="formDataAnimal.valorCompra" class="col-auto d-flex align-items-center">
+            <label for="valor" class="form-label me-2">Valor Compra</label>
+            <input v-model="formDataAnimal.valorCompra" type="text" class="form-control" id="valorCompra" disabled />
+          </div>
+        </form>
+      </div>
+
+      <!-- Ocorrências -->
+      <div class="d-flex align-items-start table-container flex-column">
+        <h2>Ocorrências</h2>
+        <div class="button-container">
+          <RelatorioPdf titulo="Relatório de Ocorrências" :cabecalho="[
+            'Nome do produtor: ' + nomeProdutor,
+            'Propriedade: ' + propriedadeAtualNome,
+          ]" :colunas="['Brinco', 'Data da ocorrência', 'Tipo', 'Descrição']" :dados="ocorrencias.map((ocorrencia) => [
+                formDataAnimal.brinco,
+                formatarData(ocorrencia.dataOcorrencia),
+                ocorrencia.tipo,
+                ocorrencia.descricao,
+              ])
+                " />
         </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Tipo</th>
+              <th>Descrição</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ocorrencia in ocorrencias" :key="ocorrencia.id">
+              <td>{{ formatarData(ocorrencia.dataOcorrencia) }}</td>
+              <td>{{ ocorrencia.tipo }}</td>
+              <td>{{ ocorrencia.descricao }}</td>
+              <td>
+                <button @click="acessarOcorrenciaEdicao(ocorrencia)" class="btn-acoes btn-sm" title="Editar Ocorrência">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button @click="excluirOcorrencia(ocorrencia.id)" class="btn-acoes btn-sm" data-bs-toggle="modal"
+                  data-bs-target="#confirmacaoExclusaoOcorrenciaModal">
+                  <i class="fas fa-trash-alt" title="Excluir Ocorrência"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Modal de Confirmação de Exclusão -->
-      <div
-        class="modal fade"
-        id="confirmacaoExclusaoModal"
-        tabindex="-1"
-        aria-labelledby="confirmacaoExclusaoModalLabel"
-        aria-hidden="true"
-      >
+      <div class="modal fade" id="confirmacaoExclusaoModal" tabindex="-1"
+        aria-labelledby="confirmacaoExclusaoModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="confirmacaoExclusaoModalLabel">
                 Confirmação de Exclusão
               </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               Tem certeza de que deseja excluir este animal?
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button
-                type="button"
-                class="btn btn-danger"
-                @click="apagarAnimal"
-              >
+              <button type="button" class="btn btn-danger" @click="apagarAnimal">
                 Excluir
               </button>
             </div>
@@ -369,53 +197,32 @@
       </div>
 
       <!-- Modal de Confirmação de Exclusão de Ocorrencia -->
-      <div
-        class="modal fade"
-        id="confirmacaoExclusaoOcorrenciaModal"
-        tabindex="-1"
-        aria-labelledby="confirmacaoExclusaoOcorrenciaModalLabel"
-        aria-hidden="true"
-      >
+      <div class="modal fade" id="confirmacaoExclusaoOcorrenciaModal" tabindex="-1"
+        aria-labelledby="confirmacaoExclusaoOcorrenciaModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5
-                class="modal-title"
-                id="confirmacaoExclusaoOcorrenciaModalLabel"
-              >
+              <h5 class="modal-title" id="confirmacaoExclusaoOcorrenciaModalLabel">
                 Confirmação de Exclusão
               </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               Tem certeza de que deseja excluir esta Ocorrência?
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button
-                type="button"
-                class="btn btn-danger"
-                @click="apagarOcorrencia"
-              >
+              <button type="button" class="btn btn-danger" @click="apagarOcorrencia">
                 Excluir
               </button>
             </div>
           </div>
         </div>
       </div>
-      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -434,6 +241,7 @@ export default {
       propriedadeAtualNome: localStorage.getItem("propriedadeSelecionadaNome"),
       nomeProdutor: localStorage.getItem("produtorNome"),
       ocorrenciaId: null,
+      ocorrenciaPraExclusao: null,
       animal: null,
       listaFemeas: [],
       listaMachos: [],
@@ -562,7 +370,7 @@ export default {
     async apagarOcorrencia() {
       try {
         const response = await api.delete(
-          `http://127.0.0.1:8000/ocorrencias/${this.ocorrenciaId}/`,
+          `http://127.0.0.1:8000/ocorrencias/${this.ocorrenciaPraExclusao}/`,
           {}
         );
 
@@ -701,19 +509,22 @@ export default {
   background-position: center;
   background-size: 40%;
   opacity: 0.1;
-  z-index: 0; /* A imagem de fundo deve estar abaixo do conteúdo */
+  z-index: 0;
+  /* A imagem de fundo deve estar abaixo do conteúdo */
 }
 
 nav,
 .tab-content {
   position: relative;
-  z-index: 1; /* Coloca o conteúdo acima da marca d'água */
+  z-index: 1;
+  /* Coloca o conteúdo acima da marca d'água */
 }
 
 .table-container,
 .button-container {
   position: relative;
-  z-index: 1; /* Garante que as tabelas e botões estejam acima da imagem de fundo */
+  z-index: 1;
+  /* Garante que as tabelas e botões estejam acima da imagem de fundo */
 }
 
 .table-container {

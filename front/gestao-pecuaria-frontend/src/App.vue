@@ -8,6 +8,8 @@
 
     <NavbarComponent v-if="notIsLoginAndCadastroPage" />
 
+    <ResetPassword v-if="isResetPasswordPage" />
+
   </div>
 </template>
 
@@ -15,6 +17,7 @@
 import NavbarComponent from './components/NavbarComponent.vue'
 import LoginView from '@/views/LoginView.vue'
 import Cadastro from '@/views/CadastroView.vue'
+import ResetPassword from '@/components/ResetPassword.vue';
 
 export default {
   name: 'App',
@@ -22,16 +25,20 @@ export default {
     NavbarComponent,
     LoginView,
     Cadastro, 
+    ResetPassword
   },
   computed: {
     notIsLoginAndCadastroPage() {
-      return this.$route.name !== "login" && this.$route.name !== "cadastro"
+      return this.$route.name !== "login" && this.$route.name !== "cadastro" && this.$route.name !== "ResetPassword"
     },
     isLoginPage() {
       return this.$route.name === "login";
     },
     isCadastroPage() {
       return this.$route.name === "cadastro";
+    },
+    isResetPasswordPage() {
+      return this.$route.name === "ResetPassword";
     },
   }
 };

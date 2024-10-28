@@ -284,6 +284,7 @@ export default {
         this.formData.brinco = animais[0].brinco;
         this.formData.piquete = animais[0].piquete.id;
         this.formData.dataNascimento = animais[0].dataNascimento;
+        this.updateDataNascimento(this.formData.dataNascimento);
         this.formData.sexo = animais[0].sexo;
         if (this.formData.racaPredominante != null) {
           this.formData.racaPredominante = animais[0].racaPredominante.id;

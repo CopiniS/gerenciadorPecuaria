@@ -2,7 +2,7 @@
     <div class="reset-password-container">
       <div class="reset-password-form">
         <h2 class="text-center mb-5">Redefinir Senha</h2>
-        <div v-if="message" :class="['alert', message.type === 'success' ? 'alert-success' : 'alert-danger']">
+        <div v-if="message.text" :class="['alert', message.type === 'success' ? 'alert-success' : 'alert-danger']">
           {{ message.text }}
         </div>
 
@@ -16,7 +16,10 @@
           </div>
           <div class="mb-4 input-group">
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            <input v-model="confirmPassword" :type="passwordType" class="form-control" id="confirmPassword" placeholder="Confirmar Nova Senha" required>
+            <input v-model="confirmPassword" :type="confirmPasswordType" class="form-control" id="confirmPassword" placeholder="Confirmar Nova Senha" required>
+            <span class="input-group-text" @click="toggleConfirmPasswordVisibility">
+              <i :class="confirmPasswordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+            </span>
           </div>
 
           <button type="submit" class="btn btn-primary btn-block">
@@ -36,6 +39,7 @@
         newPassword: '',
         confirmPassword: '',
         passwordType: 'password',
+        confirmPasswordType: 'password',
         message: { type: '', text: '' },
         uid: '',
         token: ''
@@ -49,6 +53,9 @@
     methods: {
       togglePasswordVisibility() {
         this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+      },
+      toggleConfirmPasswordVisibility() {
+        this.confirmPasswordType = this.confirmPasswordType === 'password' ? 'text' : 'password';
       },
       async resetPassword() {
         if (this.newPassword !== this.confirmPassword) {
@@ -102,4 +109,15 @@
   .btn-block {
     width: 100%;
   }
+
+  .btn-primary {
+  background-color: #125601;
+  border-color: #125601;
+}
+
+.btn-primary:hover {
+  background-color: #259406;
+  border-color: #259406;
+  color: white;
+}
   </style>

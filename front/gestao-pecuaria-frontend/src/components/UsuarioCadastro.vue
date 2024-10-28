@@ -1,78 +1,75 @@
 <template>
-<div>
-  <LoadSpinner :isLoading="loadingSubmit" />
-  <div class="vh-100 vw-100 cadastro-container">
-    <div class="cadastro-inner">
-      <!-- Quadrado da Logo -->
-      <div class="cadastro-logo">
-        <img src="@/assets/logo-sem-fundo.png" alt="Logo" class="logo-img" />
-      </div>
-      
-      <!-- Quadrado do Formulário -->
-      <div class="cadastro-form">
-        <h2 class="text-center mb-5 title-cadastro">Faça o cadastro</h2>
-        <form @submit.prevent="submitForm">
-          <div class="mb-3">
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-              <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" class="form-control" id="nome" :placeholder="nomePlaceholder" >
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-              <input v-model="formData.cpf" type="text" class="form-control" id="cpf" @input="aplicarCpfMask"
-              :class="{'is-invalid': !isCpfValido}" :placeholder="cpfPlaceholder" title="Insira um CPF válido">
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-phone"></i></span>
-              <input v-model="formData.telefone1" type="tel" class="form-control" @input="aplicarTelefone1Mask"
-              :class="{'is-invalid': !isTelefone1Valido}" id="telefone1" :placeholder="telefone1Placeholder">
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-phone"></i></span>
-              <input v-model="formData.telefone2" type="tel" class="form-control" id="telefone2" 
-              :placeholder="telefone2Placeholder" @input="aplicarTelefone2Mask" :class="{'is-invalid': !isTelefone2Valido}">
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-              <input v-model="formData.email" type="email" :class="{'is-invalid': !isEmailValido}" class="form-control" id="email" :placeholder="emailPlaceholder" >
-            </div>
-          </div>
-          <div class="mb-4 input-group">
-            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            <input 
-              v-model="formData.password" 
-              :type="passwordType" 
-              class="form-control" 
-              id="password" 
-              :placeholder="passwordPlaceholder" 
-              :class="{'is-invalid': !isPasswordValida}"
-            >
-            <span class="input-group-text" @click="togglePasswordVisibility">
-              <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
-            </span>
-          </div>
+  <div>
+    <LoadSpinner :isLoading="loadingSubmit" />
+    <div class="vh-100 vw-100 cadastro-container">
+      <div class="cadastro-inner">
+        <!-- Quadrado da Logo -->
+        <div class="cadastro-logo">
+          <img src="@/assets/logo-sem-fundo.png" alt="Logo" class="logo-img" />
+        </div>
 
-          <button type="button" class="btn btn-primary btn-block" @click="submitForm">
-            <i class="fas fa-sign-in-alt"></i> Cadastrar
-          </button>
-          <hr />
-          <button type="button" class="btn btn-outline-secondary" @click="voltar">
-            <i class="fas fa-arrow-left"></i> Voltar
-          </button>
-        </form>
+        <!-- Quadrado do Formulário -->
+        <div class="cadastro-form">
+          <h2 class="text-center mb-5 title-cadastro">Faça o cadastro</h2>
+          <form @submit.prevent="submitForm">
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input v-model="formData.nome" :class="{ 'is-invalid': !isNomeValido }" type="text" class="form-control"
+                  id="nome" :placeholder="nomePlaceholder">
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                <input v-model="formData.cpf" type="text" class="form-control" id="cpf" @input="aplicarCpfMask"
+                  :class="{ 'is-invalid': !isCpfValido }" :placeholder="cpfPlaceholder" title="Insira um CPF válido">
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                <input v-model="formData.telefone1" type="tel" class="form-control" @input="aplicarTelefone1Mask"
+                  :class="{ 'is-invalid': !isTelefone1Valido }" id="telefone1" :placeholder="telefone1Placeholder">
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                <input v-model="formData.telefone2" type="tel" class="form-control" id="telefone2"
+                  :placeholder="telefone2Placeholder" @input="aplicarTelefone2Mask"
+                  :class="{ 'is-invalid': !isTelefone2Valido }">
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input v-model="formData.email" type="email" :class="{ 'is-invalid': !isEmailValido }"
+                  class="form-control" id="email" :placeholder="emailPlaceholder">
+              </div>
+            </div>
+            <div class="mb-4 input-group">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              <input v-model="formData.password" :type="passwordType" class="form-control" id="password"
+                :placeholder="passwordPlaceholder" :class="{ 'is-invalid': !isPasswordValida }">
+              <span class="input-group-text" @click="togglePasswordVisibility">
+                <i :class="passwordType === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+              </span>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-block" @click="submitForm">
+              <i class="fas fa-sign-in-alt"></i> Cadastrar
+            </button>
+            <hr />
+            <button type="button" class="btn btn-outline-secondary" @click="voltar">
+              <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-  </div>
-  
+
 </template>
 
 <script>
@@ -110,16 +107,16 @@ export default {
       telefone2Placeholder: 'Telefone 2*',
       emailPlaceholder: 'Email*',
       passwordPlaceholder: 'Senha*',
-      passwordType: 'password', 
+      passwordType: 'password',
     };
   },
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarCpfMask(event) {
       const value = event.target.value;
       this.formData.cpf = this.cpfMask(value);
     },
-    
+
     aplicarTelefone1Mask(event) {
       const value = event.target.value;
       this.formData.telefone1 = this.telefoneMask(value);
@@ -130,9 +127,9 @@ export default {
       this.formData.telefone2 = this.telefoneMask(value);
     },
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async submitForm() {
-      if(this.verificaVazio() && this.validarFormulario()){
+      if (this.verificaVazio() && this.validarFormulario()) {
         this.loadingSubmit = true;
         try {
           const response = await axios.post('http://127.0.0.1:8000/singup', this.formData);
@@ -143,133 +140,143 @@ export default {
               alert('Cadastro realizado com sucesso!');
               this.$router.push('/login')
             }, 100);
-            
+
           } else {
             this.loadingSubmit = false;
             alert('Erro ao cadastrar produtor. Tente novamente mais tarde.');
           }
         } catch (error) {
           this.loadingSubmit = false;
-          console.error('Erro ao enviar requisição:', error);
-          alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+
+          // Verificar se o erro é um 400 e se a resposta contém erro relacionado ao campo email
+          if (error.response && error.response.status === 400) {
+            if (error.response.data.email) {
+              alert('Este e-mail já está cadastrado. Por favor, utilize outro e-mail.');
+            } else {
+              alert('Erro ao cadastrar. Verifique os dados e tente novamente.');
+            }
+          } else {
+            console.error('Erro ao enviar requisição:', error);
+            alert('Erro ao enviar requisição. Verifique o console para mais detalhes.');
+          }
         }
       }
     },
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
     validarFormulario() {
       //CPF
-      if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(this.formData.cpf)){
+      if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(this.formData.cpf)) {
         this.isCpfValido = true;
         this.cpfPlaceholder = 'CPF*';
       }
-      else{
+      else {
         this.isCpfValido = false;
         this.formData.cpf = null;
         this.cpfPlaceholder = 'CPF Inválido';
       }
 
       //TELEFONE 1
-      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone1)){
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone1)) {
         this.isTelefone1Valido = true;
         this.telefone1Placeholder = 'Telefone 1*';
       }
-      else{
+      else {
         this.isTelefone1Valido = false;
         this.formData.telefone1 = null;
         this.telefone1Placeholder = 'Telefone 1 Inválido';
       }
 
       //TELEFONE 2
-      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone2) || this.formData.telefone2 == null){
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone2) || this.formData.telefone2 == null) {
         this.isTelefone2Valido = true;
         this.telefone2Placeholder = 'Telefone 2*';
       }
-      else{
+      else {
         this.isTelefone2Valido = false;
         this.formData.telefone2 = null;
         this.telefone2Placeholder = 'Telefone 2 Inválido';
       }
       //EMAIL
-      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
-          this.isEmailValido = true;
-          this.emailPlaceholder = 'Email*';
+      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)) {
+        this.isEmailValido = true;
+        this.emailPlaceholder = 'Email*';
       }
-      else{
+      else {
         this.isEmailValido = false;
-         this.formData.email = null;
-         this.emailPlaceholder = 'Email Inválido';
+        this.formData.email = null;
+        this.emailPlaceholder = 'Email Inválido';
       }
       return (this.isCpfValido && this.isTelefone1Valido && this.isEmailValido && this.isTelefone2Valido);
     },
-    
-    verificaVazio(){
-        //NOME
-        if(this.formData.nome != null && this.formData.nome.trim() != ''){
-            this.isNomeValido = true;
-            this.nomePlaceholder = 'Nome*';
-        }
-        else{
-          this.isNomeValido = false;
-          this.nomePlaceholder = 'Nome é um Campo Obrigatório';
-        }
 
-        //CPF
-        if(this.formData.cpf != null && this.formData.cpf.trim() != ''){
-            this.isCpfValido = true;
-            this.cpfPlaceholder = 'CPF*';
-        }
-        else{
-          this.isCpfValido = false;
-          this.cpfPlaceholder = 'CPF é um Campo Obrigatório';
-        }
+    verificaVazio() {
+      //NOME
+      if (this.formData.nome != null && this.formData.nome.trim() != '') {
+        this.isNomeValido = true;
+        this.nomePlaceholder = 'Nome*';
+      }
+      else {
+        this.isNomeValido = false;
+        this.nomePlaceholder = 'Nome é um Campo Obrigatório';
+      }
 
-        //Telefone 1
-        if(this.formData.telefone1 != null && this.formData.telefone1.trim() != ''){
-            this.isTelefone1Valido = true;
-            this.telefone1Placeholder = 'Telefone 1*';
-        }
-        else{
-          this.isTelefone1Valido = false;
-          this.telefone1Placeholder = 'Telefone 1 é um Campo Obrigatório';
-        }
+      //CPF
+      if (this.formData.cpf != null && this.formData.cpf.trim() != '') {
+        this.isCpfValido = true;
+        this.cpfPlaceholder = 'CPF*';
+      }
+      else {
+        this.isCpfValido = false;
+        this.cpfPlaceholder = 'CPF é um Campo Obrigatório';
+      }
 
-        //Telefone 2
-        if(this.formData.telefone2 != null && this.formData.telefone2.trim() == ''){
-            this.formData.telefone2 = null;
-        }
+      //Telefone 1
+      if (this.formData.telefone1 != null && this.formData.telefone1.trim() != '') {
+        this.isTelefone1Valido = true;
+        this.telefone1Placeholder = 'Telefone 1*';
+      }
+      else {
+        this.isTelefone1Valido = false;
+        this.telefone1Placeholder = 'Telefone 1 é um Campo Obrigatório';
+      }
 
-        //EMAIL
-        if(this.formData.email != null && this.formData.email != ''){
-            this.isEmailValido = true;
-            this.emailPlaceholder = 'Email*';
-        }
-        else{
-          this.isEmailValido = false;
-          this.emailPlaceholder = 'Email é um Campo Obrigatório';
-        }
+      //Telefone 2
+      if (this.formData.telefone2 != null && this.formData.telefone2.trim() == '') {
+        this.formData.telefone2 = null;
+      }
 
-        //SEnha
-        if(this.formData.password != null && this.formData.password != ''){
-            this.isPasswordValida = true;
-            this.passwordPlaceholder = 'Senha*';
-        }
-        else{
-          this.isPasswordValida = false;
-          this.passwordPlaceholder = 'Senha é um Campo Obrigatório';
-        }
-        
-        return (
-          this.isNomeValido &&
-          this.isCpfValido &&
-          this.isTelefone1Valido &&
-          this.isEmailValido &&
-          this.isPasswordValida
-        );
+      //EMAIL
+      if (this.formData.email != null && this.formData.email != '') {
+        this.isEmailValido = true;
+        this.emailPlaceholder = 'Email*';
+      }
+      else {
+        this.isEmailValido = false;
+        this.emailPlaceholder = 'Email é um Campo Obrigatório';
+      }
+
+      //SEnha
+      if (this.formData.password != null && this.formData.password != '') {
+        this.isPasswordValida = true;
+        this.passwordPlaceholder = 'Senha*';
+      }
+      else {
+        this.isPasswordValida = false;
+        this.passwordPlaceholder = 'Senha é um Campo Obrigatório';
+      }
+
+      return (
+        this.isNomeValido &&
+        this.isCpfValido &&
+        this.isTelefone1Valido &&
+        this.isEmailValido &&
+        this.isPasswordValida
+      );
     },
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
     voltar() {
       this.$router.push('/login');
     },
@@ -295,7 +302,7 @@ export default {
 
 .cadastro-inner {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   max-width: 800px;
   width: 100%;
   border-radius: 8px;
@@ -332,7 +339,8 @@ export default {
   color: #125601;
 }
 
-.btn-primary:hover, .btn-outline-secondary:hover {
+.btn-primary:hover,
+.btn-outline-secondary:hover {
   background-color: #259406;
   border-color: #259406;
   color: white;
@@ -343,7 +351,7 @@ export default {
 }
 
 .alert-custom {
-  padding: 0.5rem 1rem; 
+  padding: 0.5rem 1rem;
   font-size: 0.875rem;
 }
 
@@ -356,12 +364,12 @@ export default {
 
   .login-form {
     width: 100%;
-    max-width: 100%; 
+    max-width: 100%;
     margin: 0;
   }
 
   .input-group {
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
   }
 }
 </style>

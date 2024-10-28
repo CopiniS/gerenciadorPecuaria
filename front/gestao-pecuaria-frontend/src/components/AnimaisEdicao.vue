@@ -6,9 +6,12 @@
         <button class="nav-link" :class="{ active: activeTab === 'animais' }" id="nav-animais-tab"
           @click="selectTab('animais')" type="button" role="tab" aria-controls="nav-animais" aria-selected="true">Lista
           de Animais</button>
-        <button class="nav-link" :class="{ active: activeTab === 'cadastro' }" id="nav-cadastro-tab"
-          @click="selectTab('cadastro')" type="button" role="tab" aria-controls="nav-cadastro"
-          aria-selected="false">Cadastro de Animais</button>
+        <button class="nav-link" :class="{ active: activeTab === 'visualizacao' }" id="nav-visualizacao-tab"
+          @click="selectTab('visualizacao')" type="button" role="tab" aria-controls="nav-visualizacao"
+          aria-selected="false">Vizualização do Animal</button>
+        <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
+          do Animal</button>
       </div>
     </nav>
 
@@ -16,10 +19,13 @@
       <div class="tab-pane fade" :class="{ 'show active': activeTab === 'animais' }" id="nav-animais" role="tabpanel"
         aria-labelledby="nav-animais-tab">
       </div>
-      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cadastro' }" id="nav-cadastro" role="tabpanel"
-        aria-labelledby="nav-cadastro-tab">
-        <div class="table-container" id="cadastro" tabindex="-1" aria-labelledby="cadastroLabel" aria-hidden="true">
-          <h1 class="title fs-5" id="cadastroLabel">Cadastro de Animais</h1>
+      <div class="tab-pane fade" :class="{ 'show active': activeTab === 'visualizacao' }" id="nav-visualizacao" role="tabpanel"
+        aria-labelledby="nav-visualizacao-tab">
+      </div>
+        <div class="tab-pane fade" :class="{ 'show active': activeTab === 'edicao' }" id="nav-edicao" role="tabpanel"
+        aria-labelledby="nav-edicao-tab">
+        <div class="table-container" id="edicao" tabindex="-1" aria-labelledby="edicaoLabel" aria-hidden="true">
+          <h1 class="title fs-5" id="edicaoLabel">Edição de Animal</h1>
           <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group">
               <h2 id="legenda">* Campos Obrigatórios</h2>

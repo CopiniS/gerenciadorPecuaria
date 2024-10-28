@@ -4,11 +4,11 @@
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link" :class="{ active: activeTab === 'veterinarios' }" id="nav-vet-tab"
-          @click="selectTab('veterinarios')" type="button" role="tab" aria-controls="nav-vet"
-          aria-selected="true">Lista de Veterinário</button>
+          @click="selectTab('veterinarios')" type="button" role="tab" aria-controls="nav-vet" aria-selected="true">Lista
+          de Veterinário</button>
         <button class="nav-link" :class="{ active: activeTab === 'edicao' }" id="nav-edicao-tab"
-          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao"
-          aria-selected="false">Edição de Veterinário</button>
+          @click="selectTab('edicao')" type="button" role="tab" aria-controls="nav-edicao" aria-selected="false">Edição
+          de Veterinário</button>
       </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
@@ -21,34 +21,28 @@
           <h1 class="title fs-5" id="edicaoLabel">Edição de Veterinário</h1>
           <form @submit.prevent="submitForm" @keydown="checkEnter">
             <div class="mb-3 input-group">
-                <h2 id="legenda">* Campos Obrigatórios</h2>
+              <h2 id="legenda">* Campos Obrigatórios</h2>
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Nome"><i class="fas fa-user-md"></i></span>
-              <input v-model="formData.nome" :class="{'is-invalid': !isNomeValido}" type="text" 
-              class="form-control" id="nome" :placeholder="nomePlaceholder" title="Nome" autocomplete="off">
+              <input v-model="formData.nome" :class="{ 'is-invalid': !isNomeValido }" type="text" class="form-control"
+                id="nome" :placeholder="nomePlaceholder" title="Nome" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Telefone"><i class="fas fa-phone"></i></span>
-              <input
-                v-model="formData.telefone"
-                @input="aplicarTelefoneMask"
-                :class="{'is-invalid': !isTelefoneValido}"
-                autocomplete="off"
-                type="text"
-                class="form-control"
-                id="telefone"
-                :placeholder="telefonePlaceholder" title="Telefone">
+              <input v-model="formData.telefone" @input="aplicarTelefoneMask" :class="{ 'is-invalid': !isTelefoneValido }"
+                autocomplete="off" type="text" class="form-control" id="telefone" :placeholder="telefonePlaceholder"
+                title="Telefone">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="Email"><i class="fas fa-envelope"></i></span>
-              <input v-model="formData.email" :class="{'is-invalid': !isEmailValido}" type="email" 
-              class="form-control" id="email" :placeholder="emailPlaceholder" title="Email" autocomplete="off">
+              <input v-model="formData.email" :class="{ 'is-invalid': !isEmailValido }" type="email" class="form-control"
+                id="email" :placeholder="emailPlaceholder" title="Email" autocomplete="off">
             </div>
             <div class="mb-3 input-group">
               <span class="input-group-text" title="CRMV"><i class="fas fa-id-card"></i></span>
-              <input v-model="formData.crmv" :class="{'is-invalid': !isCrmvValido}" type="text" 
-              class="form-control" id="crmv" :placeholder="crmvPlaceholder" title="CRMV" autocomplete="off">
+              <input v-model="formData.crmv" :class="{ 'is-invalid': !isCrmvValido }" type="text" class="form-control"
+                id="crmv" :placeholder="crmvPlaceholder" title="CRMV" autocomplete="off">
             </div>
             <div class="button-group justify-content-end">
               <button type="button" class="btn btn-secondary" @click="selectTab('veterinarios')">Cancelar</button>
@@ -106,14 +100,14 @@ export default {
     this.buscarVeterinariosDaApi();
   },
   methods: {
-//MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
+    //MÁSCARAS-------------------------------------------------------------------------------------------------------------------------------------------------
     aplicarTelefoneMask(event) {
       const value = event.target.value;
       this.formData.telefone = this.telefoneMask(value);
     },
 
 
-//REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
+    //REQUISIÇÕES AO BANCO DE DADOS---------------------------------------------------------------------------------------------------------------------
     async fetchVeterinario(id) {
       try {
         const response = await api.get(`http://127.0.0.1:8000/veterinarios/${id}`);
@@ -141,7 +135,7 @@ export default {
               alert('Alterações salvas com sucesso!');
               this.$router.push('/veterinarios');
             }, 100)
-            
+
           } else {
             this.loadingSubmit = false;
             alert('Erro ao atualizar veterinário. Tente novamente mais tarde.');
@@ -156,7 +150,7 @@ export default {
 
     async buscarVeterinariosDaApi() {
       try {
-        const response = await api.get('http://127.0.0.1:8000/veterinarios/' , {
+        const response = await api.get('http://127.0.0.1:8000/veterinarios/', {
           // Parâmetros da requisição (se houver)
         });
         this.veterinariosDaApi = response.data;
@@ -168,79 +162,78 @@ export default {
 
 
 
-//VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
-validarFormulario() {
-  if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone)){
-    this.isTelefoneValido = true;
-    this.telefonePlaceholder = 'Telefone*';
-  } else {
-    this.isTelefoneValido = false;
-    this.formData.telefone = null;
-    this.telefonePlaceholder = 'Telefone Inválido';
-  }
+    //VALIDAÇÕES-------------------------------------------------------------------------------------------------------------------------------------------------------------
+    validarFormulario() {
+      if (/^\(\d{2}\) \d{4,5}-\d{4}$/.test(this.formData.telefone)) {
+        this.isTelefoneValido = true;
+        this.telefonePlaceholder = 'Telefone*';
+      } else {
+        this.isTelefoneValido = false;
+        this.formData.telefone = null;
+        this.telefonePlaceholder = 'Telefone Inválido';
+      }
 
-  if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)){
-    this.isEmailValido = true;
-    this.emailPlaceholder = 'Email';
-  } else {
-    this.isEmailValido = false;
-    this.formData.email = null;
-    this.emailPlaceholder = 'Email Inválido';
-  }
+      if (this.formData.email == null || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email)) {
+        this.isEmailValido = true;
+        this.emailPlaceholder = 'Email';
+      } else {
+        this.isEmailValido = false;
+        this.formData.email = null;
+        this.emailPlaceholder = 'Email Inválido';
+      }
 
-  this.isCrmvValido = true;
-  this.crmvPlaceholder = 'CRMV*';
+      this.isCrmvValido = true;
+      this.crmvPlaceholder = 'CRMV*';
 
-  // Validação de CRMV, agora permitindo o CRMV do veterinário atual
-  for (let veterinario of this.veterinariosDaApi) {
-    // Se o CRMV pertence a outro veterinário, a validação falha
-    if (veterinario.crmv === this.formData.crmv && veterinario.id !== this.formData.id) {
-      this.isCrmvValido = false;
-      this.crmvPlaceholder = 'Este CRMV já está cadastrado';
-      this.formData.crmv = null;
-      break;
-    }
-  }
+      for (let veterinario of this.veterinariosDaApi) {
+        // Se o CRMV pertence a outro veterinário, a validação falha
+        if (veterinario.crmv === this.formData.crmv && veterinario.id !== this.formData.id) {
+          this.isCrmvValido = false;
+          this.crmvPlaceholder = 'Este CRMV já está cadastrado';
+          this.formData.crmv = null;
+          break;
+        }
+      }
 
-  return this.isTelefoneValido && this.isEmailValido && this.isCrmvValido;
-},
+      return this.isTelefoneValido && this.isEmailValido && this.isCrmvValido;
+    },
 
-    verificaVazio(){
+    verificaVazio() {
       //NOME
-      if(this.formData.nome != null && this.formData.nome.trim() != ''){
+      if (this.formData.nome != null && this.formData.nome.trim() != '') {
         this.isNomeValido = true;
         this.nomePlaceholder = 'Nome*';
       }
-      else{
+      else {
         this.isNomeValido = false;
         this.nomePlaceholder = 'Nome é um Campo Obrigatório';
       }
-      
+
       //TELEFONE
-      if(this.formData.telefone != null && this.formData.telefone.trim() != ''){
+      if (this.formData.telefone != null && this.formData.telefone.trim() != '') {
         this.isTelefoneValido = true;
         this.telefonePlaceholder = 'Telefone*';
       }
-      else{
+      else {
         this.isTelefoneValido = false;
         this.telefonePlaceholder = 'Telefone é um Campo Obrigatório';
       }
       //EMAIL
-      if(this.formData.email != null && this.formData.email.trim() == ''){
+      if (this.formData.email != null && this.formData.email.trim() == '') {
         this.formData.email = null;
       }
 
       //CRMV
-      if(this.formData.crmv != null && this.formData.crmv.trim() != ''){
+      if (this.formData.crmv != null && this.formData.crmv.trim() != '') {
         this.isCrmvValido = true;
         this.crmvPlaceholder = 'CRMV*';
       }
-      else{
+      else {
         this.isCrmvValido = false;
         this.crmvPlaceholder = 'CRMV é um Campo Obrigatório';
       }
 
-      return(
+      return (
         this.isNomeValido &&
         this.isTelefoneValido &&
         this.isCrmvValido
@@ -249,13 +242,13 @@ validarFormulario() {
     },
 
 
-//FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
-checkEnter(event) {
+    //FUNÇÕES AUXILIARES----------------------------------------------------------------------------------------------------------------------------------------------------------
+    checkEnter(event) {
       if (event.key === 'Enter') {
         this.submitForm();
       }
-    },    
-selectTab(tab) {
+    },
+    selectTab(tab) {
       this.activeTab = tab;
       if (tab === 'veterinarios') {
         this.$router.push('/veterinarios');
@@ -325,6 +318,6 @@ selectTab(tab) {
 }
 
 #legenda {
-    font-size: 16px;
+  font-size: 16px;
 }
 </style>

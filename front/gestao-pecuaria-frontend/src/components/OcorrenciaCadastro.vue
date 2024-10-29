@@ -38,7 +38,7 @@
               <select v-model="formData.tipo" :class="{ 'is-invalid': !isTipoValido }" class="form-select" id="tipo"
                 aria-label="Tipo" :placeholder="tipoPlaceholder" title="Tipo">
                 <option disabled :value="null">{{ tipoPlaceholder }}</option>
-                <option value="morte">Morte</option>
+                <option value="Morte">Morte</option>
                 <option value="doenca">Doença</option>
                 <option value="desaparecido">Desaparecido</option>
                 <option value="outro">Outro</option>
